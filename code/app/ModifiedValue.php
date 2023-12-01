@@ -164,7 +164,8 @@ class ModifiedValue extends Model
             ]
         ]
     */
-    public static function organizeForProducts(&$products_modifiers, $target_modifiers, $key) {
+    public static function organizeForProducts(&$products_modifiers, $target_modifiers, $key): void
+    {
         foreach($target_modifiers as $pmod) {
             if ($pmod->target_type == BookedProduct::class) {
                 $mod_id = $pmod->modifier->modifier_type_id;

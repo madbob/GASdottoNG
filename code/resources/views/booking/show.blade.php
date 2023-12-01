@@ -24,15 +24,14 @@ $grand_total = 0;
         ?>
 
         @if($contacts->isEmpty() == false)
-            <div class="alert alert-info">
+            <x-larastrap::suggestion>
                 {{ _i('Per segnalazioni relative a questo ordine si può contattare:') }}
                 <ul>
                     @foreach($contacts as $contact)
                         <li>{{ $contact->printableName() }} - {{ join(', ', App\Formatters\User::format($contact, ['email', 'phone', 'mobile'])) }}</li>
                     @endforeach
                 </ul>
-            </div>
-            <br>
+            </x-larastrap::suggestion>
         @endif
 
         @include('booking.partials.showtable')

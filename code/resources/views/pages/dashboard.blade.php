@@ -11,7 +11,7 @@
                 </div>
                 <div class="card-body">
                     @foreach($notifications as $notify)
-                        <div class="alert alert-info alert-dismissible fade show">
+                        <x-larastrap::suggestion classes="alert-dismissible fade show">
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             <input type="hidden" name="notification_id" value="{{ $notify->id }}" />
 
@@ -25,7 +25,7 @@
                                     </a>
                                 @endforeach
                             @endif
-                        </div>
+                        </x-larastrap::suggestion>
                     @endforeach
                 </div>
             </div>
@@ -46,9 +46,9 @@
                 </div>
                 @if(count($opened) == 0)
                     <div class="card-body">
-                        <div class="alert alert-info" role="alert">
+                        <x-larastrap::suggestion>
                             {{ _i('Non ci sono prenotazioni aperte.') }}
-                        </div>
+                        </x-larastrap::suggestion>
                     </div>
                 @else
                     @include('order.homelist', ['orders' => $opened])
@@ -61,9 +61,9 @@
                 </div>
                 @if(count($shipping) == 0)
                     <div class="card-body">
-                        <div class="alert alert-info" role="alert">
+                        <x-larastrap::suggestion>
                             {{ _i('Non ci sono ordini in consegna.') }}
-                        </div>
+                        </x-larastrap::suggestion>
                     </div>
                 @else
                     @include('order.homelist', ['orders' => $shipping])

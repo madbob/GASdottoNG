@@ -57,16 +57,9 @@ class MovementObserver
             }
         }
 
-        $found = false;
         $operations = json_decode($metadata->function);
-        foreach($operations as $op) {
-            if ($movement->method == $op->method) {
-                $found = true;
-                break;
-            }
-        }
-
-        if ($found == false) {
+        $valid = count(array_filter($operations, fn($op) => $movement->method == $op->method)) > 0;
+        if ($valid == false) {
             Log::error(_i('Movimento %d: metodo "%s" non permesso su tipo "%s"', [$movement->id, $movement->printablePayment(), $movement->printableType()]));
             return false;
         }

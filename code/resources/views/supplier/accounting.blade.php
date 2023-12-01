@@ -6,9 +6,9 @@
             <?php $orders = $supplier->orders()->whereDoesntHave('payment')->get() ?>
 
             @if($orders->isEmpty())
-                <div class="alert alert-info" role="alert">
+                <x-larastrap::suggestion>
                     {{ _i('Non ci sono elementi da visualizzare.') }}
-                </div>
+                </x-larastrap::suggestion>
             @else
                 <ul class="list-group">
                     @foreach($orders as $order)

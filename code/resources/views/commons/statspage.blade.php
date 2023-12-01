@@ -102,7 +102,7 @@ else {
 </div>
 
 <div class="hidden" id="templates">
-    <div class="alert alert-info">
+    <x-larastrap::suggestion>
         {{ _i('Non ci sono dati da visualizzare') }}
-    </div>
+    </x-larastrap::suggestion>
 </div>

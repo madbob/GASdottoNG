@@ -97,9 +97,9 @@ $currency_symbol = defaultCurrency()->symbol;
                     @if($no_price_differences == false)
                         <div class="row">
                             <div class="col">
-                                <div class="alert alert-info">
+                                <x-larastrap::suggestion>
                                     {!! _i('I prezzi di alcuni prodotti sono cambiati rispetto alla prenotazione. Sotto, puoi scegliere quale prezzo adottare in caso di rettifica della consegna: quello applicato originariamente o quello nel listino attuale.') !!}
-                                </div>
+                                </x-larastrap::suggestion>
                             </div>
                         </div>
                     @endif

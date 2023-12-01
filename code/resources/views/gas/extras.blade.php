@@ -101,9 +101,9 @@
         <div class="row">
             <div class="col">
                 @if($logs->isEmpty())
-                    <div class="alert alert-info">
+                    <x-larastrap::suggestion>
                         {{ _i('Non ci sono log.') }}
-                    </div>
+                    </x-larastrap::suggestion>
                 @else
                     <table class="table">
                         <thead>

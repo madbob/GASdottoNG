@@ -4,9 +4,9 @@
 --}}
 
 @if($o->products->isEmpty())
-    <div class="alert alert-info mb-4">
+    <x-larastrap::suggestion>
         {{ _i("Non hai partecipato a quest'ordine.") }}
-    </div>
+    </x-larastrap::suggestion>
 @else
     @php
     $categories = $o->products->reduce(fn($carry, $p) => $carry->push($p->product->category), new \Illuminate\Support\Collection())->unique();

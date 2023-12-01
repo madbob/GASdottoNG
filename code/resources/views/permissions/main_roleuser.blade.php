@@ -38,7 +38,9 @@
     <div class="row mt-2">
         <div class="col">
             @if($role->enabledAction('gas.permissions') && $user->id == $currentuser->id)
-                <div class="alert alert-info">{{ _i('Non puoi auto-revocarti questo ruolo amministrativo') }}</div>
+                <x-larastrap::suggestion>
+                    {{ _i('Non puoi auto-revocarti questo ruolo amministrativo') }}
+                </x-larastrap::suggestion>
             @else
                 <button class="btn btn-danger remove-role" data-role="{{ $role->id }}" data-user="{{ $user->id }}">{{ _i('Revoca Ruolo') }} {{ $role->name }} a {{ $user->printableName() }}</button>
             @endif

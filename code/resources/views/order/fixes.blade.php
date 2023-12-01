@@ -31,7 +31,9 @@
         <hr/>
 
         @if($bookings->isEmpty())
-            <div class="alert alert-info">{{ _i("Da qui è possibile modificare la quantità prenotata di questo prodotto per ogni prenotazione, ma nessun utente ha ancora partecipato all'ordine.") }}</div>
+            <x-larastrap::suggestion>
+                {{ _i("Da qui è possibile modificare la quantità prenotata di questo prodotto per ogni prenotazione, ma nessun utente ha ancora partecipato all'ordine.") }}
+            </x-larastrap::suggestion>
         @else
             @if($product->variants()->count() == 0)
                 <table class="table table-striped">

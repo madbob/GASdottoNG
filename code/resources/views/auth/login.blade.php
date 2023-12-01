@@ -4,9 +4,9 @@
 
 <div class="col-12 col-md-6 offset-md-3 mb-5">
     @if($gas->message != '')
-        <div class="alert alert-info">
+        <x-larastrap::suggestion>
             {!! nl2br($gas->message) !!}
-        </div>
+        </x-larastrap::suggestion>
         <hr/>
     @endif
 

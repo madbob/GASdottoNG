@@ -121,30 +121,27 @@ $form_buttons = [
                 ?>
 
                 @if(!is_null($notice))
-                    <div class="alert alert-info">
+                    <x-larastrap::suggestion>
                         <input type="hidden" name="limited" value="1">
                         {{ $notice }}
-                    </div>
-                    <br>
+                    </x-larastrap::suggestion>
                 @endif
 
                 @if(!empty($order->long_comment))
-                    <div class="alert alert-info">
+                    <x-larastrap::suggestion>
                         {!! nl2br($order->long_comment) !!}
-                    </div>
-                    <br>
+                    </x-larastrap::suggestion>
                 @endif
 
                 @if($contacts->isEmpty() == false)
-                    <div class="alert alert-info">
+                    <x-larastrap::suggestion>
                         {{ _i('Per segnalazioni relative a questo ordine si può contattare:') }}
                         <ul>
                             @foreach($contacts as $contact)
                                 <li>{{ $contact->printableName() }} - {{ join(', ', App\Formatters\User::format($contact, ['email', 'phone', 'mobile'])) }}</li>
                             @endforeach
                         </ul>
-                    </div>
-                    <br>
+                    </x-larastrap::suggestion>
                 @endif
 
                 <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}" data-order-id="{{ $order->id }}">

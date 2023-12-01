@@ -82,9 +82,9 @@ $no_filters = (empty($sorting_rules) && empty($filters) && is_null($legend));
 </div>
 
 <div id="wrapper-{{ $identifier }}">
-    <div class="alert alert-info {{ count($items) != 0 ? 'd-none' : '' }}" role="alert" id="empty-{{ $identifier }}">
+    <x-larastrap::suggestion :id="sprintf('empty-%s', $identifier)" :classes="count($items) != 0 ? 'd-none' : ''">
         {!! $empty_message !!}
-    </div>
+    </x-larastrap::suggestion>
 
     <x-larastrap::accordion :id="$identifier" classes="loadable-list" :attributes="$extra_data">
         @foreach($injected_items as $item)

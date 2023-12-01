@@ -164,6 +164,16 @@ return [
                 'classes' => ['btn-icon'],
             ],
         ],
+        'suggestion' => [
+            'extends' => 't',
+            'params' => [
+                'node' => 'div',
+                'classes' => ['alert', 'alert-info', 'mb-2'],
+                'attributes' => [
+                    'role' => 'alert'
+                ],
+            ],
+        ],
         'mform' => [
             'extends' => 'form',
             'params' => [

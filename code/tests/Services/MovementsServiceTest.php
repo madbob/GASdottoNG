@@ -9,6 +9,7 @@ use Artisan;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
+use App\Exceptions\IllegalArgumentException;
 
 class MovementsServiceTest extends TestCase
 {
@@ -168,6 +169,24 @@ class MovementsServiceTest extends TestCase
 
         $this->assertEquals($this->sample_movement->id, $movement->id);
         $this->assertEquals($this->sample_movement->amount, $movement->amount);
+    }
+
+    /*
+        Creazione Movimento con metodo sbagliato
+    */
+    public function testWrongMethod()
+    {
+        $this->expectException(IllegalArgumentException::class);
+        $this->actingAs($this->userWithAdminPerm);
+
+        app()->make('MovementsService')->store(array(
+            'type' => 'donation-from-gas',
+            'method' => 'credit',
+            'sender_id' => $this->gas->id,
+            'sender_type' => 'App\Gas',
+            'registerer_id' => $this->userWithAdminPerm->id,
+            'currency_id' => defaultCurrency()->id,
+        ));
     }
 
     /*

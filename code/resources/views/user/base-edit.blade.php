@@ -5,11 +5,9 @@
 <x-larastrap::check name="sendmail" :label="_i('Invia E-Mail')" checked :attributes="['data-bs-toggle' => 'collapse', 'data-bs-target' => '.alternate_behavior']" />
 
 <x-larastrap::collapse classes="alternate_behavior" open>
-    <x-larastrap::field>
-        <p class="alert alert-info">
-            {{ _i("Verrà inviata una email all'utente, con cui potrà accedere la prima volta e definire la propria password.") }}
-        </p>
-    </x-larastrap::field>
+    <x-larastrap::suggestion>
+        {{ _i("Verrà inviata una email all'utente, con cui potrà accedere la prima volta e definire la propria password.") }}
+    </x-larastrap::suggestion>
 
     <x-larastrap::email name="email" :label="_i('E-Mail')" />
 </x-larastrap::collapse>

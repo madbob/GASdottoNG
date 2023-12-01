@@ -53,9 +53,9 @@ $total = 0;
         <tbody>
             <tr>
                 <td colspan="3">
-                    <div class="alert alert-info">
-                        Il modificatore non è stato applicato in questo intervallo di date.
-                    </div>
+                    <x-larastrap::suggestion>
+                        {{ _i('Il modificatore non è stato applicato in questo intervallo di date.') }}
+                    </x-larastrap::suggestion>
                 </td>
             </tr>
         </tbody>

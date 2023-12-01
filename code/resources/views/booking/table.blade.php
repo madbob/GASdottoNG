@@ -1,8 +1,8 @@
 @if($aggregate->isRunning() == false)
     @if(empty($aggregate->bookings))
-        <div class="alert alert-info " role="alert">
+        <x-larastrap::suggestion>
             {{ _i('Non ci sono elementi da visualizzare.') }}
-        </div>
+        </x-larastrap::suggestion>
     @else
         <?php
 

@@ -4,11 +4,9 @@
             <input type="hidden" name="group" value="mails">
 
             <div class="col">
-                <div class="alert alert-info mb-3">
-                    <p>
-                        {{ _i('Da questa tabella puoi attivare specifiche tipologie di notifiche mail legate agli ordini, da inviare a diversi destinatari in base allo stato di ciascun ordine.') }}
-                    </p>
-                </div>
+                <x-larastrap::suggestion>
+                    {{ _i('Da questa tabella puoi attivare specifiche tipologie di notifiche mail legate agli ordini, da inviare a diversi destinatari in base allo stato di ciascun ordine.') }}
+                </x-larastrap::suggestion>
 
                 <div class="table-responsive">
                     <table class="table inline-cells">
@@ -61,7 +59,7 @@
 
                 <hr>
 
-                <div class="alert alert-info mb-3">
+                <x-larastrap::suggestion>
                     <p>
                         {{ _i('Da qui puoi modificare i testi delle mail in uscita da GASdotto. Per ogni tipologia sono previsti dei placeholders, che saranno sostituiti con gli opportuni valori al momento della generazione: per aggiungerli nei testi, usare la sintassi %[nome_placeholder]') }}
                     </p>
@@ -71,7 +69,7 @@
                     <ul>
                         <li>gas_name: {{ _i('Nome del GAS') }}</li>
                     </ul>
-                </div>
+                </x-larastrap::suggestion>
 
                 @foreach(systemParameters('MailTypes') as $identifier => $metadata)
                     <?php

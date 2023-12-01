@@ -46,9 +46,9 @@ if (!isset($duplicate)) {
 
     @if($duplicate)
         <div class="col-12">
-            <div class="alert alert-info">
+            <x-larastrap::suggestion>
                 {{ _i('Il duplicato avrà una copia delle varianti e dei modificatori del prodotto originario. Potranno essere eventualmente modificati dopo il salvataggio.') }}
-            </div>
+            </x-larastrap::suggestion>
         </div>
     @endif
 </div>

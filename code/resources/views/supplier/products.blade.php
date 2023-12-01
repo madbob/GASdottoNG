@@ -1,8 +1,8 @@
 @can('supplier.modify', $supplier)
     @if($supplier->remote_lastimport)
-        <div class="alert alert-info mb-2">
+        <x-larastrap::suggestion>
             {{ _i("Il listino di questo fornitore è stato importato dall'archivio centralizzato: si raccomanda si modificarlo il meno possibile in modo che sia più semplice poi gestirne gli aggiornamenti futuri.") }}
-        </div>
+        </x-larastrap::suggestion>
     @endif
 
     <div class="row">
