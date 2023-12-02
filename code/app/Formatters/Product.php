@@ -23,7 +23,7 @@ class Product extends Formatter
 
     public static function formatActive($obj, $context)
     {
-        return $obj->active ? _i('Si') : _i('No');
+        return $obj->active ? _i('Sì') : _i('No');
     }
 
     public static function formatVat($obj, $context)
@@ -38,7 +38,7 @@ class Product extends Formatter
 
     public static function formatVariable($obj, $context)
     {
-        return $obj->variable ? _i('Si') : _i('No');
+        return $obj->variable ? _i('Sì') : _i('No');
     }
 
     public static function formattableColumns($type = null)

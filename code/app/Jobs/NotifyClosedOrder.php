@@ -103,7 +103,7 @@ class NotifyClosedOrder extends Job
         }
 
         foreach($notifiable_users as $notifiable) {
-            if ($notifiable->gas->auto_referent_order_summary) {
+            if ($notifiable->user->gas->auto_referent_order_summary) {
                 try {
                     $notifiable->user->notify(new ClosedOrdersNotification($notifiable->orders, $notifiable->files));
                 }

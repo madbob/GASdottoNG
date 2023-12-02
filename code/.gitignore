@@ -1,6 +1,7 @@
 /vendor
 /node_modules
 .env
+.env.*
 /public/hot
 /public/storage
 /public/vendor
