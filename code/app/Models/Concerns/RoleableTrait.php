@@ -86,6 +86,10 @@ trait RoleableTrait
             }
         }
 
+        uasort($targets, function($a, $b) {
+            return $a->name <=> $b->name;
+        });
+
         return $targets;
     }
 }

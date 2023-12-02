@@ -69,7 +69,7 @@ class MenuServiceProvider extends ServiceProvider
 
     private function accessAccounting($user, $gas, &$menu)
     {
-        if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas)) {
+        if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas) || $user->can('supplier.movements', null) || $user->can('supplier.invoices', null)) {
             $menu['<i class="bi-piggy-bank"></i> ' . _i('Contabilità')] = [
                 'url' => route('movements.index'),
                 'attributes' => ['id' => 'menu_accouting'],

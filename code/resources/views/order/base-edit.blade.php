@@ -1,11 +1,6 @@
-<?php
-
+@php
 $suppliers = $currentuser->targetsByAction('supplier.orders');
-usort($suppliers, function($a, $b) {
-    return $a->name <=> $b->name;
-});
-
-?>
+@endphp
 
 @if($currentuser->gas->hasFeature('auto_aggregates'))
     <x-larastrap::field :label="_i('Fornitori')" :pophelp="_i('Selezionando diversi fornitori, verranno generati i rispettivi ordini e saranno automaticamente aggregati. Questa funzione viene attivata se nel database sono presenti almeno 3 aggregati con almeno %d ordini ciascuno.', aggregatesConvenienceLimit())">

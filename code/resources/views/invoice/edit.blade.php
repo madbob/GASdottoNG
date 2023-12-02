@@ -204,38 +204,40 @@
                 <x-larastrap::textarea name="notes" :label="_i('Note')" />
                 <x-larastrap::select name="status" :label="_i('Stato')" :options="App\Helpers\Status::invoices()" />
 
-                <x-larastrap::field :label="_i('Pagamento')">
-                    @if($invoice->payment)
-                        <div class="row">
-                            <div class="col">
-                                @include('commons.movementfield', [
-                                    'obj' => $invoice->payment,
-                                    'name' => 'payment_id',
-                                    'squeeze' => true,
-                                    'editable' => true,
-                                ])
-                            </div>
-                        </div>
-
-                        @foreach($invoice->otherMovements as $om)
+                @can('supplier.movements', $invoice->supplier)
+                    <x-larastrap::field :label="_i('Pagamento')">
+                        @if($invoice->payment)
                             <div class="row">
                                 <div class="col">
                                     @include('commons.movementfield', [
-                                        'obj' => $om,
-                                        'name' => 'payment',
+                                        'obj' => $invoice->payment,
+                                        'name' => 'payment_id',
                                         'squeeze' => true,
+                                        'editable' => true,
                                     ])
                                 </div>
                             </div>
-                        @endforeach
 
-                        <br>
-                    @endif
+                            @foreach($invoice->otherMovements as $om)
+                                <div class="row">
+                                    <div class="col">
+                                        @include('commons.movementfield', [
+                                            'obj' => $om,
+                                            'name' => 'payment',
+                                            'squeeze' => true,
+                                        ])
+                                    </div>
+                                </div>
+                            @endforeach
 
-                    @if($invoice->status != 'payed')
-                        <x-larastrap::ambutton :label="_i('Registra Pagamento')" :attributes="['data-modal-url' => route('invoices.movements', $invoice->id)]" />
-                    @endif
-                </x-larastrap::field>
+                            <br>
+                        @endif
+
+                        @if($invoice->status != 'payed')
+                            <x-larastrap::ambutton :label="_i('Registra Pagamento')" :attributes="['data-modal-url' => route('invoices.movements', $invoice->id)]" />
+                        @endif
+                    </x-larastrap::field>
+                @endcan
             </div>
         </div>
     </x-larastrap::mform>

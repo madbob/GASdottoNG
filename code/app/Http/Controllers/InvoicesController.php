@@ -4,15 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
-
-use DB;
-use Auth;
-use Log;
+use Illuminate\Support\Facades\DB;
 
 use App\Services\InvoicesService;
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
-
 use App\Invoice;
 use App\Order;
 use App\Movement;
@@ -30,11 +26,19 @@ class InvoicesController extends BackedController
         ]);
     }
 
+    private function testMovementsPermissions($user, $invoice)
+    {
+        if ($user->can('movements.admin', $user->gas) == false || $user->can('supplier.movements', $invoice->supplier) == false) {
+            throw new AuthException(403);
+        }
+    }
+
     public function index(Request $request)
     {
         $past = date('Y-m-d', strtotime('-1 months'));
         $future = date('Y-m-d', strtotime('+10 years'));
         $invoices = $this->service->list($past, $future, 0);
+
         return view('invoice.index', [
             'invoices' => $invoices,
         ]);
@@ -43,18 +47,9 @@ class InvoicesController extends BackedController
     public function show($id)
     {
         $invoice = $this->service->show($id);
-
-        $user = Auth::user();
-
-        if ($user->can('movements.admin', $user->gas)) {
-            return view('invoice.edit', ['invoice' => $invoice]);
-        }
-        else if ($user->can('movements.view', $user->gas)) {
-            return view('invoice.show', ['invoice' => $invoice]);
-        }
-        else {
-            abort(503);
-        }
+        return view('invoice.edit', [
+            'invoice' => $invoice
+        ]);
     }
 
     public function products($id)
@@ -64,8 +59,7 @@ class InvoicesController extends BackedController
 
     public function orders($id)
     {
-        $invoice = Invoice::findOrFail($id);
-
+        $invoice = $this->service->show($id);
         return view('invoice.orders', [
             'invoice' => $invoice,
         ]);
@@ -85,14 +79,12 @@ class InvoicesController extends BackedController
         return $alternative_types;
     }
 
-    public function getMovements($id)
+    public function getMovements(Request $request, $id)
     {
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
+        $invoice = $this->service->show($id);
 
-        $invoice = Invoice::findOrFail($id);
+        $user = $request->user();
+        $this->testMovementsPermissions($user, $invoice);
 
         $invoice_grand_total = $invoice->total + $invoice->total_vat;
         $main = Movement::generate('invoice-payment', $user->gas, $invoice, $invoice_grand_total);
@@ -126,7 +118,7 @@ class InvoicesController extends BackedController
             $target = $user->gas;
         }
         else {
-            Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
+            \Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
         }
 
         return $target;
@@ -143,7 +135,7 @@ class InvoicesController extends BackedController
             $sender = $user->gas;
         }
         else {
-            Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
+            \Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
         }
 
         return $sender;
@@ -159,14 +151,12 @@ class InvoicesController extends BackedController
 
     public function postMovements(Request $request, $id)
     {
-        $user = Auth::user();
-        if ($user->can('movements.admin', $user->gas) == false) {
-            return $this->errorResponse(_i('Non autorizzato'));
-        }
-
         DB::beginTransaction();
 
-        $invoice = Invoice::findOrFail($id);
+        $invoice = $this->service->show($id);
+        $user = $request->user();
+        $this->testMovementsPermissions($user, $invoice);
+
         $invoice->deleteMovements();
 
         $master_movement = null;

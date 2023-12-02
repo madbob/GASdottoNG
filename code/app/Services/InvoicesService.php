@@ -19,7 +19,8 @@ class InvoicesService extends BaseService
 {
     public function list($start, $end, $supplier_id)
     {
-        $user = $this->ensureAuth(['movements.admin' => 'gas']);
+        $supplier = Supplier::tFind($supplier_id);
+        $user = $this->ensureAuth(['supplier.invoices' => $supplier, 'supplier.movements' => $supplier]);
 
         $query = Invoice::where(function($query) use($start, $end) {
             $query->whereHas('payment', function($query) use($start, $end) {
@@ -27,8 +28,12 @@ class InvoicesService extends BaseService
             })->orWhereDoesntHave('payment');
         });
 
-        if ($supplier_id != '0') {
-            $query->where('supplier_id', $supplier_id);
+        if ($supplier) {
+            $query->where('supplier_id', $supplier->id);
+        }
+        else {
+            $suppliers = array_merge($user->targetsByAction('supplier.orders'), $user->targetsByAction('supplier.movements'));
+            $query->whereIn('supplier_id', array_keys($suppliers));
         }
 
         $elements = $query->get();
@@ -37,7 +42,9 @@ class InvoicesService extends BaseService
 
     public function show($id)
     {
-        return Invoice::findOrFail($id);
+        $ret = Invoice::findOrFail($id);
+        $this->ensureAuth(['supplier.invoices' => $ret->supplier, 'supplier.movements' => $ret->supplier]);
+        return $ret;
     }
 
     private function setCommonAttributes($invoice, $request)
@@ -61,7 +68,13 @@ class InvoicesService extends BaseService
 
     public function store(array $request)
     {
-        $user = $this->ensureAuth(['movements.admin' => 'gas']);
+        $supplier = Supplier::tFind($request['supplier_id']);
+        if ($supplier) {
+            $user = $this->ensureAuth(['supplier.invoices' => $supplier]);
+        }
+        else {
+            throw new IllegalArgumentException(_i('Fornitore non specificato'), 1);
+        }
 
         $invoice = new Invoice();
         $invoice->gas_id = $user->gas_id;
@@ -70,9 +83,8 @@ class InvoicesService extends BaseService
 
     public function update($id, array $request)
     {
-        $user = $this->ensureAuth(['movements.admin' => 'gas']);
-
         $invoice = Invoice::findOrFail($id);
+        $user = $this->ensureAuth(['supplier.invoices' => $invoice->supplier]);
         $invoice->gas_id = $user->gas_id;
         return $this->setCommonAttributes($invoice, $request);
     }
@@ -106,7 +118,6 @@ class InvoicesService extends BaseService
 
     public function products($id)
     {
-        $user = $this->ensureAuth(['movements.admin' => 'gas']);
         $invoice = $this->show($id);
 
         $summaries = [];
@@ -136,8 +147,8 @@ class InvoicesService extends BaseService
 
 	public function wire($id, $step, $request)
 	{
-		$this->ensureAuth(['movements.admin' => 'gas']);
 		$invoice = $this->show($id);
+        $this->ensureAuth(['supplier.invoices' => $invoice->supplier]);
 
 		switch($step) {
 			case 'review':
@@ -151,8 +162,8 @@ class InvoicesService extends BaseService
 
     public function destroy($id)
     {
-        $user = $this->ensureAuth(['movements.admin' => 'gas']);
         $invoice = $this->show($id);
+        $this->ensureAuth(['supplier.invoices' => $invoice->supplier]);
 
         $invoice->deleteMovements();
 
