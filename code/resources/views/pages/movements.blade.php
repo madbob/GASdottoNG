@@ -35,7 +35,7 @@
                             @include('commons.selectmovementtypefield', ['show_all' => true])
                             <x-larastrap::radios name="method" :label="_i('Pagamento')" :options="paymentsSimple()" value="none" />
                             <x-larastrap::selectobj name="user_id" :label="_i('Utente')" :options="$currentgas->users" :extraitem="_i('Nessuno')" />
-                            <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$currentgas->suppliers" :extraitem="_i('Nessuno')" />
+                            <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$currentuser->targetsByAction('movements.admin,supplier.orders,supplier.movements')" :extraitem="_i('Nessuno')" />
 
                             <x-larastrap::field :label="_i('Importo')">
                                 <div class="input-group">
@@ -108,10 +108,10 @@
                 </x-larastrap::tabpane>
             @endcan
 
-            @can('supplier.invoices', null)
+            @if($currentuser->can('movements.admin', $currentgas) || $currentuser->can('supplier.movements', null) || $currentuser->can('supplier.invoices', null))
                 <x-larastrap::remotetabpane :label="_i('Fatture')" :button_attributes="['data-tab-url' => route('invoices.index')]" icon="bi-files">
                 </x-larastrap::remotetabpane>
-            @endcan
+            @endif
 
 			@if($currentgas->hasFeature('extra_invoicing'))
 				<x-larastrap::remotetabpane :label="_i('Ricevute')" :button_attributes="['data-tab-url' => route('receipts.index')]" icon="bi-files">

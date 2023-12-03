@@ -169,6 +169,17 @@ class Supplier extends Model
                 });
                 break;
 
+            case 'invoices':
+                $invoices = $supplier->invoices()->pluck('invoices.id');
+
+                $query->where(function($query) use ($invoices) {
+                    $query->where('sender_type', 'App\Invoice')->whereIn('sender_id', $invoices);
+                })->orWhere(function($query) use ($invoices) {
+                    $query->where('target_type', 'App\Invoice')->whereIn('target_id', $invoices);
+                });
+
+                break;
+
             case 'sender':
                 $this->innerQuery($query, 'sender', $supplier, false);
                 break;

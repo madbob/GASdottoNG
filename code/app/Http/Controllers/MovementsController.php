@@ -38,7 +38,7 @@ class MovementsController extends BackedController
 	{
 		$user = Auth::user();
 
-        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false && $user->can('supplier.movements', null) == false && $user->can('supplier.invoices', null) == false) {
             abort(503);
         }
 

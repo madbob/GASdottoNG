@@ -3,12 +3,8 @@
 namespace App\Services;
 
 use App\Exceptions\AuthException;
-
-use Auth;
-use Log;
-use DB;
-use PDF;
-
+use App\Gas;
+use App\Supplier;
 use App\Invoice;
 use App\Receipt;
 use App\Order;
@@ -17,10 +13,21 @@ use App\MovementType;
 
 class InvoicesService extends BaseService
 {
+    private function testAccess($supplier)
+    {
+        return $this->ensureAuth(['movements.admin' => 'gas', 'supplier.invoices' => $supplier, 'supplier.movements' => $supplier]);
+    }
+
     public function list($start, $end, $supplier_id)
     {
-        $supplier = Supplier::tFind($supplier_id);
-        $user = $this->ensureAuth(['supplier.invoices' => $supplier, 'supplier.movements' => $supplier]);
+        if ($supplier_id) {
+            $supplier = Supplier::tFind($supplier_id);
+        }
+        else {
+            $supplier = null;
+        }
+
+        $user = $this->testAccess($supplier);
 
         $query = Invoice::where(function($query) use($start, $end) {
             $query->whereHas('payment', function($query) use($start, $end) {
@@ -32,7 +39,7 @@ class InvoicesService extends BaseService
             $query->where('supplier_id', $supplier->id);
         }
         else {
-            $suppliers = array_merge($user->targetsByAction('supplier.orders'), $user->targetsByAction('supplier.movements'));
+            $suppliers = $user->targetsByAction('movements.admin,supplier.orders,supplier.movements');
             $query->whereIn('supplier_id', array_keys($suppliers));
         }
 
@@ -43,25 +50,34 @@ class InvoicesService extends BaseService
     public function show($id)
     {
         $ret = Invoice::findOrFail($id);
-        $this->ensureAuth(['supplier.invoices' => $ret->supplier, 'supplier.movements' => $ret->supplier]);
+        $user = $this->testAccess($ret->supplier);
         return $ret;
     }
 
-    private function setCommonAttributes($invoice, $request)
+    private function setCommonAttributes($invoice, $request, $user)
     {
-        $this->setIfSet($invoice, $request, 'supplier_id');
-        $this->setIfSet($invoice, $request, 'number');
-        $this->transformAndSetIfSet($invoice, $request, 'date', "decodeDate");
+        if (isset($request['supplier_id'])) {
+            $supplier = Supplier::tFind($request['supplier_id']);
+        }
+        else {
+            $supplier = $invoice->supplier;
+        }
+
+        if ($user->can('supplier.invoices', $supplier)) {
+            $invoice->supplier_id = $supplier->id;
+            $this->setIfSet($invoice, $request, 'number');
+            $this->transformAndSetIfSet($invoice, $request, 'date', "decodeDate");
+            $this->transformAndSetIfSet($invoice, $request, 'total', 'enforceNumber');
+            $this->transformAndSetIfSet($invoice, $request, 'total_vat', 'enforceNumber');
+        }
+
         $this->setIfSet($invoice, $request, 'notes');
-        $this->transformAndSetIfSet($invoice, $request, 'total', 'enforceNumber');
-        $this->transformAndSetIfSet($invoice, $request, 'total_vat', 'enforceNumber');
 
         if (isset($request['status'])) {
             $this->setIfSet($invoice, $request, 'status');
         }
 
         $invoice->save();
-
         $invoice->attachByRequest($request);
         return $invoice;
     }
@@ -78,15 +94,15 @@ class InvoicesService extends BaseService
 
         $invoice = new Invoice();
         $invoice->gas_id = $user->gas_id;
-        return $this->setCommonAttributes($invoice, $request);
+        return $this->setCommonAttributes($invoice, $request, $user);
     }
 
     public function update($id, array $request)
     {
         $invoice = Invoice::findOrFail($id);
-        $user = $this->ensureAuth(['supplier.invoices' => $invoice->supplier]);
+        $user = $this->testAccess($invoice->supplier);
         $invoice->gas_id = $user->gas_id;
-        return $this->setCommonAttributes($invoice, $request);
+        return $this->setCommonAttributes($invoice, $request, $user);
     }
 
     private function initGlobalSummeries($invoice)
@@ -100,16 +116,14 @@ class InvoicesService extends BaseService
 
         foreach($invoice->orders as $order) {
             foreach($order->products as $product) {
-                if (isset($global_summary->products[$product->id]) == false) {
-                    $global_summary->products[$product->id] = [
-                        'name' => $product->printableName(),
-                        'vat_rate' => $product->vat_rate ? $product->vat_rate->printableName() : '',
-                        'total' => 0,
-                        'total_vat' => 0,
-                        'delivered' => 0,
-                        'measure' => $product->measure
-                    ];
-                }
+                $global_summary->products[$product->id] = [
+                    'name' => $product->printableName(),
+                    'vat_rate' => $product->vat_rate ? $product->vat_rate->printableName() : '',
+                    'total' => 0,
+                    'total_vat' => 0,
+                    'delivered' => 0,
+                    'measure' => $product->measure
+                ];
             }
         }
 
@@ -159,6 +173,74 @@ class InvoicesService extends BaseService
 				break;
 		}
 	}
+
+    private function guessPeer($invoice, $mov_target_type, $user)
+    {
+        $peer = null;
+
+        if ($mov_target_type == Invoice::class) {
+            $peer = $invoice;
+        }
+        else if ($mov_target_type == Supplier::class) {
+            $peer = $invoice->supplier;
+        }
+        else if ($mov_target_type == Gas::class) {
+            $peer = $user->gas;
+        }
+        else {
+            \Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
+        }
+
+        return $peer;
+    }
+
+    private function movementAttach($type, $user, $invoice)
+    {
+        $metadata = movementTypes($type);
+        $target = $this->guessPeer($invoice, $metadata->target_type, $user);
+        $sender = $this->guessPeer($invoice, $metadata->sender_type, $user);
+        return [$sender, $target];
+    }
+
+    public function saveMovements($id, $request)
+    {
+        $invoice = $this->show($id);
+        $this->ensureAuth(['movements.admin' => 'gas', 'supplier.movements' => $invoice->supplier]);
+
+        $invoice->deleteMovements();
+
+        $master_movement = null;
+        $other_movements = [];
+
+        $movement_types = $request['type'] ?? [];
+        $movement_amounts = $request['amount'] ?? [];
+        $movement_methods = $request['method'] ?? [];
+        $movement_notes = $request['notes'] ?? [];
+
+        for($i = 0; $i < count($movement_types); $i++) {
+            $type = $movement_types[$i];
+
+            list($sender, $target) = $this->movementAttach($type, $user, $invoice);
+            if (is_null($sender) || is_null($target)) {
+                continue;
+            }
+
+            $amount = $movement_amounts[$i];
+            $mov = Movement::generate($type, $sender, $target, $amount);
+            $mov->notes = $movement_notes[$i];
+            $mov->method = $movement_methods[$i];
+            $mov->save();
+
+            if ($type == 'invoice-payment' && $master_movement == null) {
+                $master_movement = $mov;
+            }
+            else {
+                $other_movements[] = $mov->id;
+            }
+        }
+
+        $invoice->otherMovements()->sync($other_movements);
+    }
 
     public function destroy($id)
     {

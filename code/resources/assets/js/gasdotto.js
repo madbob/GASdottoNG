@@ -432,19 +432,6 @@ $(document).ready(function() {
 
     $('#preloader').hide();
 
-	/*
-		Quando viene cliccata una voce del menu primario, mostro nuovamente la
-		schermata di preloading per dare un feedback esplicito sul fatto che
-		l'applicazione sta facendo qualcosa
-	*/
-	$('#main-navbar .navbar-nav:nth(0) .nav-link').click(() => {
-		if (utils.isMobile()) {
-			$('.navbar-toggler').click();
-		}
-
-		$('#preloader').show();
-	});
-
     $.ajaxSetup({
         cache: false,
         headers: {

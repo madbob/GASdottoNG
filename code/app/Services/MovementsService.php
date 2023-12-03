@@ -18,6 +18,43 @@ use App\Supplier;
 
 class MovementsService extends BaseService
 {
+    private function filterBySupplier($supplier, $user, $query, $own)
+    {
+        $type = 'all';
+
+        if ($supplier) {
+            if ($own == false && $user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+                $this->ensureAuth(['supplier.invoices' => $supplier, 'supplier.movements' => $supplier]);
+                if ($user->can('supplier.movements', $supplier) == false) {
+                    $type = 'invoices';
+                }
+            }
+
+            return $supplier->queryMovements($query, $type);
+        }
+        else {
+            if ($own == false && $user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+                $this->ensureAuth(['supplier.invoices' => null, 'supplier.movements' => null]);
+
+                $query->where(function($subquery) use ($user) {
+                    $suppliers = $user->targetsByAction('supplier.invoices,supplier.movements');
+                    foreach ($suppliers as $supplier) {
+                        if ($user->can('supplier.movements', null) == false) {
+                            $type = 'invoices';
+                        }
+                        else {
+                            $type = 'all';
+                        }
+
+                        $subquery->orWhere(fn($q) => $supplier->queryMovements($q, $type));
+                    }
+                });
+            }
+
+            return $query;
+        }
+    }
+
     public function list($request)
     {
         /*
@@ -73,14 +110,6 @@ class MovementsService extends BaseService
             }
         }
 
-        if (isset($request['supplier_id']) && $request['supplier_id'] != '0') {
-            $supplier_id = $request['supplier_id'];
-            $generic_target = Supplier::withTrashed()->find($supplier_id);
-            if ($generic_target) {
-                $query = $generic_target->queryMovements($query);
-            }
-        }
-
         if (isset($request['currency_id']) && $request['currency_id'] != '0') {
             $query->where('currency_id', $request['currency_id']);
         }
@@ -100,15 +129,14 @@ class MovementsService extends BaseService
             }
         }
 
-        /*
-            Gli utenti devono poter accedere ai propri movimenti, ma non a tutti
-            gli altri. Se viene fatta una richiesta esplicita per l'utente
-            corrente la prendo sempre per buona, altrimenti ne controllo i
-            permessi prima di procedere oltre
-        */
-        if ($own_movements == false) {
-            $this->ensureAuth(['movements.admin' => 'gas', 'movements.view' => 'gas']);
+        if (isset($request['supplier_id']) && $request['supplier_id'] != '0') {
+            $supplier = Supplier::tFind($request['supplier_id']);
         }
+        else {
+            $supplier = null;
+        }
+
+        $query = $this->filterBySupplier($supplier, $currentuser, $query, $own_movements);
 
         if (isset($request['amountstart']) && !empty($request['amountstart']) && $request['amountstart'] != '0') {
             $query->where('amount', '>=', $request['amountstart']);

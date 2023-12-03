@@ -71,18 +71,23 @@ trait RoleableTrait
         }
     }
 
-    public function targetsByAction($action, $exclude_trashed = true)
+    public function targetsByAction($actions, $exclude_trashed = true)
     {
+        $actions = explode(',', $actions);
         $targets = [];
-        $class = classByRule($action);
 
-        $roles = $this->roles()->get()->filter(function($role) use ($action) {
-            return $role->enabledAction($action);
-        });
+        foreach($actions as $action) {
+            $action = trim($action);
+            $class = classByRule($action);
 
-        foreach ($roles as $role) {
-            foreach($role->applications(true, $exclude_trashed, $class) as $app) {
-                $targets[$app->id] = $app;
+            $roles = $this->roles()->get()->filter(function($role) use ($action) {
+                return $role->enabledAction($action);
+            });
+
+            foreach ($roles as $role) {
+                foreach($role->applications(true, $exclude_trashed, $class) as $app) {
+                    $targets[$app->id] = $app;
+                }
             }
         }
 

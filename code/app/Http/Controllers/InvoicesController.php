@@ -21,16 +21,9 @@ class InvoicesController extends BackedController
         $this->middleware('auth');
 
         $this->commonInit([
-            'reference_class' => 'App\\Invoice',
+            'reference_class' => Invoice::class,
             'service' => $service,
         ]);
-    }
-
-    private function testMovementsPermissions($user, $invoice)
-    {
-        if ($user->can('movements.admin', $user->gas) == false || $user->can('supplier.movements', $invoice->supplier) == false) {
-            throw new AuthException(403);
-        }
     }
 
     public function index(Request $request)
@@ -44,12 +37,21 @@ class InvoicesController extends BackedController
         ]);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $invoice = $this->service->show($id);
-        return view('invoice.edit', [
-            'invoice' => $invoice
-        ]);
+        $user = $request->user();
+
+        if ($user->can('supplier.invoices', $invoice->supplier)) {
+            return view('invoice.edit', [
+                'invoice' => $invoice
+            ]);
+        }
+        else {
+            return view('invoice.show', [
+                'invoice' => $invoice
+            ]);
+        }
     }
 
     public function products($id)
@@ -82,9 +84,7 @@ class InvoicesController extends BackedController
     public function getMovements(Request $request, $id)
     {
         $invoice = $this->service->show($id);
-
-        $user = $request->user();
-        $this->testMovementsPermissions($user, $invoice);
+        $user = $this->ensureAuth(['movements.admin' => 'gas', 'supplier.movements' => $invoice->supplier]);
 
         $invoice_grand_total = $invoice->total + $invoice->total_vat;
         $main = Movement::generate('invoice-payment', $user->gas, $invoice, $invoice_grand_total);
@@ -104,93 +104,12 @@ class InvoicesController extends BackedController
         ]);
     }
 
-    private function guessTarget($invoice, $mov_type, $user)
-    {
-        $target = null;
-
-        if ($mov_type->target_type == 'App\Invoice') {
-            $target = $invoice;
-        }
-        else if ($mov_type->target_type == 'App\Supplier') {
-            $target = $invoice->supplier;
-        }
-        else if ($mov_type->target_type == 'App\Gas') {
-            $target = $user->gas;
-        }
-        else {
-            \Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
-        }
-
-        return $target;
-    }
-
-    private function guessSender($invoice, $mov_type, $user)
-    {
-        $sender = null;
-
-        if ($mov_type->sender_type == 'App\Supplier') {
-            $sender = $invoice->supplier;
-        }
-        else if ($mov_type->sender_type == 'App\Gas') {
-            $sender = $user->gas;
-        }
-        else {
-            \Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
-        }
-
-        return $sender;
-    }
-
-    private function movementAttach($type, $user, $invoice)
-    {
-        $metadata = movementTypes($type);
-        $target = $this->guessTarget($invoice, $metadata, $user);
-        $sender = $this->guessSender($invoice, $metadata, $user);
-        return [$sender, $target];
-    }
-
     public function postMovements(Request $request, $id)
     {
-        DB::beginTransaction();
-
-        $invoice = $this->service->show($id);
-        $user = $request->user();
-        $this->testMovementsPermissions($user, $invoice);
-
-        $invoice->deleteMovements();
-
-        $master_movement = null;
-        $other_movements = [];
-
-        $movement_types = $request->input('type', []);
-        $movement_amounts = $request->input('amount', []);
-        $movement_methods = $request->input('method', []);
-        $movement_notes = $request->input('notes', []);
-
-        for($i = 0; $i < count($movement_types); $i++) {
-            $type = $movement_types[$i];
-
-            list($sender, $target) = $this->movementAttach($type, $user, $invoice);
-            if (is_null($sender) || is_null($target)) {
-                continue;
-            }
-
-            $amount = $movement_amounts[$i];
-            $mov = Movement::generate($type, $sender, $target, $amount);
-            $mov->notes = $movement_notes[$i];
-            $mov->method = $movement_methods[$i];
-            $mov->save();
-
-            if ($type == 'invoice-payment' && $master_movement == null) {
-                $master_movement = $mov;
-            }
-            else {
-                $other_movements[] = $mov->id;
-            }
-        }
-
-        $invoice->otherMovements()->sync($other_movements);
-        return $this->successResponse();
+        return $this->easyExecute(function() use ($id, $request) {
+	        $this->service->saveMovements($id, $request->all());
+            return $this->successResponse();
+		});
     }
 
     public function wiring(Request $request, $step, $id)
