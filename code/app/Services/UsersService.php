@@ -47,15 +47,11 @@ class UsersService extends BaseService
 
     public function show($id)
     {
-        $user = Auth::user();
-        if (is_null($user)) {
-            throw new AuthException(401);
-        }
-
         $searched = User::withTrashed()->findOrFail($id);
 
-        if ($searched->testUserAccess() == false)
+        if ($searched->testUserAccess() == false) {
             $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
+        }
 
         return $searched;
     }

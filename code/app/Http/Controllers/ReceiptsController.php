@@ -4,11 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use Auth;
-use DB;
 use PDF;
-use Log;
-use Mail;
 
 use App\Services\ReceiptsService;
 use App\Notifications\ReceiptForward;
@@ -21,7 +17,7 @@ class ReceiptsController extends BackedController
         $this->middleware('auth');
 
         $this->commonInit([
-            'reference_class' => 'App\\Receipt',
+            'reference_class' => Receipt::class,
 			'service' => $service,
         ]);
     }
@@ -36,11 +32,10 @@ class ReceiptsController extends BackedController
 		]);
 	}
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $receipt = $this->service->show($id);
-
-        $user = Auth::user();
+        $user = $request->user();
 
         if ($user->can('movements.admin', $user->gas)) {
             return view('receipt.edit', ['receipt' => $receipt]);
@@ -123,6 +118,20 @@ class ReceiptsController extends BackedController
         });
     }
 
+    private function send($elements): void
+    {
+        foreach($elements as $receipt) {
+            if ($receipt->mailed == false) {
+                try {
+                    $this->sendByMail($receipt);
+                }
+                catch(\Exception $e) {
+                    \Log::error('Errore in inoltro ricevuta: ' . $e->getMessage());
+                }
+            }
+        }
+    }
+
 	public function search(Request $request)
 	{
 		$start = decodeDate($request->input('startdate'));
@@ -134,18 +143,8 @@ class ReceiptsController extends BackedController
 
 		switch($format) {
 			case 'send':
-				foreach($elements as $receipt) {
-					if ($receipt->mailed == false) {
-						try {
-							$this->sendByMail($receipt);
-						}
-						catch(\Exception $e) {
-							\Log::error('Errore in inoltro ricevuta: ' . $e->getMessage());
-						}
-					}
-				}
-
-				$elements = $this->service->list($start, $end, $supplier_id);
+				$this->send($elements);
+                $elements = $this->service->list($start, $end, $supplier_id);
 
 				/*
 					Qui il break manca di proposito

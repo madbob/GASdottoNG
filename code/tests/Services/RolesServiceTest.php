@@ -81,13 +81,15 @@ class RolesServiceTest extends TestCase
         $this->nextRound();
 
         app()->make('RolesService')->attachUser($this->userWithNoPerms->id, $role->id, null);
-        $target = $this->userWithNoPerms->targetsByAction('supplier.view');
+        $user = app()->make('UsersService')->show($this->userWithNoPerms->id);
+        $target = $user->targetsByAction('supplier.view');
         $this->assertTrue(count($target) > 0);
 
         $this->nextRound();
 
         app()->make('RolesService')->detachUser($this->userWithNoPerms->id, $role->id, null);
-        $target = $this->userWithNoPerms->targetsByAction('supplier.view');
+        $user = app()->make('UsersService')->show($this->userWithNoPerms->id);
+        $target = $user->targetsByAction('supplier.view');
         $this->assertTrue(count($target) == 0);
     }
 

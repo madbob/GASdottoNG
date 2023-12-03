@@ -74,10 +74,22 @@ class Status
 	public static function invoices()
 	{
 		return [
-			'pending' => _i('In Attesa'),
-			'to_verify' => _i('Da Verificare'),
-			'verified' => _i('Verificata'),
-			'payed' => _i('Pagata'),
+			'pending' => (object) [
+				'label' => _i('In Attesa'),
+				'icon' => 'clock',
+			],
+			'to_verify' => (object) [
+				'label' => _i('Da Verificare'),
+				'icon' => 'pin-angle',
+			],
+			'verified' => (object) [
+				'label' => _i('Verificata'),
+				'icon' => 'search',
+			],
+			'payed' => (object) [
+				'label' => _i('Pagata'),
+				'icon' => 'check',
+			],
 		];
 	}
 }

@@ -7,6 +7,10 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
+use App\User;
+use App\Supplier;
+use App\Order;
+use App\Movement;
 
 class InvoicesServiceTest extends TestCase
 {
@@ -16,13 +20,15 @@ class InvoicesServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->supplier = \App\Supplier::factory()->create();
+        $this->supplier = Supplier::factory()->create();
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'movements.admin');
-        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userWithSupplierPerm = $this->createRoleAndUser($this->gas, 'supplier.movements', $this->supplier);
+        $this->userWithInvoicesPerm = $this->createRoleAndUser($this->gas, 'supplier.invoices', $this->supplier);
+        $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
     }
 
     /*
-        Salvataggio Fattura con permessi sbagliati
+        Salvataggio Fattura con permessi sbagliati (utente)
     */
     public function testFailsToStore()
     {
@@ -37,15 +43,47 @@ class InvoicesServiceTest extends TestCase
         ]);
     }
 
+    /*
+        Salvataggio Fattura con permessi sbagliati (amministratore)
+    */
+    public function testFailsToStoreAdmin()
+    {
+        $this->expectException(AuthException::class);
+        $this->actingAs($this->userWithAdminPerm);
+
+        app()->make('InvoicesService')->store([
+            'number' => 'ABC123',
+            'supplier_id' => $this->supplier->id,
+            'date' => printableDate(date('Y-m-d')),
+        ]);
+    }
+
+    /*
+        Salvataggio Fattura con permessi sbagliati (fornitore sbagliato)
+    */
+    public function testFailsToStoreSupplier()
+    {
+        $this->expectException(AuthException::class);
+        $other_supplier = Supplier::factory()->create();
+        $this->actingAs($this->userWithInvoicesPerm);
+
+        $invoice = app()->make('InvoicesService')->store(array(
+            'number' => 'ABC123',
+            'supplier_id' => $other_supplier->id,
+            'date' => printableDate(date('Y-m-d')),
+        ));
+
+        return app()->make('InvoicesService')->show($invoice->id);
+    }
+
     private function createInvoice()
     {
-        $this->actingAs($this->userWithAdminPerm);
-        $today = date('Y-m-d');
+        $this->actingAs($this->userWithInvoicesPerm);
 
         $invoice = app()->make('InvoicesService')->store(array(
             'number' => 'ABC123',
             'supplier_id' => $this->supplier->id,
-            'date' => printableDate($today),
+            'date' => printableDate(date('Y-m-d')),
         ));
 
         return app()->make('InvoicesService')->show($invoice->id);
@@ -53,14 +91,15 @@ class InvoicesServiceTest extends TestCase
 
 	private function wireOrders($invoice)
 	{
-		$order1 = \App\Order::factory()->create([
+		$order1 = Order::factory()->create([
             'supplier_id' => $this->supplier->id,
         ]);
 
-		$order2 = \App\Order::factory()->create([
+		$order2 = Order::factory()->create([
             'supplier_id' => $this->supplier->id,
         ]);
 
+        $this->actingAs($this->userWithInvoicesPerm);
 		app()->make('InvoicesService')->wire($invoice->id, 'review', [
 			'order_id' => [$order1->id, $order2->id]
 		]);
@@ -100,7 +139,7 @@ class InvoicesServiceTest extends TestCase
 
         $past = date('Y-m-d', strtotime('-1 months'));
         $future = date('Y-m-d', strtotime('+10 years'));
-        app()->make('InvoicesService')->list($past, $future, 0);
+        app()->make('InvoicesService')->list($past, $future, '0');
     }
 
     /*
@@ -109,23 +148,23 @@ class InvoicesServiceTest extends TestCase
     public function testList()
     {
         $this->createInvoice();
-
-        $this->nextRound();
-
         $past = date('Y-m-d', strtotime('-1 months'));
         $future = date('Y-m-d', strtotime('+10 years'));
-        $invoices = app()->make('InvoicesService')->list($past, $future, '0');
-        $this->assertEquals(1, $invoices->count());
 
-        $this->nextRound();
+        foreach([$this->userWithInvoicesPerm, $this->userWithSupplierPerm, $this->userWithAdminPerm] as $index => $user) {
+            $this->actingAs($user);
 
-        $invoices = app()->make('InvoicesService')->list($past, $future, '42');
-        $this->assertEquals(0, $invoices->count());
+            $this->nextRound();
+            $user = app()->make('UsersService')->show($user->id);
 
-        $this->nextRound();
+            $invoices = app()->make('InvoicesService')->list($past, $future, '0');
+            $this->assertEquals(1, $invoices->count());
 
-        $invoices = app()->make('InvoicesService')->list($past, $future, $this->supplier->id);
-        $this->assertEquals(1, $invoices->count());
+            $this->nextRound();
+
+            $invoices = app()->make('InvoicesService')->list($past, $future, $this->supplier->id);
+            $this->assertEquals(1, $invoices->count());
+        }
     }
 
     /*
@@ -143,7 +182,7 @@ class InvoicesServiceTest extends TestCase
 
         $this->nextRound();
 
-        $this->actingAs($this->userWithAdminPerm);
+        $this->actingAs($this->userWithInvoicesPerm);
 
 		app()->make('InvoicesService')->wire($invoice->id, 'review', [
 			'order_id' => [$order1->id, $order2->id]
@@ -156,7 +195,7 @@ class InvoicesServiceTest extends TestCase
 	}
 
     /*
-        Elenco Fatture pagate
+        Pagamento fattura
     */
     public function testPayAndList()
     {
@@ -173,7 +212,7 @@ class InvoicesServiceTest extends TestCase
 
         $future = date('Y-m-d', strtotime('-3 days'));
         $invoices = app()->make('InvoicesService')->list($past, $future, '0');
-        $this->assertEquals(1, $invoices->count());
+        $this->assertEquals(0, $invoices->count());
 
         $this->nextRound();
 
@@ -181,18 +220,51 @@ class InvoicesServiceTest extends TestCase
 
 		$this->nextRound();
 
-        $movement = \App\Movement::generate('invoice-payment', $this->userWithAdminPerm->gas, $invoice, 10);
-        $movement->save();
+        $this->actingAs($this->userWithSupplierPerm);
 
-        $invoices = app()->make('InvoicesService')->list($past, $future, '0');
-        $this->assertEquals(0, $invoices->count());
+        app()->make('InvoicesService')->saveMovements($invoice->id, [
+            'type' => ['invoice-payment'],
+            'amount' => [10],
+            'method' => ['bank'],
+            'notes' => [''],
+        ]);
 
-		$this->nextRound();
+        $this->nextRound();
+
+        $movements = Movement::where('type', 'invoice-payment')->get();
+        $this->assertEquals(1, $movements->count());
+        $movement = $movements->first();
+        $this->assertEquals(10, $movement->amount);
 
 		$invoice = app()->make('InvoicesService')->show($invoice->id);
+        $this->assertEquals($invoice->payment->id, $movement->id);
+        $this->assertEquals($invoice->status, 'payed');
+
 		foreach($invoice->orders as $order) {
 			$this->assertEquals($movement->id, $order->payment_id);
 		}
+    }
+
+    /*
+        Pagamento fattura con permessi sbagliati
+    */
+    public function testWrongPayment()
+    {
+        $this->expectException(AuthException::class);
+
+        $invoice = $this->createInvoice();
+        $this->nextRound();
+		$this->wireOrders($invoice);
+		$this->nextRound();
+
+        $this->actingAs($this->userWithInvoicesPerm);
+
+        app()->make('InvoicesService')->saveMovements($invoice->id, [
+            'type' => ['invoice-payment'],
+            'amount' => [10],
+            'method' => ['bank'],
+            'notes' => [''],
+        ]);
     }
 
     /*
@@ -213,7 +285,7 @@ class InvoicesServiceTest extends TestCase
     public function testFailsToUpdateBecauseNoUserWithID()
     {
         $this->expectException(ModelNotFoundException::class);
-        $this->actingAs($this->userWithAdminPerm);
+        $this->actingAs($this->userWithSupplierPerm);
         app()->make('InvoicesService')->update('id', array());
     }
 
@@ -250,9 +322,12 @@ class InvoicesServiceTest extends TestCase
     */
     public function testFailsToDestroy()
     {
+        $invoice = $this->createInvoice();
+        $this->nextRound();
+
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('InvoicesService')->destroy('random');
+        app()->make('InvoicesService')->destroy($invoice->id);
     }
 
     /*
@@ -270,7 +345,7 @@ class InvoicesServiceTest extends TestCase
 
 		$this->nextRound();
 
-        $movement = \App\Movement::generate('invoice-payment', $this->userWithAdminPerm->gas, $invoice, 10);
+        $movement = Movement::generate('invoice-payment', $this->userWithSupplierPerm->gas, $invoice, 10);
         $movement->save();
 
 		$this->nextRound();

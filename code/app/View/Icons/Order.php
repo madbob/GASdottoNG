@@ -18,16 +18,7 @@ class Order extends IconsMap
             ]
         ];
 
-        foreach(Status::orders() as $identifier => $meta) {
-            $ret[$meta->icon] = (object) [
-                'test' => function ($obj) use ($identifier) {
-                    return $obj->status == $identifier;
-                },
-                'text' => $meta->label,
-                'group' => 'status',
-            ];
-        }
-
+        $ret = self::unrollStatuses($ret, Status::orders());
         return $ret;
     }
 }

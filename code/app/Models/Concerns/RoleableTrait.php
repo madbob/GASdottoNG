@@ -80,7 +80,7 @@ trait RoleableTrait
             $action = trim($action);
             $class = classByRule($action);
 
-            $roles = $this->roles()->get()->filter(function($role) use ($action) {
+            $roles = $this->roles->filter(function($role) use ($action) {
                 return $role->enabledAction($action);
             });
 

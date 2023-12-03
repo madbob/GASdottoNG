@@ -20,27 +20,24 @@ class InvoicesService extends BaseService
 
     public function list($start, $end, $supplier_id)
     {
-        if ($supplier_id) {
-            $supplier = Supplier::tFind($supplier_id);
-        }
-        else {
-            $supplier = null;
-        }
-
+        $supplier = Supplier::withTrashed()->find($supplier_id);
         $user = $this->testAccess($supplier);
 
-        $query = Invoice::where(function($query) use($start, $end) {
-            $query->whereHas('payment', function($query) use($start, $end) {
-                $query->where('date', '>=', $start)->where('date', '<=', $end);
-            })->orWhereDoesntHave('payment');
-        });
+        $query = Invoice::whereBetween('date', [$start, $end]);
 
         if ($supplier) {
             $query->where('supplier_id', $supplier->id);
         }
         else {
-            $suppliers = $user->targetsByAction('movements.admin,supplier.orders,supplier.movements');
-            $query->whereIn('supplier_id', array_keys($suppliers));
+            if ($user->can('movements.admin', $user->gas)) {
+                $suppliers = Supplier::withTrashed()->pluck('id');
+            }
+            else {
+                $suppliers = $user->targetsByAction('supplier.invoices,supplier.movements', false);
+                $suppliers = array_keys($suppliers);
+            }
+
+            $query->whereIn('supplier_id', $suppliers);
         }
 
         $elements = $query->get();
@@ -107,7 +104,7 @@ class InvoicesService extends BaseService
 
     private function initGlobalSummeries($invoice)
     {
-        $global_summary = (object)[
+        $global_summary = (object) [
             'products' => [],
             'total' => 0,
             'total_taxable' => 0,
@@ -205,7 +202,7 @@ class InvoicesService extends BaseService
     public function saveMovements($id, $request)
     {
         $invoice = $this->show($id);
-        $this->ensureAuth(['movements.admin' => 'gas', 'supplier.movements' => $invoice->supplier]);
+        $user = $this->ensureAuth(['movements.admin' => 'gas', 'supplier.movements' => $invoice->supplier]);
 
         $invoice->deleteMovements();
 
@@ -238,6 +235,11 @@ class InvoicesService extends BaseService
                 $other_movements[] = $mov->id;
             }
         }
+
+        /*
+            Il parametro $invoice->payment_id viene settato direttamente nella
+            callback di elaborazione del tipo movimento InvoicePayment
+        */
 
         $invoice->otherMovements()->sync($other_movements);
     }
