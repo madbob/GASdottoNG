@@ -38,9 +38,14 @@ function read_instance_config_file($path)
 
     foreach($config as $c) {
         $c = trim($c);
-        if (!empty($c)) {
-            list($name, $value) = explode('=', $c);
-            $params[$name] = $value;
+        if (empty($c) == false) {
+            if (strpos($c, '=') === false) {
+                \Log::error('Configurazione ambigua in file ' . $path . ' - ' . $c);
+            }
+            else {
+                list($name, $value) = explode('=', $c);
+                $params[$name] = $value;
+            }
         }
     }
 
