@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\AuthException;
+use App\Exceptions\IllegalArgumentException;
 use App\Gas;
 use App\Supplier;
 use App\Invoice;
