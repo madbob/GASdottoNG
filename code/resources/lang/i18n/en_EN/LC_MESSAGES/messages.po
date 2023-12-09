@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2023-12-01 17:00+0100\n"
-"PO-Revision-Date: 2023-12-06 20:05+0000\n"
+"PO-Revision-Date: 2023-12-10 21:05+0000\n"
 "Last-Translator: Pixel-Tux <luis.pardus@gmail.com>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/gasdottong/"
 "translations/en/>\n"
@@ -2678,6 +2678,10 @@ msgid ""
 "proporzionalmente, ma le quantità effettivamente consegnate non "
 "corrispondono a quelle prenotate e possono esserci delle discrepanze."
 msgstr ""
+"Order %s has modifiers whose value must be distributed among reservations. "
+"During delivery, this value was assigned proportionally, but the actual "
+"quantities delivered do not match the booked quantities and there may be "
+"some discrepancies."
 
 #: ../storage/framework/messages/47999a2b279d1f78a7b0b95b2036c8c7.php:34
 #, php-format
@@ -2707,6 +2711,11 @@ msgid ""
 "inalterati, ed eventuali aggiustamenti saranno consolidati nel saldo "
 "corrente di ciascun utente."
 msgstr ""
+"Recalculate the modifiers and redistribute them based on actual deliveries. "
+"Payments made with user credit will be adjusted, and the corresponding "
+"balances will be updated. Payments made with other methods (cash, bank "
+"transfer, etc.) will remain the same, and any adjustments will be added to "
+"the current balance of each user."
 
 #: ../storage/framework/messages/486fafac6ab6f08a14ca8856a0c08119.php:9
 #: ../storage/framework/messages/66c39d0532625e10c546742aa7997920.php:9
@@ -2803,6 +2812,9 @@ msgid ""
 "esistenti. Si consiglia di creare un ruolo dedicato, con permessi limitati "
 "alle sole prenotazioni"
 msgstr ""
+"This role will be automatically assigned to all friends of existing users. "
+"It is suggested to create a dedicated role with permissions limited to "
+"reservations only"
 
 #: ../storage/framework/messages/4d131d49bc2115a503c8ccfdfd5c8685.php:63
 msgid "Ruolo Amministratore GAS Secondario"
@@ -3285,6 +3297,9 @@ msgid ""
 "GASdotto, utile per comunicazioni speciali verso i membri del GAS o come "
 "messaggio di benvenuto"
 msgstr ""
+"A customisation message for the GASdotto authentication page, offering a "
+"platform for special communications to GAS members or functioning as a warm "
+"welcome message"
 
 #: ../storage/framework/messages/6349b34e92ea5e915d178e7dae0bc1c1.php:78
 msgid "Lingua"
@@ -3305,6 +3320,8 @@ msgid ""
 "Se abilitato, il login sarà inibito a tutti gli utenti che non hanno il "
 "permesso Accesso consentito anche in manutenzione"
 msgstr ""
+"When enabled, users without the permission \"Access allowed even in "
+"maintenance\" will be unable to log in"
 
 #: ../storage/framework/messages/635107401cca95b95bce9d0fd342004b.php:13
 msgid "Per procedere devi settare una nuova password per il tuo profilo."
