@@ -1,59 +1,44 @@
 <?php
 
+/*
+    Questo serve da collettore unico per gli attributi di formattazione dei
+    prodotti e delle varianti (le quali comunque prelevano i propri attributi
+    dal relativo prodotto)
+*/
+
 namespace App\Formatters;
 
 trait GenericProductFormat
 {
-        protected static function genericColumns()
-        {
-            return [
-                'name' => (object) [
-                    'name' => _i('Nome'),
-                    'checked' => true,
-                ],
-                'supplier_code' => (object) [
-                    'name' => _i('Codice Fornitore'),
-                ],
-                'measure' => (object) [
-                    'name' => _i('Unità di Misura'),
-                ],
-                'category' => (object) [
-                    'name' => _i('Categoria'),
-                ],
-                'price' => (object) [
-                    'name' => _i('Prezzo Unitario'),
-                    'checked' => true,
-                ],
-                'active' => (object) [
-                    'name' => _i('Ordinabile'),
-                ],
-                'vat_rate' => (object) [
-                    'name' => _i('Aliquota IVA'),
-                ],
-                'portion_quantity' => (object) [
-                    'name' => _i('Pezzatura'),
-                ],
-                'variable' => (object) [
-                    'name' => _i('Variabile'),
-                ],
-                'package_size' => (object) [
-                    'name' => _i('Dimensione Confezione'),
-                ],
-                'weight' => (object) [
-                    'name' => _i('Peso'),
-                ],
-                'multiple' => (object) [
-                    'name' => _i('Multiplo'),
-                ],
-                'min_quantity' => (object) [
-                    'name' => _i('Minimo'),
-                ],
-                'max_quantity' => (object) [
-                    'name' => _i('Massimo Consigliato'),
-                ],
-                'max_available' => (object) [
-                    'name' => _i('Disponibile'),
-                ],
+    protected static function genericColumns()
+    {
+        $attributes = [
+            'name' => _i('Nome'),
+            'supplier_code' => _i('Codice Fornitore'),
+            'measure' => _i('Unità di Misura'),
+            'category' => _i('Categoria'),
+            'price' => _i('Prezzo Unitario'),
+            'active' => _i('Ordinabile'),
+            'vat_rate' => _i('Aliquota IVA'),
+            'portion_quantity' => _i('Pezzatura'),
+            'variable' => _i('Variabile'),
+            'package_size' => _i('Dimensione Confezione'),
+            'weight' => _i('Peso'),
+            'multiple' => _i('Multiplo'),
+            'min_quantity' => _i('Minimo'),
+            'max_quantity' => _i('Massimo Consigliato'),
+            'max_available' => _i('Disponibile'),
+        ];
+
+        $ret = [];
+        $checked_by_default = ['name', 'price'];
+        foreach($attributes as $attr => $label) {
+            $ret[$attr] = (object) [
+                'name' => $label,
+                'checked' => in_array($attr, $checked_by_default),
             ];
         }
+
+        return $ret;
+    }
 }

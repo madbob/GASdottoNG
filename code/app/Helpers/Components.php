@@ -115,8 +115,6 @@ function formatObjectsToComponent($component, $params)
 
 function formatPriceToComponent($component, $params)
 {
-    $value = printablePrice($params['value']);
-
     if (isset($params['currency']) == false) {
         $currency = defaultCurrency()->symbol;
     }

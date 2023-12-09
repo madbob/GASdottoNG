@@ -103,6 +103,8 @@ class Gas extends Model
                     return (!empty($obj->extra_invoicing['taxcode']) || !empty($obj->extra_invoicing['vat']));
                 case 'public_registrations':
                     return $obj->public_registrations['enabled'];
+                case 'restrict_booking_to_credit':
+                    return $obj->restrict_booking_to_credit['enabled'];
                 case 'auto_aggregates':
                     return Aggregate::has('orders', '>=', aggregatesConvenienceLimit())->count() > 3;
                 case 'send_order_reminder':

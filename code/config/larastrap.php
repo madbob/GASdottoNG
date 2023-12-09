@@ -66,7 +66,11 @@ return [
 
         'tabpane' => [
             'reviewCallback' => 'formatTabLabel',
-        ]
+        ],
+
+        'collapse' => [
+            'classes' => ['mb-2'],
+        ],
     ],
 
     'customs' => [

@@ -34,56 +34,17 @@ class FixDatabase extends Command
         Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
 
         /*
-            Per fixare gli URL dei listini autogenerati ed erroneamente
-            sovrascritti
-        */
-        foreach(Supplier::all() as $supplier) {
-            $attachments = $supplier->attachments;
-
-            $pdf = $attachments->firstWhere('name', 'Listino PDF (autogenerato)');
-            if ($pdf) {
-                $pdf->url = route('suppliers.catalogue', ['id' => $supplier->id, 'format' => 'pdf']);
-                $pdf->save();
-            }
-
-            $csv = $attachments->firstWhere('name', 'Listino CSV (autogenerato)');
-            if ($csv) {
-                $csv->url = route('suppliers.catalogue', ['id' => $supplier->id, 'format' => 'csv']);
-                $csv->save();
-            }
-        }
-
-        /*
-            Per non attivare il tour di onboarding per gli utenti esistenti
-        */
-        User::query()->update(['tour' => true]);
-
-        /*
-            Per impostare un default sull'approvazione manuale delle
-            registrazioni pubbliche degli utenti
+            Per revisionare le configurazioni relative ai limiti di credito per
+            permettere le prenotazioni
         */
         foreach(Gas::all() as $gas) {
-            $registrations_info = $gas->public_registrations;
-            if (isset($registrations_info['manual']) == false) {
-                $registrations_info['manual'] = false;
-                $gas->setConfig('public_registrations', $registrations_info);
-            }
-        }
-
-        /*
-            Per azzerare le vecchie configurazioni Satispay non compatibili con
-            la nuova implementazione
-        */
-        foreach(Gas::all() as $gas) {
-            $satispay_info = $gas->satispay;
-            if (isset($satispay_info['public']) == false) {
-                $satispay_info = (object) [
-                    'public' => '',
-                    'secret' => '',
-                    'key' => '',
+            $restriction_info = $gas->getConfig('restrict_booking_to_credit');
+            if (is_array($restriction_info) == false) {
+                $restriction_info = (object) [
+                    'enabled' => $restriction_info,
+                    'limit' => 0,
                 ];
-
-                $gas->setConfig('satispay', $satispay_info);
+                $gas->setConfig('restrict_booking_to_credit', $restriction_info);
             }
         }
 

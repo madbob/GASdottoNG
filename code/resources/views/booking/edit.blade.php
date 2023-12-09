@@ -40,8 +40,8 @@ $form_buttons = [
     <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
     <input type="hidden" name="action" value="booked">
 
-    @if($user->gas->restrict_booking_to_credit)
-        <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() }}" class="skip-on-submit">
+    @if($user->gas->hasFeature('restrict_booking_to_credit'))
+        <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() - $user->gas->restrict_booking_to_credit['limit'] }}" class="skip-on-submit">
     @endif
 
     <div class="d-flex flowbox mb-3">
@@ -214,7 +214,7 @@ $form_buttons = [
                             'skip_cells' => 3
                         ])
 
-                        @if($user->gas->restrict_booking_to_credit)
+                        @if($user->gas->hasFeature('restrict_booking_to_credit'))
                             <tr class="do-not-sort">
                                 <td><label class="static-label">{{ _i('Credito Disponibile') }}</label></td>
                                 <td>&nbsp;</td>

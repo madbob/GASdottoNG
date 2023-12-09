@@ -68,15 +68,7 @@ class VariantsController extends BackedController
     private function transformFromSimplified($request, $product)
     {
         $original_combinations = $request->input('combination', []);
-
-        $ids = array_map(function($item) {
-            if (Str::startsWith($item, 'new_')) {
-                return '';
-            }
-            else {
-                return $item;
-            }
-        }, $original_combinations);
+        $ids = array_map(fn($item) => Str::startsWith($item, 'new_') ? '' : $item, $original_combinations);
 
         $values = $request->input('value', []);
 
@@ -87,11 +79,7 @@ class VariantsController extends BackedController
             'value' => $values,
         ]);
 
-        $combinations = [];
-
-        foreach($values as $value) {
-            $combinations[] = $variant->values()->where('value', $value)->first()->id;
-        }
+        $combinations = array_map(fn($v) => $variant->values()->where('value', $v)->first()->id, $values);
 
         /*
             Ai nuovi valori dinamicamente immessi nella tabella aggiungo un
