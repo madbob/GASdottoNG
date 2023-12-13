@@ -12,7 +12,10 @@ class UserObserver
 {
     private function checkUsername($user)
     {
-        $test = User::withTrashed()->where('id', '!=', $user->id)->where('username', $user->username)->first();
+        /*
+            Lo username deve essere univoco per tutti gli utenti di tutti i GAS
+        */
+        $test = User::withTrashed()->withoutGlobalScopes()->where('id', '!=', $user->id)->where('username', $user->username)->first();
         if ($test != null) {
             throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
         }

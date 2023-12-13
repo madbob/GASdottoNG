@@ -175,7 +175,7 @@ class ModifiersServiceTest extends TestCase
         $mod = null;
 
         $thresholds = [10, 5, 0];
-        $threshold_prices = [0.9, 0.92, 0.94];
+        $threshold_prices = [1, 2, 3];
 
         foreach ($modifiers as $mod) {
             if ($mod->id == 'sconto') {
@@ -253,6 +253,10 @@ class ModifiersServiceTest extends TestCase
 
         $this->nextRound();
 
+        /*
+            Da qui agisco in consegna, dunque con le quantità a peso
+        */
+
         $this->actingAs($this->userWithShippingPerms);
 
         $data = [
@@ -280,7 +284,21 @@ class ModifiersServiceTest extends TestCase
             $product->id => 4,
         ];
         app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, true);
+
+        $this->nextRound();
+
         $booking = $booking->fresh();
+        $found = false;
+
+        foreach($booking->products as $prod) {
+            if ($prod->product_id == $product->id) {
+                $found = true;
+                $this->assertEquals(4, $prod->delivered);
+            }
+        }
+
+        $this->assertTrue($found);
+
         $mods = $booking->applyModifiers(null, false);
         $this->assertEquals(\App\ModifiedValue::count(), 1);
         $this->assertEquals($mods->count(), 1);

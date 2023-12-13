@@ -401,16 +401,16 @@ class BookingsService extends BaseService
     */
     private function checkAvailableCredit($user)
     {
-        if ($user->gas->restrict_booking_to_credit) {
+        if ($user->gas->hasFeature('restrict_booking_to_credit')) {
             /*
                 Questa funzione viene invocata dopo aver salvato la
                 prenotazione, nel contesto di una transazione, dunque il
                 bilancio attivo dell'utente già prevede la prenotazione stessa e
-                pertanto, per essere valido, deve essere superiore a 0
+                pertanto, per essere valido, deve essere superiore al limite
             */
             $current_active_balance = $user->activeBalance();
 
-            if ($current_active_balance < 0) {
+            if ($current_active_balance < $user->gas->restrict_booking_to_credit['limit']) {
                 DB::rollback();
                 throw new IllegalArgumentException(_i('Credito non sufficiente'), 1);
             }

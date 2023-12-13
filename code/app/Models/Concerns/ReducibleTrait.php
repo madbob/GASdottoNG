@@ -242,7 +242,7 @@ trait ReducibleTrait
             }
         }
 
-        if (($faster || $target_priority <= 1) && ($booking && $order)) {
+        if (($faster && $target_priority <= 1) && ($booking && $order)) {
             $aggregate_data = $aggregate->reduxData([
                 'orders' => [$order],
                 'bookings' => [$booking]

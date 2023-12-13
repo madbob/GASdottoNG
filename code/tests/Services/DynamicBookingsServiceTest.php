@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
 
 use App\Exceptions\AuthException;
+use App\Booking;
 
 class DynamicBookingsServiceTest extends TestCase
 {
@@ -65,7 +66,7 @@ class DynamicBookingsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $booking = \App\Booking::where('order_id', $this->order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $booking = Booking::where('order_id', $this->order->id)->where('user_id', $this->userWithBasePerms->id)->first();
         $this->assertEquals($booking->getValue('effective', true), $total);
         $this->assertEquals($booking->products()->count(), $booked_count);
     }
@@ -96,7 +97,7 @@ class DynamicBookingsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $booking = \App\Booking::where('order_id', $this->order->id)->where('user_id', $this->userWithBasePerms->id)->first();
+        $booking = Booking::where('order_id', $this->order->id)->where('user_id', $this->userWithBasePerms->id)->first();
         $this->assertEquals($booking->getValue('effective', true), $total_master + $total_friend);
 
         $this->nextRound();
@@ -318,7 +319,7 @@ class DynamicBookingsServiceTest extends TestCase
     /*
         Lettura dinamica delle prenotazioni, prodotto con modificatori
     */
-    public function testModifiers()
+    public function testModifiersOnProduct()
     {
         $product = $this->order->products->random();
         $this->attachDiscount($product);
@@ -349,7 +350,7 @@ class DynamicBookingsServiceTest extends TestCase
     /*
         Lettura dinamica delle prenotazioni, prodotto con varianti e modificatori
     */
-    public function testModifiersAndVariants()
+    public function testModifiersOnProductAndVariants()
     {
         $this->actingAs($this->userReferrer);
 
@@ -389,6 +390,105 @@ class DynamicBookingsServiceTest extends TestCase
                 $this->assertEquals($p->quantity, 2);
                 $this->assertEquals($p->total, $product->price * 2);
             }
+        }
+    }
+
+    /*
+        Lettura dinamica delle prenotazioni, modificatore su ordine
+    */
+    public function testModifiersOnOrder()
+    {
+        $this->actingAs($this->userReferrer);
+
+        /*
+            Creo modificatore su ordine
+        */
+        $mod = null;
+        $modifiers = $this->order->applicableModificationTypes();
+        foreach ($modifiers as $mod) {
+            if ($mod->id == 'sconto') {
+                $mod = $this->order->modifiers()->where('modifier_type_id', $mod->id)->first();
+                app()->make('ModifiersService')->update($mod->id, [
+                    'value' => 'percentage',
+                    'arithmetic' => 'sub',
+                    'scale' => 'major',
+                    'applies_type' => 'price',
+                    'applies_target' => 'order',
+                    'distribution_type' => 'price',
+                    'threshold' => [1000],
+                    'amount' => [10],
+                ]);
+
+                break;
+            }
+        }
+
+        $this->assertNotNull($mod);
+        $product = $this->order->products->random();
+
+        /*
+            Effettuo prenotazione senza attivare modificatori
+        */
+
+        $this->nextRound();
+        $this->actingAs($this->userWithBasePerms);
+
+        $data = [
+            'action' => 'booked',
+            $product->id => 2,
+        ];
+
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+
+        $this->assertEquals(count($ret->bookings), 1);
+
+        foreach($ret->bookings as $b) {
+            $this->assertTrue($b->total < 1000);
+            $this->assertEquals(count($b->products), 1);
+            $this->assertEquals($b->total, $product->price * 2);
+            $this->assertEquals(count($b->modifiers), 0);
+        }
+
+        /*
+            Creo una prenotazione che faccia attivare i modificatori
+        */
+
+        $this->nextRound();
+        $this->actingAs($this->userReferrer);
+
+        $data = ['action' => 'booked'];
+        $total = 0;
+
+        foreach($this->order->products as $p) {
+            $data[$p->id] = 100;
+            $total += $p->price * 100;
+        }
+
+        $this->assertTrue($total > 100);
+        $this->updateAndFetch($data, $this->order, $this->userReferrer, false);
+        $booking = Booking::where('order_id', $this->order->id)->where('user_id', $this->userReferrer->id)->first();
+        $this->assertNotNull($booking);
+
+        /*
+            Aggiorno prenotazione con modificatori attivi
+        */
+
+        $this->nextRound();
+        $this->actingAs($this->userWithBasePerms);
+
+        $data = [
+            'action' => 'booked',
+            $product->id => 2,
+        ];
+
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+
+        $this->assertEquals(count($ret->bookings), 1);
+
+        foreach($ret->bookings as $b) {
+            $this->assertEquals(count($b->products), 1);
+            $this->assertEquals($b->total, $product->price * 2 - ($product->price * 0.10 * 2));
+            $this->assertEquals(count($b->modifiers), 1);
         }
     }
 }

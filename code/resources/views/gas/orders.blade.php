@@ -4,7 +4,11 @@
             <input type="hidden" name="group" value="orders">
 
             <div class="col">
-                <x-larastrap::check name="restrict_booking_to_credit" :label="_i('Permetti solo prenotazioni entro il credito disponibile')" />
+                <x-larastrap::check name="enable_restrict_booking_to_credit" :label="_i('Permetti solo prenotazioni entro il credito disponibile')" triggers_collapse="enable_restrict_booking_to_credit" :value="$gas->hasFeature('restrict_booking_to_credit')" />
+                <x-larastrap::collapse id="enable_restrict_booking_to_credit">
+                    <x-larastrap::number name="restrict_booking_to_credit->limit" :label="_i('Limite di Credito')" :value="$gas->restrict_booking_to_credit['limit']" :pophelp="_i('Gli utenti non possono prenotare nuovi prodotti se il loro credito diventa inferiore a questa soglia')" :textappend="defaultCurrency()->symbol" />
+                </x-larastrap::collapse>
+
                 <x-larastrap::check name="unmanaged_shipping" :label="_i('Permetti consegne manuali senza quantità')" :pophelp="_i('Abilitando questa opzione, sarà possibile attivare per ogni fornitore la possibilità di effettuare le consegne specificando direttamente il valore totale della consegna anziché le quantità di ogni prodotto consegnato. Attenzione: l\'uso di questa funzione non permetterà di ottenere delle statistiche precise sui prodotti consegnati, né una ripartizione equa dei modificatori basati sulle quantità e sui pesi dei prodotti consegnati.')" />
 
                 <?php

@@ -36,12 +36,12 @@ trait BookerTrait
 
     public function canBook()
     {
-        if ($this->gas->restrict_booking_to_credit) {
+        if ($this->gas->hasFeature('restrict_booking_to_credit')) {
             if ($this->isFriend()) {
                 return $this->parent->canBook();
             }
             else {
-                return $this->activeBalance() > 0;
+                return $this->activeBalance() > $this->gas->restrict_booking_to_credit['limit'];
             }
         }
         else {

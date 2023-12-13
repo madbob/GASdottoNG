@@ -433,9 +433,15 @@ class BookingsServiceTest extends TestCase
         return $user;
     }
 
+    /*
+        Prenotazione con limiti di credito abilitati
+    */
     public function testInsufficientCredit()
     {
-        $this->gas->setConfig('restrict_booking_to_credit', true);
+        $this->gas->setConfig('restrict_booking_to_credit', (object) [
+            'enabled' => true,
+            'limit' => 0,
+        ]);
 
         $this->actingAs($this->userWithBasePerms);
 
@@ -465,6 +471,26 @@ class BookingsServiceTest extends TestCase
         catch(IllegalArgumentException $e) {
             // good boy
         }
+    }
+
+    /*
+        Prenotazione con limiti di credito diversi da 0 abilitati
+    */
+    public function testInsufficientCreditWithLimit()
+    {
+        $this->gas->setConfig('restrict_booking_to_credit', (object) [
+            'enabled' => true,
+            'limit' => -20,
+        ]);
+
+        $this->actingAs($this->userWithBasePerms);
+
+        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        $this->userWithBasePerms = $this->enforceBalance($this->userWithBasePerms, $total - 10);
+
+        $data['action'] = 'booked';
+        $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
+        $this->assertNotNull($booking);
     }
 
     /*
