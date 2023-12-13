@@ -108,7 +108,7 @@ class ModifierEngine
             OrdersController::postFixModifiers(), previa conferma dell'utente,
             quando l'ordine è davvero in stato "consegnato"
         */
-        if ($booking->status != 'pending') {
+        if (in_array($booking->status, ['saved', 'shipped'])) {
             switch($modifier->applies_type) {
                 case 'none':
                 case 'quantity':

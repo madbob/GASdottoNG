@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
-use DB;
-use Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
@@ -33,6 +31,7 @@ class MailController extends Controller
                         $db->delete("DELETE FROM contacts WHERE type = 'email' and value = '$email'");
                         $message = _i('Rimosso indirizzo email ' . $email);
                         $db->insert("INSERT INTO inner_logs (level, type, message, created_at, updated_at) VALUES ('error', 'mailsuppression', '$message', '$now', '$now')");
+                        Log::info($message);
                     }
                 }
             }
