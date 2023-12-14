@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2023-12-01 17:00+0100\n"
-"PO-Revision-Date: 2023-12-10 21:05+0000\n"
+"PO-Revision-Date: 2023-12-15 11:08+0000\n"
 "Last-Translator: Pixel-Tux <luis.pardus@gmail.com>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/gasdottong/"
 "translations/en/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.3-dev\n"
+"X-Generator: Weblate 5.3\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -3474,13 +3474,15 @@ msgstr "Behavior"
 
 #: ../storage/framework/messages/6c7691720c6b0043531433705c703b80.php:32
 msgid "Assegna le quantità come salvate ma non chiudere le consegne"
-msgstr ""
+msgstr "Apply the amounts as saved, but keep the deliveries open"
 
 #: ../storage/framework/messages/6c7691720c6b0043531433705c703b80.php:32
 msgid ""
 "Marca le prenotazioni come consegnate e genera i movimenti contabili di "
 "pagamento"
 msgstr ""
+"Flag the bookings as completed and generate the financial records for "
+"payments"
 
 #: ../storage/framework/messages/6cd20dffc46bf28d96fbeec6087c3352.php:37
 msgid "GRUPPO DI ACQUISTO SOLIDALE"
@@ -3631,7 +3633,7 @@ msgstr "Select"
 #: ../storage/framework/messages/75bc57c659a312516d46dd1d718dc73f.php:321
 #: Product.php:321
 msgid "Per selezionare il prodotto e compiere operazioni di gruppo"
-msgstr ""
+msgstr "To select the product and perform group actions"
 
 #: ../storage/framework/messages/75bc57c659a312516d46dd1d718dc73f.php:326
 #: Product.php:326
@@ -3659,6 +3661,7 @@ msgid ""
 "Quantità massima di prodotto che complessivamente può essere prenotata in un "
 "ordine"
 msgstr ""
+"The maximum amount of product that can be collectively booked in one order"
 
 #: ../storage/framework/messages/75bc57c659a312516d46dd1d718dc73f.php:351
 #: Product.php:351
@@ -3666,6 +3669,8 @@ msgid ""
 "Indica se il prodotto potrà essere ordinato o meno all'interno dei nuovi "
 "ordini per il fornitore"
 msgstr ""
+"Specifies if the product is available for ordering within the upcoming "
+"supplier orders"
 
 #: ../storage/framework/messages/76d1fd9f090a1b4df1303301395031f2.php:6
 #, php-format
