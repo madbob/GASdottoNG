@@ -9,6 +9,11 @@ $existing = false;
 $master_summary = $aggregate->reduxData();
 $currency_symbol = defaultCurrency()->symbol;
 
+/*
+    In fase di consegna, aggrego sempre tutte le quantità
+*/
+app()->make('AggregationSwitch')->setEnforced(true);
+
 ?>
 
 <div class="row">
