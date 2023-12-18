@@ -2,9 +2,10 @@
 
 namespace App\Singletons;
 
-use App\ModifiedValue;
+use Illuminate\Support\Facades\Log;
 
-use Log;
+use App\ModifiedValue;
+use App\Product;
 
 class ModifierEngine
 {
@@ -95,21 +96,52 @@ class ModifierEngine
         return null;
     }
 
-    private function handlingAttributes($booking, $modifier)
+    private function handlingAttributes($booking, $modifier, $attribute)
     {
-        /*
-            Fintantoché l'ordine non è marcato come "consegnato" uso le quantità
-            prenotate come riferimento per i calcoli (sulle soglie o per la
-            distribuzione dei costi sulle prenotazioni).
-            Se poi, alla fine, le quantità consegnate non corrispondono con
-            quelle prenotate, e dunque i calcoli devono essere revisionati per
-            ridistribuire in modo corretto il tutto, allora uso come riferimento
-            le quantità realmente consegnate: tale ricalcolo viene invocato da
-            OrdersController::postFixModifiers(), previa conferma dell'utente,
-            quando l'ordine è davvero in stato "consegnato"
-        */
-        if (in_array($booking->status, ['saved', 'shipped'])) {
-            switch($modifier->applies_type) {
+		/*
+			Se l'ordine è chiuso (ma non consegnato e archiviato) attingo dai
+			valori relativi, che includono sia il consegnato che il prenotato ma
+			non ancora consegnato. Questo si applica in particolare in fase di
+			consegna
+		*/
+		if ($modifier->applies_target == 'order' || $booking->order->status == 'closed') {
+			switch($modifier->$attribute) {
+                case 'quantity':
+                    $attribute = 'relative_quantity';
+                    break;
+				case 'none':
+                case 'price':
+                    $attribute = 'relative_price';
+                    break;
+                case 'weight':
+                    $attribute = 'relative_weight';
+                    break;
+                default:
+                    $attribute = '';
+                    break;
+            }
+
+			$mod_attribute = 'relative_price';
+		}
+
+		/*
+			Se sono qui, è perché sono in fase di prenotazione dunque mi baso
+			sui valori del prenotato
+		*/
+        else if ($booking->status == 'pending') {
+			$attribute = $modifier->$attribute;
+            if ($attribute == 'none') {
+                $attribute = 'price';
+            }
+
+            $mod_attribute = 'price';
+		}
+
+		/*
+			In tutti gli altri casi, opero sui valori del consegnato
+		*/
+		else {
+            switch($modifier->$attribute) {
                 case 'none':
                 case 'quantity':
                     $attribute = 'delivered';
@@ -126,14 +158,6 @@ class ModifierEngine
             }
 
             $mod_attribute = 'price_delivered';
-        }
-        else {
-            $attribute = $modifier->applies_type;
-            if ($attribute == 'none') {
-                $attribute = 'price';
-            }
-
-            $mod_attribute = 'price';
         }
 
         return [$attribute, $mod_attribute];
@@ -221,7 +245,7 @@ class ModifierEngine
 
         $product_target_id = 0;
 
-        if ($modifier->target_type == 'App\Product') {
+        if ($modifier->target_type == Product::class) {
             $product_target_id = $modifier->target_id;
 
             switch($modifier->applies_target) {
@@ -276,7 +300,7 @@ class ModifierEngine
                 return null;
         }
 
-        list($attribute, $mod_attribute) = $this->handlingAttributes($booking, $modifier);
+        list($attribute, $mod_attribute) = $this->handlingAttributes($booking, $modifier, 'applies_type');
         $check_value = $check_target->$attribute ?? 0;
         $target_definition = null;
         $altered_amount = null;
@@ -295,14 +319,9 @@ class ModifierEngine
                     singola prenotazione il suo valore relativo e proporzionale.
                 */
                 if ($modifier->applies_target == 'order') {
-                    $distribution_attribute = $modifier->distribution_type;
-                    if ($distribution_attribute == 'none') {
-                        $distribution_attribute = 'price';
-                    }
+					list($distribution_attribute, $useless) = $this->handlingAttributes($booking, $modifier, 'distribution_type');
 
-                    $distribution_attribute = 'relative_' . $distribution_attribute;
-
-                    if ($modifier->target_type == 'App\Product') {
+                    if ($modifier->target_type == Product::class) {
                         $booking_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
                         $reference = $mod_target->products[$product_target_id]->$distribution_attribute;
                     }

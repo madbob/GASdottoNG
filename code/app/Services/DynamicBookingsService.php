@@ -109,6 +109,7 @@ class DynamicBookingsService extends BookingsService
             }, []),
         ];
 
+        $booking->status = $delivering ? 'shipped' : 'pending';
         $modified = $booking->applyModifiers(null, false);
         foreach($modified as $mod) {
             if (!isset($ret->modifiers[$mod->modifier_id])) {
