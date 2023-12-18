@@ -15,7 +15,7 @@ use App\InnerLog;
 
 class MailController extends Controller
 {
-    private function saveInstances($email, $message)
+    private function saveInstances($event, $email, $message)
     {
         $instances = get_instances();
         $now = date('Y-m-d G:i:s');
@@ -26,10 +26,11 @@ class MailController extends Controller
                 $db_emails = $db->select("SELECT COUNT(*) as count FROM contacts WHERE type = 'email' and value = '$email'");
                 if ($db_emails[0]->count != 0) {
                     $db->insert("INSERT INTO inner_logs (level, type, message, created_at, updated_at) VALUES ('error', 'mail', '$message', '$now', '$now')");
-                    $db_failures = $db->select("SELECT COUNT(*) as count FROM inner_logs WHERE type = 'email' and message like '%$email%'");
-                    if ($db_failures[0]->count >= 3) {
-                        $db->delete("DELETE FROM contacts WHERE type = 'email' and value = '$email'");
-                        $message = _i('Rimosso indirizzo email %s', [$email]);
+                    $db_failures = $db->select("SELECT COUNT(*) as count FROM inner_logs WHERE type = 'mail' and message = '$message'");
+
+                    if ($db_failures[0]->count >= 3 || $event == 'blocked') {
+                        $db->delete("UPDATE contacts SET type = 'skip_email' WHERE type = 'email' and value = '$email'");
+                        $message = _i('Rimosso indirizzo email ' . $email);
                         $db->insert("INSERT INTO inner_logs (level, type, message, created_at, updated_at) VALUES ('error', 'mailsuppression', '$message', '$now', '$now')");
                         Log::info($message);
                     }
@@ -41,13 +42,13 @@ class MailController extends Controller
         }
     }
 
-    private function registerBounce($email, $message)
+    private function registerBounce($event, $email, $message)
     {
         $message = sprintf(_i('Impossibile inoltrare mail a %s: %s', [$email, $message]));
         $message = addslashes($message);
 
         if (global_multi_installation()) {
-            $this->saveInstances($email, $message);
+            $this->saveInstances($event, $email, $message);
         }
         else {
             InnerLog::error('mail', $message);
@@ -73,11 +74,13 @@ class MailController extends Controller
 	        }
 	        else if ($message['Type'] === 'Notification') {
 	            $data = json_decode($message['Message']);
-	            if ($data->notificationType == 'Bounce') {
+                $event = $data->notificationType;
+
+	            if ($event == 'Bounce') {
 					try {
 						$email = $data->bounce->bouncedRecipients[0]->emailAddress;
 			            $message = $data->bounce->bouncedRecipients[0]->diagnosticCode ?? '???';
-		                $this->registerBounce($email, $message);
+		                $this->registerBounce($event, $email, $message);
 					}
 					catch(\Exception $e) {
 						Log::error('Notifica SNS illeggibile: ' . $e->getMessage() . ' - ' . print_r($data, true));
@@ -107,18 +110,7 @@ class MailController extends Controller
 					try {
 						$email = $request->input('email');
 			            $message = $request->input('reason', '???');
-		                $this->registerBounce($email, $message);
-
-                        /*
-                            Se l'indirizzo mail è stato bloccato, è inutile
-                            inoltrare altri messaggi: qui ne cambio il tipo per
-                            evitare di generare altre mail a vuoto
-                        */
-                        if ($event == 'blocked') {
-                            Contact::where('type', 'email')->where('value', $email)->update([
-                                'type' => 'skip_email',
-                            ]);
-                        }
+		                $this->registerBounce($event, $email, $message);
 					}
 					catch(\Exception $e) {
 						Log::error('Notifica SendInBlue illeggibile: ' . $e->getMessage() . ' - ' . print_r($request->all(), true));
