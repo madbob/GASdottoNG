@@ -1,6 +1,6 @@
 <?php $summary = $master_summary->orders[$order->id] ?>
 
-<x-larastrap::mform :obj="$order" classes="order-editor" method="PUT" :action="route('orders.update', $order->id)" :nodelete="$order->isActive() == false" :other_buttons="[['label' => _i('Esporta'), 'classes' => ['float-start', 'link-button', 'me-2'], 'attributes' => ['data-link' => $order->exportableURL()]]]">
+<x-larastrap::mform :obj="$order" classes="order-editor" method="PUT" :action="route('orders.update', $order->id)" :nodelete="$order->bookings()->count() > 0" :other_buttons="[['label' => _i('Esporta'), 'classes' => ['float-start', 'link-button', 'me-2'], 'attributes' => ['data-link' => $order->exportableURL()]]]">
     <input type="hidden" name="order_id" value="{{ $order->id }}" />
     <input type="hidden" name="post-saved-function" value="afterAggregateChange" class="skip-on-submit">
 
