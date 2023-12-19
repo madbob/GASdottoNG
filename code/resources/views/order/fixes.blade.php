@@ -96,17 +96,17 @@
                                 <td>
                                     <label>{{ _i('Multi-GAS: %s', [$other_gas->name]) }}</label>
                                 </td>
-                                <td>
+                                <td class="text-end">
                                     <label>
                                         <?php
 
                                         App::make('GlobalScopeHub')->setGas($other_gas->id);
                                         $summary = $order->reduxData();
-                                        $other_gas_quantity = $summary->products[$product->id]->quantity;
+                                        $other_gas_quantity = $summary->products[$product->id]->quantity ?? 0;
 
                                         ?>
 
-                                        {{ $other_gas_quantity }}
+                                        {{ sprintf('%s %s', $other_gas_quantity, $measure) }}
                                     </label>
                                 </td>
                             </tr>
