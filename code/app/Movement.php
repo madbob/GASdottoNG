@@ -213,12 +213,12 @@ class Movement extends Model
 
     public function detachFromSender($field = 'payment_id')
     {
-        $this->wiring('sender', $field, 0);
+        $this->wiring('sender', $field, null);
     }
 
     public function detachFromTarget($field = 'payment_id')
     {
-        $this->wiring('target', $field, 0);
+        $this->wiring('target', $field, null);
     }
 
     public static function generate($type, $sender, $target, $amount)

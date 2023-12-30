@@ -202,7 +202,7 @@ class UsersServiceTest extends TestCase
     */
     public function testStoreFriend()
     {
-        $initial_count = $users->count();
+        $initial_count = User::query()->creditable()->count();
 
         $this->actingAs($this->userWithViewPerm);
 
