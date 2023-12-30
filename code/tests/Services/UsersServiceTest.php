@@ -5,10 +5,13 @@ namespace Tests\Services;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 use Tests\TestCase;
 use App\Exceptions\IllegalArgumentException;
 use App\Exceptions\AuthException;
+use App\User;
+use App\Supplier;
 
 class UsersServiceTest extends TestCase
 {
@@ -25,18 +28,18 @@ class UsersServiceTest extends TestCase
         $this->actingAs($this->userAdmin);
         $role = \App\Role::factory()->create(['actions' => 'users.self,users.subusers']);
         app()->make('RolesService')->setMasterRole($this->gas, 'user', $role->id);
-        $this->userWithBasePerm = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userWithBasePerm = User::factory()->create(['gas_id' => $this->gas->id]);
         $this->userWithBasePerm->addRole($role->id, $this->gas);
 
-        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
 
-		$this->supplier = \App\Supplier::factory()->create();
+		$this->supplier = Supplier::factory()->create();
 		$this->userWithShippingPerms = $this->createRoleAndUser($this->gas, 'supplier.shippings', $this->supplier);
 
-        \App\User::factory()->count(3)->create(['gas_id' => $this->gas->id]);
+        User::factory()->count(3)->create(['gas_id' => $this->gas->id]);
 
         $otherGas = \App\Gas::factory()->create();
-        \App\User::factory()->count(3)->create(['gas_id' => $otherGas->id]);
+        User::factory()->count(3)->create(['gas_id' => $otherGas->id]);
     }
 
     /*
@@ -86,7 +89,7 @@ class UsersServiceTest extends TestCase
         ]);
 
         $this->actingAs($this->userWithViewPerm);
-        $users = app()->make('UsersService')->list();
+        $users = app()->make('UsersService')->list('', true);
         $this->assertEquals($initial_count - 1, $users->count());
     }
 
@@ -97,17 +100,17 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithViewPerm);
 
-        $user1 = \App\User::factory()->create([
+        $user1 = User::factory()->create([
             'gas_id' => $this->gas->id,
             'firstname' => 'pippo'
         ]);
 
-        $user2 = \App\User::factory()->create([
+        $user2 = User::factory()->create([
             'gas_id' => $this->gas->id,
             'lastname' => 'super pippo'
         ]);
 
-        \App\User::factory()->create([
+        User::factory()->create([
             'gas_id' => $this->gas->id,
             'firstname' => 'luigi'
         ]);
@@ -168,7 +171,7 @@ class UsersServiceTest extends TestCase
         ]);
 
         $this->assertEquals('test user', $newUser->username);
-        $this->assertTrue(\Hash::check('password', $newUser->password));
+        $this->assertTrue(Hash::check('password', $newUser->password));
         $this->assertEquals('rossi mario', $newUser->printableName());
         $this->assertEquals(0, $newUser->pending_balance);
     }
@@ -199,6 +202,8 @@ class UsersServiceTest extends TestCase
     */
     public function testStoreFriend()
     {
+        $initial_count = User::query()->creditable()->count();
+
         $this->actingAs($this->userWithViewPerm);
 
         $newUser = app()->make('UsersService')->storeFriend([
@@ -211,13 +216,16 @@ class UsersServiceTest extends TestCase
         $this->nextRound();
 
         $parent = app()->make('UsersService')->show($this->userWithViewPerm->id);
+        $newUser = app()->make('UsersService')->show($newUser->id);
 
         $this->assertEquals('test friend user', $newUser->username);
         $this->assertEquals(1, $parent->friends->count());
         $this->assertEquals($parent->id, $newUser->parent_id);
-        $this->assertTrue(\Hash::check('password', $newUser->password));
+        $this->assertTrue(Hash::check('password', $newUser->password));
         $this->assertEquals('rossi mario', $newUser->printableName());
         $this->assertEquals(0, $newUser->pending_balance);
+
+        $this->assertEquals($initial_count, User::query()->creditable()->count());
     }
 
     /*
@@ -300,7 +308,7 @@ class UsersServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $user = \App\User::factory()->create([
+        $user = User::factory()->create([
             'gas_id' => $this->gas->id
         ]);
 
@@ -321,9 +329,9 @@ class UsersServiceTest extends TestCase
         $this->expectException(IllegalArgumentException::class);
 
         $this->actingAs($this->userWithAdminPerm);
-        $sample = \App\User::inRandomOrder()->first();
+        $sample = User::inRandomOrder()->first();
 
-        $user = \App\User::factory()->create([
+        $user = User::factory()->create([
             'gas_id' => $this->gas->id
         ]);
 
@@ -340,9 +348,9 @@ class UsersServiceTest extends TestCase
         $this->expectException(IllegalArgumentException::class);
 
         $this->actingAs($this->userWithAdminPerm);
-        $sample = \App\User::where('gas_id', $this->gas->id)->where('card_number', '!=', '')->whereNotNull('card_number')->inRandomOrder()->first();
+        $sample = User::where('gas_id', $this->gas->id)->where('card_number', '!=', '')->whereNotNull('card_number')->inRandomOrder()->first();
 
-        $user = \App\User::factory()->create([
+        $user = User::factory()->create([
             'gas_id' => $this->gas->id
         ]);
 
@@ -494,7 +502,7 @@ class UsersServiceTest extends TestCase
 
         $movement = new \App\Movement();
         $movement->type = 'annual-fee';
-        $movement->sender_type = 'App\User';
+        $movement->sender_type = User::class;
         $movement->sender_id = $this->userWithNoPerms->id;
         $movement->target_type = 'App\Gas';
         $movement->target_id = $this->gas->id;

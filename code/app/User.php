@@ -81,11 +81,6 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Supplier');
     }
 
-    public function allnotifications(): BelongsToMany
-    {
-        return $this->belongsToMany('App\Notification')->orderBy('start_date', 'desc');
-    }
-
     public function shippingplace(): BelongsTo
     {
         return $this->belongsTo('App\Delivery', 'preferred_delivery_id');
