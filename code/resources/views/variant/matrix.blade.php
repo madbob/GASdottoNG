@@ -1,5 +1,15 @@
 <x-larastrap::modal :title="_i('Varianti')">
-    <?php $combos = $product->sortedVariantCombos ?>
+    <?php
+
+    /*
+        Qui non usare $product->sortedVariantCombos perché ritorna solo le combo
+        attualmente attive (mentre qui le voglio ovviamente tutte)
+    */
+    $combos = $product->variant_combos->sortBy(function($combo, $key) {
+        return $combo->values->pluck('value')->join(' ');
+    }, SORT_NATURAL);
+
+    ?>
 
     <x-larastrap::form classes="inner-form" method="POST" :action="route('variants.updatematrix', $product->id)">
         <input type="hidden" name="close-modal" value="1">
