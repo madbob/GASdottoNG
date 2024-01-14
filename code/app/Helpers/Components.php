@@ -138,7 +138,7 @@ function formatPriceToComponent($component, $params)
 
 function formatDecimalToComponent($component, $params)
 {
-    $decimals = $params['decimals'];
+    $decimals = $params['attributes']['decimals'];
     $params['attributes']['data-trim-digits'] = $decimals;
     $params['value'] = sprintf('%.0' . $decimals . 'f', $params['value']);
     return $params;
