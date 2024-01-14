@@ -118,7 +118,9 @@ return [
         'decimal' => [
             'extends' => 'text',
             'params' => [
-                'decimals' => 2,
+                'attributes' => [
+                    'decimals' => 2,
+                ],
                 'classes' => ['number', 'trim-ddigits'],
                 'reviewCallback' => 'formatDecimalToComponent',
             ]
