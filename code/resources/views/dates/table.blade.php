@@ -22,13 +22,12 @@
                             'label' => _i('ID'),
                             'field' => 'id',
                             'type' => 'hidden',
-                            'width' => 0
                         ],
                         [
                             'label' => _i('Fornitore'),
                             'field' => 'target_id',
                             'type' => 'selectobj',
-                            'width' => 2,
+                            'width' => 15,
                             'extra' => [
                                 'options' => $suppliers
                             ]
@@ -37,7 +36,7 @@
                             'label' => _i('Data'),
                             'field' => 'date',
                             'type' => 'datepicker',
-                            'width' => 2,
+                            'width' => 20,
                             'extra' => [
                                 'defaults_now' => true
                             ]
@@ -46,19 +45,19 @@
                             'label' => _i('Ricorrenza'),
                             'field' => 'recurring',
                             'type' => 'periodic',
-                            'width' => 3,
+                            'width' => 30,
                         ],
                         [
                             'label' => _i('Descrizione'),
                             'field' => 'description',
                             'type' => 'text',
-                            'width' => 2,
+                            'width' => 20,
                         ],
                         [
                             'label' => _i('Tipo'),
                             'field' => 'type',
                             'type' => 'select',
-                            'width' => 2,
+                            'width' => 10,
                             'extra' => [
                                 'options' => App\Date::types()
                             ]
