@@ -167,7 +167,7 @@ foreach($obj->products as $product) {
     ];
 
     if (empty($product->picture) == false) {
-        $p['attachments'] = [
+        $p->attachments = [
             (object) [
                 'name' => 'Immagine',
                 'contents' => base64_encode(file_get_contents(gas_storage_path($product->picture))),
