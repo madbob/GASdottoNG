@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'sendinblue'),
+    'default' => env('MAIL_MAILER', 'scaleway'),
 
     /*
     |--------------------------------------------------------------------------
@@ -52,6 +52,12 @@ return [
 
         'sendinblue' => [
             'transport' => 'sendinblue',
+        ],
+
+        'scaleway' => [
+            'transport' => 'scaleway',
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
         ],
 
         'mailgun' => [
