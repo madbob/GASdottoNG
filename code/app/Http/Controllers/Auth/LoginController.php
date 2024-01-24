@@ -54,6 +54,9 @@ class LoginController extends Controller
                 }
             }
         }
+        else {
+            \Log::debug('Credenziali non valide, utente ' . $user->username);
+        }
     }
 
     public function login(Request $request)

@@ -209,7 +209,7 @@ class Order extends Printer
         foreach($bookings as $booking) {
             $row = UserFormatter::format($booking->user, $fields->user_columns);
 			$subrow = $this->formatBookingInTable($order, $booking, $status, $all_products);
-			$row += $subrow;
+			$row = array_merge($row, $subrow);
 
             $price = $booking->getValue($get_total, true);
             $total_price += $price;
