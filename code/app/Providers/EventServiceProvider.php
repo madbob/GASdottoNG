@@ -33,6 +33,9 @@ use App\Config;
 class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
+        'Illuminate\Auth\Events\Failed' => [
+            'App\Listeners\LogFailedLogin',
+        ],
         'App\Events\SluggableCreating' => [
             'App\Listeners\SlugModel',
         ],

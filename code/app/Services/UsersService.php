@@ -70,6 +70,7 @@ class UsersService extends BaseService
     private function updatePassword($user, $request)
     {
         $user->password = Hash::make($request['password']);
+        \Log::debug('Cambio password utente ' . $user->username);
 
         if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true') {
             $user->enforce_password_change = true;
@@ -148,7 +149,8 @@ class UsersService extends BaseService
                 if (isset($request['password']) && !empty($request['password'])) {
                     $user = $this->show($id);
 
-                    $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
+                    $this->transformAndSetIfSet($user, $request, 'password', function ($password) use ($user) {
+                        \Log::debug('Cambio password utente ' . $user->username);
                         return Hash::make($password);
                     });
 
@@ -238,7 +240,8 @@ class UsersService extends BaseService
         }
 
         if (isset($request['password']) && !empty($request['password'])) {
-            $this->transformAndSetIfSet($user, $request, 'password', function ($password) {
+            $this->transformAndSetIfSet($user, $request, 'password', function ($password) use ($user) {
+                \Log::debug('Cambio password utente ' . $user->username);
                 return Hash::make($password);
             });
         }

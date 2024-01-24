@@ -9,11 +9,6 @@ use Log;
 
 class AttachToGas
 {
-    public function __construct()
-    {
-        //
-    }
-
     public function handle(AttachableToGas $event)
     {
         $user = Auth::user();

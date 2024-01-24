@@ -8,11 +8,6 @@ use Illuminate\Queue\InteractsWithQueue;
 
 class AfterNotification
 {
-    public function __construct()
-    {
-        //
-    }
-
     public function handle(NotificationSent $event)
     {
         if (hasTrait($event->notification, 'App\Notifications\TemporaryFiles')) {
