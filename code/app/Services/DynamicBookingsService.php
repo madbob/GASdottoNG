@@ -191,7 +191,12 @@ class DynamicBookingsService extends BookingsService
                 DB::rollback();
 
                 if ($i == 3) {
-                    throw $e;
+                    \Log::warning('Errore in lettura dinamici della prenotazione: ' . $e->getMessage());
+                    return [
+                        'target' => '',
+                        'status' => 'error',
+                        'message' => $e->getMessage(),
+                    ];
                 }
             }
         }

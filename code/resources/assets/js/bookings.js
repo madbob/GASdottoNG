@@ -508,6 +508,11 @@ class Bookings
     		data: data,
     		dataType: 'JSON',
     		success: (data) => {
+                if (data.hasOwnProperty('status') && data.status == 'error') {
+                    utils.displayServerError(null, data);
+                    return;
+                }
+
     			if (Object.entries(data.bookings).length == 0) {
     				$('.booking-product-price span', form).text(utils.priceRound(0));
     				$('.booking-modifier, .booking-total', container).textVal(utils.priceRound(0));
@@ -548,7 +553,10 @@ class Bookings
     			}
 
                 this.dynamicBookingRequest = null;
-    		}
+    		},
+            error: function(data) {
+                utils.displayServerError(null, data.responseJSON);
+            }
     	});
     }
 }

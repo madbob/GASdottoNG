@@ -18,6 +18,13 @@ use App\Parameters\Parameter;
 
 abstract class Constraint extends Parameter
 {
+    /*
+        Sovrascrivere questa funzione e farle tornare true se si vuole che il
+        controllo venga applicato anche in sede di consegna.
+        Alcune validazioni sono deliberatamente ignorate in fase di consegna, in
+        quanto si assume maggiore libertà discrezionale a chi distribuisce la
+        merce
+    */
     public function mandatoryContraint()
     {
         return false;
