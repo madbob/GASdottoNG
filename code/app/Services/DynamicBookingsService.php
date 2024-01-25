@@ -192,7 +192,7 @@ class DynamicBookingsService extends BookingsService
 
                 if ($i == 3) {
                     \Log::warning('Errore in lettura dinamici della prenotazione: ' . $e->getMessage());
-                    return [
+                    return (object) [
                         'target' => '',
                         'status' => 'error',
                         'message' => $e->getMessage(),

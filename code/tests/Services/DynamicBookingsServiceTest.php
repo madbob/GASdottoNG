@@ -133,9 +133,9 @@ class DynamicBookingsServiceTest extends TestCase
     */
     public function testFailsToRead()
     {
-        $this->expectException(AuthException::class);
         $this->actingAs($this->userWithBasePerms);
-        app()->make('DynamicBookingsService')->dynamicModifiers(['action' => 'booked'], $this->order->aggregate, $this->userWithShippingPerms);
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers(['action' => 'booked'], $this->order->aggregate, $this->userWithShippingPerms);
+        $this->assertEquals('error', $ret->status);
     }
 
     /*
