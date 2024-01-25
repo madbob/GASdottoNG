@@ -8,11 +8,6 @@ use App;
 
 class HarvestLogs
 {
-    public function __construct()
-    {
-        //
-    }
-
     public function handle(MessageLogged $event)
     {
         $harvester = App::make('LogHarvester');

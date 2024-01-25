@@ -6,11 +6,6 @@ use App\Events\SluggableCreating;
 
 class SlugModel
 {
-    public function __construct()
-    {
-        //
-    }
-
     private function testUnique($class, $id)
     {
         $index = 1;

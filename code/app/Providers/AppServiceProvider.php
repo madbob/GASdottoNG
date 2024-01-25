@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Model;
 
 use Symfony\Component\Mailer\Bridge\Sendinblue\Transport\SendinblueTransportFactory;
+use Symfony\Component\Mailer\Bridge\Scaleway\Transport\ScalewayTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
 
 use App\Category;
@@ -20,10 +21,19 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         // Model::preventLazyLoading();
 
-		if (env('MAIL_MAILER') == 'sendinblue') {
+        $mailer = env('MAIL_MAILER');
+
+		if ($mailer == 'sendinblue') {
 			Mail::extend('sendinblue', function () {
 	            return (new SendinblueTransportFactory)->create(
 	                new Dsn('sendinblue+api', 'default', config('services.sendinblue.key'))
+	            );
+	        });
+		}
+        else if ($mailer == 'scaleway') {
+			Mail::extend('scaleway', function () {
+	            return (new ScalewayTransportFactory)->create(
+	                new Dsn('scaleway+api', 'default', config('mail.mailers.scaleway.username'), config('mail.mailers.scaleway.password'))
 	            );
 	        });
 		}

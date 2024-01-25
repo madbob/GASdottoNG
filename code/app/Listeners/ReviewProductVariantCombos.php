@@ -7,11 +7,6 @@ use App\VariantCombo;
 
 class ReviewProductVariantCombos
 {
-    public function __construct()
-    {
-        //
-    }
-
     public function handle(VariantChanged $event)
     {
         $product = $event->variant->product;

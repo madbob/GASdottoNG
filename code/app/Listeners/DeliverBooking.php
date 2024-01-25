@@ -6,11 +6,6 @@ use App\Events\BookingDelivered;
 
 class DeliverBooking
 {
-    public function __construct()
-    {
-        //
-    }
-
     private function testShipped($event)
     {
         $booking = $event->booking;

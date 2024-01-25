@@ -27,6 +27,7 @@
         "spatie/db-dumper": "^3.0",
         "symfony/http-client": "^6.2",
         "symfony/psr-http-message-bridge": "^2.1",
+        "symfony/scaleway-mailer": "^7.0",
         "symfony/sendinblue-mailer": "^6.2",
         "zetacomponents/archive": "dev-master"
     },
