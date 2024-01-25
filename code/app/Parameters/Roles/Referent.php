@@ -13,7 +13,7 @@ class Referent extends Role
     {
         $type->name = _i('Referente');
         $type->system = true;
-		$type->actions = 'supplier.modify,supplier.orders,supplier.shippings,supplier.movements';
+		$type->actions = 'supplier.modify,supplier.orders,supplier.shippings,supplier.movements,supplier.invoices';
 		$type->parent_id = $this->getID('admin');
         return $type;
     }
