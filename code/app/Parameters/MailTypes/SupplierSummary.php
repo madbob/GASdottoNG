@@ -21,6 +21,6 @@ class SupplierSummary extends MailType
     }
 
     public function enabled($gas) {
-        return $gas->auto_supplier_order_summary;
+        return $gas->suppliers()->where('notify_on_close_enabled', '!=', 'none')->count() != 0;
     }
 }

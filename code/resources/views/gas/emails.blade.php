@@ -44,15 +44,6 @@
                                     <x-larastrap::check name="auto_referent_order_summary" squeeze />
                                 </td>
                             </tr>
-                            <tr>
-                                <th>{{ _i('Fornitori') }}</th>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>
-                                    <x-larastrap::check name="auto_supplier_order_summary" squeeze />
-                                    <x-larastrap::pophelp :text="_i('Ai fornitori viene inviato solo il Riassunto Prodotti, senza dettagli sulle persone che hanno prenotato')" />
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>

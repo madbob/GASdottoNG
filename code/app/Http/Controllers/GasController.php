@@ -119,7 +119,6 @@ class GasController extends Controller
             'send_order_reminder',
             'auto_user_order_summary',
             'auto_referent_order_summary',
-            'auto_supplier_order_summary',
         ]);
 
         foreach(systemParameters('MailTypes') as $identifier => $metadata) {

@@ -2,8 +2,6 @@
 
 namespace App\Jobs;
 
-use Log;
-
 use App\Notifications\ClosedOrdersNotification;
 use App\Notifications\SupplierOrderShipping;
 use App\Printers\Order as OrderPrinter;
@@ -25,8 +23,10 @@ class NotifyClosedOrder extends Job
         $printer = new OrderPrinter();
 
         if ($order->isRunning() == false) {
-            foreach($order->aggregate->gas as $gas) {
-                if ($gas->auto_supplier_order_summary) {
+            $supplier = $order->supplier;
+
+            if ($supplier->notify_on_close_enabled != 'none') {
+                foreach($order->aggregate->gas as $gas) {
                     try {
                         $this->hub->enable(false);
 
@@ -34,17 +34,32 @@ class NotifyClosedOrder extends Job
                             I files vengono già rimossi dopo l'invio della
                             notifica al fornitore
                         */
-                        $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
-                        $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
-                        $order->supplier->notify(new SupplierOrderShipping($gas, $order, $pdf_file_path, $csv_file_path));
+                        $type = $supplier->notify_on_close_enabled;
+                        $pdf_file_path = $printer->document($order, $type, ['format' => 'pdf', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
+                        $csv_file_path = $printer->document($order, $type, ['format' => 'csv', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
+                        $supplier->notify(new SupplierOrderShipping($gas, $order, $pdf_file_path, $csv_file_path));
 
                         $this->hub->enable(true);
                     }
                     catch(\Exception $e) {
-                        Log::error('Errore in notifica chiusura ordine a fornitore: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+                        \Log::error('Errore in notifica chiusura ordine a fornitore: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
                     }
 
                     break;
+                }
+            }
+        }
+    }
+
+    private function dispatchToReferents($notifiable_users)
+    {
+        foreach($notifiable_users as $notifiable) {
+            if ($notifiable->user->gas->auto_referent_order_summary) {
+                try {
+                    $notifiable->user->notify(new ClosedOrdersNotification($notifiable->orders, $notifiable->files));
+                }
+                catch(\Exception $e) {
+                    \Log::error('Errore in notifica chiusura ordine: ' . $e->getMessage());
                 }
             }
         }
@@ -102,17 +117,7 @@ class NotifyClosedOrder extends Job
             AggregateSummaries::dispatch($aggregate);
         }
 
-        foreach($notifiable_users as $notifiable) {
-            if ($notifiable->user->gas->auto_referent_order_summary) {
-                try {
-                    $notifiable->user->notify(new ClosedOrdersNotification($notifiable->orders, $notifiable->files));
-                }
-                catch(\Exception $e) {
-                    Log::error('Errore in notifica chiusura ordine: ' . $e->getMessage());
-                }
-            }
-        }
-
+        $this->dispatchToReferents($notifiable_users);
         DeleteFiles::dispatch($all_files)->delay(now()->addMinutes(count($notifiable_users)));
     }
 }
