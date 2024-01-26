@@ -327,6 +327,27 @@ class Order extends Model
         }
     }
 
+    public function detachProduct($product)
+    {
+        /*
+            Se vengono rimossi dei prodotti dall'ordine, ne elimino tutte le
+            relative prenotazioni sinora avvenute
+        */
+        foreach($this->bookings as $booking) {
+            $booking->products()->where('product_id', $product->id)->delete();
+
+            /*
+                Se i prodotti rimossi erano gli unici contemplati nella
+                prenotazione, elimino tutta la prenotazione
+            */
+            if ($booking->products()->count() == 0) {
+                $booking->delete();
+            }
+        }
+
+        $this->products()->detach($product->id);
+    }
+
     public function showableContacts()
     {
         $gas = currentAbsoluteGas();

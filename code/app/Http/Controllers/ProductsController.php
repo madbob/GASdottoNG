@@ -226,4 +226,10 @@ class ProductsController extends BackedController
             return response()->json($products);
         });
     }
+
+    public function askDelete(Request $request, $id)
+    {
+        $product = $this->service->show($id);
+        return view('product.deleteconfirm', ['product' => $product]);
+    }
 }

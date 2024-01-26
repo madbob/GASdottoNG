@@ -81,6 +81,7 @@ Route::middleware(['auth'])->group(function() {
         Route::post('products/{id}/update_price', 'ProductsController@updatePrices')->name('products.updateprices');
         Route::get('products/search', 'ProductsController@search')->name('products.search');
         Route::get('products/price', 'ProductsController@price')->name('products.price');
+        Route::get('products/askdelete/{id}', 'ProductsController@askDelete')->name('products.askdelete');
 
         Route::get('vatrates/{id}/header', 'VatRatesController@objhead')->name('vatrates.objhead');
 

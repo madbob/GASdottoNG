@@ -260,7 +260,7 @@ class MovementsController extends BackedController
         return view('commons.deleteconfirm', [
             'url' => route('movements.destroy', $id),
             'password_protected' => true,
-            'text' => _i('Vuoi davvero eliminare il movimento %s?', [$mov->printableName()]),
+            'text' => _i('Vuoi davvero eliminare il movimento<br>%s?', [$mov->printableName()]),
             'extra' => [
                 'close-modal' => '.movement-modal',
 

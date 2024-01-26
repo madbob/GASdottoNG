@@ -277,6 +277,20 @@ class Callables {
         }
     }
 
+    /*
+        Questo permette di eliminare una voce da una lista dinamica, in base
+        all'ID trovato nel payload.
+        Da usare per i modali di conferma di eliminazione
+    */
+    static removeTargetListItem(form, data)
+    {
+        var form = lists.formByElementId(data.id);
+        var upper = lists.closeParent(form);
+        var list = upper.closest('.loadable-list');
+        upper.remove();
+        lists.testListsEmptiness(list);
+    }
+
     static handleUserApproval(form, data)
     {
         lists.closeParent(form);

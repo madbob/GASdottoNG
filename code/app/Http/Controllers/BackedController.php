@@ -63,8 +63,8 @@ class BackedController extends Controller
     public function destroy($id)
     {
         return $this->easyExecute(function() use ($id) {
-            $this->service->destroy($id);
-            return $this->successResponse();
+            $subject = $this->service->destroy($id);
+            return $this->commonSuccessResponse($subject);
         });
     }
 }

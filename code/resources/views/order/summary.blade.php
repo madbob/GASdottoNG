@@ -6,7 +6,7 @@ $columns = $currentgas->orders_display_columns;
 $table_identifier = 'summary-' . sanitizeId($order->id);
 $display_columns = App\Order::displayColumns();
 
-$products = $order->supplier->products()->with(['category'])->sorted()->get();
+$products = $order->supplier->products()->with(['category'])->withTrashed()->sorted()->get();
 $order_products = $order->products()->with(['category'])->sorted()->get();
 $categories = $products->pluck('category_id')->toArray();
 $categories = array_unique($categories);
@@ -110,6 +110,10 @@ foreach($display_columns as $identifier => $metadata) {
 
                     $enabled = $order->hasProduct($product);
                     if ($enabled == false) {
+                        if ($product->deleted_at) {
+                            continue;
+                        }
+
                         if ($order->isActive() == false) {
                             continue;
                         }

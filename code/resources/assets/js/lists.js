@@ -181,6 +181,11 @@ class Lists {
         });
     }
 
+    static formByElementId(id)
+    {
+        return $('.accordion-item[data-element-id="' + id + '"]').find('form');
+    }
+
     static closeParent(node)
     {
         var container = node.closest('.accordion-item');

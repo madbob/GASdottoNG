@@ -96,24 +96,11 @@ class OrdersService extends BaseService
 
         $order->save();
 
-        /*
-            Se vengono rimossi dei prodotti dall'ordine, ne elimino tutte le
-            relative prenotazioni sinora avvenute
-        */
         $enabled = $request['enabled'] ?? [];
-        $removed_products = $order->products()->whereNotIn('id', $enabled)->pluck('id')->toArray();
-        if (empty($removed_products) == false) {
-            foreach($order->bookings as $booking) {
-                $booking->products()->whereIn('product_id', $removed_products)->delete();
 
-				/*
-					Se i prodotti rimossi erano gli unici contemplati nella
-					prenotazione, elimino tutta la prenotazione
-				*/
-                if ($booking->products()->count() == 0) {
-                    $booking->delete();
-                }
-            }
+        $removed_products = $order->products()->whereNotIn('id', $enabled)->get();
+        foreach($removed_products as $rp) {
+            $order->detachProduct($rp);
         }
 
         $products = $order->supplier->products()->whereIn('id', $enabled)->get();

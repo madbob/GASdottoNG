@@ -194,6 +194,19 @@ class ProductsService extends BaseService
         $product = DB::transaction(function() use ($id) {
             $product = $this->show($id);
             $this->ensureAuth(['supplier.modify' => $product->supplier]);
+
+            $request = request();
+
+            foreach($request->all() as $key => $value) {
+                if (str_starts_with($key, 'order_')) {
+                    if ($value == 'leave') {
+                        $order_id = substr($key, strpos($key, '_') + 1);
+                        $order = fromInlineId($order_id);
+                        $order->detachProduct($product);
+                    }
+                }
+            }
+
             $product->delete();
             return $product;
         });

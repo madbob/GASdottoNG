@@ -189,7 +189,7 @@ class OrdersController extends BackedController
     {
         $order = $this->service->show($id, true);
 
-        $product = Product::findOrFail($product_id);
+        $product = Product::withTrashed()->findOrFail($product_id);
         if ($order->hasProduct($product) == false) {
             abort(404);
         }

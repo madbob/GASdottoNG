@@ -514,10 +514,6 @@ $(document).ready(function() {
         event.preventDefault();
         var form = $(this).closest('.main-form');
 
-        /*
-        	TODO: visualizzare nome dell'elemento che si sta rimuovendo
-        */
-
         if (confirm(_('Sei sicuro di voler eliminare questo elemento?'))) {
             form.find('button').prop('disabled', true);
 
