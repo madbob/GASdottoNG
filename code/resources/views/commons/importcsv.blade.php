@@ -4,9 +4,8 @@ if (!isset($modal_extras)) {
     $modal_extras = [];
 }
 
-if (!isset($explain_extras)) {
-    $explain_extras = '';
-}
+$importer = \App\Importers\CSV\CSVImporter::getImporter($import_target);
+$explain_extras = $importer->extraInformations();
 
 ?>
 
@@ -19,7 +18,7 @@ if (!isset($explain_extras)) {
                 <input type="hidden" name="{{ $name }}" value="{{ $value }}" />
             @endforeach
 
-			@if(filled($explain_extras))
+			@if($explain_extras)
 				<p>
 					{!! $explain_extras !!}
 				</p>
@@ -30,11 +29,12 @@ if (!isset($explain_extras)) {
             <p>
                 {{ _i('Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell\'euro.') }}
             </p>
-            <p>
-                {{ _i('Una volta caricato il file sarà possibile specificare quale attributo rappresenta ogni colonna trovata nel documento.') }}
-            </p>
+
             <p class="text-center">
-                <img src="{{ url('images/csv_explain.png') }}" alt="{{ _i('Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell\'euro.') }}">
+                <img src="{{ url('images/csv_explain.png') }}" />
+            </p>
+            <p>
+                {{ _i('Una volta caricato il file sarà possibile specificare quale attributo rappresenta ogni colonna trovata nel documento. Non è necessario specificare tutte le colonne previste, tranne quelle obbligatorie.') }}
             </p>
 
             <hr/>
@@ -49,6 +49,29 @@ if (!isset($explain_extras)) {
             ?>
 
             <x-larastrap::file name="file" :label="_i('File da Caricare')" classes="immediate-run" required :data-url="sprintf('import/csv?type=%s&step=guess', $import_target)" :data-form-data="json_encode($data)" />
+
+            <hr />
+
+            <div class="small">
+                <p>
+                    {{ _i('Le colonne ammesse per questo tipo di CSV sono:') }}
+                </p>
+                <ul>
+                    @foreach($importer->fields() as $meta)
+                        <li>
+                            {{ $meta->label }}
+
+                            @if(isset($meta->explain))
+                                - {{ $meta->explain }}
+                            @endif
+
+                            @if(isset($meta->mandatory) && $meta->mandatory)
+                                <span class="badge text-bg-danger">{{ _i('Obbligatorio') }}</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
         </x-larastrap::form>
     </div>
 </x-larastrap::modal>

@@ -14,7 +14,7 @@ use App\Order;
 
 class Deliveries extends CSVImporter
 {
-	protected function fields()
+	public function fields()
 	{
 		$ret = [
 			'username' => (object) [
@@ -30,6 +30,11 @@ class Deliveries extends CSVImporter
 
 		return $ret;
 	}
+
+	public function extraInformations()
+    {
+        return _i('Da qui puoi reimportare un CSV generato dalla funzione "Tabella Complessiva Prodotti" dell\'ordine, dopo averlo manualmente elaborato con le quantità consegnate per ogni utente.');
+    }
 
 	public function testAccess($request)
 	{
@@ -122,15 +127,11 @@ class Deliveries extends CSVImporter
 					];
 
 					$target_user = null;
-					$skip_row = false;
 
 					foreach ($columns as $index => $field) {
 						if ($field == 'username') {
 							$username = trim($line[$index]);
 							$target_user = User::where('username', $username)->first();
-							if (is_null($target_user)) {
-								$skip_row = true;
-							}
 						}
 						elseif ($index >= $first_product_index) {
 							if (isset($mapped_products[$index])) {
@@ -156,10 +157,6 @@ class Deliveries extends CSVImporter
 									$datarow['variant_quantity_' . $product_id][] = $quantity;
 								}
 							}
-						}
-
-						if ($skip_row == true) {
-							break;
 						}
 					}
 
@@ -203,7 +200,6 @@ class Deliveries extends CSVImporter
 
 		$data = json_decode($request->input('data', '[]'), true);
 		$users = $request->input('user', []);
-		$action = $request->input('action', 'save');
 
 		$order_id = $request->input('order_id');
 		$target_order = Order::findOrFail($order_id);
@@ -226,6 +222,7 @@ class Deliveries extends CSVImporter
 
 		DB::commit();
 
+		$action = $request->input('action', 'save');
 		if ($action == 'close') {
 			app()->make('FastBookingsService')->fastShipping($user, $target_order->aggregate, null);
 		}

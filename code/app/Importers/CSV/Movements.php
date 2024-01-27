@@ -13,7 +13,7 @@ use App\Currency;
 
 class Movements extends CSVImporter
 {
-    protected function fields()
+    public function fields()
     {
         $ret = [
             'date' => (object) [
@@ -190,6 +190,40 @@ class Movements extends CSVImporter
         return view('import.csvmovementsselect', $parameters);
     }
 
+    private function assignPeers($m, $senders, $targets, $index)
+    {
+        $t = MovementType::find($m->type);
+
+        foreach(['sender', 'target'] as $f) {
+            $id_field = $f . '_id';
+            $type_field = $f . '_type';
+
+            switch($t->$type_field) {
+                case 'App\User':
+                    if ($senders[$index] !== '0') {
+                        $m->$id_field = $senders[$index];
+                        $m->$type_field = 'App\User';
+                    }
+                    break;
+
+                case 'App\Supplier':
+                    if ($targets[$index] !== '0') {
+                        $m->$id_field = $targets[$index];
+                        $m->$type_field = 'App\Supplier';
+                    }
+                    break;
+
+                case 'App\Gas':
+                    $current_gas = request()->user()->gas;
+                    $m->$id_field = $current_gas->id;
+                    $m->$type_field = 'App\Gas';
+                    break;
+            }
+        }
+
+        return $m;
+    }
+
     public function run($request)
     {
         $imports = $request->input('import', []);
@@ -204,7 +238,6 @@ class Movements extends CSVImporter
 
         $errors = [];
         $movements = [];
-        $current_gas = $request->user()->gas;
 
         DB::beginTransaction();
 
@@ -219,39 +252,15 @@ class Movements extends CSVImporter
                 $m->method = $methods[$index];
                 $m->currency_id = $currencies[$index];
                 $m->notes = $notes[$index];
-
-                $t = MovementType::find($m->type);
-
-                $fields = ['sender', 'target'];
-
-                foreach($fields as $f) {
-                    $id_field = $f . '_id';
-                    $type_field = $f . '_type';
-
-                    switch($t->$type_field) {
-                        case 'App\User':
-                            if ($senders[$index] !== '0') {
-                                $m->$id_field = $senders[$index];
-                                $m->$type_field = 'App\User';
-                            }
-                            break;
-
-                        case 'App\Supplier':
-                            if ($targets[$index] !== '0') {
-                                $m->$id_field = $targets[$index];
-                                $m->$type_field = 'App\Supplier';
-                            }
-                            break;
-
-                        case 'App\Gas':
-                            $m->$id_field = $current_gas->id;
-                            $m->$type_field = 'App\Gas';
-                            break;
-                    }
-                }
-
+                $m = $this->assignPeers($m, $senders, $targets, $index);
                 $m->save();
 
+                /*
+                    Ricordarsi sempre che la funzione di salvataggio dei
+                    Movements non necessariamente salva per davvero il
+                    movimento, intervenendo in questa fase le callback di
+                    controllo· Qui è lecito fare un controllo
+                */
                 if ($m->exists) {
                     $movements[] = $m;
                 }

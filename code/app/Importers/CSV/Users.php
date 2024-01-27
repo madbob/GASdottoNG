@@ -104,7 +104,7 @@ class Users extends CSVImporter
 		];
 	}
 
-    protected function fields()
+    public function fields()
     {
 		$ret = [];
 		$this->essentialFields($ret);

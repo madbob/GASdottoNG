@@ -12,7 +12,7 @@ use App\VatRate;
 
 class Products extends CSVImporter
 {
-    protected function fields()
+    public function fields()
     {
         return [
             'name' => (object) [

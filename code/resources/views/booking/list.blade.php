@@ -9,7 +9,6 @@
 				@include('commons.importcsv', [
 					'modal_id' => 'importCSVdeliveries',
 					'import_target' => 'deliveries',
-					'explain_extras' => _i('Da qui puoi reimportare un CSV generato dalla funzione "Tabella Complessiva Prodotti" dell\'ordine, dopo averlo manualmente elaborato con le quantità consegnate per ogni utente.'),
 					'modal_extras' => [
 						'aggregate_id' => $aggregate->id,
 					],

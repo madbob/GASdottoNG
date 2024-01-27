@@ -11,21 +11,34 @@ use App\Exceptions\MissingFieldException;
 
 abstract class CSVImporter
 {
+    public function extraInformations()
+    {
+        return null;
+    }
+
     public static function getImporter($type)
     {
+        $ret = null;
+
         switch($type) {
             case 'products':
-                return new Products();
+                $ret = new Products();
+                break;
             case 'users':
-                return new Users();
+                $ret = new Users();
+                break;
             case 'movements':
-                return new Movements();
+                $ret = new Movements();
+                break;
             case 'deliveries':
-                return new Deliveries();
+                $ret = new Deliveries();
+                break;
+            default:
+                Log::error('Unexpected type for CSV import: ' . $type);
+                break;
         }
 
-        Log::error('Unexpected type for CSV import: ' . $type);
-        return null;
+        return $ret;
     }
 
     private function guessCsvFileSeparator($path)
@@ -108,20 +121,28 @@ abstract class CSVImporter
         return $ret;
     }
 
+    private function mandatoryFields()
+    {
+        $ret = [];
+
+        foreach($this->fields() as $key => $meta) {
+            $mandatory = $meta->mandatory ?? false;
+            if ($mandatory) {
+                $ret[] = $key;
+            }
+        }
+
+        return $ret;
+    }
+
     protected function initRead($request)
     {
         $path = $request->input('path');
         $columns = $request->input('column');
 
-        $testable = [];
-        foreach($this->fields() as $key => $meta) {
-            $mandatory = $meta->mandatory ?? false;
-            if ($mandatory) {
-                $testable[] = $key;
-            }
-        }
-
+        $testable = $this->mandatoryFields();
         $tested = $this->getColumnsIndex($columns, $testable);
+
         foreach($tested as $t) {
             if ($t == -1) {
                 throw new MissingFieldException(1);
@@ -139,8 +160,8 @@ abstract class CSVImporter
     {
         if (Str::startsWith($value, 'new:')) {
             $name = Str::after($value, 'new:');
-            if (!empty($name)) {
-                if (!isset($cached[$name])) {
+            if (empty($name) == false) {
+                if (isset($cached[$name]) == false) {
                     $obj = $createNew($name);
                     $cached[$name] = $obj->id;
                 }
@@ -160,7 +181,7 @@ abstract class CSVImporter
         return 'import.csvimportfinal';
     }
 
-    protected abstract function fields();
+    public abstract function fields();
     public abstract function testAccess($request);
     public abstract function guess($request);
     public abstract function select($request);
