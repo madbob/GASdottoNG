@@ -12,8 +12,11 @@ $(document).ready(function() {
     });
 
     $('body').on('focus', 'input.password-changer', function() {
-        if ($(this).closest('.modal').length != 0) {
-            return;
+        let appendTo = 'body';
+
+        let modal = $(this).closest('.modal');
+        if (modal.length != 0) {
+            appendTo = '#' + modal.attr('id');
         }
 
         var input = $(this);
@@ -66,6 +69,7 @@ $(document).ready(function() {
             offset: [0, -50],
             template: '<div class="popover password-popover" role="tooltip"><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
             placement: 'left',
+            container: appendTo,
             html: true,
         });
     });
