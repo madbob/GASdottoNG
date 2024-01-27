@@ -35,53 +35,124 @@
                 {{ _i("Da qui è possibile modificare la quantità prenotata di questo prodotto per ogni prenotazione, ma nessun utente ha ancora partecipato all'ordine.") }}
             </x-larastrap::suggestion>
         @else
-            @if($product->variants()->count() == 0)
-                <table class="table table-striped">
-                    @foreach($bookings as $po)
-                        <tr>
-                            <td>
-                                <label>
-                                    @if($po->user->isFriend())
-                                        {{ $po->user->parent->printableName() }}<br>
-                                        <small>Amico: {{ $po->user->printableName() }}</small>
-                                    @else
-                                        {{ $po->user->printableName() }}
-                                    @endif
-                                </label>
-                            </td>
-                            <td>
-                                <input type="hidden" name="booking[]" value="{{ $po->id }}" />
+            <div class="d-flex flowbox mb-3">
+                <div class="mainflow">
+                    <input type="text" class="form-control table-text-filter" data-table-target=".fixes-table">
+                </div>
 
-                                <div class="input-group">
-                                    <input type="text" class="form-control number" name="quantity[]" value="{{ $po->getBookedQuantity($product) }}" />
-                                    <div class="input-group-text">{{ $measure }}</div>
-                                </div>
-                            </td>
+                <div class="btn-group table-sorter" data-table-target=".fixes-table">
+                    <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+                        {{ _i('Ordina Per') }} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#" class="dropdown-item" data-sort-by="name">{{ _i('Nome') }}</a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-item" data-sort-by="date">{{ _i('Data Prenotazione') }}</a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-item" data-sort-by="quantity">{{ _i('Quantità Prenotata') }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            @if($product->variants()->count() == 0)
+                <table class="table table-striped fixes-table">
+                    <thead>
+                        <tr>
+                            <th width="35%">{{ _i('Utente') }}</th>
+                            <th width="35%">{{ _i('Data Prenotazione') }}</th>
+                            <th width="30%">{{ _i('Quantità Prenotata') }}</th>
                         </tr>
-                    @endforeach
+                    </thead>
+                    <tbody>
+                        @foreach($bookings as $po)
+                            @php
+
+                            if ($po->user->isFriend()) {
+                                $masteruser = $po->user->parent;
+                            }
+                            else {
+                                $masteruser = $po->user;
+                            }
+
+                            $row_date = $po->getBooked($product)?->created_at;
+                            $row_quantity = $po->getBookedQuantity($product);
+
+                            @endphp
+
+                            <tr data-sorting-name="{{ $masteruser->printableName }}" data-sorting-date="{{ $row_date ?: 99999 }}" data-sorting-quantity="{{ $row_quantity ? $row_quantity : 99999 }}">
+                                <td>
+                                    <label class="text-filterable-cell">
+                                        {{ $masteruser->printableName() }}
+                                        @if($po->user->isFriend())
+                                            <br><small>Amico: {{ $po->user->printableName() }}</small>
+                                        @endif
+                                    </label>
+                                </td>
+                                <td>
+                                    <label>{{ printableDate($row_date) }}</label>
+                                </td>
+                                <td>
+                                    <input type="hidden" name="booking[]" value="{{ $po->id }}" />
+
+                                    <div class="input-group">
+                                        <input type="text" class="form-control number" name="quantity[]" value="{{ $row_quantity }}" />
+                                        <div class="input-group-text">{{ $measure }}</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
                 </table>
             @else
                 <x-larastrap::tabs>
                     @foreach($product->variant_combos as $index => $combo)
                         <x-larastrap::tabpane :label="$combo->printableShortName()" :active="$index == 0" icon="bi-zoom-in">
-                            <table class="table table-striped">
-                                @foreach($bookings as $po)
+                            <table class="table table-striped fixes-table">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            <label>
-                                                @if($po->user->isFriend())
-                                                    {{ $po->user->parent->printableName() }}<br>
-                                                    <small>Amico: {{ $po->user->printableName() }}</small>
-                                                @else
-                                                    {{ $po->user->printableName() }}
-                                                @endif
-                                            </label>
-                                        </td>
-                                        <td>
-                                            {{ sprintf('%s %s', $po->getBookedQuantity($combo), $measure) }}
-                                        </td>
+                                        <th width="35%">{{ _i('Utente') }}</th>
+                                        <th width="35%">{{ _i('Data Prenotazione') }}</th>
+                                        <th width="30%">{{ _i('Quantità Prenotata') }}</th>
                                     </tr>
-                                @endforeach
+                                </thead>
+                                <tbody>
+                                    @foreach($bookings as $po)
+                                        @php
+
+                                        if ($po->user->isFriend()) {
+                                            $masteruser = $po->user->parent;
+                                        }
+                                        else {
+                                            $masteruser = $po->user;
+                                        }
+
+                                        $row_date = $po->getBooked($product)?->created_at;
+                                        $row_quantity = $po->getBookedQuantity($combo);
+
+                                        @endphp
+
+                                        <tr data-sorting-name="{{ $masteruser->printableName }}" data-sorting-date="{{ $row_date ?: 99999 }}" data-sorting-quantity="{{ $row_quantity ? $row_quantity : 99999 }}">
+                                            <td>
+                                                <label class="text-filterable-cell">
+                                                    {{ $masteruser->printableName() }}
+                                                    @if($po->user->isFriend())
+                                                        <br><small>Amico: {{ $po->user->printableName() }}</small>
+                                                    @endif
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label>{{ printableDate($po->getBooked($product)?->created_at) }}</label>
+                                            </td>
+                                            <td>
+                                                {{ sprintf('%s %s', $po->getBookedQuantity($combo), $measure) }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
                             </table>
                         </x-larastrap::tabpane>
                     @endforeach
