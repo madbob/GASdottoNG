@@ -176,6 +176,11 @@ class Callables {
 
     /* post-saved-function ****************************************************/
 
+    static closeAllModals()
+    {
+        $('.modal.fade.show').modal('hide');
+    }
+
     static triggerPayment(form)
     {
     	/*

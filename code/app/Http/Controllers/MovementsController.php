@@ -262,8 +262,6 @@ class MovementsController extends BackedController
             'password_protected' => true,
             'text' => _i('Vuoi davvero eliminare il movimento<br>%s?', [$mov->printableName()]),
             'extra' => [
-                'close-modal' => '.movement-modal',
-
                 /*
                     Se sono nel contesto di un utente/fornitore/GAS ricarica il
                     pannello coi bilanci, se sono nel pannello di gestione delle
@@ -271,7 +269,7 @@ class MovementsController extends BackedController
                 */
                 'reload-portion' => ['.balance-summary', '.holding-movement-' . $id],
 
-                'post-saved-function' => ['refreshFilter']
+                'post-saved-function' => ['closeAllModals', 'refreshFilter']
             ]
         ]);
     }

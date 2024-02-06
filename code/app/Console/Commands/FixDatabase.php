@@ -9,8 +9,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Database\Schema\Blueprint;
 
 use App\Gas;
 use App\User;
@@ -64,5 +66,9 @@ class FixDatabase extends Command
             $mod->identifier = 'shipping';
             $mod->save();
         }
+
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->integer('payment_id')->nullable()->change();
+        });
     }
 }
