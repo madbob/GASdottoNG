@@ -34,7 +34,7 @@ trait Summary
         foreach (ModifiedValue::aggregateByType($modifiers) as $am) {
             $mod_row = array_fill(0, count($fields), '');
             $mod_row[0] = $am->name;
-            $mod_row[$price_offset] = printablePrice($am->amount, ',');
+            $mod_row[$price_offset] = printablePrice($am->amount);
             $rows[] = $mod_row;
             $total += $am->amount;
         }
@@ -42,7 +42,7 @@ trait Summary
         if (empty($rows) == false) {
             $last_row = array_fill(0, count($fields), '');
             $last_row[0] = _i('Totale con Modificatori');
-            $last_row[$price_offset] = printablePrice($total, ',');
+            $last_row[$price_offset] = printablePrice($total);
             $rows[] = $last_row;
         }
 
@@ -75,7 +75,7 @@ trait Summary
             if (is_null($price_offset) == false) {
                 $last_row = array_fill(0, count($fields), '');
                 $last_row[0] = _i('Totale');
-                $last_row[$price_offset] = printablePrice($total, ',');
+                $last_row[$price_offset] = printablePrice($total);
                 $rows[] = $last_row;
 
                 $modifiers_rows = $this->addModifiers($order, $summary, $status, $total, $fields, $extra_modifiers);

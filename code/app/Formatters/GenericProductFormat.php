@@ -32,6 +32,7 @@ trait GenericProductFormat
 
         $ret = [];
         $checked_by_default = ['name', 'price'];
+
         foreach($attributes as $attr => $label) {
             $ret[$attr] = (object) [
                 'name' => $label,

@@ -322,7 +322,7 @@ class MovementsController extends BackedController
                         $row[] = $user->email;
 
                         foreach($currencies as $curr) {
-                            $row[] = printablePrice($user->currentBalanceAmount($curr), ',');
+                            $row[] = printablePrice($user->currentBalanceAmount($curr));
                         }
 
                         if ($has_fee) {
@@ -388,7 +388,7 @@ class MovementsController extends BackedController
                         $row[] = $supplier->printableName();
 
                         foreach($currencies as $curr) {
-                            $row[] = printablePrice($supplier->currentBalanceAmount($curr), ',');
+                            $row[] = printablePrice($supplier->currentBalanceAmount($curr));
                         }
 
                         return $row;

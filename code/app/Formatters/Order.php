@@ -10,6 +10,91 @@ namespace App\Formatters;
 
 class Order extends Formatter
 {
+	private static function formatCode()
+	{
+		return (object) [
+			'name' => _i('Codice Fornitore'),
+			'format_product' => function($product, $summary) {
+				return $product->supplier_code;
+			},
+			'format_variant' => function($product, $summary) {
+				if (!empty($summary->variant->supplier_code)) {
+					return $summary->variant->supplier_code;
+				}
+				else {
+					return $summary->variant->product->product->supplier_code;
+				}
+			}
+		];
+	}
+
+	private static function formatQuantity()
+	{
+		return (object) [
+			'name' => _i('Quantità'),
+			'checked' => true,
+			'format_product' => function($product, $summary, $alternate = false) {
+				if ($alternate == false)
+					return printableQuantity($summary->quantity_pieces, $product->measure->discrete, 2, ',');
+				else
+					return printableQuantity($summary->delivered_pieces, $product->measure->discrete, 2, ',');
+			},
+		];
+	}
+
+	private static function formatBoxes()
+	{
+		return (object) [
+			'name' => _i('Numero Confezioni'),
+			'format_product' => function($product, $summary, $alternate = false) {
+				if ($product->package_size != 0) {
+					if ($alternate == false)
+						return $summary->quantity_pieces / $product->package_size;
+					else
+						return $summary->delivered_pieces / $product->package_size;
+				}
+				else {
+					return '';
+				}
+			},
+		];
+	}
+
+	private static function formatMeasure()
+	{
+		return (object) [
+			'name' => _i('Unità di Misura'),
+			'checked' => true,
+			'format_product' => function($product, $summary, $alternate = false) {
+				if ($alternate == false) {
+					return $product->printableMeasure(true);
+				}
+				else {
+					if ($product->portion_quantity != 0) {
+						return $product->measure->name;
+					}
+					else {
+						return $product->printableMeasure(true);
+					}
+				}
+			},
+		];
+	}
+
+	private static function formatPrice()
+	{
+		return (object) [
+			'name' => _i('Prezzo'),
+			'checked' => true,
+			'format_product' => function($product, $summary, $alternate = false) {
+				if ($alternate == false)
+					return printablePrice($summary->price);
+				else
+					return printablePrice($summary->price_delivered);
+			},
+		];
+	}
+
 	public static function formattableColumns($type = null)
     {
 		$ret = [
@@ -30,61 +115,12 @@ class Order extends Formatter
 					return $product->supplier->printableName();
 				},
 			],
-			'code' => (object) [
-				'name' => _i('Codice Fornitore'),
-				'format_product' => function($product, $summary) {
-					return $product->supplier_code;
-				},
-				'format_variant' => function($product, $summary) {
-					if (!empty($summary->variant->supplier_code)) {
-						return $summary->variant->supplier_code;
-					}
-					else {
-						return $summary->variant->product->product->supplier_code;
-					}
-				}
-			],
-			'quantity' => (object) [
-				'name' => _i('Quantità'),
-				'checked' => true,
-				'format_product' => function($product, $summary, $alternate = false) {
-					if ($alternate == false)
-						return printableQuantity($summary->quantity_pieces, $product->measure->discrete, 2, ',');
-					else
-						return printableQuantity($summary->delivered_pieces, $product->measure->discrete, 2, ',');
-				},
-			],
-			'boxes' => (object) [
-				'name' => _i('Numero Confezioni'),
-				'format_product' => function($product, $summary, $alternate = false) {
-					if ($product->package_size != 0) {
-						if ($alternate == false)
-							return $summary->quantity_pieces / $product->package_size;
-						else
-							return $summary->delivered_pieces / $product->package_size;
-					}
-					else {
-						return '';
-					}
-				},
-			],
-			'measure' => (object) [
-				'name' => _i('Unità di Misura'),
-				'checked' => true,
-				'format_product' => function($product, $summary, $alternate = false) {
-					if ($alternate == false) {
-						return $product->printableMeasure(true);
-					}
-					else {
-						if ($product->portion_quantity != 0) {
-							return $product->measure->name;
-						}
-						else {
-							return $product->printableMeasure(true);
-						}
-					}
-				},
-			],
+
+			'code' => static::formatCode(),
+			'quantity' => static::formatQuantity(),
+			'boxes' => static::formatBoxes(),
+			'measure' => static::formatMeasure(),
+
 			'category' => (object) [
 				'name' => _i('Categoria'),
 				'checked' => false,
@@ -96,22 +132,14 @@ class Order extends Formatter
 				'name' => _i('Prezzo Unitario'),
 				'checked' => false,
 				'format_product' => function($product, $summary) {
-					return printablePrice($product->getPrice(), ',');
+					return printablePrice($product->getPrice());
 				},
 				'format_variant' => function($product, $summary) {
-					return printablePrice($summary->variant->unitPrice(), ',');
+					return printablePrice($summary->variant->unitPrice());
 				}
 			],
-			'price' => (object) [
-				'name' => _i('Prezzo'),
-				'checked' => true,
-				'format_product' => function($product, $summary, $alternate = false) {
-					if ($alternate == false)
-						return printablePrice($summary->price, ',');
-					else
-						return printablePrice($summary->price_delivered, ',');
-				},
-			],
+
+			'price' => static::formatPrice(),
 		];
 
 		if ($type == 'summary') {
