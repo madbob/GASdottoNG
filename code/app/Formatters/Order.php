@@ -116,10 +116,10 @@ class Order extends Formatter
 				},
 			],
 
-			'code' => static::formatCode(),
-			'quantity' => static::formatQuantity(),
-			'boxes' => static::formatBoxes(),
-			'measure' => static::formatMeasure(),
+			'code' => self::formatCode(),
+			'quantity' => self::formatQuantity(),
+			'boxes' => self::formatBoxes(),
+			'measure' => self::formatMeasure(),
 
 			'category' => (object) [
 				'name' => _i('Categoria'),
@@ -139,7 +139,7 @@ class Order extends Formatter
 				}
 			],
 
-			'price' => static::formatPrice(),
+			'price' => self::formatPrice(),
 		];
 
 		if ($type == 'summary') {
