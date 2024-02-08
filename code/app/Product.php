@@ -252,7 +252,7 @@ class Product extends Model
             return true;
         }
         else {
-            return ($this->measure->discrete == false && $this->portion_quantity == 0) == false;
+            return ($this->portion_quantity == 0 && $this->measure->discrete == false && $this->variants->count() != 0) == false;
         }
 	}
 

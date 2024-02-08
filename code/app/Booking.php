@@ -380,7 +380,7 @@ class Booking extends Model
                         $products->push($sub_p);
                     }
                     else {
-                        if ($sub_p->product->canAggregateQuantities() == false && $sub_p->variants->count() == 0) {
+                        if ($sub_p->product->canAggregateQuantities() == false) {
                             $products->push($sub_p);
                         }
                         else {
