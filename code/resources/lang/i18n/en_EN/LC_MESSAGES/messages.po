@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2023-12-01 17:00+0100\n"
-"PO-Revision-Date: 2023-12-15 11:08+0000\n"
+"PO-Revision-Date: 2024-02-09 22:02+0000\n"
 "Last-Translator: Pixel-Tux <luis.pardus@gmail.com>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/gasdottong/"
 "translations/en/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.3\n"
+"X-Generator: Weblate 5.4-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -3229,6 +3229,11 @@ msgid ""
 "o <a href=\"https://sociale.network/@gasdottonet\" target=\"_blank\">su "
 "Mastodon</a> per aggiornamenti periodici."
 msgstr ""
+"Feel free to visit the <a href=\"https://gasdotto.net/\" target=\"_blank\""
+">GASdotto website</a> for documentation, or stay in the loop by following us "
+"on <a href=\"https://twitter.com/GASdottoNet\" target=\"_blank\">Twitter</a> "
+"or <a href=\"https://sociale.network/@gasdottonet\" target=\"_blank\""
+">Mastodon</a> for regular updates."
 
 #: ../storage/framework/messages/5e784b761c2413b6a1db6a3f0cc1ed41.php:117
 msgid ""
@@ -3710,6 +3715,10 @@ msgid ""
 "amministratori addetti agli utenti riceveranno una mail di notifica per ogni "
 "nuovo utente registrato"
 msgstr ""
+"When this option is enabled, anyone can register for the instance through "
+"the dedicated panel (accessible from the login screen). Administrators in "
+"charge of user management will receive a notification email for each newly "
+"registered user"
 
 #: ../storage/framework/messages/7ab0ba15db61acd8f41acc07039eb6e0.php:55
 msgid "Approvazione manuale nuovi utenti"
@@ -3732,6 +3741,8 @@ msgid ""
 "Hai selezionato una unità di misura discreta: per questo prodotto possono "
 "essere usate solo quantità intere."
 msgstr ""
+"You've chosen a discrete unit of measurement, meaning only whole quantities "
+"can be used for this product."
 
 #: ../storage/framework/messages/7abfec41ad729046119ec4c1fe89f83b.php:54
 msgid ""
@@ -3740,6 +3751,10 @@ msgid ""
 "Discreta nel pannello di amministrazione delle unità di misura (acessibile "
 "solo agli utenti abilitati)"
 msgstr ""
+"Assigned measurement unit for the product. Note: it may affect the "
+"activation of certain product variables. Please refer to the Discrete Unit "
+"parameter in the measurement unit administration panel (accessible only to "
+"authorised users)"
 
 #: ../storage/framework/messages/7d3006cc59ada65f05140203ae7b35ce.php:19
 msgid ""
@@ -3771,6 +3786,9 @@ msgid ""
 "puoi scegliere quale prezzo adottare in caso di rettifica della consegna: "
 "quello applicato originariamente o quello nel listino attuale."
 msgstr ""
+"The prices of certain products have been updated since your reservation. You "
+"can now decide whether to stick with the originally applied price or opt for "
+"the current list price in case of any adjustments to the delivery."
 
 #: ../storage/framework/messages/7e89c0eddb657758f9afda5d92b954a0.php:214
 msgid ""
@@ -3996,6 +4014,9 @@ msgid ""
 "comunque sempre possibile modificare la visualizzazione dall'interno della "
 "griglia stessa per mezzo del selettore posto in alto a destra"
 msgstr ""
+"Default columns displayed in the summary grid of orders. However, you can "
+"always customise the view directly within the grid using the selector "
+"located at the top right"
 
 #: ../storage/framework/messages/877eb8f86010b25e5305af585273a51d.php:116
 msgid "Colonne Attive in Dettaglio Consegne"
@@ -4005,7 +4026,7 @@ msgstr "Active Columns in \"Shipping Details\""
 msgid ""
 "Attributi selezionati di default durante l'esportazione del Dettaglio "
 "Consegne degli ordini"
-msgstr ""
+msgstr "Default attributes selected during order Delivery Details export"
 
 #: ../storage/framework/messages/8a3c0f3ab0713bb9c93e2bd5379b1004.php:23
 msgid "Nessuna Immagine"
@@ -4177,12 +4198,16 @@ msgid ""
 "Se diverso da 0, il prodotto è prenotabile solo per una quantità superiore a "
 "quella indicata"
 msgstr ""
+"If different from 0, reservations for the product are accepted only for "
+"quantities greater than the specified one"
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:156
 msgid ""
 "Se diverso da 0, se viene prenotata una quantità superiore di quella "
 "indicata viene mostrato un warning"
 msgstr ""
+"If different from 0, a warning is displayed when a quantity greater than the "
+"one indicated is booked"
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:171
 msgid ""
@@ -4542,6 +4567,9 @@ msgid ""
 "centralizzato: si raccomanda si modificarlo il meno possibile in modo che "
 "sia più semplice poi gestirne gli aggiornamenti futuri."
 msgstr ""
+"The price list from this supplier has been imported from the centralised "
+"archive: it is recommended to modify it as little as possible to simplify "
+"future updates."
 
 #: ../storage/framework/messages/9f3fd203917bc926f2fd56d03cb8135a.php:51
 #: ../storage/framework/messages/9f3fd203917bc926f2fd56d03cb8135a.php:66
@@ -4582,6 +4610,7 @@ msgid ""
 "Qui ti diamo qualche suggerimento per iniziare ad utilizzare questa nuova "
 "piattaforma..."
 msgstr ""
+"Here are a few tips to help you get started with using this new platform..."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:183
 #: Http/Controllers/UsersController.php:183
@@ -4594,6 +4623,8 @@ msgid ""
 "Cliccando qui accedi al pannello dei tuoi dati personali, da cui poi "
 "cambiare il tuo indirizzo email, la tua password di accesso e molto altro."
 msgstr ""
+"Clicking here grants you access to your personal data dashboard, where you "
+"can easily modify your email address, update your login password, and more."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:190
 #: Http/Controllers/UsersController.php:190
@@ -4606,6 +4637,8 @@ msgid ""
 "Da qui consulti l'elenco degli utenti, ne modifichi i parametri, e ne puoi "
 "invitare di nuovi (o li puoi importare da un file CSV)."
 msgstr ""
+"From here, you can view the list of users, adjust their settings, and even "
+"invite new ones (or import them from a CSV file)."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:198
 #: Http/Controllers/UsersController.php:198
@@ -4618,6 +4651,8 @@ msgid ""
 "Cliccando qui puoi consultare l'elenco dei fornitori, crearne di nuovi, "
 "modificarli, e per ciascuno caricare o modificare il relativo listino."
 msgstr ""
+"Clicking here grants access to the supplier list, where you can add new "
+"entries, make adjustments, and manage their associated price lists."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:206
 #: Http/Controllers/UsersController.php:206
@@ -4632,6 +4667,9 @@ msgid ""
 "'Consegne' per tenere traccia delle consegne e generare i movimenti "
 "contabili di pagamento."
 msgstr ""
+"From this page, you can access the list of orders, where you can create and "
+"edit them. By clicking on each order, you can also find the 'Deliveries' tab "
+"to keep track of deliveries and generate payment accounting movements."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:214
 #: Http/Controllers/UsersController.php:214
@@ -4645,6 +4683,9 @@ msgid ""
 "tue prenotazioni: clicca su ciascun ordine, e specifica la quantità "
 "desiderata per ogni prodotto."
 msgstr ""
+"Here you'll find the list of current orders, where you can place your "
+"reservations: simply click on each order and specify the desired quantity "
+"for each product."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:222
 #: Http/Controllers/UsersController.php:222
@@ -4657,6 +4698,8 @@ msgid ""
 "In questa pagina trovi tutti i movimenti contabili ed i relativi strumenti "
 "di amministrazione."
 msgstr ""
+"This page provides a comprehensive overview of all financial movements and "
+"the associated administrative tools."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:230
 #: Http/Controllers/UsersController.php:230
@@ -4669,6 +4712,8 @@ msgid ""
 "Cliccando qui trovi una moltitudine di parametri per personalizare il "
 "comportamento di questa istanza GASdotto."
 msgstr ""
+"Clicking here will reveal numerous options for tailoring the behaviour of "
+"this GASdotto instance to your preferences."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:237
 #: Http/Controllers/UsersController.php:237
