@@ -3,21 +3,22 @@
 namespace App\Services;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 use App\Exceptions\AuthException;
-
-use Auth;
-use DB;
-use Log;
-
+use App\Exceptions\IllegalArgumentException;
+use App\Services\Concerns\TranslatesBookings;
 use App\BookedProductVariant;
 use App\BookedProductComponent;
 use App\ModifierType;
 use App\ModifiedValue;
-use App\Exceptions\IllegalArgumentException;
 use App\Events\BookingDelivered;
 
 class BookingsService extends BaseService
 {
+    use TranslatesBookings;
+
     protected function testAccess($target, $orders, $delivering)
     {
         $user = Auth::user();
@@ -176,6 +177,14 @@ class BookingsService extends BaseService
         return [$booked, $quantity];
     }
 
+    /*
+        TODO: il processo di lettura della prenotazione dalla $request andrebbe
+        spostato altrove, in una struttura dati dedicata, da usare anche in
+        altre circostanze (e.g. l'importazione da CVS, che attualmente
+        ricostruisce una Request farlocca ed inutilmente complessa).
+        All'occorrenza lì potrebbe finirci anche la procedura di validazione
+        delle quantità secondo i constraints attivi
+    */
     private function readBooking(array $request, $order, $booking, $delivering)
     {
         $param = $this->handlingParam($delivering);
@@ -425,7 +434,10 @@ class BookingsService extends BaseService
         $user = $this->testAccess($target_user, $orders, $delivering);
 
         foreach($orders as $order) {
-            $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
+            $booking = $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
+            if ($booking) {
+                $this->translateBooking($booking, $delivering, false);
+            }
         }
 
         if ($delivering == false) {
