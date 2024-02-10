@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Route;
 
 class Handler extends ExceptionHandler
 {
@@ -27,5 +28,19 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    protected function context(): array
+    {
+        $parent = parent::context();
+
+        $url = request()->getRequestUri();
+        if ($url) {
+            $parent = array_merge($parent, [
+                'url' => $url,
+            ]);
+        }
+
+        return $parent;
     }
 }
