@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2023-12-01 17:00+0100\n"
-"PO-Revision-Date: 2024-02-09 22:02+0000\n"
+"PO-Revision-Date: 2024-02-15 17:02+0000\n"
 "Last-Translator: Pixel-Tux <luis.pardus@gmail.com>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/gasdottong/"
 "translations/en/>\n"
@@ -3998,6 +3998,12 @@ msgid ""
 "statistiche precise sui prodotti consegnati, né una ripartizione equa dei "
 "modificatori basati sulle quantità e sui pesi dei prodotti consegnati."
 msgstr ""
+"Enabling this option will allow you to activate, for each supplier, the "
+"possibility of making deliveries by directly specifying the total value of "
+"the delivery instead of the quantities of each delivered product. Note: "
+"employing this function will not yield precise statistics on the delivered "
+"items or ensure a fair allocation of modifiers based on the quantities and "
+"weights of the delivered products."
 
 #: ../storage/framework/messages/877eb8f86010b25e5305af585273a51d.php:76
 msgid "Visualizza contatti in prenotazioni"
@@ -4728,6 +4734,10 @@ msgid ""
 "dito usando lo smartphone, ti viene mostrato un breve testo descrittivo che "
 "te ne illustra i dettagli."
 msgstr ""
+"Familiarising with various GASdotto panels; alongside numerous parameters, "
+"you'll encounter a blue icon: hovering the mouse cursor over it or tapping "
+"it with your finger on a smartphone will reveal a short descriptive text "
+"explaining its details."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:243
 #: Http/Controllers/UsersController.php:243
@@ -4740,6 +4750,8 @@ msgid ""
 "Se hai un dubbio sull'utilizzo di GASdotto, o una segnalazione, o una "
 "richiesta, cliccando qui trovi i nostri contatti."
 msgstr ""
+"Got any questions about using GASdotto, something to report or a request? "
+"Just click here for our contact info."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:253
 #: Http/Controllers/UsersController.php:253
@@ -4811,10 +4823,12 @@ msgid ""
 "Il nuovo utente è in attesa di revisione: consulta il pannello di "
 "amministrazione per approvarlo o eliminarlo."
 msgstr ""
+"There's a new user awaiting review: just head to the admin panel to approve "
+"or delete."
 
 #: ../storage/framework/messages/aa9d03450d806f04dc475b92ad2999b2.php:65
 msgid "Il modificatore non è stato applicato in questo intervallo di date."
-msgstr ""
+msgstr "The modifier was not applied in this date range."
 
 #: ../storage/framework/messages/ab472bd370d348bf4d86818eaffa1dee.php:16
 #: ../storage/framework/messages/f926bf2fbf10a9051b6a3711f68e4c80.php:19
