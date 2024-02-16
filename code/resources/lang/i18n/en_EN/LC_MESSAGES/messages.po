@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2023-12-01 17:00+0100\n"
-"PO-Revision-Date: 2024-02-15 17:02+0000\n"
+"PO-Revision-Date: 2024-02-17 20:02+0000\n"
 "Last-Translator: Pixel-Tux <luis.pardus@gmail.com>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/gasdottong/"
 "translations/en/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.4-dev\n"
+"X-Generator: Weblate 5.4\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -3771,6 +3771,15 @@ msgid ""
 "appare nell'elenco degli ordini solo per gli utenti abilitati, e può essere "
 "modificato</li></ul>"
 msgstr ""
+"Current order status. Can take on the following values:<ul><li>open for "
+"bookings: all users can view the order and submit their bookings. When the "
+"order is in this state, announcement emails are also sent</li><li>closed for "
+"bookings: all users can see the order but can't add or change bookings. "
+"However, authorised users can still make adjustments</li><li>delivered: the "
+"order only appears in the list for authorised users, with no option to "
+"modify values or bookings</li><li>archived: the order is no longer listed "
+"but can be retrieved using the search function</li><li>pending: the order is "
+"visible in the list for authorised users and can be modified</li></ul>"
 
 #: ../storage/framework/messages/7e89c0eddb657758f9afda5d92b954a0.php:27
 msgid "Prenotato Da"
@@ -4159,6 +4168,13 @@ msgid ""
 "gestire prodotti distribuiti in pezzi, prenotabili dagli utenti in numero di "
 "pezzi ma da ordinare e/o pagare presso il fornitore come quantità complessiva"
 msgstr ""
+"If different from 0, each unit is considered as expressed in this quantity. "
+"For example:<ul><li>unit of measurement: kilograms</li><li>quantity per unit:"
+" 0.3</li><li>unit price: 10 euros</li><li>reserved quantity: 1 (thus "
+"understood as 1 piece weighing 0.3 kilograms)</li><li>cost: 1 x 0.3 x 10 = 3 "
+"euros</li></ul>This is helpful for managing products sold by pieces, which "
+"users can reserve in specific quantities but need to be ordered and/or paid "
+"for in total quantity from the supplier"
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:81
 msgid ""
@@ -4169,6 +4185,12 @@ msgid ""
 "specifiche). Da usare per prodotti consegnati in pezzi non sempre uniformi, "
 "come il formaggio o la carne, che sono pesati al momento della consegna."
 msgstr ""
+"A variable product is ordered in pieces whose final size is not exactly "
+"known at the time of booking. These identified products will activate an "
+"additional panel during delivery, to calculate the price based on the "
+"quantity (see specific information). To be used for products delivered in "
+"not always uniform pieces, such as cheese or meat, which are weighed at the "
+"time of delivery."
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:96
 #: ../storage/framework/messages/968df05cc93a3ce597d3d6653f36eaed.php:116
@@ -6170,7 +6192,7 @@ msgstr ""
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:76
 msgid "Addebita automaticamente quota alla scadenza dell'anno sociale"
-msgstr ""
+msgstr "Automatically bill a fee at the close of the financial year"
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:76
 msgid ""
@@ -6224,6 +6246,8 @@ msgid ""
 "L'integrazione Satispay risulta attualmente configurata. Disabilita Satispay "
 "e salva queste impostazioni per ricominciare la procedura di configurazione."
 msgstr ""
+"Your Satispay integration is currently set up. To start over with the "
+"configuration process, simply disable Satispay and save your settings."
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:196
 msgid "Codice di Attivazione"
@@ -6231,7 +6255,7 @@ msgstr "Activation Code"
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:196
 msgid "Puoi ottenere un codice di attivazione dalla tua dashboard Satispay"
-msgstr ""
+msgstr "You can retrieve an activation code from your Satispay dashboard"
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:219
 msgid "Abilita IntegralCES"
@@ -6243,6 +6267,9 @@ msgid ""
 "pagamenti, movimenti...) con una moneta complementare, ed accedere ad alcune "
 "funzioni di integrazione con IntegralCES"
 msgstr ""
+"Enabling this option allows you to handle your accounting tasks (balances, "
+"payments, transactions...) using a complementary currency, and also gain "
+"access to certain integration functions with IntegralCES"
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:258
 msgid "Identificativo conto del GAS"
