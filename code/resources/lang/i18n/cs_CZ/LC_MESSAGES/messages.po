@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2023-12-01 17:29+0100\n"
-"PO-Revision-Date: 2023-12-06 20:05+0000\n"
+"PO-Revision-Date: 2024-02-17 20:02+0000\n"
 "Last-Translator: Pixel-Tux <luis.pardus@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/gasdottong/"
 "translations/cs/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 5.3-dev\n"
+"X-Generator: Weblate 5.4\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -22,7 +22,7 @@ msgstr ""
 #: ../resources/views/aggregate/details.blade.php:8
 #: ../storage/framework/messages/1afe41ceed31f9c9fceae5fd98a1fd54.php:16
 msgid "Invariato"
-msgstr ""
+msgstr "Nezměněný"
 
 #: ../resources/views/auth/register.blade.php:23
 #: ../storage/framework/messages/5c411b5a664d834302cf76d20d338812.php:155
@@ -42,7 +42,7 @@ msgstr ""
 #: ../resources/views/booking/edit.blade.php:13
 #: ../storage/framework/messages/e31b9bb847d456ca965f094f45b46a7c.php:13
 msgid "Annulla Prenotazione"
-msgstr ""
+msgstr "Zrušit rezervaci"
 
 #: ../resources/views/booking/edit.blade.php:18
 #: ../resources/views/movement/modal.blade.php:28
@@ -52,7 +52,7 @@ msgstr ""
 #: ../storage/framework/messages/e31b9bb847d456ca965f094f45b46a7c.php:18
 #: Helpers/Components.php:235
 msgid "Salva"
-msgstr ""
+msgstr "Uložit"
 
 #: ../resources/views/booking/edit.blade.php:111
 #: ../storage/framework/messages/e31b9bb847d456ca965f094f45b46a7c.php:119
