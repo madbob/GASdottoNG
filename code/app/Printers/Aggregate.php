@@ -256,6 +256,7 @@ class Aggregate extends Printer
 	protected function handleTable($obj, $request)
 	{
 		$status = $request['status'] ?? 'pending';
+		$include_missing = $request['include_missing'] ?? 'no';
 		$shipping_place = $request['shipping_place'] ?? 0;
 
 		$required_fields = $request['fields'] ?? [];
@@ -282,6 +283,11 @@ class Aggregate extends Printer
 		$row = $this->formatTableFooter($obj->orders, $user_columns, $all_products, $total_price);
 		$data[] = $row;
 		$data[] = $headers;
+
+		if ($include_missing == 'no') {
+			$data = $this->compressTable($user_columns, $data);
+			$headers = $data[count($data) - 1];
+		}
 
 		/*
 			Genero documento

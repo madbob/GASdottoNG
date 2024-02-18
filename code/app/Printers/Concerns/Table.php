@@ -1,5 +1,10 @@
 <?php
 
+/*
+    Classe per formattare la "Tabella Complessiva Prodotti" di ordini e
+    aggregati
+*/
+
 namespace App\Printers\Concerns;
 
 trait Table
@@ -42,11 +47,10 @@ trait Table
 
         foreach ($order->products as $product) {
             if ($product->variants->isEmpty()) {
+                $quantity = 0;
+
                 if ($booking) {
                     $quantity = $booking->$get_function($product, false, true);
-                }
-                else {
-                    $quantity = 0;
                 }
 
                 $all_products[$product->id] += $quantity;
@@ -54,11 +58,10 @@ trait Table
             }
             else {
                 foreach($product->variant_combos as $combo) {
+                    $quantity = 0;
+
                     if ($booking) {
                         $quantity = $booking->$get_function($combo, false, true);
-                    }
-                    else {
-                        $quantity = 0;
                     }
 
                     $all_products[$product->id . '-' . $combo->id] += $quantity;
@@ -92,5 +95,37 @@ trait Table
 
         $row[] = printablePrice($total_price);
         return $row;
+    }
+
+    /*
+        Per eliminare, ove richiesto, le colonne dei prodotti non prenotati (con
+        prezzo totale = 0)
+    */
+    protected function compressTable($user_columns, $data)
+    {
+        $compressed = [];
+
+        $user_columns_count = count($user_columns);
+        foreach($data as $index => $row) {
+            $compressed[] = array_slice($row, 0, $user_columns_count);
+        }
+
+        /*
+            Qui si assume che la riga coi totali sia la penultima, perché
+            l'ultima contiene una ripetizione della riga di intestazione coi
+            nomi dei prodotti
+        */
+        $reference_row = $data[count($data) - 2];
+        $len = count($reference_row);
+
+        for ($i = count($user_columns); $i < $len; $i++) {
+            if (translateNumberFormat($reference_row[$i]) != 0) {
+                foreach($data as $index => $row) {
+                    $compressed[$index][] = $row[$i];
+                }
+            }
+        }
+
+        return $compressed;
     }
 }
