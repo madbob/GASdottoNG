@@ -110,7 +110,7 @@ trait AttachableTrait
 
         if (is_null($file) == false && $file->isValid()) {
             $filename = $this->storeFile($name, $file);
-            if ($filanem == false) {
+            if ($filename == false) {
                 return false;
             }
 
