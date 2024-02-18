@@ -15,9 +15,8 @@ use App\Attachment;
 
 trait AttachableTrait
 {
-    public function attachments()
+    private function fillDefaultAttachments($relation)
     {
-        $relation = $this->morphMany('App\Attachment', 'target')->orderBy('name', 'asc');
         $attachments = $relation->get();
 
         if ($attachments->isEmpty()) {
@@ -29,6 +28,14 @@ trait AttachableTrait
                 $relation->save($e);
             }
         }
+
+        return $relation;
+    }
+
+    public function attachments()
+    {
+        $relation = $this->morphMany('App\Attachment', 'target')->orderBy('name', 'asc');
+        $relation = $this->fillDefaultAttachments($relation);
 
         if ($this->attachmentPermissionGranted() == false) {
             $user = Auth::user();
@@ -59,21 +66,8 @@ trait AttachableTrait
         return $attachment;
     }
 
-    public function attachByRequest($request, $id = null)
+    private function storeFile(&$name, $file)
     {
-        $file = $request['file'] ?? null;
-        $name = $request['name'] ?? '';
-        $users = $request['users'] ?? [];
-        $to_delete = $request['delete_attachment'] ?? [];
-
-        foreach ($this->attachments()->whereIn('id', $to_delete)->get() as $att) {
-            $att->delete();
-        }
-
-        if (is_null($file) || $file->isValid() == false) {
-            return false;
-        }
-
         $filepath = $this->filesPath();
         if (is_null($filepath)) {
             return false;
@@ -85,14 +79,57 @@ trait AttachableTrait
         }
 
         $file->move($filepath, $filename);
+        return $filename;
+    }
+
+    private function checkDeletes($request)
+    {
+        $to_delete = $request['delete_attachment'] ?? [];
+        $deletables = $this->attachments()->whereIn('id', $to_delete)->get();
+
+        foreach ($deletables as $att) {
+            $att->delete();
+        }
+    }
+
+    private function checkAssignments($request, $attachment)
+    {
+        $users = $request['users'] ?? [];
+        $users = unrollSpecialSelectors($users);
+        $attachment->users()->sync($users);
+        return $attachment;
+    }
+
+    public function attachByRequest($request, $id = null)
+    {
+        $file = $request['file'] ?? null;
+        $url = $request['url'] ?? null;
+        $name = $request['name'] ?? '';
+
+        $this->checkDeletes($request);
+
+        if (is_null($file) == false && $file->isValid()) {
+            $filename = $this->storeFile($name, $file);
+            if ($filanem == false) {
+                return false;
+            }
+
+            $url = '';
+        }
+        else if (is_null($url) == false) {
+            $filename = '';
+        }
+        else {
+            return false;
+        }
 
         $attachment = $this->retrieveAttachment($id);
         $attachment->name = $name;
         $attachment->filename = $filename;
+        $attachment->url = $url;
         $attachment->save();
 
-        $users = unrollSpecialSelectors($users);
-        $attachment->users()->sync($users);
+        $attachment = $this->checkAssignments($request, $attachment);
 
         return $attachment;
     }

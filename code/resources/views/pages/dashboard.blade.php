@@ -78,7 +78,7 @@
                 </div>
                 <div class="list-group list-group-flush">
                     @foreach($currentgas->attachments as $attachment)
-                        <a href="{{ $attachment->download_url }}" class="list-group-item list-group-item-action">
+                        <a href="{{ $attachment->download_url }}" class="list-group-item list-group-item-action" target="_blank">
                             {{ $attachment->name }}
                             <i class="bi-download float-end"></i>
                         </a>
