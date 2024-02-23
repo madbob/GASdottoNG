@@ -19,6 +19,7 @@ use App\User;
 use App\Supplier;
 use App\ModifierType;
 use App\Role;
+use App\Date;
 
 class FixDatabase extends Command
 {
@@ -41,7 +42,8 @@ class FixDatabase extends Command
         */
         foreach(Gas::all() as $gas) {
             $restriction_info = $gas->getConfig('restrict_booking_to_credit');
-            if (is_array($restriction_info) == false) {
+            $restriction_info = json_decode($restriction_info);
+            if (is_object($restriction_info) == false) {
                 $restriction_info = (object) [
                     'enabled' => $restriction_info,
                     'limit' => 0,
@@ -70,5 +72,23 @@ class FixDatabase extends Command
         Schema::table('invoices', function (Blueprint $table) {
             $table->integer('payment_id')->nullable()->change();
         });
+
+        /*
+            Per aggiornare il formato delle date per gli ordini automatici
+        */
+
+        $dates = Date::where('type', 'order')->get();
+        foreach($dates as $d) {
+            $attributes = json_decode($d->description);
+            if (isset($attributes->action) == false) {
+                $attributes->action = 'open';
+                $attributes->offset1 = $attributes->end;
+                $attributes->offset2 = $attributes->shipping;
+                unset($attributes->end);
+                unset($attributes->shipping);
+                $d->description = json_encode($attributes);
+                $d->save();
+            }
+        }
     }
 }

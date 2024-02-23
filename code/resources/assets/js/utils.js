@@ -375,4 +375,19 @@ $.fn.textVal = function(value) {
     }
 };
 
+$.fn.attrBegins = function(s) {
+    var matched = [];
+
+    this.each(function(index) {
+        var elem = this;
+        $.each(this.attributes, function(index, attr) {
+            if (attr.name.indexOf(s) === 0) {
+               matched.push(elem);
+            }
+        });
+    });
+
+    return $(matched);
+};
+
 export default Utils;

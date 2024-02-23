@@ -25,17 +25,23 @@ class OpenOrders extends Command
             try {
                 $all_previous = true;
 
-                foreach($date->all_dates as $d) {
-                    if ($d < $today) {
+                foreach($date->order_dates as $d) {
+                    if ($d->start < $today) {
                         // @phpstan-ignore-next-line
                         $all_previous = $all_previous && true;
                     }
-                    else if ($d > $today) {
+                    else if ($d->start > $today) {
                         $all_previous = false;
                     }
-                    else if ($d == $today) {
+                    else if ($d->start == $today) {
                         $all_previous = false;
 
+                        /*
+                            Non cedere alla tentazione di spostare questo
+                            controllo in cima al ciclo: arrivare fino a qui
+                            serve a verificare se il set di ordini automatici è
+                            scaduto o meno, e nel caso va eliminato
+                        */
                         if ($date->suspend) {
                             continue;
                         }
@@ -45,17 +51,17 @@ class OpenOrders extends Command
                             l'ordine automatico: se già esiste un ordine aperto
                             oggi per il fornitore desiderato, passo oltre
                         */
-                        $supplier = $date->target;
+                        $supplier = $d->target;
                         if (is_null($supplier) || $supplier->orders()->where('start', $today)->count() != 0) {
                             continue;
                         }
 
-                        $aggregable_key = sprintf('%s_%s', $date->end, $date->shipping);
+                        $aggregable_key = sprintf('%s_%s', $d->end, $d->shipping);
                         if (!isset($aggregable[$aggregable_key])) {
                             $aggregable[$aggregable_key] = [];
                         }
 
-                        $aggregable[$aggregable_key][] = $date;
+                        $aggregable[$aggregable_key][] = $d;
                     }
                 }
 
@@ -74,8 +80,6 @@ class OpenOrders extends Command
 
     private function openByDates($aggregable)
     {
-        $today = date('Y-m-d');
-
         foreach($aggregable as $aggr) {
             $aggregate = new Aggregate();
             $aggregate->save();
@@ -89,12 +93,9 @@ class OpenOrders extends Command
                 $order->comment = $date->comment;
                 $order->status = 'suspended';
                 $order->keep_open_packages = 'no';
-                $order->start = $today;
-                $order->end = date('Y-m-d', strtotime($today . ' +' . $date->end . ' days'));
-
-                if (!empty($date->shipping)) {
-                    $order->shipping = date('Y-m-d', strtotime($today . ' +' . $date->shipping . ' days'));
-                }
+                $order->start = $date->start;
+                $order->end = $date->end;
+                $order->shipping = $date->shipping;
 
                 Log::debug('Apro ordine automatico per ' . $supplier->name);
                 $order->save();

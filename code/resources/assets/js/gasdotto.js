@@ -13,7 +13,6 @@ require('blueimp-file-upload');
 import Cookies from 'js-cookie';
 import { TourGuideClient } from "@sjmc11/tourguidejs";
 
-require('./aggregation');
 require('./jquery.dynamictree');
 require('./popovers');
 require('./translate');
@@ -25,6 +24,7 @@ import Triggers from "./triggers";
 import Filters from "./filters";
 import Products from "./products";
 import Bookings from "./bookings";
+import Orders from "./orders";
 import Roles from "./roles";
 import Modifiers from "./modifiers";
 import Movements from "./movements";
@@ -77,7 +77,6 @@ function generalInit(container) {
     });
 
     $('.dynamic-tree-box', container).dynamictree();
-    $('#orderAggregator', container).aggregator();
 
     $('.completion-rows', container).each(function() {
         completionRowsInit($(this));
@@ -145,6 +144,7 @@ function generalInit(container) {
     Lists.init(container);
     Widgets.init(container);
     Bookings.init(container);
+    Orders.init(container);
     Triggers.init(container);
     Filters.init(container);
     Roles.init(container);
@@ -642,64 +642,6 @@ $(document).ready(function() {
     });
 
     /*
-    	Gestione ordini
-    */
-
-    $('body').on('click', '.order-summary .toggle-product-abilitation', function() {
-        $('.order-summary tr.product-disabled').toggle();
-    })
-    .on('change', '.order-summary tr .enabling-toggle', function() {
-        var row = $(this).closest('tr');
-
-        if ($(this).prop('checked') == false) {
-            var quantity = utils.parseFloatC(row.find('.order-summary-product-price').text());
-            if (quantity != 0) {
-                if (confirm(_('Ci sono prenotazioni attive per questo prodotto. Sei sicuro di volerlo disabilitare?')) == false) {
-                    $(this).prop('checked', true);
-                    return;
-                }
-            }
-        }
-
-        row.toggleClass('product-disabled');
-    })
-    .on('change', '.order-document-download-modal input[name=send_mail]', function() {
-        var status = $(this).prop('checked');
-        var form = $(this).closest('.order-document-download-modal').find('form');
-        var submit = utils.j().submitButton(form);
-
-        if (status) {
-            submit.text(_('Invia Mail'));
-        }
-        else {
-            submit.text(_('Salva'));
-        }
-
-        form.toggleClass('inner-form', status);
-    });
-
-    $('body').on('change', '#createOrder select[name^=supplier_id]', function() {
-        utils.postAjax({
-            url: 'dates/query',
-            method: 'GET',
-            data: {
-                supplier_id: $(this).val()
-            },
-            dataType: 'HTML',
-            success: function(data) {
-                data = $(data);
-                $('#createOrder .supplier-future-dates').empty().append(data);
-                utils.j().initElements(data);
-            }
-        });
-    });
-
-    $('body').on('click', '.supplier-future-dates li', function() {
-        var date = $(this).text();
-        $(this).closest('form').find('input[name=shipping]').val(date);
-    });
-
-    /*
     	Interazioni dinamiche sul pannello prenotazioni
     */
 
@@ -803,6 +745,7 @@ $(document).ready(function() {
     });
 
     Bookings.initOnce();
+    Orders.initOnce();
 
 	/*
 		Onboarding
