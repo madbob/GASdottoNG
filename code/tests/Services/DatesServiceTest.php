@@ -4,9 +4,16 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Artisan;
+
+use Carbon\Carbon;
 
 use App\Exceptions\AuthException;
-use Artisan;
+use App\Role;
+use App\User;
+use App\Supplier;
+use App\Date;
+use App\Order;
 
 class DatesServiceTest extends TestCase
 {
@@ -16,13 +23,13 @@ class DatesServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->supplier1 = \App\Supplier::factory()->create();
-        $this->supplier2 = \App\Supplier::factory()->create();
-        $this->supplier3 = \App\Supplier::factory()->create();
+        $this->supplier1 = Supplier::factory()->create();
+        $this->supplier2 = Supplier::factory()->create();
+        $this->supplier3 = Supplier::factory()->create();
 
-        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
 
-        $role = \App\Role::factory()->create([
+        $role = Role::factory()->create([
             'actions' => 'supplier.orders,notifications.admin'
         ]);
 
@@ -30,7 +37,7 @@ class DatesServiceTest extends TestCase
         $this->userAdmin->addRole($role->id, $this->supplier2);
         $this->userAdmin->addRole($role->id, $this->gas);
 
-        $this->userReferrer = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userReferrer = User::factory()->create(['gas_id' => $this->gas->id]);
         $this->userReferrer->addRole($role->id, $this->supplier3);
     }
 
@@ -60,7 +67,7 @@ class DatesServiceTest extends TestCase
             'type' => ['confirmed', 'temp'],
         ]);
 
-        $dates = \App\Date::all();
+        $dates = Date::all();
         $this->assertEquals($dates->count(), 2);
 
         $this->nextRound();
@@ -76,7 +83,7 @@ class DatesServiceTest extends TestCase
             'type' => ['confirmed'],
         ]);
 
-        $dates = \App\Date::all();
+        $dates = Date::all();
         $this->assertEquals($dates->count(), 3);
 
         $this->nextRound();
@@ -92,19 +99,15 @@ class DatesServiceTest extends TestCase
             'type' => [],
         ]);
 
-        $dates = \App\Date::all();
+        $dates = Date::all();
         $this->assertEquals($dates->count(), 1);
     }
 
-    /*
-        Salvataggio e apertura ordini ricorrenti
-    */
-    public function testOrders()
+    private function getCurrentWeekday()
     {
-        $this->actingAs($this->userAdmin);
+        $weekday = null;
 
         $days = localeDays();
-        $weekday = null;
         $today = mb_strtolower(date('l'));
         foreach($days as $it => $en) {
             if ($en == $today) {
@@ -113,23 +116,35 @@ class DatesServiceTest extends TestCase
             }
         }
 
-        $orders = \App\Order::all();
+        return $weekday;
+    }
+
+    /*
+        Salvataggio e apertura ordini ricorrenti
+    */
+    public function testOrders()
+    {
+        $this->actingAs($this->userAdmin);
+        $weekday = $this->getCurrentWeekday();
+
+        $orders = Order::all();
         $this->assertEquals($orders->count(), 0);
 
         app()->make('DatesService')->updateOrders([
             'id' => [''],
             'target_id' => [$this->supplier1->id],
             'recurring' => [$weekday . ' - Ogni due Settimane - ' . printableDate(date('Y-m-d')) . ' - ' . printableDate(date('Y-m-d', strtotime('+6 months')))],
-            'end' => [10],
-            'shipping' => [11],
+            'action' => ['open'],
+            'first_offset' => [10],
+            'second_offset' => [11],
             'comment' => [''],
             'suspend' => [],
         ]);
 
-        $dates = \App\Date::all();
+        $dates = Date::all();
         $this->assertEquals($dates->count(), 1);
 
-        $orders = \App\Order::where('status', 'open')->get();
+        $orders = Order::where('status', 'open')->get();
         $this->assertEquals($orders->count(), 1);
         foreach($orders as $o) {
             $this->assertEquals($o->supplier_id, $this->supplier1->id);
@@ -139,7 +154,92 @@ class DatesServiceTest extends TestCase
         }
 
         Artisan::call('open:orders');
-        $orders = \App\Order::where('status', 'open')->get();
+        $orders = Order::where('status', 'open')->get();
         $this->assertEquals($orders->count(), 1);
+    }
+
+    public function testRecurrences()
+    {
+        $this->actingAs($this->userAdmin);
+        $recurrence = 'Lunedì - Secondo del Mese - ' . printableDate(date('Y-m-d')) . ' - ' . printableDate(date('Y-m-d', strtotime('+6 months')));
+
+        app()->make('DatesService')->updateOrders([
+            'id' => ['', '', ''],
+            'target_id' => [$this->supplier1->id, $this->supplier1->id, $this->supplier1->id],
+            'recurring' => [$recurrence, $recurrence, $recurrence],
+            'action' => ['open', 'close', 'ship'],
+            'first_offset' => [10, 20, 15],
+            'second_offset' => [11, 5, 5],
+            'comment' => ['', 'pippo', ''],
+            'suspend' => [],
+        ]);
+
+        $dates = Date::all();
+        $this->assertEquals($dates->count(), 3);
+        $reference_monday = Carbon::parse('second monday of next month');
+        $reference_monday_formatted = $reference_monday->format('Y-m-d');
+
+        foreach($dates as $index => $date) {
+            $this->assertEquals($this->supplier1->id, $date->target->id);
+
+            $orders = $date->order_dates;
+            $this->assertTrue(count($orders) > 0);
+            $found = false;
+
+            switch($index) {
+                case 0:
+                    $this->assertEquals('open', $date->action);
+                    $this->assertEquals(10, $date->first_offset);
+                    $this->assertEquals(11, $date->second_offset);
+                    $this->assertEquals('', $date->comment);
+
+                    foreach($orders as $order) {
+                        if ($order->start == $reference_monday_formatted) {
+                            $this->assertEquals($reference_monday->copy()->addDays(10)->format('Y-m-d'), $order->end);
+                            $this->assertEquals($reference_monday->copy()->addDays(11)->format('Y-m-d'), $order->shipping);
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    break;
+
+                case 1:
+                    $this->assertEquals('close', $date->action);
+                    $this->assertEquals(20, $date->first_offset);
+                    $this->assertEquals(5, $date->second_offset);
+                    $this->assertEquals('pippo', $date->comment);
+
+                    foreach($orders as $order) {
+                        if ($order->end == $reference_monday_formatted) {
+                            $this->assertEquals($reference_monday->copy()->subDays(20)->format('Y-m-d'), $order->start);
+                            $this->assertEquals($reference_monday->copy()->addDays(5)->format('Y-m-d'), $order->shipping);
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    break;
+
+                case 2:
+                    $this->assertEquals('ship', $date->action);
+                    $this->assertEquals(15, $date->first_offset);
+                    $this->assertEquals(5, $date->second_offset);
+                    $this->assertEquals('', $date->comment);
+
+                    foreach($orders as $order) {
+                        if ($order->shipping == $reference_monday_formatted) {
+                            $this->assertEquals($reference_monday->copy()->subDays(15)->format('Y-m-d'), $order->start);
+                            $this->assertEquals($reference_monday->copy()->subDays(5)->format('Y-m-d'), $order->end);
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    break;
+            }
+
+            $this->assertTrue($found);
+        }
     }
 }
