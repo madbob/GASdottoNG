@@ -121,6 +121,7 @@ class Date extends Model implements Datable
 
         foreach($dates as $date) {
             $d = Carbon::parse($date);
+            $node = null;
 
             switch($action) {
                 case 'open':
@@ -151,9 +152,11 @@ class Date extends Model implements Datable
                     break;
             }
 
-            $node->target = $this->target;
-            $node->comment = $this->comment;
-            $ret[] = $node;
+            if ($node) {
+                $node->target = $this->target;
+                $node->comment = $this->comment;
+                $ret[] = $node;
+            }
         }
 
         return $ret;
