@@ -26,7 +26,7 @@ class FixDatabase extends Command
     protected $signature = 'fix:database';
     protected $description = 'Sistema le informazioni sul DB per completare il deploy';
 
-    public function handle()
+    private function doAlways()
     {
         /*
             I seeder dei tipi di movimento contabile e dei tipi di modificatore
@@ -35,6 +35,11 @@ class FixDatabase extends Command
         */
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
+    }
+
+    public function handle()
+    {
+        $this->doAlways();
 
         /*
             Per revisionare le configurazioni relative ai limiti di credito per
@@ -71,6 +76,11 @@ class FixDatabase extends Command
 
         Schema::table('invoices', function (Blueprint $table) {
             $table->integer('payment_id')->nullable()->change();
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('fee_id')->nullable()->default(null)->change();
+            $table->integer('deposit_id')->nullable()->default(null)->change();
         });
 
         /*

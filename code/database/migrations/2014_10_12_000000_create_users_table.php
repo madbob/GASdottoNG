@@ -32,8 +32,8 @@ class CreateUsersTable extends Migration
             $table->string('payment_method_id')->default('none');
             $table->text('rid')->nullable();
 
-            $table->integer('fee_id')->default(0);
-            $table->integer('deposit_id')->default(0);
+            $table->integer('fee_id')->nullable()->default(null);
+            $table->integer('deposit_id')->nullable()->default(null);
 
             $table->rememberToken();
 

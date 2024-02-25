@@ -163,16 +163,28 @@ class DatesServiceTest extends TestCase
         $this->actingAs($this->userAdmin);
         $recurrence = 'Lunedì - Secondo del Mese - ' . printableDate(date('Y-m-d')) . ' - ' . printableDate(date('Y-m-d', strtotime('+6 months')));
 
+        /*
+            Reminder: per le ricorrenze di chiusura e consegna si raccomanda si
+            usare offset inferiori ai 7 giorni, in modo da non tornare indietro
+            oltre una settimana.
+            Così si minimizza - ma non si elimina del tutto - il rischio di far
+            coincidere la data di apertura con quella odierna, che farebbe
+            scattare l'apertura di un ordine automatico, che modificherebbe le
+            prossime date di riferimento, che renderebbe invalidi i test
+            successivi
+        */
         app()->make('DatesService')->updateOrders([
             'id' => ['', '', ''],
             'target_id' => [$this->supplier1->id, $this->supplier1->id, $this->supplier1->id],
             'recurring' => [$recurrence, $recurrence, $recurrence],
             'action' => ['open', 'close', 'ship'],
-            'first_offset' => [10, 20, 15],
-            'second_offset' => [11, 5, 5],
+            'first_offset' => [10, 6, 5],
+            'second_offset' => [11, 3, 2],
             'comment' => ['', 'pippo', ''],
             'suspend' => [],
         ]);
+
+        $this->nextRound();
 
         $dates = Date::all();
         $this->assertEquals($dates->count(), 3);
@@ -181,7 +193,6 @@ class DatesServiceTest extends TestCase
 
         foreach($dates as $index => $date) {
             $this->assertEquals($this->supplier1->id, $date->target->id);
-
             $orders = $date->order_dates;
             $this->assertTrue(count($orders) > 0);
             $found = false;
@@ -202,40 +213,43 @@ class DatesServiceTest extends TestCase
                         }
                     }
 
+                    $this->assertTrue($found);
                     break;
 
                 case 1:
                     $this->assertEquals('close', $date->action);
-                    $this->assertEquals(20, $date->first_offset);
-                    $this->assertEquals(5, $date->second_offset);
+                    $this->assertEquals(6, $date->first_offset);
+                    $this->assertEquals(3, $date->second_offset);
                     $this->assertEquals('pippo', $date->comment);
 
                     foreach($orders as $order) {
                         if ($order->end == $reference_monday_formatted) {
-                            $this->assertEquals($reference_monday->copy()->subDays(20)->format('Y-m-d'), $order->start);
-                            $this->assertEquals($reference_monday->copy()->addDays(5)->format('Y-m-d'), $order->shipping);
+                            $this->assertEquals($reference_monday->copy()->subDays(6)->format('Y-m-d'), $order->start);
+                            $this->assertEquals($reference_monday->copy()->addDays(3)->format('Y-m-d'), $order->shipping);
                             $found = true;
                             break;
                         }
                     }
 
+                    $this->assertTrue($found);
                     break;
 
                 case 2:
                     $this->assertEquals('ship', $date->action);
-                    $this->assertEquals(15, $date->first_offset);
-                    $this->assertEquals(5, $date->second_offset);
+                    $this->assertEquals(5, $date->first_offset);
+                    $this->assertEquals(2, $date->second_offset);
                     $this->assertEquals('', $date->comment);
 
                     foreach($orders as $order) {
                         if ($order->shipping == $reference_monday_formatted) {
-                            $this->assertEquals($reference_monday->copy()->subDays(15)->format('Y-m-d'), $order->start);
-                            $this->assertEquals($reference_monday->copy()->subDays(5)->format('Y-m-d'), $order->end);
+                            $this->assertEquals($reference_monday->copy()->subDays(5)->format('Y-m-d'), $order->start);
+                            $this->assertEquals($reference_monday->copy()->subDays(2)->format('Y-m-d'), $order->end);
                             $found = true;
                             break;
                         }
                     }
 
+                    $this->assertTrue($found);
                     break;
             }
 

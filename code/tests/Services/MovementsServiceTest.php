@@ -4,12 +4,15 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-
-use Artisan;
-
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
+use App\Movement;
+use App\User;
+use App\Balance;
+use App\Currency;
 
 class MovementsServiceTest extends TestCase
 {
@@ -21,9 +24,9 @@ class MovementsServiceTest extends TestCase
 
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'movements.admin');
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'movements.view');
-        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
 
-        $this->sample_movement = \App\Movement::factory()->create([
+        $this->sample_movement = Movement::factory()->create([
             'type' => 'donation-from-gas',
             'method' => 'bank',
             'sender_id' => $this->gas->id,
@@ -97,16 +100,16 @@ class MovementsServiceTest extends TestCase
     {
         $this->testStore();
 
-        $previous_balances = \App\Balance::all()->count();
+        $previous_balances = Balance::all()->count();
 
         app()->make('MovementsService')->closeBalance([
             'date' => printableDate(date('Y-m-d')),
         ]);
 
-        $now_balances = \App\Balance::all()->count();
+        $now_balances = Balance::all()->count();
         $this->assertEquals($previous_balances * 2, $now_balances);
 
-        $now_balances = \App\Balance::where('current', true)->count();
+        $now_balances = Balance::where('current', true)->count();
         $this->assertEquals($previous_balances, $now_balances);
     }
 
@@ -236,9 +239,9 @@ class MovementsServiceTest extends TestCase
             'amount' => $this->userWithNoPerms->gas->getConfig('annual_fee_amount'),
         ));
 
-        $reloaded = \App\User::find($this->userWithNoPerms->id);
+        $reloaded = User::find($this->userWithNoPerms->id);
         $this->assertNotEquals($reloaded->fee_id, 0);
-        $fee = \App\Movement::find($reloaded->fee_id);
+        $fee = Movement::find($reloaded->fee_id);
         $this->assertEquals($fee->amount, 5);
 
         $expiration = date('Y-m-d', strtotime('-5 days'));
@@ -251,6 +254,40 @@ class MovementsServiceTest extends TestCase
         $new_date = $this->userWithNoPerms->gas->getConfig('year_closing');
         $expiration = date('Y-m-d', strtotime($expiration . ' +1 years'));
         $this->assertEquals($new_date, $expiration);
+    }
+
+    /*
+        Cancellazione manuale quota
+    */
+    public function testRemoveUserFees()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+
+        $this->userWithNoPerms->gas->setConfig('annual_fee_amount', 5);
+
+        app()->make('MovementsService')->store(array(
+            'type' => 'annual-fee',
+            'method' => 'bank',
+            'target_id' => $this->userWithNoPerms->gas->id,
+            'target_type' => 'App\Gas',
+            'sender_id' => $this->userWithNoPerms->id,
+            'sender_type' => 'App\User',
+            'amount' => $this->userWithNoPerms->gas->getConfig('annual_fee_amount'),
+        ));
+
+        $this->nextRound();
+
+        $reloaded = User::find($this->userWithNoPerms->id);
+        $this->assertNotEquals($reloaded->fee_id, 0);
+        $fee = Movement::find($reloaded->fee_id);
+        $this->assertEquals($fee->amount, 5);
+
+        app()->make('MovementsService')->destroy($reloaded->fee_id);
+
+        $this->nextRound();
+
+        $reloaded = User::find($this->userWithNoPerms->id);
+        $this->assertNull($reloaded->fee_id);
     }
 
     /*
@@ -267,7 +304,7 @@ class MovementsServiceTest extends TestCase
         ]);
 
         $currency_default = defaultCurrency();
-        $currency_integralces = \App\Currency::where('context', 'integralces')->first();
+        $currency_integralces = Currency::where('context', 'integralces')->first();
 
         app()->make('MovementsService')->store(array(
             'type' => 'donation-from-gas',
@@ -281,7 +318,7 @@ class MovementsServiceTest extends TestCase
         $this->assertEquals($this->sample_movement->amount * -1, $this->gas->currentBalanceAmount($currency_default));
         $this->assertEquals(-100, $this->gas->currentBalanceAmount($currency_integralces));
 
-        $integralces_movement = \App\Movement::where('currency_id', $currency_integralces->id)->first();
+        $integralces_movement = Movement::where('currency_id', $currency_integralces->id)->first();
         app()->make('MovementsService')->update($integralces_movement->id, array(
             'currency_id' => $currency_default->id,
         ));
