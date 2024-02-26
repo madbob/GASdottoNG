@@ -20,6 +20,7 @@
 
 namespace App;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
@@ -110,7 +111,7 @@ class Date extends Model implements Datable
     {
         $ret = [];
 
-        if ($this->type != 'order') {
+        if ($this->type != 'order' || empty($this->action)) {
             return $ret;
         }
 
@@ -120,42 +121,46 @@ class Date extends Model implements Datable
         $offset2 = $this->second_offset;
 
         foreach($dates as $date) {
-            $d = Carbon::parse($date);
-            $node = null;
+            try {
+                $d = Carbon::parse($date);
 
-            switch($action) {
-                case 'open':
-                    $node = (object) [
-                        'start' => $d->format('Y-m-d'),
-                        'end' => $d->copy()->addDays($offset1)->format('Y-m-d'),
-                        'shipping' => $d->copy()->addDays($offset2)->format('Y-m-d'),
-                    ];
+                switch ($action) {
+                    case 'open':
+                        $node = (object)[
+                            'start' => $d->format('Y-m-d'),
+                            'end' => $d->copy()->addDays($offset1)->format('Y-m-d'),
+                            'shipping' => $d->copy()->addDays($offset2)->format('Y-m-d'),
+                        ];
 
-                    break;
+                        break;
 
-                case 'close':
-                    $node = (object) [
-                        'start' => $d->copy()->subDays($offset1)->format('Y-m-d'),
-                        'end' => $d->format('Y-m-d'),
-                        'shipping' => $d->copy()->addDays($offset2)->format('Y-m-d'),
-                    ];
+                    case 'close':
+                        $node = (object)[
+                            'start' => $d->copy()->subDays($offset1)->format('Y-m-d'),
+                            'end' => $d->format('Y-m-d'),
+                            'shipping' => $d->copy()->addDays($offset2)->format('Y-m-d'),
+                        ];
 
-                    break;
+                        break;
 
-                case 'ship':
-                    $node = (object) [
-                        'start' => $d->copy()->subDays($offset1)->format('Y-m-d'),
-                        'end' => $d->copy()->subDays($offset2)->format('Y-m-d'),
-                        'shipping' => $d->format('Y-m-d'),
-                    ];
+                    case 'ship':
+                        $node = (object)[
+                            'start' => $d->copy()->subDays($offset1)->format('Y-m-d'),
+                            'end' => $d->copy()->subDays($offset2)->format('Y-m-d'),
+                            'shipping' => $d->format('Y-m-d'),
+                        ];
 
-                    break;
-            }
+                        break;
+                    default:
+                        throw new Exception('Rilevato valore non valido per la variabile $action: ' . $action);
+                }
 
-            if ($node) {
                 $node->target = $this->target;
                 $node->comment = $this->comment;
                 $ret[] = $node;
+
+            } catch (Exception $e) {
+                \Log::error($e->getMessage());
             }
         }
 
