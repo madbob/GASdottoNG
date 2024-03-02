@@ -41,8 +41,9 @@ trait ContactableTrait
         $contacts = [];
 
         foreach($ids as $index => $id) {
-            if (empty($values[$index]))
+            if (empty($values[$index])) {
                 continue;
+            }
 
             if (empty($id)) {
                 $contact = new Contact();
@@ -103,20 +104,14 @@ trait ContactableTrait
     */
     public function getEmailAttribute()
     {
-        $contact = $this->contacts()->where('type', 'email')->first();
-        if ($contact != null)
-            return $contact->value;
-        else
-            return '';
+        $contacts = $this->getContactsByType('email');
+        return $contacts[0] ?? '';
     }
 
     public function getMobileAttribute()
     {
-        $contact = $this->contacts()->where('type', 'mobile')->first();
-        if ($contact != null)
-            return $contact->value;
-        else
-            return '';
+        $contacts = $this->getContactsByType('mobile');
+        return $contacts[0] ?? '';
     }
 
     public function getAddress()
@@ -134,9 +129,16 @@ trait ContactableTrait
     {
         $ret = [];
 
-        $contacts = $this->contacts()->where('type', $type)->get();
-        foreach($contacts as $contact)
-            $ret[] = $contact->value;
+        if (is_array($type) == false) {
+            $type = [$type];
+        }
+
+        foreach($type as $t) {
+            $contacts = $this->contacts()->where('type', $t)->get();
+            foreach($contacts as $contact) {
+                $ret[] = $contact->value;
+            }
+        }
 
         return $ret;
     }
