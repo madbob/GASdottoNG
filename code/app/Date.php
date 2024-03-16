@@ -22,9 +22,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Auth;
 
-use Auth;
-use Log;
+use Carbon\Carbon;
 
 use App\Models\Concerns\Datable;
 
@@ -67,7 +67,7 @@ class Date extends Model implements Datable
                 $name = $this->target->name;
             }
             else {
-                Log::error('Impossibile recuperare nome del fornitore assegnato alla data ' . $this->id);
+                \Log::error('Impossibile recuperare nome del fornitore assegnato alla data ' . $this->id);
                 $name = '???';
             }
 
@@ -80,19 +80,86 @@ class Date extends Model implements Datable
         }
     }
 
-    /*
-        Per motivi ignoti (collisione con qualche altra definizione?), tavolta
-        l'attributo dates restituisce una variabile vuota. Meglio cambiare nome
-        in all_dates
-    */
     public function getAllDatesAttribute()
     {
         if (empty($this->recurring)) {
             return [$this->date];
         }
         else {
-            return unrollPeriodic(json_decode($this->recurring));
+            $dates = unrollPeriodic(json_decode($this->recurring));
+
+            \Log::debug($this->type . ' - ' . $this->action);
+
+            if ($this->type == 'order' && $this->action != 'open') {
+                $offset = $this->first_offset;
+                $shifted = [];
+
+                foreach($dates as $date) {
+                    \Log::debug($date . ' / ' . Carbon::parse($date)->subDays($offset)->format('Y-m-d'));
+                    $shifted[] = Carbon::parse($date)->subDays($offset)->format('Y-m-d');
+                }
+
+                $dates = $shifted;
+            }
+
+            return $dates;
         }
+    }
+
+    public function getOrderDatesAttribute()
+    {
+        $ret = [];
+
+        if ($this->type != 'order') {
+            return $ret;
+        }
+
+        $dates = unrollPeriodic(json_decode($this->recurring));
+        $action = $this->action;
+        $offset1 = $this->first_offset;
+        $offset2 = $this->second_offset;
+
+        foreach($dates as $date) {
+            $d = Carbon::parse($date);
+            $node = null;
+
+            switch($action) {
+                case 'open':
+                    $node = (object) [
+                        'start' => $d->format('Y-m-d'),
+                        'end' => $d->copy()->addDays($offset1)->format('Y-m-d'),
+                        'shipping' => $d->copy()->addDays($offset2)->format('Y-m-d'),
+                    ];
+
+                    break;
+
+                case 'close':
+                    $node = (object) [
+                        'start' => $d->copy()->subDays($offset1)->format('Y-m-d'),
+                        'end' => $d->format('Y-m-d'),
+                        'shipping' => $d->copy()->addDays($offset2)->format('Y-m-d'),
+                    ];
+
+                    break;
+
+                case 'ship':
+                    $node = (object) [
+                        'start' => $d->copy()->subDays($offset1)->format('Y-m-d'),
+                        'end' => $d->copy()->subDays($offset2)->format('Y-m-d'),
+                        'shipping' => $d->format('Y-m-d'),
+                    ];
+
+                    break;
+            }
+
+            if ($node) {
+                $node->target = $this->target;
+                $node->comment = $this->comment;
+                $ret[] = $node;
+            }
+        }
+
+        return $ret;
     }
 
     public function printableName()
@@ -115,14 +182,19 @@ class Date extends Model implements Datable
         return $attributes->$name ?? '';
     }
 
-    public function getEndAttribute()
+    public function getActionAttribute()
     {
-        return $this->internalAttribute('end');
+        return $this->internalAttribute('action');
     }
 
-    public function getShippingAttribute()
+    public function getFirstOffsetAttribute()
     {
-        return $this->internalAttribute('shipping');
+        return $this->internalAttribute('offset1');
+    }
+
+    public function getSecondOffsetAttribute()
+    {
+        return $this->internalAttribute('offset2');
     }
 
     public function getCommentAttribute()

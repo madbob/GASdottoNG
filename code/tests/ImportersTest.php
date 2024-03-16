@@ -227,9 +227,12 @@ class ImportersTest extends TestCase
         $user1 = User::where('username', 'mario')->first();
         $this->assertNotNull($user1);
         $this->assertEquals('mario@example.com', $user1->email);
+        $this->assertEquals('', $user1->mobile);
 
         $user2 = User::where('username', 'giovanni')->first();
         $this->assertNotNull($user2);
+        $contacts = $user2->getContactsByType(['phone', 'mobile']);
+        $this->assertEquals(1, count($contacts));
 
         Notification::assertSentTo([$user1, $user2], ManualWelcomeMessage::class);
         Notification::assertCount(2);

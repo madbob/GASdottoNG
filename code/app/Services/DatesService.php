@@ -136,8 +136,9 @@ class DatesService extends BaseService
             $ids = $request['id'];
             $targets = $request['target_id'];
             $recurrings = $request['recurring'];
-            $ends = $request['end'];
-            $shippings = $request['shipping'];
+            $actions = $request['action'];
+            $first_offsets = $request['first_offset'];
+            $second_offsets = $request['second_offset'];
             $comments = $request['comment'];
             $suspends = $request['suspend'] ?? [];
 
@@ -152,8 +153,9 @@ class DatesService extends BaseService
                 $date->recurring = json_encode(decodePeriodic($recurrings[$index]));
 
                 $date->description = json_encode([
-                    'end' => $ends[$index],
-                    'shipping' => $shippings[$index],
+                    'action' => $actions[$index],
+                    'offset1' => $first_offsets[$index],
+                    'offset2' => $second_offsets[$index],
                     'comment' => $comments[$index],
                     'suspend' => in_array($id, $suspends) ? 'true' : 'false',
                 ]);

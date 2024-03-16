@@ -1,54 +1,3 @@
-<script>
-    window.dates_events = [
-        @foreach(easyFilterOrders(null, null, null, ['open', 'closed']) as $a)
-            @if($a->shipping)
-                {
-                    title: '{!! join(', ', $a->orders->reduce(function($carry, $item) { $carry[] = addslashes($item->supplier->name); return $carry; }, [])) !!}',
-                    date: '{{ $a->shipping }}',
-                    className: 'calendar-shipping-{{ $a->status }}',
-                    url: '{{ $a->getBookingURL() }}'
-                },
-            @endif
-        @endforeach
-
-        @foreach(App\Date::localGas()->with(['target'])->get() as $d)
-            @if($d->type == 'order')
-                @foreach($d->all_dates as $dat)
-                    {
-                        title: '{{ str_replace("\n", " ", str_replace("\r", '', str_replace("'", "\'", $d->calendar_string))) }}',
-                        date: '{{ date('Y-m-d', strtotime($dat . ' +' . $d->shipping . ' days')) }}',
-                        className: 'calendar-date-{{ $d->type }}'
-                    },
-                @endforeach
-            @else
-                @foreach($d->all_dates as $dat)
-                    {
-                        title: '{{ str_replace("\n", " ", str_replace("\r", '', str_replace("'", "\'", $d->calendar_string))) }}',
-                        date: '{{ $dat }}',
-                        className: 'calendar-date-{{ $d->type }}'
-
-                        @if($d->type == 'internal')
-                            , url: '{{ route('notifications.index') . '#' . $d->id }}'
-                        @endif
-                    },
-                @endforeach
-            @endif
-        @endforeach
-    ];
-
-    window.translated_days = [
-        @foreach(localeDays() as $day => $offset)
-            '{{ ucwords(substr($day, 0, 3)) }}',
-        @endforeach
-    ];
-
-    window.translated_months = [
-        @foreach(localeMonths() as $month => $offset)
-            '{{ ucwords(substr($month, 0, 3)) }}',
-        @endforeach
-    ];
-</script>
-
 @php
 
 $events = [];
@@ -66,10 +15,10 @@ foreach (easyFilterOrders(null, null, null, ['open', 'closed']) as $a) {
 
 foreach (App\Date::localGas()->with(['target'])->get() as $d) {
     if ($d->type == 'order') {
-        foreach($d->all_dates as $dat) {
+        foreach($d->order_dates as $dat) {
             $events[] = (object) [
                 'title' => str_replace("\n", " ", str_replace("\r", '', str_replace("'", "\'", $d->calendar_string))),
-                'date' => date('Y-m-d', strtotime($dat . ' +' . $d->shipping . ' days')),
+                'date' => $dat->shipping,
                 'className' => 'calendar-date-' . $d->type,
             ];
         }

@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
-use DB;
-use Auth;
-use Hash;
-use Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 use App\User;
 use App\Aggregate;
@@ -26,26 +23,13 @@ class CommonsController extends Controller
         $user->last_login = date('Y-m-d G:i:s');
         $user->save();
 
-        /*
-            In mancanza d'altro, eseguo qui lo scheduling delle operazioni
-            periodiche.
-            TODO: spostare queste operazioni in cron
-        */
-        Artisan::call('check:fees');
-        Artisan::call('close:orders');
-        Artisan::call('open:orders');
-        Artisan::call('remind:orders');
-
-        if ($user->gas->getConfig('es_integration')) {
-            Artisan::call('check:remote_products');
-        }
-
         $data['notifications'] = $user->notifications()->where('start_date', '<=', date('Y-m-d'))->where('end_date', '>=', date('Y-m-d'))->get();
 
         $opened = getOrdersByStatus($user, 'open');
         $opened = $opened->sort(function($a, $b) {
             return strcmp($a->end, $b->end);
         });
+
         $data['opened'] = $opened;
 
         $shipping = getOrdersByStatus($user, 'closed');
@@ -62,9 +46,11 @@ class CommonsController extends Controller
         $password = $request->input('password');
         $user = $request->user();
         $test = Auth::attempt(['username' => $user->username, 'password' => $password]);
-        if ($test)
+        if ($test) {
             return 'ok';
-        else
+        }
+        else {
             return 'ko';
+        }
     }
 }

@@ -33,6 +33,16 @@ class Attachment extends Model
         return $this->belongsToMany('App\User', 'attachments_access');
     }
 
+    public function getTypeAttribute()
+    {
+        if (empty($this->url) == false) {
+            return 'url';
+        }
+        else {
+            return 'file';
+        }
+    }
+
     public function hasAccess($user = null)
     {
         if ($this->users->isEmpty()) {
@@ -89,7 +99,7 @@ class Attachment extends Model
 
     public function getDownloadUrlAttribute()
     {
-        if (!empty($this->url)) {
+        if (empty($this->url) == false) {
             return $this->url;
         } else {
             return url('attachments/download/'.$this->id);

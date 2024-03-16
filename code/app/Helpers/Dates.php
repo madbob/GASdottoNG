@@ -93,8 +93,9 @@ function decodePeriodic($value)
         return '';
 
     $values = explode(' - ', $value);
-    if (count($values) < 4)
+    if (count($values) < 4) {
         return '';
+    }
 
     $ret = (object) [
         'day' => '',

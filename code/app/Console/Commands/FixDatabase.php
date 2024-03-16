@@ -19,13 +19,14 @@ use App\User;
 use App\Supplier;
 use App\ModifierType;
 use App\Role;
+use App\Date;
 
 class FixDatabase extends Command
 {
     protected $signature = 'fix:database';
     protected $description = 'Sistema le informazioni sul DB per completare il deploy';
 
-    public function handle()
+    private function doAlways()
     {
         /*
             I seeder dei tipi di movimento contabile e dei tipi di modificatore
@@ -34,6 +35,11 @@ class FixDatabase extends Command
         */
         Artisan::call('db:seed', ['--force' => true, '--class' => 'MovementTypesSeeder']);
         Artisan::call('db:seed', ['--force' => true, '--class' => 'ModifierTypesSeeder']);
+    }
+
+    public function handle()
+    {
+        $this->doAlways();
 
         /*
             Per revisionare le configurazioni relative ai limiti di credito per
@@ -41,7 +47,8 @@ class FixDatabase extends Command
         */
         foreach(Gas::all() as $gas) {
             $restriction_info = $gas->getConfig('restrict_booking_to_credit');
-            if (is_array($restriction_info) == false) {
+            $restriction_info = json_decode($restriction_info);
+            if (is_object($restriction_info) == false) {
                 $restriction_info = (object) [
                     'enabled' => $restriction_info,
                     'limit' => 0,
@@ -70,5 +77,28 @@ class FixDatabase extends Command
         Schema::table('invoices', function (Blueprint $table) {
             $table->integer('payment_id')->nullable()->change();
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('fee_id')->nullable()->default(null)->change();
+            $table->integer('deposit_id')->nullable()->default(null)->change();
+        });
+
+        /*
+            Per aggiornare il formato delle date per gli ordini automatici
+        */
+
+        $dates = Date::where('type', 'order')->get();
+        foreach($dates as $d) {
+            $attributes = json_decode($d->description);
+            if (isset($attributes->action) == false) {
+                $attributes->action = 'open';
+                $attributes->offset1 = $attributes->end;
+                $attributes->offset2 = $attributes->shipping;
+                unset($attributes->end);
+                unset($attributes->shipping);
+                $d->description = json_encode($attributes);
+                $d->save();
+            }
+        }
     }
 }

@@ -3,7 +3,11 @@
 </p>
 <p>
     {{ $user->printableName() }}<br>
-    {{ $user->email }}
+    {{ $user->email }}<br>
+
+    @foreach($user->getContactsByType(['phone', 'mobile']) as $phone)
+        {{ $phone }}<br>
+    @endforeach
 </p>
 
 @if($user->pending)

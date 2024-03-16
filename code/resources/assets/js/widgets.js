@@ -7,80 +7,7 @@ class Widgets {
     static init(container)
     {
         this.handlingContactSelection(container);
-
-        $('input.date', container).datepicker({
-            format: 'DD dd MM yyyy',
-            autoclose: true,
-            language: utils.currentLanguage(),
-            clearBtn: true,
-        }).each(function() {
-            var input = $(this);
-            input.siblings('.input-group-addon').click(function() {
-                input.focus();
-            });
-        }).on('show', function(e) {
-            /*
-                Senza questo, l'evento risale e - non ho ben capito come -
-                interferisce con le accordion e i modal
-            */
-            e.stopPropagation();
-        });
-
-        $('input.date-to-month', container).datepicker({
-            format: 'dd MM',
-            autoclose: true,
-            language: utils.currentLanguage(),
-            clearBtn: false,
-            maxViewMode: 'months'
-        });
-
-        $('.date[data-enforce-after]', container).each((index, item) => {
-            var current = $(item);
-            var target = this.dateEnforcePeer(current, 'data-enforce-after');
-
-            target.datepicker().on('changeDate', function() {
-                var current_start = current.datepicker('getDate');
-                var current_ref = target.datepicker('getDate');
-                if (current_start < current_ref) {
-                    current.datepicker('setDate', current_ref);
-                }
-            });
-        }).focus((e) => {
-			var current = $(e.currentTarget);
-            var target = this.dateEnforcePeer(current, 'data-enforce-after');
-
-            /*
-                Problema: cercando di navigare tra i mesi all'interno del datepicker
-                viene lanciato nuovamente l'evento di focus, che fa rientrare in
-                questa funzione, e se setStartDate() viene incondazionatamente
-                eseguita modifica a sua volta la data annullando l'operazione.
-                Dunque qui la eseguo solo se non l'ho già fatto (se la data di
-                inizio forzato non corrisponde a quel che dovrebbe essere), badando
-                però a fare i confronti sui giusti formati
-            */
-            var current_start = current.datepicker('getStartDate');
-            var current_ref = target.datepicker('getUTCDate');
-            if (current_start.toString() != current_ref.toString()) {
-                current.datepicker('setStartDate', current_ref);
-            }
-        });
-
-		$('input[data-enforce-more]', container).each((index, item) => {
-            var current = $(item);
-            var target = this.dateEnforcePeer(current, 'data-enforce-more');
-
-            target.on('change', function() {
-                var current_start = current.val();
-                var current_ref = target.val();
-                if (current_start < current_ref) {
-                    current.val(current_ref);
-                }
-            });
-        }).focus((e) => {
-			var current = $(e.currentTarget);
-            var current_ref = this.dateEnforcePeer(current, 'data-enforce-more').val();
-            current.attr('min', current_ref);
-        });
+        this.initDatesWidgets(container);
 
         $('select[multiple]', container).select2({
             theme: "bootstrap-5",
@@ -210,6 +137,21 @@ class Widgets {
             container.find('.simple-sum-result').val(sum);
         });
 
+        $('.selective-display', container).each(function() {
+            let target = $(this).attr('data-target');
+            let value = $(this).find('input:radio').filter(':checked').val();
+            $(target, container).addClass('d-none').filter('[data-type=' + value + ']').removeClass('d-none');
+        }).find('input:radio').change(function() {
+            if ($(this).prop('checked') == false) {
+                return;
+            }
+
+            let field = $(this).closest('.selective-display');
+            let target = field.attr('data-target');
+            let value = $(this).val();
+            $(target, container).addClass('d-none').filter('[data-type=' + value + ']').removeClass('d-none');
+        });
+
         $('.status-selector input:radio[name*="status"]', container).change(function() {
             let field = $(this).closest('.status-selector');
             let status = $(this).val();
@@ -254,7 +196,85 @@ class Widgets {
         return target;
     }
 
-    static handlingContactSelection(container) {
+    static initDatesWidgets(container)
+    {
+        $('input.date', container).datepicker({
+            format: 'DD dd MM yyyy',
+            autoclose: true,
+            language: utils.currentLanguage(),
+            clearBtn: true,
+        }).each(function() {
+            var input = $(this);
+            input.siblings('.input-group-addon').click(function() {
+                input.focus();
+            });
+        }).on('show', function(e) {
+            /*
+                Senza questo, l'evento risale e - non ho ben capito come -
+                interferisce con le accordion e i modal
+            */
+            e.stopPropagation();
+        });
+
+        $('input.date-to-month', container).datepicker({
+            format: 'dd MM',
+            autoclose: true,
+            language: utils.currentLanguage(),
+            clearBtn: false,
+            maxViewMode: 'months'
+        });
+
+        $('.date[data-enforce-after]', container).each((index, item) => {
+            var current = $(item);
+            var target = this.dateEnforcePeer(current, 'data-enforce-after');
+
+            target.datepicker().on('changeDate', function() {
+                var current_start = current.datepicker('getDate');
+                var current_ref = target.datepicker('getDate');
+                if (current_start < current_ref) {
+                    current.datepicker('setDate', current_ref);
+                }
+            });
+        }).focus((e) => {
+			var current = $(e.currentTarget);
+            var target = this.dateEnforcePeer(current, 'data-enforce-after');
+
+            /*
+                Problema: cercando di navigare tra i mesi all'interno del datepicker
+                viene lanciato nuovamente l'evento di focus, che fa rientrare in
+                questa funzione, e se setStartDate() viene incondazionatamente
+                eseguita modifica a sua volta la data annullando l'operazione.
+                Dunque qui la eseguo solo se non l'ho già fatto (se la data di
+                inizio forzato non corrisponde a quel che dovrebbe essere), badando
+                però a fare i confronti sui giusti formati
+            */
+            var current_start = current.datepicker('getStartDate');
+            var current_ref = target.datepicker('getUTCDate');
+            if (current_start.toString() != current_ref.toString()) {
+                current.datepicker('setStartDate', current_ref);
+            }
+        });
+
+		$('input[data-enforce-more]', container).each((index, item) => {
+            var current = $(item);
+            var target = this.dateEnforcePeer(current, 'data-enforce-more');
+
+            target.on('change', function() {
+                var current_start = current.val();
+                var current_ref = target.val();
+                if (current_start < current_ref) {
+                    current.val(current_ref);
+                }
+            });
+        }).focus((e) => {
+			var current = $(e.currentTarget);
+            var current_ref = this.dateEnforcePeer(current, 'data-enforce-more').val();
+            current.attr('min', current_ref);
+        });
+    }
+
+    static handlingContactSelection(container)
+    {
         if (container.closest('.contacts-selection').length != 0) {
             /*
                 Questo è per inizializzare le nuove righe aggiunte dinamicamente
@@ -279,7 +299,8 @@ class Widgets {
         }
     }
 
-    static fixContactField(input, typeclass) {
+    static fixContactField(input, typeclass)
+    {
         input.attr('class', '').addClass('form-control');
 
         if (typeclass == 'email') {
@@ -291,7 +312,8 @@ class Widgets {
         }
     }
 
-    static previewImage(input) {
+    static previewImage(input)
+    {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             var img = $(input).closest('.img-preview').find('img');

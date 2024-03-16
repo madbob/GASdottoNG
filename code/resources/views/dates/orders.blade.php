@@ -11,7 +11,7 @@
         <input type="hidden" name="reload-whole-page" value="1">
 
         <div class="row">
-            <div class="col-md-12" id="dates-in-range">
+            <div class="col-md-12 dates-for-orders" id="dates-in-range">
                 @include('commons.manyrows', [
                     'contents' => $dates,
                     'show_columns' => true,
@@ -42,26 +42,55 @@
                             'label' => _i('Ricorrenza'),
                             'field' => 'recurring',
                             'type' => 'periodic',
-                            'width' => 30,
+                            'width' => 20,
                         ],
                         [
-                            'label' => _i('Chiusura dopo...'),
-                            'field' => 'end',
-                            'type' => 'number',
-                            'width' => 10,
+                            'label' => _i('Azione'),
+                            'field' => 'action',
+                            'type' => 'select',
+                            'width' => 9,
                             'extra' => [
-                                'textappend' => 'giorni'
+                                'options' => [
+                                    'open' => _i('Apertura'),
+                                    'close' => _i('Chiusura'),
+                                    'ship' => _i('Consegna'),
+                                ]
                             ]
                         ],
                         [
-                            'label' => _i('Consegna dopo...'),
-                            'field' => 'shipping',
+                            'label' => _i('Riferimento data'),
+                            'field' => 'first_offset',
                             'type' => 'number',
-                            'width' => 10,
+                            'width' => 18,
                             'extra' => [
-                                'textappend' => 'giorni',
+                                'textprepend' => 'X',
+                                'textappend' => 'X',
+                                'attributes' => [
+                                    'data-prelabel-open' => _('chiudi'),
+                                    'data-postlabel-open' => _('giorni dopo'),
+                                    'data-prelabel-close' => _('apri'),
+                                    'data-postlabel-close' => _('giorni prima'),
+                                    'data-prelabel-ship' => _('apri'),
+                                    'data-postlabel-ship' => _('giorni prima'),
+                                ]
+                            ]
+                        ],
+                        [
+                            'label' => _i('Riferimento data'),
+                            'field' => 'second_offset',
+                            'type' => 'number',
+                            'width' => 18,
+                            'extra' => [
+                                'textprepend' => 'X',
+                                'textappend' => 'X',
 								'attributes' => [
-									'data-enforce-more' => '[name^=end]'
+									'data-enforce-more' => '[name^=end]',
+                                    'data-prelabel-open' => _('consegna'),
+                                    'data-postlabel-open' => _('giorni dopo'),
+                                    'data-prelabel-close' => _('consegna'),
+                                    'data-postlabel-close' => _('giorni dopo'),
+                                    'data-prelabel-ship' => _('chiudi'),
+                                    'data-postlabel-ship' => _('giorni prima'),
 								]
                             ]
                         ],
@@ -69,7 +98,7 @@
                             'label' => _i('Commento'),
                             'field' => 'comment',
                             'type' => 'text',
-                            'width' => 20,
+                            'width' => 10,
                             'extra' => [
                                 'max_length' => 40
                             ]
@@ -78,7 +107,7 @@
                             'label' => _i('Sospendi'),
                             'field' => 'suspend',
                             'type' => 'check',
-                            'width' => 10,
+                            'width' => 5,
                             'help' => _i("Se un ordine automatico viene sospeso, le prossime aperture verranno ignorate. Usa questa opzione per gestire i periodi di inattività del GAS, ad esempio durante le festività."),
                             'extra' => [
                                 'reviewCallback' => function($component, $params) {

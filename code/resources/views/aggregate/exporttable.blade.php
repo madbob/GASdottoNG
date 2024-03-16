@@ -18,5 +18,6 @@
         <x-larastrap::checks name="fields" :label="_i('Dati Utenti')" :options="$options" :value="$currentgas->orders_shipping_user_columns" />
 
         <x-larastrap::radios name="status" :label="_i('Stato Prenotazioni')" :options="['pending' => _i('Prenotate'), 'shipped' => _i('Consegnate'), 'saved' => _i('Salvate')]" value="pending" />
+        <x-larastrap::radios name="include_missing" :label="_i('Includi Prodotti non Prenotati')" :options="['yes' => _i('Sì'), 'no' => _i('No')]" value="no" />
     </x-larastrap::form>
 </x-larastrap::modal>
