@@ -101,7 +101,9 @@ class BookingsServiceTest extends TestCase
     }
 
     /*
-        Prenotazioni in presenza di amici e prodotto non aggregabili
+        Prenotazioni in presenza di amici e prodotto non aggregabili.
+        Il risultato di questo test dipende in larga parte dal comportamento
+        della funzione Product::canAggregateQuantities()
     */
     public function testUnaggregatedFriend()
     {
@@ -120,6 +122,8 @@ class BookingsServiceTest extends TestCase
             'measure_id' => $measure->id,
         ));
 
+        $variant = $this->createVariant($product);
+
         $this->sample_order->products()->attach($product->id);
 
         $this->nextRound();
@@ -128,9 +132,12 @@ class BookingsServiceTest extends TestCase
         $this->actingAs($friend);
 
         $data_friend = [
-            $product->id => 2,
             'action' => 'booked',
+            $product->id => 0,
+            'variant_quantity_' . $product->id => [2],
+            'variant_selection_' . $variant->id => [$variant->values()->first()->id],
         ];
+
         app()->make('BookingsService')->bookingUpdate($data_friend, $this->sample_order->aggregate, $friend, false);
 
         $this->nextRound();
@@ -138,9 +145,12 @@ class BookingsServiceTest extends TestCase
         $this->actingAs($this->userWithBasePerms);
 
         $data_master = [
-            $product->id => 1,
             'action' => 'booked',
+            $product->id => 0,
+            'variant_quantity_' . $product->id => [1],
+            'variant_selection_' . $variant->id => [$variant->values()->first()->id],
         ];
+
         app()->make('BookingsService')->bookingUpdate($data_master, $this->sample_order->aggregate, $this->userWithBasePerms, false);
 
         $this->nextRound();
