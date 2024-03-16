@@ -54,14 +54,17 @@ class CheckRemoteProducts extends Command
 
     public function handle()
     {
-        $entries = App::make('RemoteRepository')->getList();
-
         $suppliers = Supplier::whereNotNull('remote_lastimport')->get();
-        foreach($suppliers as $supplier) {
-            foreach($entries as $e) {
-                if ($e->vat == $supplier->vat && $e->lastchange > $supplier->remote_lastimport) {
-                    $this->notify($supplier, $e);
-                    break;
+
+        if ($suppliers->isEmpty() == false) {
+            $entries = App::make('RemoteRepository')->getList();
+
+            foreach($suppliers as $supplier) {
+                foreach($entries as $e) {
+                    if ($e->vat == $supplier->vat && $e->lastchange > $supplier->remote_lastimport) {
+                        $this->notify($supplier, $e);
+                        break;
+                    }
                 }
             }
         }

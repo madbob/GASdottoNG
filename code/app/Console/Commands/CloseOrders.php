@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 use App\Jobs\NotifyClosedOrder;
 use App\Order;
@@ -25,7 +24,7 @@ class CloseOrders extends Command
                 $closed[] = $order->id;
             }
             catch(\Exception $e) {
-                Log::error('Errore in chiusura automatica ordine: ' . $e->getMessage());
+                \Log::error('Errore in chiusura automatica ordine: ' . $e->getMessage());
             }
         }
 
