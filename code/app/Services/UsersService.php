@@ -215,6 +215,7 @@ class UsersService extends BaseService
         $user = $this->show($id);
 
         $this->setCommonAttributes($user, $request);
+        $this->setIfSet($user, $request, 'birthplace');
         $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
         $this->setIfSet($user, $request, 'taxcode');
         $this->transformAndSetIfSet($user, $request, 'family_members', 'enforceNumber');

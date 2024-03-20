@@ -61,6 +61,7 @@ if ($user->isFriend() && $admin_editable) {
                             <x-larastrap::text name="firstname" :label="_i('Nome')" />
                             <x-larastrap::text name="lastname" :label="_i('Cognome')" />
                             @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => _i('Password')])
+                            <x-larastrap::text name="birthplace" :label="_i('Luogo di Nascita')" />
                             <x-larastrap::datepicker name="birthday" :label="_i('Data di Nascita')" />
                             <x-larastrap::text name="taxcode" :label="_i('Codice Fiscale')" />
                             <x-larastrap::text name="family_members" :label="_i('Persone in Famiglia')" />

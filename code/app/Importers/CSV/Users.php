@@ -66,6 +66,10 @@ class Users extends CSVImporter
 
 	private function otherFields(&$ret)
 	{
+		$ret['birthplace'] = (object) [
+			'label' => _i('Luogo di Nascita'),
+		];
+
 		$ret['birthday'] = (object) [
 			'label' => _i('Data di Nascita'),
 			'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
