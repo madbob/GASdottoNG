@@ -438,6 +438,24 @@ class UsersServiceTest extends TestCase
     }
 
     /*
+        Username come email
+    */
+    public function testUsernameAsEmail()
+    {
+        $this->actingAs($this->userWithBasePerm);
+
+        app()->make('UsersService')->update($this->userWithBasePerm->id, [
+            'username' => 'test2@mailinator.com',
+        ]);
+
+        $this->nextRound();
+
+        $user = app()->make('UsersService')->show($this->userWithBasePerm->id);
+        $this->assertEquals(0, $user->contacts->count());
+        $this->assertEquals('test2@mailinator.com', $user->email);
+    }
+
+    /*
         Modifica del proprio Utente con permessi limitati
     */
     public function testLimitedSelfUpdate()

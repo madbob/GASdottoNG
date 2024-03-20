@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 use App\Contact;
+use App\User;
 
 trait ContactableTrait
 {
@@ -137,6 +138,20 @@ trait ContactableTrait
             $contacts = $this->contacts()->where('type', $t)->get();
             foreach($contacts as $contact) {
                 $ret[] = $contact->value;
+            }
+        }
+
+        /*
+            Spesso agli utenti viene assegnato come username il loro indirizzo
+            email, e non viene configurato il relativo contatto (assumendo che
+            sia sufficiente quello). Se qui vengono chieste le mail, e non ne
+            vengono trovate, provo dunque a vedere se posso usare lo username
+        */
+        if ($type == 'email' and empty($ret)) {
+            if (is_a($this, User::class)) {
+                if (filter_var($this->username, FILTER_VALIDATE_EMAIL)) {
+                    $ret[] = $this->username;
+                }
             }
         }
 
