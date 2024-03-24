@@ -9,8 +9,6 @@ use App\ModifiedValue;
 
 trait Shipping
 {
-    use OrderPrintType;
-
     private function collectModifiersTotal($booking, $aggregate_data, $extra_modifiers)
     {
         $total_modifiers = 0;

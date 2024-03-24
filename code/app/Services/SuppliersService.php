@@ -93,7 +93,7 @@ class SuppliersService extends BaseService
 
     public function store(array $request)
     {
-        $creator = $this->ensureAuth(['supplier.add' => 'gas']);
+        $this->ensureAuth(['supplier.add' => 'gas']);
 
         if (!isset($request['payment_method']) || is_null($request['payment_method'])) {
             $request['payment_method'] = '';

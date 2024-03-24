@@ -8,7 +8,7 @@ class ReceiptsService extends BaseService
 {
     public function list($start, $end, $supplier_id)
     {
-        $user = $this->ensureAuth(['movements.admin' => 'gas']);
+        $this->ensureAuth(['movements.admin' => 'gas']);
         $query = Receipt::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc');
 
         if ($supplier_id != '0') {
@@ -29,7 +29,7 @@ class ReceiptsService extends BaseService
 
     public function update($id, array $request)
     {
-        $user = $this->ensureAuth(['movements.admin' => 'gas']);
+        $this->ensureAuth(['movements.admin' => 'gas']);
 		$receipt = $this->show($id);
 		$this->transformAndSetIfSet($receipt, $request, 'date', "decodeDate");
         $receipt->save();

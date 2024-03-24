@@ -92,7 +92,7 @@ trait CreditableTrait
         foreach ($currencies as $curr) {
             if (!isset($current_status[$curr->id][$class][$obj->id])) {
                 $cb = $obj->currentBalance($curr);
-                foreach ($fields as $field => $name) {
+                foreach (array_keys($fields) as $field) {
                     $now[$field] = $cb->$field;
                 }
 

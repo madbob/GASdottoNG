@@ -150,7 +150,6 @@ trait ReducibleTrait
         $behaviours = $this->reduxBehaviour();
         $collected = $behaviours->collected;
         $children = ($behaviours->children)($this, $filters);
-        $children_key = $behaviours->master_key;
 
         foreach($children as $child) {
             $child = ($behaviours->optimize)($this, $child);

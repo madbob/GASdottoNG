@@ -16,8 +16,6 @@ function printableDate($value, $short = false)
             }
         }
 
-		$locale = currentLang();
-
         if ($short) {
             return ucwords(\Carbon\Carbon::createFromTimestamp($t)->isoFormat('DD/MM/YYYY'));
         }

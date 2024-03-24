@@ -342,7 +342,7 @@ class BookedProduct extends Model
         $ret = $this->emptyReduxBehaviour();
 
         $ret->children = function($item, $filters) {
-            return $this->variants;
+            return $item->variants;
         };
 
         $ret->optimize = function($item, $child) {

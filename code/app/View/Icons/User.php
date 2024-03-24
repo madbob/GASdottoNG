@@ -75,8 +75,6 @@ class User extends IconsMap
                     return $ret;
                 },
                 'options' => function($objs) {
-                    $user = Auth::user();
-
 					$skip_roles = [];
 
 					foreach(['user', 'friend'] as $r) {

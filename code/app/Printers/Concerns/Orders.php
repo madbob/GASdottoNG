@@ -45,6 +45,17 @@ trait Orders
 		}
 	}
 
+    protected function filterExtraModifiers($modifiers, $extras)
+    {
+        if ($extras == false) {
+            $modifiers = $modifiers->filter(function($mod) {
+                return is_null($mod->modifier->movementType);
+            });
+        }
+
+        return $modifiers;
+    }
+
 	private function formatProduct($fields, $formattable, $product_redux, $product, $internal_offsets)
     {
 		$ret = [];

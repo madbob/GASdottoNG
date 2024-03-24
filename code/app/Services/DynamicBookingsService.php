@@ -56,7 +56,6 @@ class DynamicBookingsService extends BookingsService
             DB::beginTransaction();
 
             try {
-                $bookings = [];
                 $delivering = $request['action'] != 'booked';
 
                 $ret = (object) [

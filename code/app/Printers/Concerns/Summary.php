@@ -10,8 +10,6 @@ use App\ModifiedValue;
 
 trait Summary
 {
-    use OrderPrintType;
-
     private function getPriceOffsetFromFields($fields)
     {
         $price_offset = null;

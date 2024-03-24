@@ -48,7 +48,7 @@ class InvoicesService extends BaseService
     public function show($id)
     {
         $ret = Invoice::findOrFail($id);
-        $user = $this->testAccess($ret->supplier);
+        $this->testAccess($ret->supplier);
         return $ret;
     }
 

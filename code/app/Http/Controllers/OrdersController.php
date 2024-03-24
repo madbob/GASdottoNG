@@ -145,7 +145,6 @@ class OrdersController extends BackedController
 
     public function show(Request $request, $id)
     {
-        $user = $request->user();
         $format = $request->input('format', 'summary');
         $order = $this->service->show($id);
 

@@ -33,7 +33,6 @@ class MultiGasService extends BaseService
 
     public function show($id)
     {
-        $user = Auth::user();
         $gas = Gas::findOrFail($id);
         $this->ensureAuth(['gas.multi' => $gas]);
         return $gas;

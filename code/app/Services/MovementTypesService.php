@@ -59,8 +59,8 @@ class MovementTypesService extends BaseService
         $payments = paymentTypes();
         $fields = (new $classname())->balanceFields();
 
-        foreach($fields as $f => $fieldname) {
-            foreach($payments as $pay_id => $pay) {
+        foreach(array_keys($fields) as $f) {
+            foreach(array_keys($payments) as $pay_id) {
                 if (isset($request[$pay_id]) == false) {
                     continue;
                 }
@@ -93,7 +93,7 @@ class MovementTypesService extends BaseService
     {
         $payments = paymentTypes();
 
-        foreach($payments as $pay_id => $pay) {
+        foreach(array_keys($payments) as $pay_id) {
             if (isset($request[$pay_id]) == false) {
                 continue;
             }

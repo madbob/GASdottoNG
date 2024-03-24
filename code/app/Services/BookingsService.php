@@ -308,7 +308,7 @@ class BookingsService extends BaseService
             $booking->enforceTotal($manual_total);
         }
 
-        foreach($request as $key => $value) {
+        foreach(array_keys($request) as $key) {
             /*
                 Qui faccio il controllo sui prezzi applicati solo se
                 effettivamente se ne trovano nella richiesta, altrimenti finisco

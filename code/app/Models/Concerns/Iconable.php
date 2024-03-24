@@ -40,8 +40,8 @@ trait Iconable
     private static function myIconsBox()
     {
         $class = static::class;
-        list($namespace, $class) = explode('\\', $class);
-        $final_class = sprintf('App\View\Icons\%s', $class);
+        $tokens = explode('\\', $class);
+        $final_class = sprintf('App\View\Icons\%s', $tokens[1]);
 
         if (class_exists($final_class)) {
             return new $final_class();

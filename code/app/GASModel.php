@@ -79,9 +79,8 @@ trait GASModel
     private function relatedController()
     {
         $class = get_class($this);
-        list($namespace, $class) = explode('\\', $class);
-
-        return Str::plural($class).'Controller';
+        $tokens = explode('\\', $class);
+        return Str::plural($tokens[1]).'Controller';
     }
 
     public function getShowURL()

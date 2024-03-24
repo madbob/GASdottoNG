@@ -121,7 +121,7 @@ class GasController extends Controller
             'auto_referent_order_summary',
         ]);
 
-        foreach(systemParameters('MailTypes') as $identifier => $metadata) {
+        foreach(array_keys(systemParameters('MailTypes')) as $identifier) {
             if ($request->has("custom_mails_${identifier}_subject")) {
                 $gas->setConfig("mail_${identifier}", (object) [
                     'subject' => $request->input('custom_mails_' . $identifier . '_subject', ''),

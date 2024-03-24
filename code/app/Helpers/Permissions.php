@@ -85,7 +85,7 @@ function classByRule($rule_id)
     $all_permissions = allPermissions();
 
     foreach ($all_permissions as $class => $rules) {
-        foreach ($rules as $identifier => $name) {
+        foreach (array_keys($rules) as $identifier) {
             if ($rule_id == $identifier) {
                 return $class;
             }
@@ -102,7 +102,7 @@ function rolesByClass($asked_class)
 	$rules = $all_permissions[$asked_class] ?? [];
 
     foreach (allRoles() as $role) {
-        foreach ($rules as $identifier => $name) {
+        foreach (array_keys($rules) as $identifier) {
             if ($role->enabledAction($identifier)) {
                 $roles[] = $role;
                 break;

@@ -85,7 +85,7 @@ function getOrdersByStatus($user, $status)
 			ma con confezioni da completare
 		*/
 		case 'open':
-			return $aggregates = App\Aggregate::whereHas('orders', function ($query) {
+			return App\Aggregate::whereHas('orders', function ($query) {
 				$query->whereIn('status', ['open', 'closed'])->accessibleBooking();
 			})->with($eager_load)->get()->filter(function($a) {
 				return $a->status == 'open' || $a->hasPendingPackages();

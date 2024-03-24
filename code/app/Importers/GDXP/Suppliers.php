@@ -161,8 +161,6 @@ class Suppliers extends GDXPImporter
             $supplier->contacts()->delete();
         }
 
-        $product_ids = [];
-
         $supplier->name = $json->name;
         $supplier->remote_lastimport = $master->creationDate ?? date('Y-m-d');
         $supplier->taxcode = $json->taxCode ?? '';

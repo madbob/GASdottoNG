@@ -212,7 +212,6 @@ function duplicateAllCurrentBalances($latest_date)
         $objects = $class::tAll();
 
         foreach ($objects as $obj) {
-            $proxy = $obj->getActualObject();
             $class = get_class($obj);
 
             foreach ($currencies as $curr) {

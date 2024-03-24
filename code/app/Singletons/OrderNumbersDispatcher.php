@@ -23,8 +23,6 @@ class OrderNumbersDispatcher
             /*
                 Questo di fatto serve solo ad eseguire gli unit test
             */
-            $connection = config('database.default');
-            $driver = config("database.connections.{$connection}.driver");
             $this->cache[$year] = Order::whereYear('start', $year)->orderBy('start', 'asc')->orderBy('id', 'asc')->pluck('start', 'id');
         }
     }

@@ -111,8 +111,8 @@ function normalizeId($subject)
 function inlineId($obj)
 {
     $class = get_class($obj);
-    list($namespace, $class) = explode('\\', $class);
-    return sprintf('%s---%s', $class, $obj->id);
+    $tokens = explode('\\', $class);
+    return sprintf('%s---%s', $tokens[1], $obj->id);
 }
 
 function fromInlineId($identifier)

@@ -24,7 +24,7 @@ abstract class MovementType extends Parameter
     */
     protected function voidFunctions($array)
     {
-        foreach($array as $i => $a) {
+        foreach(array_keys($array) as $i) {
             foreach(['sender', 'target', 'master'] as $t) {
                 $array[$i]->$t ??= (object) [
                     'operations' => []

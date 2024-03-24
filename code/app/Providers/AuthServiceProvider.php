@@ -19,8 +19,8 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $all_permissions = allPermissions();
-        foreach ($all_permissions as $class => $rules) {
-            foreach ($rules as $identifier => $name) {
+        foreach ($all_permissions as $rules) {
+            foreach (array_keys($rules) as $identifier) {
                 Gate::define($identifier, function ($user, $obj = null) use ($identifier) {
                     foreach($user->roles as $role) {
                         if ($role->enabledAction($identifier)) {

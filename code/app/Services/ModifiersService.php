@@ -62,7 +62,7 @@ class ModifiersService extends BaseService
     public function update($id, array $request)
     {
         $modifier = $this->show($id);
-        $user = $this->testAccess($modifier);
+        $this->testAccess($modifier);
 
         $this->boolIfSet($modifier, $request, 'always_on');
         $this->setIfSet($modifier, $request, 'movement_type_id');

@@ -25,8 +25,6 @@ use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\SuspendableTrait;
 use App\Models\Concerns\HierarcableTrait;
 use App\Models\Concerns\RoleableTrait;
-use App\Models\Concerns\FriendTrait;
-use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\BookerTrait;
 use App\Models\Concerns\PaysFees;
 use App\Models\Concerns\TracksUpdater;
@@ -38,8 +36,8 @@ use App\Events\SluggableCreating;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes, TracksUpdater,
-        ContactableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, CreditableTrait, BookerTrait, PaysFees,
-        FriendTrait, GASModel, SluggableID, Cachable;
+        ContactableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, BookerTrait, PaysFees,
+        GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -216,19 +214,5 @@ class User extends Authenticatable
     public function getSlugID()
     {
         return $this->username;
-    }
-
-    /***************************** CreditableTrait */
-
-    public function scopeCreditable($query)
-    {
-        $query->whereNull('parent_id');
-    }
-
-    public function balanceFields()
-    {
-        return [
-            'bank' => _i('Credito'),
-        ];
     }
 }

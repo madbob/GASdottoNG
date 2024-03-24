@@ -149,7 +149,6 @@ class BookingUserController extends Controller
     {
         $printer = new Printer();
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        $user = User::find($user_id);
         $booking = $aggregate->bookingBy($user_id);
         return $printer->document($booking, '', $request->all());
     }

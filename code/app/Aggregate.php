@@ -73,7 +73,7 @@ class Aggregate extends Model
     public function hasPendingPackages()
     {
         return $this->innerCache('pending_packages', function($obj) {
-            foreach($this->orders as $o) {
+            foreach($obj->orders as $o) {
                 if ($o->keep_open_packages != 'no' && $o->status == 'closed' && $o->pendingPackages()->isEmpty() == false) {
                     return true;
                 }
@@ -83,7 +83,7 @@ class Aggregate extends Model
         });
     }
 
-    private function computeStrings()
+    public function computeStrings()
     {
         $names = [];
         $dates = [];
@@ -146,8 +146,8 @@ class Aggregate extends Model
         }
 
         $names = $this->innerCache('names', function($obj) {
-            list($name, $date) = $this->computeStrings();
-            $this->setInnerCache('dates', $date);
+            list($name, $date) = $obj->computeStrings();
+            $obj->setInnerCache('dates', $date);
             return $name;
         });
 
@@ -161,8 +161,8 @@ class Aggregate extends Model
     public function printableDates()
     {
         return $this->innerCache('dates', function($obj) {
-            list($name, $date) = $this->computeStrings();
-            $this->setInnerCache('names', $name);
+            list($name, $date) = $obj->computeStrings();
+            $obj->setInnerCache('names', $name);
             return $date;
         });
     }
@@ -172,7 +172,7 @@ class Aggregate extends Model
         return $this->printableName() . $this->headerIcons() . sprintf('<br/><small>%s</small>', $this->printableDates());
     }
 
-    public function printableUserHeader($with_progress = false)
+    public function printableUserHeader()
     {
         $ret = $this->printableHeader();
 

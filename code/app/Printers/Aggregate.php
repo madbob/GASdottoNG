@@ -61,7 +61,7 @@ class Aggregate extends Printer
                                 prenotazione, ma anche i totali dei modificatori
                             */
                             foreach($td->totals as $index => $t) {
-                                $d->totals[$index] = ($d->totals[$index] ?? 0) + $td->totals[$index];
+                                $d->totals[$index] = ($d->totals[$index] ?? 0) + $t;
                             }
 
                             $found = true;

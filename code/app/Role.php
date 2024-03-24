@@ -135,7 +135,7 @@ class Role extends Model
         $permissions = allPermissions();
 
         foreach ($permissions as $class => $types) {
-            foreach($types as $t => $label) {
+            foreach(array_keys($types) as $t) {
                 if ($this->enabledAction($t)) {
                     $ret[] = $class;
                     break;

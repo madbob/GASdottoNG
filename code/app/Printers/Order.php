@@ -231,7 +231,6 @@ class Order extends Printer
         $required_fields = $request['fields'] ?? [];
         $fields = splitFields($required_fields);
 
-        $user = Auth::user();
 		$obj->setRelation('products', $obj->products()->sorted()->get());
 
         /*

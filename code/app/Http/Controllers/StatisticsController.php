@@ -264,7 +264,7 @@ class StatisticsController extends Controller
         }
 
         foreach($data as $product => $meta) {
-            $data[$product]->users = count($data[$product]->users);
+            $data[$product]->users = count($meta->users);
         }
 
         return [$data, $categories];

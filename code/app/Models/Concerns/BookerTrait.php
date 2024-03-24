@@ -13,7 +13,9 @@ trait BookerTrait
         questi trait in User, altrimenti non funzionano alcuni controlli (e.g.
         la visualizzazione del credito utente nel modale di pagamento consegna)
     */
-    use CreditableTrait, FriendTrait;
+    use FriendTrait, CreditableTrait {
+        scopeCreditable as overriddenScopeCreditable;
+    }
 
     public function bookings(): HasMany
     {
@@ -88,5 +90,19 @@ trait BookerTrait
 
             return $current_balance - $to_pay;
         }
+    }
+
+    /******************************************************** CreditableTrait */
+
+    public function scopeCreditable($query)
+    {
+        $query->whereNull('parent_id');
+    }
+
+    public function balanceFields()
+    {
+        return [
+            'bank' => _i('Credito'),
+        ];
     }
 }
