@@ -26,7 +26,7 @@ trait Shipping
 
         $aggregated_modifiers = ModifiedValue::aggregateByType($modifiers);
         foreach($aggregated_modifiers as $am) {
-            $labels[$am->name] = printablePrice($am->amount);
+            $labels[$am->name] = printablePrice($am->total_amount);
             $total_modifiers += $am->amount;
         }
 

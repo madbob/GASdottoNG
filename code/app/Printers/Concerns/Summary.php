@@ -34,7 +34,7 @@ trait Summary
         foreach (ModifiedValue::aggregateByType($modifiers) as $am) {
             $mod_row = array_fill(0, count($fields), '');
             $mod_row[0] = $am->name;
-            $mod_row[$price_offset] = printablePrice($am->amount);
+            $mod_row[$price_offset] = printablePrice($am->total_amount);
             $rows[] = $mod_row;
             $total += $am->amount;
         }

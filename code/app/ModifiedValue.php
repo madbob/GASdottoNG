@@ -64,13 +64,30 @@ class ModifiedValue extends Model
             $id = $value->modifier->modifierType->id;
 
             if (!isset($carry[$id])) {
+                /*
+                    Qui divido tra il valore che impatta sul totale della
+                    prenotazione, il valore passivo che non deve essere sommato,
+                    ed il valore complessivo che è la somma dei due e serve a
+                    rappresentare il modificatore nella sua interezza
+                */
                 $carry[$id] = (object) [
                     'name' => $value->modifier->modifierType->name,
                     'amount' => 0,
+                    'passive_amount' => 0,
+                    'total_amount' => 0,
                 ];
             }
 
-            $carry[$id]->amount += $value->effective_amount;
+            $effective = $value->effective_amount;
+
+            if ($value->modifier->arithmetic == 'passive') {
+                $carry[$id]->passive_amount += $effective;
+            }
+            else {
+                $carry[$id]->amount += $effective;
+            }
+
+            $carry[$id]->total_amount += $effective;
             return $carry;
         }, []);
     }
