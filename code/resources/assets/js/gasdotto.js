@@ -386,7 +386,6 @@ function enforceMeasureDiscrete(node) {
 
 	if (disabled) {
 		form.find('input[name=portion_quantity]').val('0.000');
-		form.find('input[name=variable]').prop('checked', false).prop('disabled', true);
         node.siblings('.form-text').removeClass('d-none');
 
 		multiple_widget.attr('data-enforce-minimum', 1);
@@ -404,7 +403,6 @@ function enforceMeasureDiscrete(node) {
 			weight.val('1');
 		}
 
-		form.find('input[name=variable]').prop('disabled', false);
         node.siblings('.form-text').addClass('d-none');
 		multiple_widget.removeAttr('data-enforce-minimum');
         widgets.removeAttr('data-enforce-integer');

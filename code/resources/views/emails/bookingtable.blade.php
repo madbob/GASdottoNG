@@ -8,8 +8,6 @@
 	<tbody>
 		@foreach($booking->products as $product)
 			@if($product->$attribute != 0)
-				<?php $variable = $variable || $product->product->variable ?>
-
 				@if($product->variants->isEmpty() == false)
 					<tr>
 						<td>

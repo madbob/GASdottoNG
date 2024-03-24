@@ -36,11 +36,6 @@ class Product extends Formatter
         }
     }
 
-    public static function formatVariable($obj, $context)
-    {
-        return $obj->variable ? _i('Sì') : _i('No');
-    }
-
     public static function formattableColumns($type = null)
     {
         $ret = self::genericColumns();
@@ -49,7 +44,6 @@ class Product extends Formatter
         $ret['price']->format = 'static::formatPrice';
         $ret['active']->format = 'static::formatActive';
         $ret['vat_rate']->format = 'static::formatVat';
-        $ret['variable']->format = 'static::formatVariable';
         return $ret;
     }
 

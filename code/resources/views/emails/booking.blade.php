@@ -57,7 +57,6 @@ $bookings_tot = 0;
         continue;
     }
 
-    $variable = false;
     $contacts = $b->order->enforcedContacts()->filter(fn($c) => filled($c->email));
 
     ?>
@@ -91,15 +90,8 @@ $bookings_tot = 0;
         @endforeach
     @endif
 
-    <br>
-
-    @if($display_shipping_date && $variable)
-        <p>
-            {{ _i("L'importo reale di questo ordine dipende dal peso effettivo dei prodotti consegnati; il totale qui riportato è solo indicativo.") }}
-        </p>
-    @endif
-
     @if($contacts->isEmpty() == false)
+        <br>
         <p>
             {{ _i("Per comunicazioni su quest'ordine, si raccomanda di contattare:") }}
         </p>
@@ -112,12 +104,16 @@ $bookings_tot = 0;
 @endforeach
 
 @if($bookings_tot > 1)
+    <br>
+    <br>
     <p>
         {{ _i('Totale da pagare: %s', [printablePriceCurrency($global_total)]) }}
     </p>
 @endif
 
 @if($display_shipping_date && $b && $b->order->shipping != null)
+    <br>
+    <br>
     <p>
         {{ _i('La consegna avverrà %s.', [$b->order->printableDate('shipping')]) }}
     </p>

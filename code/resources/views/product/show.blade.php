@@ -33,7 +33,6 @@
 					<x-larastrap::text name="weight" :label="_i('Peso')" readonly disabled />
                 </div>
                 <div class="col-md-6">
-                    <x-larastrap::check name="variable" :label="_i('Variabile')" readonly disabled />
 					<x-larastrap::text name="multiple" :label="_i('Multiplo')" readonly disabled />
 					<x-larastrap::text name="max_quantity" :label="_i('Massimo')" readonly disabled />
 					<x-larastrap::text name="global_min" :label="_i('Minimo Complessivo')" readonly disabled />

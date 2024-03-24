@@ -30,9 +30,3 @@ else {
 		</div>
 	@endforeach
 </div>
-
-@if($product->variable)
-	<small>
-		<span class="d-none d-sm-block">{{ _i('(prodotto a prezzo variabile)') }}</span><span class="d-block d-sm-none">{{ _i('(variabile)') }}</span>
-	</small>
-@endif

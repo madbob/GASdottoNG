@@ -49,11 +49,9 @@ class ProductsService extends BaseService
     {
         if ($product->measure->discrete) {
             $product->portion_quantity = 0;
-            $product->variable = false;
         }
         else {
             $this->transformAndSetIfSet($product, $request, 'portion_quantity', 'enforceNumber');
-            $this->boolIfSet($product, $request, 'variable');
 
             /*
                 Per le unità di misura non discrete assumo che il peso sia 1, se

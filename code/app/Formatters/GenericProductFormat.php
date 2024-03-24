@@ -21,7 +21,6 @@ trait GenericProductFormat
             'active' => _i('Ordinabile'),
             'vat_rate' => _i('Aliquota IVA'),
             'portion_quantity' => _i('Pezzatura'),
-            'variable' => _i('Variabile'),
             'package_size' => _i('Dimensione Confezione'),
             'weight' => _i('Peso'),
             'multiple' => _i('Multiplo'),

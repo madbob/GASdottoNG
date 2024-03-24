@@ -51,11 +51,6 @@ class VariantCombo extends Formatter
         return $obj->product->portion_quantity;
     }
 
-    public static function formatVariable($obj, $context)
-    {
-        return $obj->product->variable ? _i('Sì') : _i('No');
-    }
-
     public static function formatPackage($obj, $context)
     {
         return $obj->product->package_size;
@@ -97,7 +92,6 @@ class VariantCombo extends Formatter
         $ret['active']->format = 'static::formatActive';
         $ret['vat_rate']->format = 'static::formatVat';
         $ret['portion_quantity']->format = 'static::formatPortion';
-        $ret['variable']->format = 'static::formatVariable';
         $ret['package_size']->format = 'static::formatPackage';
         $ret['weight']->format = 'static::formatWeight';
         $ret['multiple']->format = 'static::formatMultipe';
