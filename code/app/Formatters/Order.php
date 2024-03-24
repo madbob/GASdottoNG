@@ -34,10 +34,12 @@ class Order extends Formatter
 			'name' => _i('Quantità'),
 			'checked' => true,
 			'format_product' => function($product, $summary, $alternate = false) {
-				if ($alternate == false)
-					return printableQuantity($summary->quantity_pieces, $product->measure->discrete, 2, ',');
-				else
-					return printableQuantity($summary->delivered_pieces, $product->measure->discrete, 2, ',');
+				if ($alternate == false) {
+					return printableQuantity($summary->quantity_pieces, $product->measure->discrete, 2);
+				}
+				else {
+					return printableQuantity($summary->delivered_pieces, $product->measure->discrete, 2);
+				}
 			},
 		];
 	}
@@ -48,10 +50,12 @@ class Order extends Formatter
 			'name' => _i('Numero Confezioni'),
 			'format_product' => function($product, $summary, $alternate = false) {
 				if ($product->package_size != 0) {
-					if ($alternate == false)
+					if ($alternate == false) {
 						return $summary->quantity_pieces / $product->package_size;
-					else
+					}
+					else {
 						return $summary->delivered_pieces / $product->package_size;
+					}
 				}
 				else {
 					return '';
@@ -87,10 +91,12 @@ class Order extends Formatter
 			'name' => _i('Prezzo'),
 			'checked' => true,
 			'format_product' => function($product, $summary, $alternate = false) {
-				if ($alternate == false)
+				if ($alternate == false) {
 					return printablePrice($summary->price);
-				else
+				}
+				else {
 					return printablePrice($summary->price_delivered);
+				}
 			},
 		];
 	}

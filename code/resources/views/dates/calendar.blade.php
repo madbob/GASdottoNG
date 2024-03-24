@@ -13,6 +13,10 @@ foreach (easyFilterOrders(null, null, null, ['open', 'closed']) as $a) {
     }
 }
 
+/*
+    Memo: nel calendario vengono sempre mostrate solo le date di consegna degli
+    ordini
+*/
 foreach (App\Date::localGas()->with(['target'])->get() as $d) {
     if ($d->type == 'order') {
         foreach($d->order_dates as $dat) {
