@@ -7,27 +7,18 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 
-use Log;
-use Auth;
-
-use App\Role;
-
 class SupplierOrderShipping extends ManyMailNotification
 {
     use Queueable, SerializesModels, MailFormatter, MailReplyTo, TemporaryFiles;
 
     private $gas;
     private $order;
-    private $pdf_file;
-    private $csv_file;
 
-    public function __construct($gas, $order, $pdf_file, $csv_file)
+    public function __construct($gas, $order, $files)
     {
         $this->gas = $gas;
         $this->order = $order;
-        $this->pdf_file = $pdf_file;
-        $this->csv_file = $csv_file;
-        $this->setFiles([$pdf_file, $csv_file]);
+        $this->setFiles($files);
     }
 
     public function toMail($notifiable)
@@ -57,7 +48,10 @@ class SupplierOrderShipping extends ManyMailNotification
             }
         }
 
-        $message->attach($this->pdf_file)->attach($this->csv_file);
+        foreach($this->getFiles() as $file) {
+            $message->attach($file);
+        }
+
         $message = $this->guessReplyTo($message, $this->order);
 
         return $message;

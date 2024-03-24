@@ -52,7 +52,7 @@ $total = 0;
     @else
         <tbody>
             <tr>
-                <td colspan="3">
+                <td colspan="4">
                     <x-larastrap::suggestion>
                         {{ _i('Il modificatore non è stato applicato in questo intervallo di date.') }}
                     </x-larastrap::suggestion>

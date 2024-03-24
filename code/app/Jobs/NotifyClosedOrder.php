@@ -18,10 +18,29 @@ class NotifyClosedOrder extends Job
         $this->orders = $orders;
     }
 
-    private function dispatchToSupplier($order)
+    private function filesForSupplier($order)
     {
         $printer = new OrderPrinter();
 
+        $type = $order->supplier->notify_on_close_enabled;
+        if ($type == 'shipping_summary') {
+            $types = ['shipping', 'summary'];
+        }
+        else {
+            $types = [$type];
+        }
+
+        $files = [];
+        foreach($types as $type) {
+            $files[] = $printer->document($order, $type, ['format' => 'pdf', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
+            $files[] = $printer->document($order, $type, ['format' => 'csv', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
+        }
+
+        return $files;
+    }
+
+    private function dispatchToSupplier($order)
+    {
         if ($order->isRunning() == false) {
             $supplier = $order->supplier;
 
@@ -29,15 +48,14 @@ class NotifyClosedOrder extends Job
                 foreach($order->aggregate->gas as $gas) {
                     try {
                         $this->hub->enable(false);
+                        $files = $this->filesForSupplier($order);
 
                         /*
-                            I files vengono già rimossi dopo l'invio della
-                            notifica al fornitore
+                            Reminder: i files vengono automaticamente rimossi
+                            dopo l'invio della notifica, da parte di
+                            SupplierOrderShipping
                         */
-                        $type = $supplier->notify_on_close_enabled;
-                        $pdf_file_path = $printer->document($order, $type, ['format' => 'pdf', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
-                        $csv_file_path = $printer->document($order, $type, ['format' => 'csv', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
-                        $supplier->notify(new SupplierOrderShipping($gas, $order, $pdf_file_path, $csv_file_path));
+                        $supplier->notify(new SupplierOrderShipping($gas, $order, $files));
 
                         $this->hub->enable(true);
                     }
