@@ -15,11 +15,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\ProductConcept;
 use App\Models\Concerns\Priceable;
 
 class VariantCombo extends Model
 {
-    use Priceable, Cachable;
+    use Priceable, ProductConcept, Cachable;
 
     public function values(): BelongsToMany
     {
@@ -34,6 +35,11 @@ class VariantCombo extends Model
     public function getPriceAttribute()
     {
         return $this->getPrice();
+    }
+
+    public function getMeasureAttribute()
+    {
+        return $this->product->measure;
     }
 
     public function printableShortName()
@@ -115,5 +121,12 @@ class VariantCombo extends Model
         }
 
         return $offset + $product->getPrice($rectify);
+    }
+
+    /********************************************************* ProductConcept */
+
+    public function getConceptID()
+    {
+        return sprintf('%s-%s', $this->product->id, $this->id);
     }
 }

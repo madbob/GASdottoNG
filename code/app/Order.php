@@ -144,6 +144,30 @@ class Order extends Model
         }
     }
 
+    /*
+        A differenza di getProductsAttribute, questa funzione ritorna una
+        Collection che appiana prodotti e combo coinvolti nell'ordine. Questo
+        per semplificare l'iterazione di tali entità, che sono comunque spesso
+        trattate come prodotti indipendenti
+    */
+    public function getProductConceptsAttribute()
+    {
+        $ret = new Collection();
+
+        foreach ($this->products as $product) {
+            if ($product->variants->isEmpty()) {
+                $ret->push($product);
+            }
+            else {
+                foreach($product->variant_combos as $combo) {
+                    $ret->push($combo);
+                }
+            }
+        }
+
+        return $ret;
+    }
+
     public function printableDates()
     {
         $start = strtotime($this->start);

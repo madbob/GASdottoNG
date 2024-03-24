@@ -18,19 +18,11 @@ trait Table
         $prices_rows = array_fill(0, count($user_columns), '');
 
         foreach ($orders as $order) {
-            foreach ($order->products as $product) {
-                if ($product->variants->isEmpty()) {
-                    $all_products[$product->id] = 0;
-                    $headers[] = $product->printableName();
-                    $prices_rows[] = printablePrice($product->getPrice());
-                }
-                else {
-                    foreach($product->variant_combos as $combo) {
-                        $all_products[$product->id . '-' . $combo->id] = 0;
-                        $headers[] = $combo->printableName();
-                        $prices_rows[] = printablePrice($combo->getPrice());
-                    }
-                }
+            foreach ($order->product_concepts as $product) {
+                $key = $product->getConceptID();
+                $all_products[$key] = 0;
+                $headers[] = $product->printableName();
+                $prices_rows[] = printablePrice($product->getPrice());
             }
         }
 
@@ -45,29 +37,15 @@ trait Table
         $row = [];
         list($get_total, $get_function) = $this->bookingsRules($status);
 
-        foreach ($order->products as $product) {
-            if ($product->variants->isEmpty()) {
-                $quantity = 0;
-
-                if ($booking) {
-                    $quantity = $booking->$get_function($product, false, true);
-                }
-
-                $all_products[$product->id] += $quantity;
-                $row[] = printableQuantity($quantity, $product->measure->discrete, 3);
+        foreach ($order->product_concepts as $product) {
+            $quantity = 0;
+            if ($booking) {
+                $quantity = $booking->$get_function($product, false, true);
             }
-            else {
-                foreach($product->variant_combos as $combo) {
-                    $quantity = 0;
 
-                    if ($booking) {
-                        $quantity = $booking->$get_function($combo, false, true);
-                    }
-
-                    $all_products[$product->id . '-' . $combo->id] += $quantity;
-                    $row[] = printableQuantity($quantity, $product->measure->discrete, 3);
-                }
-            }
+            $key = $product->getConceptID();
+            $all_products[$key] += $quantity;
+            $row[] = printableQuantity($quantity, $product->measure->discrete, 3);
         }
 
         return $row;
@@ -81,15 +59,9 @@ trait Table
         $row = array_merge($row, array_fill(0, count($user_columns) - 1, ''));
 
         foreach ($orders as $order) {
-            foreach ($order->products as $product) {
-                if ($product->variants->isEmpty()) {
-                    $row[] = printableQuantity($all_products[$product->id], $product->measure->discrete, 3);
-                }
-                else {
-                    foreach($product->variant_combos as $combo) {
-                        $row[] = printableQuantity($all_products[$product->id . '-' . $combo->id], $product->measure->discrete, 3);
-                    }
-                }
+            foreach ($order->product_concepts as $product) {
+                $key = $product->getConceptID();
+                $row[] = printableQuantity($all_products[$key], $product->measure->discrete, 3);
             }
         }
 
