@@ -452,6 +452,7 @@ class UsersServiceTest extends TestCase
 
         $user = app()->make('UsersService')->show($this->userWithBasePerm->id);
         $this->assertEquals(0, $user->contacts->count());
+        $this->assertEquals('test2@mailinator.com', $user->username);
         $this->assertEquals('test2@mailinator.com', $user->email);
     }
 

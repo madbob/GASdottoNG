@@ -147,7 +147,7 @@ trait ContactableTrait
             sia sufficiente quello). Se qui vengono chieste le mail, e non ne
             vengono trovate, provo dunque a vedere se posso usare lo username
         */
-        if ($type == 'email' and empty($ret)) {
+        if (in_array('email', $type) and empty($ret)) {
             if (is_a($this, User::class)) {
                 if (filter_var($this->username, FILTER_VALIDATE_EMAIL)) {
                     $ret[] = $this->username;
