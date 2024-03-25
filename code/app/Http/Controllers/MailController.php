@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
@@ -70,7 +71,7 @@ class MailController extends Controller
 	        }
 
 	        if ($message['Type'] === 'SubscriptionConfirmation') {
-	            file_get_contents($message['SubscribeURL']);
+	            Http::get($message['SubscribeURL']);
 	        }
 	        else if ($message['Type'] === 'Notification') {
 	            $data = json_decode($message['Message']);
