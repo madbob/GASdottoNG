@@ -5,11 +5,42 @@ class Orders
     static init(container)
     {
         $('.dates-for-orders', container).each((index, item) => {
-            $(item).on('change', 'tr td select[name^=action]', (e) => {
+            /*
+                Questo è per fare in modo che le date siano sempre coerenti tra
+                di loro, e che l'apertura venga sempre prima della chiusura, e
+                la chiusura prima della consegna
+            */
+            $(item).on('change', 'input[name^=first_offset]', (e) => {
+                let i = $(e.currentTarget);
+                let row = i.closest('tr');
+                let peer = row.find('input[name^=second_offset]');
+                let action = row.find('select[name^=action]').val();
+
+                if (action == 'ship') {
+                    let max = parseInt(i.val()) - 1;
+                    peer.attr('max', max);
+                    peer.removeAttr('min');
+
+                    if (peer.val() > max) {
+                        peer.val(max);
+                    }
+                }
+                else {
+                    let min = parseInt(i.val()) + 1;
+                    peer.attr('min', min);
+                    peer.removeAttr('max');
+
+                    if (peer.val() < min) {
+                        peer.val(min);
+                    }
+                }
+            });
+
+            $(item).on('change', 'select[name^=action]', (e) => {
                 this.updateLabelsInDates($(e.currentTarget));
             });
 
-            $(item).find('tr td select[name^=action]').change();
+            $(item).find('select[name^=action]').change();
         });
 
         $('#orderAggregator', container).aggregator();
@@ -77,10 +108,12 @@ class Orders
         let action = select.val();
 
         select.closest('tr').find('input').attrBegins('data-prelabel-').each(function() {
-            let prelabel = $(this).attr('data-prelabel-' + action);
-            let postlabel = $(this).attr('data-postlabel-' + action);
-            $(this).prev('.input-group-text').text(prelabel);
-            $(this).next('.input-group-text').text(postlabel);
+            let i = $(this);
+            let prelabel = i.attr('data-prelabel-' + action);
+            let postlabel = i.attr('data-postlabel-' + action);
+            i.prev('.input-group-text').text(prelabel);
+            i.next('.input-group-text').text(postlabel);
+            i.change();
         });
     }
 }

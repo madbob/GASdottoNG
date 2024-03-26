@@ -84,7 +84,6 @@
                                 'textprepend' => 'X',
                                 'textappend' => 'X',
 								'attributes' => [
-									'data-enforce-more' => '[name^=first_offset]',
                                     'data-prelabel-open' => _('consegna'),
                                     'data-postlabel-open' => _('giorni dopo'),
                                     'data-prelabel-close' => _('consegna'),
