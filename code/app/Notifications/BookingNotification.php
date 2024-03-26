@@ -1,7 +1,15 @@
 <?php
 
+/*
+    Non rendere schedulabile questa notifica: i parametri sono troppo corposi
+    per essere immessi nella queue, e comunque questa notifica viene già
+    generata dal job AggregateSummaries
+*/
+
 namespace App\Notifications;
 
+use App\Notifications\Concerns\ManyMailNotification;
+use App\Notifications\Concerns\MailReplyTo;
 use App\Aggregate;
 
 class BookingNotification extends ManyMailNotification

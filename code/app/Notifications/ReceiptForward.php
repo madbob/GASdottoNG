@@ -2,12 +2,13 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\Concerns\ManyMailNotification;
+use App\Notifications\Concerns\MailFormatter;
+use App\Notifications\Concerns\TemporaryFiles;
 
-class ReceiptForward extends ManyMailNotification implements ShouldQueue
+class ReceiptForward extends ManyMailNotification
 {
-    use MailFormatter, TemporaryFiles, Queueable;
+    use MailFormatter, TemporaryFiles;
 
     private $temp_file = null;
 

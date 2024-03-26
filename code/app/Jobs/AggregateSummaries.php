@@ -37,7 +37,7 @@ class AggregateSummaries implements ShouldQueue
                 $booking->user->notify(new BookingNotification($this->aggregate_id, $redux, $booking->user->id, $this->message));
             }
             catch(\Exception $e) {
-                \Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id);
+                \Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id . ': ' . $e->getMessage());
             }
         }
     }

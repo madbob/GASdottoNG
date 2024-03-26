@@ -5,8 +5,7 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class GenericOrderShipping extends Mailable
 {
@@ -28,8 +27,9 @@ class GenericOrderShipping extends Mailable
         $message = $this->subject($this->custom_subject)->attach($this->temp_file)->view('emails.supplier_summary', ['txt_message' => $this->message]);
 
         $user = Auth::user();
-        if (!empty($user->email))
+        if (!empty($user->email)) {
             $message->replyTo($user->email);
+        }
 
         return $message;
     }

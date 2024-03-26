@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Concerns;
 
 use App\Aggregate;
 use App\Order;

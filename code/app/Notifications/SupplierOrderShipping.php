@@ -2,14 +2,17 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
+
+use App\Notifications\Concerns\ManyMailNotification;
+use App\Notifications\Concerns\MailFormatter;
+use App\Notifications\Concerns\MailReplyTo;
+use App\Notifications\Concerns\TemporaryFiles;
 
 class SupplierOrderShipping extends ManyMailNotification
 {
-    use Queueable, SerializesModels, MailFormatter, MailReplyTo, TemporaryFiles;
+    use MailFormatter, MailReplyTo, TemporaryFiles;
 
     private $gas;
     private $order;
