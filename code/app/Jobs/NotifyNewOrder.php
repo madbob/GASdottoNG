@@ -2,22 +2,27 @@
 
 namespace App\Jobs;
 
-use Log;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 use App\Notifications\NewOrderNotification;
 use App\Order;
 
-class NotifyNewOrder extends Job
+class NotifyNewOrder implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     public $order_id;
 
     public function __construct($order_id)
     {
-        parent::__construct();
         $this->order_id = $order_id;
     }
 
-    protected function realHandle()
+    public function handle()
     {
         $order = Order::find($this->order_id);
 
@@ -27,9 +32,10 @@ class NotifyNewOrder extends Job
 
         $order->first_notify = date('Y-m-d');
         $order->save();
+        $hub = app()->make('GlobalScopeHub');
 
         foreach($order->aggregate->gas as $gas) {
-            $this->hub->setGas($gas->id);
+            $hub->setGas($gas->id);
             $users = $order->notifiableUsers($gas);
 
             foreach($users as $user) {
@@ -37,7 +43,7 @@ class NotifyNewOrder extends Job
                     $user->notify(new NewOrderNotification($order));
                 }
                 catch(\Exception $e) {
-                    Log::error('Impossibile inoltrare mail di notifica apertura ordine: ' . $e->getMessage());
+                    \Log::error('Impossibile inoltrare mail di notifica apertura ordine: ' . $e->getMessage());
                 }
             }
         }
