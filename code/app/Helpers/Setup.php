@@ -28,7 +28,7 @@ server {
 
 function global_multi_installation()
 {
-    return true;
+    return false;
 }
 
 function read_instance_config_file($path)
