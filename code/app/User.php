@@ -21,6 +21,7 @@ use App;
 use URL;
 
 use App\Models\Concerns\ContactableTrait;
+use App\Models\Concerns\InCircles;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\SuspendableTrait;
 use App\Models\Concerns\HierarcableTrait;
@@ -36,7 +37,7 @@ use App\Events\SluggableCreating;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes, TracksUpdater,
-        ContactableTrait, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, BookerTrait, PaysFees,
+        ContactableTrait, InCircles, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, BookerTrait, PaysFees,
         GASModel, SluggableID, Cachable;
 
     public $incrementing = false;
@@ -214,5 +215,23 @@ class User extends Authenticatable
     public function getSlugID()
     {
         return $this->username;
+    }
+
+    /************************************************************** InCircles */
+
+    public function eligibleGroups()
+    {
+        if ($this->isFriend()) {
+            return new Collection();
+        }
+        else {
+            $currentuser = Auth::user();
+            if ($currentuser->can('users.admin', $currentuser->gas)) {
+                return Group::where('context', 'user')->orderBy('name', 'asc')->get();
+            }
+            else {
+                return Group::where('context', 'user')->where('user_selectable', true)->orderBy('name', 'asc')->get();
+            }
+        }
     }
 }

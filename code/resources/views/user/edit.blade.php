@@ -121,9 +121,13 @@ if ($user->isFriend() && $admin_editable) {
                             <x-larastrap::datepicker name="last_login" :label="_i('Ultimo Accesso')" readonly disabled />
                             <x-larastrap::datepicker name="last_booking" :label="_i('Ultima Prenotazione')" readonly disabled />
 
-                            @if($currentgas->hasFeature('shipping_places'))
-                                <x-larastrap::selectobj name="preferred_delivery_id" :label="_i('Luogo di Consegna')" :options="$currentgas->deliveries" :extraitem="_i('Nessuno')" :pophelp="_i('Dove l\'utente preferisce avere i propri prodotti recapitati. Permette di organizzare le consegne in luoghi diversi.')" />
-                            @endif
+                            @foreach($user->eligibleGroups() as $ug)
+                                @if($admin_editable || $ug->user_selectable)
+                                    <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => sprintf('group_%s', $ug->id), 'label' => $ug->name, 'options' => $ug->circles]" />
+                                @elseif($ug->visible)
+                                    <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => sprintf('group_%s', $ug->id), 'label' => $ug->name, 'options' => $ug->circles]" disabled readonly />
+                                @endif
+                            @endforeach
                         @endif
 
                         @if($admin_editable)

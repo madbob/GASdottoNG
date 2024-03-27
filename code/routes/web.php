@@ -146,6 +146,9 @@ Route::middleware(['auth'])->group(function() {
         Route::get('booking/{aggregate_id}/user/{user_id}/document', 'BookingUserController@document');
         Route::get('booking/{id}/header', 'BookingController@objhead')->name('booking.objhead');
 
+        Route::get('groups/{id}/header', 'GroupsController@objhead')->name('groups.objhead');
+        Route::get('circles/{id}/header', 'CirclesController@objhead')->name('circles.objhead');
+
         Route::get('deliveries/{id}/header', 'DeliveriesController@objhead')->name('deliveries.objhead');
         Route::get('delivery/{aggregate_id}/user/{user_id}/header', 'DeliveryUserController@objhead2');
         Route::get('deliveries/{aggregate_id}/fast', 'DeliveryUserController@getFastShipping');
@@ -189,6 +192,8 @@ Route::middleware(['auth'])->group(function() {
         Route::resource('users', 'UsersController');
         Route::resource('friends', 'FriendsController');
         Route::resource('roles', 'RolesController');
+        Route::resource('groups', 'GroupsController');
+        Route::resource('circles', 'CirclesController');
         Route::resource('suppliers', 'SuppliersController');
         Route::resource('products', 'ProductsController');
         Route::resource('vatrates', 'VatRatesController');

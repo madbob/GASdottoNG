@@ -17,6 +17,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\InCircles;
 use App\Models\Concerns\ModifiedTrait;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
@@ -28,7 +29,7 @@ use App\Events\BookingDeleting;
 
 class Booking extends Model
 {
-    use HasFactory, GASModel, SluggableID, TracksUpdater, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait, Cachable;
+    use HasFactory, GASModel, SluggableID, TracksUpdater, InCircles, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait, Cachable;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -717,5 +718,12 @@ class Booking extends Model
     public static function commonClassName()
     {
         return 'Prenotazione';
+    }
+
+    /************************************************************** InCircles */
+
+    public function eligibleGroups()
+    {
+        return Group::whereIn('id', $this->order->circles()->pluck('group_id')->unique()->toArray())->where('context', 'booking')->orderBy('name', 'asc')->get();
     }
 }

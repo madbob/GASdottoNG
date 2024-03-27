@@ -1,5 +1,10 @@
 <?php
 
+/*
+    Tutti i modelli che usano questo tratto devono avere una colonna updated_by
+    nello schema del DB
+*/
+
 namespace App\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,6 +39,11 @@ trait TracksUpdater
         }
     }
 
+    /*
+        Questa funzione va invocata nel method boot() del Model, ed inizializza
+        gli eventi che permettono di aggiornare automaticamente l'informazione
+        sull'utente che ha modificato per l'ultima volta l'entità
+    */
     protected static function initTrackingEvents(): void
     {
         static::creating(fn($model) => self::updateUser($model));

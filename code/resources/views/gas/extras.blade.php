@@ -22,6 +22,29 @@
         </div>
     </x-larastrap::accordionitem>
 
+    <x-larastrap::accordionitem :label="_i('Gruppi')">
+        <div class="row">
+            <div class="col">
+                @include('commons.addingbutton', [
+                    'template' => 'groups.base-edit',
+                    'typename' => 'group',
+                    'typename_readable' => _i('Gruppo'),
+                    'targeturl' => 'groups'
+                ])
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col">
+                @include('commons.loadablelist', [
+                    'identifier' => 'group-list',
+                    'items' => App\Group::orderBy('name', 'asc')->get(),
+                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi sarà possibile aggregare gli utenti in molteplici gruppi, in modo da separare le prenotazioni, organizzare la logistica delle consegne, applicare modificatori speciali e molto altro.')
+                ])
+            </div>
+        </div>
+    </x-larastrap::accordionitem>
+
     <x-larastrap::accordionitem :label="_i('File Condivisi')">
         <div class="row">
             <div class="col">

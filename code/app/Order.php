@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
 
+use App\Models\Concerns\InCircles;
 use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
@@ -26,7 +27,7 @@ use App\Events\SluggableCreating;
 
 class Order extends Model
 {
-    use HasFactory, TracksUpdater, AttachableTrait, ExportableTrait, ModifiableTrait, PayableTrait, CreditableTrait, GASModel, SluggableID, ReducibleTrait;
+    use HasFactory, TracksUpdater, InCircles, AttachableTrait, ExportableTrait, ModifiableTrait, PayableTrait, CreditableTrait, GASModel, SluggableID, ReducibleTrait;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -852,5 +853,12 @@ class Order extends Model
     public function inheritModificationTypes()
     {
         return $this->supplier;
+    }
+
+    /************************************************************** InCircles */
+
+    public function eligibleGroups()
+    {
+        return Group::whereIn('context', ['booking', 'order'])->orderBy('name', 'asc')->get();
     }
 }

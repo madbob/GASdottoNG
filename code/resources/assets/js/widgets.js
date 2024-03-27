@@ -140,7 +140,9 @@ class Widgets {
         $('.selective-display', container).each(function() {
             let target = $(this).attr('data-target');
             let value = $(this).find('input:radio').filter(':checked').val();
-            $(target, container).addClass('d-none').filter('[data-type=' + value + ']').removeClass('d-none');
+            $(target, container).addClass('d-none').filter((i, el) => {
+                return $(el).attr('data-type').split(',').includes(value);
+            }).removeClass('d-none');
         }).find('input:radio').change(function() {
             if ($(this).prop('checked') == false) {
                 return;
@@ -149,7 +151,9 @@ class Widgets {
             let field = $(this).closest('.selective-display');
             let target = field.attr('data-target');
             let value = $(this).val();
-            $(target, container).addClass('d-none').filter('[data-type=' + value + ']').removeClass('d-none');
+            $(target, container).addClass('d-none').filter((i, el) => {
+                return $(el).attr('data-type').split(',').includes(value);
+            }).removeClass('d-none');
         });
 
         $('.status-selector input:radio[name*="status"]', container).change(function() {
