@@ -1,27 +1,4 @@
 <x-larastrap::accordion always_open="true">
-    <x-larastrap::accordionitem :label="_i('Luoghi di Consegna')">
-        <div class="row">
-            <div class="col">
-                @include('commons.addingbutton', [
-                    'template' => 'deliveries.base-edit',
-                    'typename' => 'delivery',
-                    'typename_readable' => _i('Luogo di Consegna'),
-                    'targeturl' => 'deliveries'
-                ])
-            </div>
-        </div>
-
-        <div class="row mt-2">
-            <div class="col">
-                @include('commons.loadablelist', [
-                    'identifier' => 'delivery-list',
-                    'items' => $currentgas->deliveries,
-                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi verrà attivata la possibilità per ogni utente di selezionare il proprio luogo di consegna preferito, nei documenti di riassunto degli ordini le prenotazioni saranno suddivise per luogo, e sarà possibile attivare alcuni ordini solo per gli utenti afferenti a determinati luoghi di consegna: utile per GAS distribuiti sul territorio.')
-                ])
-            </div>
-        </div>
-    </x-larastrap::accordionitem>
-
     <x-larastrap::accordionitem :label="_i('Gruppi')">
         <div class="row">
             <div class="col">

@@ -48,7 +48,7 @@ class OrdersService extends BaseService
 
         $a->save();
 
-        $deliveries = array_filter($request['deliveries'] ?? []);
+        $circles = array_filter($request['circles'] ?? []);
         $request['keep_open_packages'] = $request['keep_open_packages'] ?? 'no';
 
         foreach($suppliers as $index => $supplier_id) {
@@ -64,7 +64,7 @@ class OrdersService extends BaseService
             $o->aggregate_sorting = $index;
             $o->save();
 
-            $o->deliveries()->sync($deliveries);
+            $o->circles()->sync($circles);
         }
 
         return $a;
@@ -76,7 +76,7 @@ class OrdersService extends BaseService
 
         $order = $this->show($id, true);
         $this->setCommonAttributes($order, $request);
-        $order->deliveries()->sync(array_filter($request['deliveries'] ?? []));
+        $order->circles()->sync($request['circles'] ?? []);
         $order->users()->sync($request['users'] ?? []);
 
         /*

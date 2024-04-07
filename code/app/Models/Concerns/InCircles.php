@@ -3,7 +3,6 @@
 namespace App\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\Auth;
 
 use App\Circle;
 
@@ -11,20 +10,53 @@ trait InCircles
 {
     public function circles(): BelongsToMany
     {
-        return $this->belongsToMany(Circle::class);
+        return $this->belongsToMany(Circle::class)->with('group');
     }
 
-    public function assignCircles(array $request): void
+    /*
+        Restituisce un array con i Circle assegnati, suddivisi per Group di
+        riferimento.
+        Se uno specifico Group viene richiesto, torna solo i relativi Circles.
+        Se nessun Circle è stato assegnato per quel Group, ritorna comunque una
+        struttura dati valida
+    */
+    public function circlesByGroup($group = null)
     {
-        $assigned = [];
+        $ret = [];
 
-        $eligible_groups = $this->eligibleGroups();
-        foreach($eligible_groups as $group) {
-            $those = $request['group_' . $group->id] ?? [];
-            $assigned = array_merge($assigned, $those);
+        if (is_null($group)) {
+            $iterate = $this->circles;
+        }
+        else {
+            $iterate = $this->circles->where('group_id', $group->id);
         }
 
-        $this->circles()->sync($assigned);
+        foreach($iterate as $circle) {
+            if (isset($ret[$circle->group->id]) == false) {
+                $ret[$circle->group->id] = (object) [
+                    'group' => $circle->group,
+                    'circles' => [],
+                ];
+            }
+
+            $ret[$circle->group->id]->circles[] = $circle;
+        }
+
+        if ($group) {
+            if (empty($ret)) {
+                $ret = [
+                    (object) [
+                        'group' => $group,
+                        'circles' => [],
+                    ]
+                ];
+            }
+            else {
+                $ret = $ret[$circle->group->id];
+            }
+        }
+
+        return $ret;
     }
 
     public abstract function eligibleGroups();

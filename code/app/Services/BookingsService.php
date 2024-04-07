@@ -395,9 +395,13 @@ class BookingsService extends BaseService
         $booking = $this->handlePreProcess($request, $booking);
         $booking = $this->readBooking($request, $order, $booking, $delivering);
 
-        if ($booking && $delivering) {
-            BookingDelivered::dispatch($booking, $request['action'], $user);
-            $this->handlePostProcess($request, $booking);
+        if ($booking) {
+            $booking->circles()->sync($request['circles']);
+
+            if ($delivering) {
+                BookingDelivered::dispatch($booking, $request['action'], $user);
+                $this->handlePostProcess($request, $booking);
+            }
         }
 
         return $booking;

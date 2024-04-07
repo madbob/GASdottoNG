@@ -5,6 +5,7 @@ namespace App\Formatters;
 use App;
 
 use App\Contact;
+use App\Group;
 
 class User extends Formatter
 {
@@ -32,18 +33,13 @@ class User extends Formatter
     {
         $current_gas = currentAbsoluteGas();
 
-        if ($current_gas->hasFeature('shipping_places')) {
-            $ret['shipping_place'] = (object) [
-                'name' => _i('Luogo di Consegna'),
+        $groups = Group::where('context', 'user')->get();
+        foreach($groups as $group) {
+            $ret['group_' . $group->id] = (object) [
+                'name' => _i('Gruppo %s', [$group->name]),
                 'checked' => true,
-                'format' => function($obj, $context) {
-                    $sp = $obj->shippingplace;
-                    if (is_null($sp)) {
-                        return _i('Nessuno');
-                    }
-                    else {
-                        return $sp->name;
-                    }
+                'format' => function($obj, $context) use ($group) {
+                    return join(' - ', $obj->circlesByGroup($group)->circles);
                 },
             ];
         }

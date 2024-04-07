@@ -16,6 +16,7 @@ use App\Supplier;
 use App\Balance;
 use App\Currency;
 use App\Movement;
+use App\Group;
 
 use App\Services\MovementsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -297,7 +298,6 @@ class MovementsController extends BackedController
                     Artisan::call('check:fees');
 
                     $has_fee = ($user->gas->getConfig('annual_fee_amount') != 0);
-                    $has_shipping_place = $user->gas->hasFeature('shipping_places');
                     $filename = sanitizeFilename(_i('Crediti al %s.csv', date('d/m/Y')));
 
                     $headers = [_i('ID'), _i('Nome'), _i('E-Mail')];
@@ -311,11 +311,12 @@ class MovementsController extends BackedController
                         $headers[] = _i('Quota Pagata');
                     }
 
-                    if ($has_shipping_place) {
-                        $headers[] = _i('Luogo di Consegna');
+                    $groups = Group::where('context', 'user')->get();
+                    foreach($groups as $group) {
+                        $headers[] = $group->name;
                     }
 
-                    return output_csv($filename, $headers, $users, function($user) use ($currencies, $has_fee, $has_shipping_place) {
+                    return output_csv($filename, $headers, $users, function($user) use ($currencies, $has_fee, $groups) {
                         $row = [];
                         $row[] = $user->username;
                         $row[] = $user->printableName();
@@ -329,8 +330,8 @@ class MovementsController extends BackedController
                             $row[] = $user->fee != null ? _i('SI') : _i('NO');
                         }
 
-                        if ($has_shipping_place) {
-                            $row[] = $user->shippingplace != null ? $user->shippingplace->name : _i('Nessuno');
+                        foreach($groups as $group) {
+                            $row[] = join(' - ', $user->circlesByGroup($group)->circles);
                         }
 
                         return $row;

@@ -31,7 +31,7 @@ return new class extends Migration
             $table->foreign('circle_id')->references('id')->on('circles')->onDelete('cascade');
         });
 
-        Schema::create('circle_booking', function (Blueprint $table) {
+        Schema::create('booking_circle', function (Blueprint $table) {
             $table->string('booking_id');
             $table->string('circle_id');
 
@@ -54,7 +54,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('circle_user');
-        Schema::dropIfExists('circle_booking');
+        Schema::dropIfExists('booking_circle');
         Schema::dropIfExists('circle_order');
         Schema::dropIfExists('circles');
     }

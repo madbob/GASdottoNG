@@ -26,6 +26,7 @@
                 'typename' => 'circle',
                 'typename_readable' => _i('Cerchio'),
                 'targeturl' => 'circles',
+                'target_update' => 'circle-list-' . $group->id,
                 'extra' => [
                     'group_id' => $group->id,
                 ]
@@ -36,7 +37,7 @@
     <div class="row mt-2">
         <div class="col">
             @include('commons.loadablelist', [
-                'identifier' => 'circle-list',
+                'identifier' => 'circle-list-' . $group->id,
                 'items' => $group->circles,
             ])
         </div>

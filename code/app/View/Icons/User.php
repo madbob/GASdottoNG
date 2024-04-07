@@ -5,6 +5,7 @@ namespace App\View\Icons;
 use Auth;
 
 use App\Role;
+use App\Group;
 
 class User extends IconsMap
 {
@@ -17,12 +18,12 @@ class User extends IconsMap
         if ($user->can('users.admin', $user->gas)) {
             $ret = self::statusIcons($ret);
 
-            if ($user->gas->hasFeature('shipping_places')) {
+            if (Group::where('context', 'user')->count() > 0) {
                 $ret['house-fill'] = (object) [
                     'test' => function ($obj) {
-                        return $obj->preferred_delivery_id == '0';
+                        return $obj->circles()->count() == 0;
                     },
-                    'text' => _i('Senza Luogo di Consegna'),
+                    'text' => _i('Senza Gruppi'),
                 ];
             }
         }

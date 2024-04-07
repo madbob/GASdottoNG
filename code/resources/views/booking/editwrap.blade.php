@@ -29,7 +29,7 @@ else {
             @endif
 
             <x-larastrap::tabs>
-                <x-larastrap::tabpane :label="_i('La Mia Prenotazione')" active="true" icon="bi-person" :id="sprintf('bookings-mine-%s', sanitizeId($aggregate->id))">
+                <x-larastrap::tabpane :label="_i('La Mia Prenotazione')" active="true" icon="bi-person" :id="sprintf('bookings-mine-%s-%s', sanitizeId($user->id), sanitizeId($aggregate->id))">
                     @if($required_mode == 'edit')
                         @include('booking.edit', ['aggregate' => $aggregate, 'user' => $user, 'enforced' => $enforced])
                     @else
@@ -38,7 +38,7 @@ else {
                 </x-larastrap::tabpane>
 
                 @if($user->can('users.subusers'))
-                    <x-larastrap::tabpane :label="_i('Prenotazioni per gli Amici')" icon="bi-person-add" :id="sprintf('bookings-friends-%s', sanitizeId($aggregate->id))">
+                    <x-larastrap::tabpane :label="_i('Prenotazioni per gli Amici')" icon="bi-person-add" :id="sprintf('bookings-friends-%s-%s', sanitizeId($user->id), sanitizeId($aggregate->id))">
                         <div class="row">
                             <div class="col-md-12">
                                 @include('commons.loadablelist', [
@@ -56,7 +56,7 @@ else {
                 @endif
 
                 @if($standalone == false && $has_shipping && $aggregate->isActive())
-                    <x-larastrap::tabpane :label="_i('Prenotazioni per Altri Utenti')" classes="fillable-booking-space" icon="bi-people" :id="sprintf('bookings-other-%s', sanitizeId($aggregate->id))">
+                    <x-larastrap::tabpane :label="_i('Prenotazioni per Altri Utenti')" classes="fillable-booking-space" icon="bi-people" :id="sprintf('bookings-other-%s-%s', sanitizeId($user->id), sanitizeId($aggregate->id))">
                         <div class="row">
                             <div class="col-md-12">
                                 <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ _i('Cerca Utente') }}" />
@@ -72,7 +72,7 @@ else {
                 @endif
 
                 @if($standalone == false && $has_shipping && $aggregate->orders()->where('status', 'closed')->count() > 0)
-                    <x-larastrap::tabpane :label="_i('Aggiungi/Modifica Prenotazione')" classes="fillable-booking-space" icon="bi-person-check" :id="sprintf('bookings-more-%s', sanitizeId($aggregate->id))">
+                    <x-larastrap::tabpane :label="_i('Aggiungi/Modifica Prenotazione')" classes="fillable-booking-space" icon="bi-person-check" :id="sprintf('bookings-more-%s-%s', sanitizeId($user->id), sanitizeId($aggregate->id))">
                         <div class="alert alert-danger">
                             {{ _i('Attenzione: questo ordine è stato chiuso, prima di aggiungere o modificare una prenotazione accertati che i quantitativi totali desiderati non siano già stati comunicati al fornitore o che possano comunque essere modificati.') }}
                         </div>

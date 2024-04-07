@@ -149,7 +149,6 @@ Route::middleware(['auth'])->group(function() {
         Route::get('groups/{id}/header', 'GroupsController@objhead')->name('groups.objhead');
         Route::get('circles/{id}/header', 'CirclesController@objhead')->name('circles.objhead');
 
-        Route::get('deliveries/{id}/header', 'DeliveriesController@objhead')->name('deliveries.objhead');
         Route::get('delivery/{aggregate_id}/user/{user_id}/header', 'DeliveryUserController@objhead2');
         Route::get('deliveries/{aggregate_id}/fast', 'DeliveryUserController@getFastShipping');
         Route::post('deliveries/{aggregate_id}/fast', 'DeliveryUserController@postFastShipping');
@@ -199,7 +198,6 @@ Route::middleware(['auth'])->group(function() {
         Route::resource('vatrates', 'VatRatesController');
         Route::resource('invoices', 'InvoicesController');
         Route::resource('receipts', 'ReceiptsController');
-        Route::resource('deliveries', 'DeliveriesController');
         Route::resource('categories', 'CategoriesController');
         Route::resource('measures', 'MeasuresController');
         Route::resource('variants', 'VariantsController');

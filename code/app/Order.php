@@ -89,11 +89,6 @@ class Order extends Model
         return $this->belongsToMany('App\Invoice');
     }
 
-    public function deliveries(): BelongsToMany
-    {
-        return $this->belongsToMany('App\Delivery');
-    }
-
     public function users(): BelongsToMany
     {
         return $this->belongsToMany('App\User');
@@ -118,28 +113,32 @@ class Order extends Model
         return $this->formatIcons($icons);
     }
 
+    /*
+        Per filtrare gli ordini in funzione dei Circle di appartenenza.
+        Si applica solo le l'ordine è effettivamente assegnato a dei Circle il
+        cui contesto del Group è "user". non per gli altri contesti
+    */
     public function scopeAccessibleBooking($query)
     {
         $user = Auth::user();
 
-        if ($user && $user->gas->hasFeature('shipping_places')) {
+        if ($user) {
             $query->where(function($query) use ($user) {
-                $query->where(function($query) use ($user) {
-                    $query->doesnthave('deliveries')->orWhereHas('deliveries', function($query) use ($user) {
-                        if ($user->isFriend()) {
-                            $shippingplace = $user->parent->shippingplace;
-                        }
-                        else {
-                            $shippingplace = $user->shippingplace;
-                        }
-
-                        if (is_null($shippingplace)) {
-                            $query->where('delivery_id', '!=', '0');
-                        }
-                        else {
-                            $query->where('delivery_id', $shippingplace->id);
-                        }
+                $query->whereDoesntHave('circles', function($query) {
+                    $query->whereHas('group', function($q) {
+                        $q->where('context', 'user');
                     });
+                })->orWhereHas('circles', function($query) use ($user) {
+                    if ($user->isFriend()) {
+                        $circles = $user->parent->circles->pluck('id');
+                    }
+                    else {
+                        $circles = $user->circles->pluck('id');
+                    }
+
+                    $query->whereHas('group', function($q) {
+                        $q->where('context', 'user');
+                    })->whereIn('circles.id', $circles);
                 });
             });
         }
@@ -419,10 +418,13 @@ class Order extends Model
             });
         }
 
-        $deliveries = $order->deliveries;
-        if ($deliveries->isEmpty() == false) {
-            $query_users->where(function($query) use ($deliveries) {
-                $query->whereIn('preferred_delivery_id', $deliveries->pluck('id'))->orWhere('preferred_delivery_id', '0');
+        $user_circles = $order->circles()->whereHas('group', function($query) {
+            $query->where('context', 'user')->where('filters_orders', true);
+        })->pluck('id');
+
+        if ($user_circles->isEmpty() == false) {
+            $query_users->whereHas('circles', function($query) {
+                $query->whereIn('id', $user_circles);
             });
         }
 
@@ -668,25 +670,25 @@ class Order extends Model
         return [$this->supplier];
     }
 
-    public function involvedModifiers($include_shipping_places = false)
+    public function involvedModifiers($include_groups = false)
     {
-        $key = 'involved_modifiers_' . ($include_shipping_places ? 'shipping' : 'no_shipping');
+        $key = 'involved_modifiers_' . ($include_groups ? 'groups' : 'no_groups');
 
-        return $this->innerCache($key, function($obj) use ($include_shipping_places) {
+        return $this->innerCache($key, function($obj) use ($include_groups) {
             $modifiers = $this->modifiers;
 
             foreach ($this->products as $product) {
                 $modifiers = $modifiers->merge($product->modifiers);
             }
 
-            if ($include_shipping_places) {
-                $managed_shipping_places = [];
+            if ($include_groups) {
+                $managed_circles = [];
 
                 foreach ($this->bookings as $booking) {
-                    $booker = $booking->user;
-                    if ($booker->shippingplace && !isset($managed_shipping_places[$booker->shippingplace->id])) {
-                        $managed_shipping_places[$booker->shippingplace->id] = true;
-                        $modifiers = $modifiers->merge($booker->shippingplace->modifiers);
+                    foreach($booking->involvedCircles() as $circle)
+                    if (isset($managed_circles[$circle->id]) == false) {
+                        $managed_circles[$circle->id] = true;
+                        $modifiers = $modifiers->merge($circle->modifiers);
                     }
                 }
             }
@@ -859,6 +861,8 @@ class Order extends Model
 
     public function eligibleGroups()
     {
-        return Group::whereIn('context', ['booking', 'order'])->orderBy('name', 'asc')->get();
+        return Group::whereIn('context', ['booking', 'order'])->orWhere(function($query) {
+            $query->where('context', 'user')->where('filters_orders', true);
+        })->orderBy('name', 'asc')->get();
     }
 }

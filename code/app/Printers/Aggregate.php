@@ -14,7 +14,7 @@ use App\Printers\Components\Document;
 use App\Printers\Components\Header;
 use App\Printers\Components\Title;
 use App\Formatters\User as UserFormatter;
-use App\Delivery;
+use App\Group;
 
 class Aggregate extends Printer
 {
@@ -27,11 +27,11 @@ class Aggregate extends Printer
 
         $fields = splitFields($required_fields);
         $status = $request['status'] ?? 'pending';
-        $shipping_place = $request['shipping_place'] ?? 'all_by_name';
+        $circles = $request['circles'] ?? ['all_by_name'];
 
         $temp_data = [];
         foreach($obj->orders as $order) {
-            $temp_data[] = $this->formatShipping($order, $fields, $status, $shipping_place, true);
+            $temp_data[] = $this->formatShipping($order, $fields, $status, $circles, true);
         }
 
         if (empty($temp_data)) {
@@ -78,9 +78,9 @@ class Aggregate extends Printer
 
             $all_gas = (App::make('GlobalScopeHub')->enabled() == false);
 
-            usort($data->contents, function($a, $b) use ($shipping_place, $all_gas) {
-                if ($shipping_place == 'all_by_place' && $a->shipping_sorting != $b->shipping_sorting) {
-                    return $a->shipping_sorting <=> $b->shipping_sorting;
+            usort($data->contents, function($a, $b) use ($circles, $all_gas) {
+                if (in_array('all_by_place', $circles) && $a->circles_sorting != $b->circles_sorting) {
+                    return $a->circles_sorting <=> $b->circles_sorting;
                 }
 
                 if ($all_gas) {
@@ -98,7 +98,7 @@ class Aggregate extends Printer
             $pdf = PDF::loadView('documents.order_shipping_pdf', [
 				'fields' => $fields,
 				'aggregate' => $obj,
-				'shipping_place' => $shipping_place,
+				'circles' => $circles,
 				'data' => $data
 			]);
 
@@ -172,11 +172,7 @@ class Aggregate extends Printer
 		else {
             $required_fields = $request['fields'] ?? [];
             $status = $request['status'];
-
-            $shipping_place = $request['shipping_place'] ?? 'no';
-            if ($shipping_place == 'no') {
-                $shipping_place = null;
-            }
+            $circles = $request['circles'] ?? ['no'];
 
 			$document = new Document($subtype);
 
@@ -203,7 +199,7 @@ class Aggregate extends Printer
 
 				foreach($obj->orders as $order) {
 					$document->append(new Header($order->printableName()));
-		            $document = $this->formatSummary($order, $document, $required_fields, $status, $shipping_place, false);
+		            $document = $this->formatSummary($order, $document, $required_fields, $status, $circles, false);
 		        }
             }
 
@@ -213,22 +209,20 @@ class Aggregate extends Printer
         }
     }
 
-	private function orderTopBookingsByShipping($aggregate, $shipping_place, $status = null)
+	private function orderTopBookingsByShipping($aggregate, $circles, $status = null)
 	{
 		$bookings = $aggregate->bookings;
 
 		if ($status) {
-			$bookings = $bookings->filter(function($b) use ($status) {
-				return $b->status == $status;
-			});
+			$bookings = $bookings->where('status', $status);
 		}
 
-		return Delivery::sortBookingsByShippingPlace($bookings, $shipping_place);
+		return Group::sortBookings($bookings, $circles);
 	}
 
-	private function formatTableRows($aggregate, $shipping_place, $status, $fields, &$all_products)
+	private function formatTableRows($aggregate, $circles, $status, $fields, &$all_products)
 	{
-		$bookings = $this->orderTopBookingsByShipping($aggregate, $shipping_place, $status == 'saved' ? 'saved' : null);
+		$bookings = $this->orderTopBookingsByShipping($aggregate, $circles, $status == 'saved' ? 'saved' : null);
 		list($get_total, $get_function) = $this->bookingsRules($status);
 
 		$data = [];
@@ -257,7 +251,7 @@ class Aggregate extends Printer
 	{
 		$status = $request['status'] ?? 'pending';
 		$include_missing = $request['include_missing'] ?? 'no';
-		$shipping_place = $request['shipping_place'] ?? 0;
+		$circles = $request['circles'] ?? ['no'];
 
 		$required_fields = $request['fields'] ?? [];
 		$fields = splitFields($required_fields);
@@ -273,7 +267,7 @@ class Aggregate extends Printer
 			Formatto righe delle singole prenotazioni
 		*/
 
-		list($data, $total_price) = $this->formatTableRows($obj, $shipping_place, $status, $fields, $all_products);
+		list($data, $total_price) = $this->formatTableRows($obj, $circles, $status, $fields, $all_products);
 		array_unshift($data, $prices_rows);
 
 		/*

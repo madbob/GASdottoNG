@@ -4,7 +4,7 @@ namespace App\Parameters\ModifierType;
 
 use App\Product;
 use App\Supplier;
-use App\Delivery;
+use App\Circle;
 
 class TransportCost extends ModifierType
 {
@@ -18,7 +18,7 @@ class TransportCost extends ModifierType
         $type->name = _i('Spese Trasporto');
         $type->system = true;
         $type->identifier = 'shipping';
-        $type->classes = [Product::class, Supplier::class, Delivery::class];
+        $type->classes = [Product::class, Supplier::class, Circle::class];
         return $type;
     }
 }

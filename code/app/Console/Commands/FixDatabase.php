@@ -17,9 +17,12 @@ use Illuminate\Database\Schema\Blueprint;
 use App\Gas;
 use App\User;
 use App\Supplier;
+use App\Order;
 use App\ModifierType;
 use App\Role;
 use App\Date;
+use App\Group;
+use App\Circle;
 
 class FixDatabase extends Command
 {
@@ -98,6 +101,38 @@ class FixDatabase extends Command
                 unset($attributes->shipping);
                 $d->description = json_encode($attributes);
                 $d->save();
+            }
+        }
+
+        $old_deliveries = DB::table('deliveries')->get();
+        if ($old_deliveries->isEmpty() == false) {
+            $group = new Group();
+            $group->name = _i('Luoghi di Consegna');
+            $group->context = 'user';
+            $group->user_selectable = true;
+            $group->filters_orders = true;
+            $group->visible = true;
+            $group->save();
+
+            foreach($old_deliveries as $old) {
+                $circle = new Circle();
+                $circle->name = $old->name;
+                $circle->is_default = $old->default;
+                $circle->group_id = $group->id;
+                $circle->save();
+
+                $involved = User::where('preferred_delivery_id', $old->id)->get();
+                foreach($involved as $u) {
+                    $u->circles()->sync([$circle->id]);
+                }
+
+                $orders = DB::table('delivery_order')->where('delivery_id', $old->id)->get();
+                foreach($orders as $order) {
+                    $o = Order::find($order->order_id);
+                    if ($o) {
+                        $o->circles()->attach($circle->id);
+                    }
+                }
             }
         }
     }

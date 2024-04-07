@@ -6,9 +6,9 @@ $grand_total = 0;
 
 ?>
 
-@include('booking.head', ['aggregate' => $aggregate])
-
 <x-larastrap::mform nosave nodelete>
+    @include('booking.head', ['aggregate' => $aggregate, 'editable' => false])
+
     @foreach($orders as $order)
         @if($more_orders)
             <h3>{{ $order->printableName() }}</h3>

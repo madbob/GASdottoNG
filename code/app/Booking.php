@@ -107,7 +107,7 @@ class Booking extends Model
 			'payment', 'modifiedValues', 'modifiedValues.modifier', 'modifiedValues.modifier.modifierType',
             'products', 'products.modifiedValues', 'products.modifiedValues.modifier', 'products.modifiedValues.modifier.modifierType',
             'user', 'user.friends_with_trashed',
-            'user.shippingplace', 'user.shippingplace.modifiers', 'user.shippingplace.modifiers.modifierType'
+            'user.circles', 'user.circles.modifiers', 'user.circles.modifiers.modifierType'
         ]);
     }
 
@@ -450,14 +450,21 @@ class Booking extends Model
         return $ret;
     }
 
-    public function getShippingPlaceAttribute()
+    public function involvedCircles()
     {
         if ($this->user->isFriend()) {
-            return $this->user->parent->shippingplace;
+            $user_circles = $this->user->parent->circles;
         }
         else {
-            return $this->user->shippingplace;
+            $user_circles = $this->user->circles;
         }
+
+        return $this->circles->merge($user_circles);
+    }
+
+    public function getCirclesSortingAttribute()
+    {
+        return $this->involvedCircles()->sortBy('group_id')->map(fn($c) => $c->name)->join(' - ');
     }
 
     public function printableName()
@@ -521,8 +528,8 @@ class Booking extends Model
     {
         $modifiers = $this->order->involvedModifiers(false);
 
-        if ($this->user->shippingplace) {
-            $modifiers = $modifiers->merge($this->user->shippingplace->modifiers);
+        foreach ($this->involvedCircles() as $circle) {
+            $modifiers = $modifiers->merge($circle->modifiers);
         }
 
         return $modifiers->filter(function($mod) {

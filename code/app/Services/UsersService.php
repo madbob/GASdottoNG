@@ -219,7 +219,6 @@ class UsersService extends BaseService
         $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
         $this->setIfSet($user, $request, 'taxcode');
         $this->transformAndSetIfSet($user, $request, 'family_members', 'enforceNumber');
-        $this->setIfSet($user, $request, 'preferred_delivery_id');
         $this->setIfSet($user, $request, 'payment_method_id');
 
         if ($type == 1) {
@@ -246,7 +245,7 @@ class UsersService extends BaseService
         $this->readRID($user, $request);
         $user->save();
 
-        $user->assignCircles($request);
+        $user->circles()->sync($request['circles'] ?? []);
 
         handleFileUpload($request, $user, 'picture');
         $user->updateContacts($request);

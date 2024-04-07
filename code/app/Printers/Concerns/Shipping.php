@@ -4,7 +4,7 @@ namespace App\Printers\Concerns;
 
 use App\Formatters\User as UserFormatter;
 use App\Formatters\Order as OrderFormatter;
-use App\Delivery;
+use App\Group;
 use App\ModifiedValue;
 
 trait Shipping
@@ -65,7 +65,7 @@ trait Shipping
         }
     }
 
-    public function formatShipping($order, $fields, $status, $shipping_place, $extra_modifiers)
+    public function formatShipping($order, $fields, $status, $circles, $extra_modifiers)
     {
         $ret = (object) [
             'headers' => $fields->headers,
@@ -76,7 +76,7 @@ trait Shipping
         $internal_offsets = $this->offsetsByStatus($status);
 
         $bookings = $order->topLevelBookings(null);
-        $bookings = Delivery::sortBookingsByShippingPlace($bookings, $shipping_place);
+        $bookings = Group::sortBookings($bookings, $circles);
         $listed_products = [];
 
         $modifiers = $order->involvedModifiers(true);
@@ -93,7 +93,7 @@ trait Shipping
                 */
                 'user_sorting' => $booking->user->lastname,
                 'gas_sorting' => $booking->user->gas_id,
-                'shipping_sorting' => $booking->user->shippingplace ? $booking->user->shippingplace->name : 'AAAA',
+                'circles_sorting' => $booking->circles_sorting,
 
                 'user' => UserFormatter::format($booking->user, $fields->user_columns),
                 'products' => [],

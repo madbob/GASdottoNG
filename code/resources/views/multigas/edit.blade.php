@@ -34,21 +34,5 @@
                 @endforeach
             </ul>
         </div>
-
-        @if($currentgas->hasFeature('shipping_places'))
-            <div class="col">
-                <h4>{{ _i('Luoghi di Consegna') }}</h4>
-                <ul class="list-group">
-                    @foreach(App\Delivery::orderBy('name', 'asc')->get() as $delivery)
-                        <li class="list-group-item">
-                            {{ $delivery->printableName() }}
-                            <span class="float-end">
-                                <input type="checkbox" data-gas="{{ $gas->id }}" data-target-type="delivery" data-target-id="{{ $delivery->id }}" {{ $gas->deliveries()->where('deliveries.id', $delivery->id)->first() != null ? 'checked' : '' }}>
-                            </span>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
     </div>
 </x-larastrap::mform>

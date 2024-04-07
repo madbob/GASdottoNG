@@ -3,6 +3,7 @@
         <div class="col-md-12">
             @include('circles.base-edit')
             <x-larastrap::check :label="_i('Default')" name="is_default" />
+            @include('commons.modifications', ['obj' => $circle])
         </div>
     </div>
     <hr>

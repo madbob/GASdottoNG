@@ -14,16 +14,16 @@ use App\Printers\Components\Table;
 use App\Printers\Components\Title;
 use App\Printers\Components\Header;
 use App\Booking;
-use App\Delivery;
+use App\Group;
 
 class Order extends Printer
 {
 	use Orders;
 
-    private function orderTopBookingsByShipping($order, $shipping_place, $status = null)
+    private function orderTopBookingsByShipping($order, $circles, $status = null)
     {
         $bookings = $order->topLevelBookings($status);
-        return Delivery::sortBookingsByShippingPlace($bookings, $shipping_place);
+        return Group::sortBookings($bookings, $circles);
     }
 
     private function sendDocumentMail($request, $temp_file_path)
@@ -49,22 +49,10 @@ class Order extends Printer
         $status = $request['status'] ?? 'pending';
         $extra_modifiers = $request['extra_modifiers'] ?? 0;
         $required_fields = $request['fields'] ?? [];
+		$fields = splitFields($required_fields);
+        $circles = $request['circles'] ?? ['all_by_name'];
 
-		/*
-			Se viene richiesto un CSV ordinato per luogo di consegna, forzo
-			l'inclusione di questo attributo tra i dati estratti per ottenere la
-			griglia desiderata
-		*/
-        $shipping_place = $request['shipping_place'] ?? 'all_by_name';
-		if ($shipping_place == 'all_by_place' && $subtype == 'csv') {
-			if (in_array('shipping_place', $required_fields) == false) {
-				$required_fields[] = 'shipping_place';
-			}
-		}
-
-        $fields = splitFields($required_fields);
-
-        $data = $this->formatShipping($obj, $fields, $status, $shipping_place, $extra_modifiers);
+        $data = $this->formatShipping($obj, $fields, $status, $circles, $extra_modifiers);
 
         $title = _i('Dettaglio Consegne ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
         $filename = sanitizeFilename($title . '.' . $subtype);
@@ -74,7 +62,7 @@ class Order extends Printer
             $pdf = PDF::loadView('documents.order_shipping_pdf', [
 				'fields' => $fields,
 				'order' => $obj,
-				'shipping_place' => $shipping_place,
+				'circles' => $circles,
 				'data' => $data
 			]);
 
@@ -170,10 +158,7 @@ class Order extends Printer
 	            $required_fields = $this->autoGuessFields($obj);
 	        }
 
-	        $shipping_place = $request['shipping_place'] ?? 'no';
-	        if ($shipping_place == 'no') {
-	            $shipping_place = null;
-	        }
+	        $circles = $request['circles'] ?? ['no'];
 
 			$document = new Document($subtype);
 
@@ -185,7 +170,7 @@ class Order extends Printer
 
 			$document->append(new Title($document_title));
 
-	        $document = $this->formatSummary($obj, $document, $required_fields, $status, $shipping_place, $extra_modifiers);
+	        $document = $this->formatSummary($obj, $document, $required_fields, $status, $circles, $extra_modifiers);
 
 			if ($send_mail) {
 				$document->save($temp_file_path);
@@ -198,9 +183,9 @@ class Order extends Printer
 		}
     }
 
-    private function formatTableRows($order, $shipping_place, $status, $fields, &$all_products)
+    private function formatTableRows($order, $circles, $status, $fields, &$all_products)
     {
-        $bookings = $this->orderTopBookingsByShipping($order, $shipping_place, $status == 'saved' ? 'saved' : null);
+        $bookings = $this->orderTopBookingsByShipping($order, $circles, $status == 'saved' ? 'saved' : null);
 		list($get_total, $get_function) = $this->bookingsRules($status);
 
         $data = [];
@@ -226,7 +211,7 @@ class Order extends Printer
         $send_mail = isset($request['send_mail']);
         $status = $request['status'] ?? 'pending';
 		$include_missing = $request['include_missing'] ?? 'no';
-        $shipping_place = $request['shipping_place'] ?? 0;
+        $circles = $request['circles'] ?? ['no'];
 
         $required_fields = $request['fields'] ?? [];
         $fields = splitFields($required_fields);
@@ -244,7 +229,7 @@ class Order extends Printer
             Formatto righe delle singole prenotazioni
         */
 
-        list($data, $total_price) = $this->formatTableRows($obj, $shipping_place, $status, $fields, $all_products);
+        list($data, $total_price) = $this->formatTableRows($obj, $circles, $status, $fields, $all_products);
         array_unshift($data, $prices_rows);
 
         /*

@@ -62,11 +62,6 @@ class Gas extends Model
         return $this->belongsToMany('App\Aggregate')->orderBy('id', 'desc');
     }
 
-    public function deliveries(): BelongsToMany
-    {
-        return $this->belongsToMany('App\Delivery')->orderBy('name', 'asc');
-    }
-
     public function nextInvoiceNumber()
     {
         $status = $this->extra_invoicing;
@@ -91,8 +86,6 @@ class Gas extends Model
     {
         return $this->innerCache('feature_' . $name, function($obj) use ($name) {
             switch($name) {
-                case 'shipping_places':
-                    return ($obj->deliveries->isEmpty() == false);
                 case 'rid':
                     return !empty($obj->rid['iban']);
                 case 'satispay':

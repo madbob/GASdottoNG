@@ -131,7 +131,6 @@ class MultiGasService extends BaseService
 
         $gas->suppliers()->sync([]);
         $gas->aggregates()->sync([]);
-        $gas->deliveries()->sync([]);
 
         $gas->delete();
 
@@ -155,10 +154,6 @@ class MultiGasService extends BaseService
 
             case 'aggregate':
                 $gas->aggregates()->$function($target_id);
-                break;
-
-            case 'delivery':
-                $gas->deliveries()->$function($target_id);
                 break;
         }
 

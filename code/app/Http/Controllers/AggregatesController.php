@@ -52,7 +52,7 @@ class AggregatesController extends Controller
                 }
             }
 
-            $deliveries = $aggr->deliveries->pluck('id');
+            $circles = $aggr->circles->pluck('id');
 
             foreach ($a->orders as $index => $o) {
                 $order = Order::find($o);
@@ -60,7 +60,7 @@ class AggregatesController extends Controller
                     $order->aggregate_id = $aggr->id;
                     $order->aggregate_sorting = $index;
                     $order->save();
-                    $order->deliveries()->sync($deliveries);
+                    $order->circles()->sync($circles);
                 }
             }
         }
@@ -91,9 +91,9 @@ class AggregatesController extends Controller
             $a->orders()->update(['status' => $status]);
         }
 
-        $deliveries = array_filter($request->input('deliveries', []));
+        $circles = array_filter($request->input('circles', []));
         foreach($a->orders as $o) {
-            $o->deliveries()->sync($deliveries);
+            $o->circles()->sync($circles);
         }
 
         if ($request->has('change_dates')) {

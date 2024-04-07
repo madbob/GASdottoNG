@@ -36,8 +36,5 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
     @endif
 </x-larastrap::field>
 
-@if($currentgas->hasFeature('shipping_places'))
-    <x-larastrap::selectobj name="deliveries" :label="_i('Luoghi di Consegna')" :options="$currentgas->deliveries" multiple :pophelp="_i('Selezionando uno o più luoghi di consegna, l\'ordine sarà visibile solo agli utenti che hanno attivato quei luoghi. Se nessun luogo viene selezionato, l\'ordine sarà visibile a tutti.')" />
-@endif
-
+@include('order.partials.groups', ['order' => null, 'readonly' => false])
 @include('commons.orderstatus', ['order' => $order])

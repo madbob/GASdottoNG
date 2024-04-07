@@ -28,9 +28,9 @@ class Modifier
             'aggregate,product' => '',
             'aggregate,booking' => _i('della prenotazione aggregata'),
             'aggregate,order' => _i("dell'ordine aggregato"),
-            'delivery,product' => '',
-            'delivery,booking' => _i('della prenotazione destinata al luogo'),
-            'delivery,order' => _i("dell'ordine destinato al luogo"),
+            'circle,product' => '',
+            'circle,booking' => _i('della prenotazione assegnata al cerchio'),
+            'circle,order' => _i("della porzione di ordine destinata al cerchio"),
         ];
     }
 

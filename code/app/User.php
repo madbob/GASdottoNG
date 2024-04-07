@@ -80,11 +80,6 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Supplier');
     }
 
-    public function shippingplace(): BelongsTo
-    {
-        return $this->belongsTo('App\Delivery', 'preferred_delivery_id');
-    }
-
     public function scopeFilterEnabled($query)
     {
         $user = Auth::user();
@@ -148,7 +143,6 @@ class User extends Authenticatable
     public function printableFriendHeader($aggregate)
     {
         $ret = $this->printableName();
-        $this->load('shippingplace');
 
         $tot = 0;
         foreach($aggregate->orders as $order) {
@@ -156,8 +150,9 @@ class User extends Authenticatable
             $tot += $order->userBooking($this)->getValue('effective', false);
         }
 
-        if ($tot != 0)
+        if ($tot != 0) {
             $ret .= '<div class="pull-right">' . _i('Ha ordinato %s', printablePriceCurrency($tot)) . '</div>';
+        }
 
         return $ret;
     }

@@ -6,7 +6,7 @@ use App\Exceptions\IllegalArgumentException;
 
 use App\User;
 use App\Role;
-use App\Delivery;
+use App\Group;
 
 class UserObserver
 {
@@ -51,7 +51,7 @@ class UserObserver
             $user->addRole($role, $user->gas);
         }
 
-        $user->preferred_delivery_id = '0';
+        $user->circles()->sync([]);
         return $user;
     }
 
@@ -63,11 +63,16 @@ class UserObserver
             $user->addRole($role, $user->gas);
         }
 
-        $fallback_delivery = Delivery::where('default', true)->first();
-        if ($fallback_delivery != null) {
-            $user->preferred_delivery_id = $fallback_delivery->id;
+        $groups = Group::where('context', 'user')->get();
+        $circles = [];
+        foreach($groups as $group) {
+            $circle = $group->circles()->where('is_default', true)->first();
+            if ($circle) {
+                $circles[] = $circle;
+            }
         }
 
+        $user->circles()->sync($circles);
         return $user;
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\View\Icons;
 
+use App\Group;
+
 class AggregateBooking extends IconsMap
 {
     public static function commons($user)
@@ -26,39 +28,5 @@ class AggregateBooking extends IconsMap
                 'text' => _i('Salvato'),
             ],
         ];
-    }
-
-    public static function selective()
-    {
-        if (currentAbsoluteGas()->hasFeature('shipping_places')) {
-            return [
-                'truck' => (object) [
-                    'text' => _i('Luogo di Consegna'),
-                    'assign' => function ($obj) {
-                        return [
-                            'hidden-truck-' . $obj->user->preferred_delivery_id,
-                        ];
-                    },
-                    'options' => function($objs) {
-                        $ret = [];
-
-                        foreach($objs as $obj) {
-                            $key = 'hidden-truck-' . $obj->user->preferred_delivery_id;
-                            if (isset($ret[$key]) == false) {
-                                $place = $obj->user->shippingplace;
-                                if ($place) {
-                                    $ret[$key] = $place->name;
-                                }
-                            }
-                        }
-
-                        return $ret;
-                    }
-                ]
-            ];
-        }
-        else {
-            return [];
-        }
     }
 }

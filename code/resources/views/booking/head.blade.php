@@ -1,6 +1,7 @@
 <?php
 
 $count_products = 0;
+$selected_circles = null;
 
 foreach($aggregate->orders as $order) {
     $o = $order->userBooking($user->id);
@@ -13,15 +14,56 @@ foreach($aggregate->orders as $order) {
     }
 
     if ($count_products > 0) {
+        $selected_circles = $o->circles;
         break;
+    }
+}
+
+if ($user->isFriend() == false) {
+    $circles = $aggregate->orders->first()->circlesByGroup();
+
+    $display_circles = array_filter($circles, fn($c) => $c->group->context == 'order');
+
+    $select_circles = array_filter($circles, fn($c) => $c->group->context == 'booking');
+    if (is_null($selected_circles) || $selected_circles->isEmpty()) {
+        /*
+            Questo è per forzare sempre un default, ed evitare che esistano
+            prenotazioni cui non venga assegnato nessuno dei Circle richiesti
+        */
+        foreach($select_circles as $meta) {
+            $default = array_filter($meta->circles, fn($c) => $c->is_default);
+            if (empty($default) == false) {
+                $selected_circles[] = $default[0];
+            }
+            else {
+                $selected_circles[] = $meta->circles[0];
+            }
+        }
     }
 }
 
 ?>
 
-@if($count_products != 0)
-    <div class="row">
-        <div class="col-12 col-md-4 offset-md-8">
+<div class="row booking-header">
+    <div class="col-12 col-md-8">
+        @if($user->isFriend() == false)
+            @foreach($select_circles as $meta)
+                <x-larastrap::radios-model :label="$meta->group->name" name="circles[]" :options="$meta->circles" :value="$selected_circles" :readonly="$editable == false" />
+            @endforeach
+
+            @foreach($display_circles as $meta)
+                <x-larastrap::field :label="$meta->group->name">
+                    <ul class="list-unstyled">
+                        @foreach($meta->circles as $circle)
+                            <li class="form-control-plaintext">{{ $circle->name }}</li>
+                        @endforeach
+                    </ul>
+                </x-larastrap::field>
+            @endforeach
+        @endif
+    </div>
+    <div class="col-12 col-md-4">
+        @if($count_products != 0)
             <div class="list-group">
                 <a href="{{ url('booking/' . $aggregate->id . '/user/' . $user->id . '/document') }}" class="list-group-item">
                     {{ _i('Dettaglio Consegne') }} <i class="bi-download"></i>
@@ -35,8 +77,8 @@ foreach($aggregate->orders as $order) {
                     @endforeach
                 @endif
             </div>
-        </div>
+        @endif
     </div>
+</div>
 
-    <hr>
-@endif
+<hr>

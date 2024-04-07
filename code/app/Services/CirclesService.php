@@ -43,7 +43,7 @@ class CirclesService extends BaseService
         $c = Circle::findOrFail($id);
         $this->setIfSet($c, $request, 'name');
         $this->setIfSet($c, $request, 'description');
-        $this->boolIfSet($g, $request, 'is_default');
+        $this->boolIfSet($c, $request, 'is_default');
 
         if ($c->is_default) {
             $c->group->circles()->update(['is_default' => false]);

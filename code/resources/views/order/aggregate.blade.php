@@ -2,7 +2,7 @@
 
 $orders = $aggregate->orders()->with([
     'products', 'products.measure', 'products.category',
-    'payment', 'modifiers', 'deliveries',
+    'payment', 'modifiers', 'circles',
 ])->get();
 
 $aggregate->setRelation('orders', $orders);

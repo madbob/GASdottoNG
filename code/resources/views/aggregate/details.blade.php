@@ -3,14 +3,14 @@
 
     <div class="row">
         <div class="col-md-4">
-            <?php
+            @php
 
             $statuses = ['no' => _i('Invariato')];
             foreach(\App\Helpers\Status::orders() as $identifier => $meta) {
                 $statuses[$identifier] = $meta->label;
             }
 
-            ?>
+            @endphp
 
             <x-larastrap::select name="status" :label="_i('Stato')" :options="$statuses" value="no" :pophelp="_i('Da qui puoi modificare lo stato di tutti gli ordini inclusi nell\'aggregato')" />
 
@@ -22,12 +22,9 @@
                 <x-larastrap::datepicker name="end" :label="_i('Data Chiusura Prenotazioni')" />
                 <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" />
             </x-larastrap::collapse>
-
-            @if($currentgas->hasFeature('shipping_places'))
-                <x-larastrap::selectobj name="deliveries" :label="_i('Luoghi di Consegna')" :options="$currentgas->deliveries" multiple />
-            @endif
         </div>
         <div class="col-md-4">
+            @include('order.partials.groups', ['order' => $aggregate, 'readonly' => false])
             @include('commons.modifications', ['obj' => $aggregate])
         </div>
         <div class="col-md-4">

@@ -61,13 +61,38 @@ class Aggregate extends Model
         return $priority[$index];
     }
 
-    public function getDeliveriesAttribute()
+    public function getCirclesAttribute()
     {
+        $ret = new Collection();
+
         foreach ($this->orders as $order) {
-            return $order->deliveries;
+            $ret = $ret->concat($order->circles()->with('group')->get());
         }
 
-        return new Collection();
+        return $ret->unique();
+    }
+
+    public function circlesByGroup(): array
+    {
+        $ret = [];
+
+        foreach($this->circles as $circle) {
+            if (isset($ret[$circle->group->id]) == false) {
+                $ret[$circle->group->id] = (object) [
+                    'group' => $circle->group,
+                    'circles' => [],
+                ];
+            }
+
+            $ret[$circle->group->id]->circles[] = $circle;
+        }
+
+        return $ret;
+    }
+
+    public function eligibleGroups()
+    {
+        return $this->orders->first()->eligibleGroups();
     }
 
     public function hasPendingPackages()

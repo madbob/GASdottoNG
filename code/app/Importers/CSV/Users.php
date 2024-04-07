@@ -2,16 +2,15 @@
 
 namespace App\Importers\CSV;
 
-use Auth;
-use App;
-use DB;
-use Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Str;
 
 use App\User;
 use App\Contact;
-use App\Delivery;
+use App\Group;
 
 class Users extends CSVImporter
 {
@@ -94,11 +93,11 @@ class Users extends CSVImporter
 			'explain' => _i('Indicare "true" o "false"')
 		];
 
-		$gas = currentAbsoluteGas();
-		if ($gas->hasFeature('shipping_places')) {
-			$ret['preferred_delivery_id'] = (object) [
-				'label' => _i('Luogo di Consegna'),
-				'explain' => _i('Se specificato, deve contenere il nome di uno dei Luoghi di Consegna impostati nel pannello "Configurazioni"')
+		$groups = Group::where('context', 'user')->orderBy('name', 'asc')->get();
+		foreach($groups as $group) {
+			$ret['group_' . $group->id] = (object) [
+				'label' => _i('Gruppo %s'),
+				'explain' => _i('Se specificato, deve contenere il nome di uno dei Cerchi impostati nel pannello "Configurazioni" per questo Gruppo')
 			];
 		}
 
@@ -181,6 +180,7 @@ class Users extends CSVImporter
         $errors = [];
 
 		$contact_types = array_keys(Contact::types());
+		$groups = Group::where('context', 'user')->orderBy('name', 'asc')->get();
 
         /*
             TODO: aggiornare questo per adattarlo a UsersService
@@ -203,6 +203,7 @@ class Users extends CSVImporter
                 $credit = null;
                 $password_defined = false;
                 $address = [];
+				$assigned_circles = [];
 
                 foreach ($columns as $index => $field) {
                     $value = (string)$line[$index];
@@ -242,11 +243,12 @@ class Users extends CSVImporter
 						$index = (int) Str::after($field, 'address_');
                         $address[$index] = $value;
                     }
-					else if ($field == 'preferred_delivery_id') {
+					else if (str_starts_with($field, 'group_')) {
 						$value = trim($value);
-						$shipping = Delivery::where('name', $value)->first();
-						if ($shipping) {
-							$u->$field = $shipping->id;
+						$group_id = substr($field, strlen('group_'));
+						$circle = Circle::where('name', $value)->where('group_id', $group_id)->first();
+						if ($circle) {
+							$assigned_circles[] = $circle->id;
 						}
 					}
                     else {
@@ -255,11 +257,14 @@ class Users extends CSVImporter
                 }
 
                 $u->save();
+
                 $users[] = $u;
 
 				ksort($address);
                 $this->fillContact($contacts, 'address', join(',', $address));
                 $u->updateContacts($contacts);
+
+				$u->circles()->sync($assigned_circles);
 
                 if ($credit != null) {
                     $u->alterBalance($credit, defaultCurrency());

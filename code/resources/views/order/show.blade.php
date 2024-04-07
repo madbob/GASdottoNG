@@ -7,11 +7,6 @@
             <x-larastrap::datepicker name="start" :label="_i('Data Apertura')" readonly disabled />
             <x-larastrap::datepicker name="end" :label="_i('Data Chiusura')" readonly disabled />
             <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" readonly disabled />
-
-            @if($order->deliveries()->count() != 0)
-                @include('commons.staticobjectslistfield', ['obj' => $order, 'name' => 'deliveries', 'label' => _i('Luoghi di Consegna')])
-            @endif
-
             @include('commons.orderstatus', ['order' => $order, 'editable' => false])
         </div>
 

@@ -174,6 +174,15 @@ class Callables {
         }
     }
 
+    static beforeBookingSaved(form, data) {
+        /*
+            Per 
+        */
+        form.siblings('.booking-header').find('input[name^=circles]').filter(':checked').each((index, item) => {
+            form.append('<input name="circles[]" value="' . $(item).val() . '" />');
+        });
+    }
+
     /* post-saved-function ****************************************************/
 
     static closeAllModals()

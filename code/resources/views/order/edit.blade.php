@@ -28,15 +28,6 @@
                 <x-larastrap::datepicker name="end" :label="_i('Data Chiusura')" required :attributes="['data-enforce-after' => '.date[name=start]']" :pophelp="_i('Data di chiusura dell\'ordine. Al termine del giorno qui indicato, l\'ordine sarà automaticamente impostato nello stato Prenotazioni Chiuse')" />
                 <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" :attributes="['data-enforce-after' => '.date[name=end]']" />
 
-                @if($currentgas->hasFeature('shipping_places') && $order->aggregate->orders->count() == 1)
-                    <!--
-                        Se l'ordine è aggregato ad altri, i luoghi di consegna
-                        si editano una volta per tutti direttamente nel pannello
-                        dell'aggregato
-                    -->
-                    <x-larastrap::selectobj name="deliveries" :label="_i('Luoghi di Consegna')" :options="$currentgas->deliveries" multiple :pophelp="_i('Selezionando uno o più luoghi di consegna, l\'ordine sarà visibile solo agli utenti che hanno attivato quei luoghi. Se nessun luogo viene selezionato, l\'ordine sarà visibile a tutti.')" />
-                @endif
-
                 @if($currentgas->booking_contacts == 'manual')
                     <?php
 
@@ -64,8 +55,8 @@
                 <x-larastrap::datepicker name="end" :label="_i('Data Chiusura')" readonly disabled />
                 <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" readonly disabled />
 
-                @if($order->deliveries()->count() != 0 && $order->aggregate->orders()->count() == 1)
-                    <x-larastrap::selectobj name="deliveries" :label="_i('Luoghi di Consegna')" :options="$currentgas->deliveries" multiple :extraitem="_i('Non limitare luogo di consegna')" readonly disabled />
+                @if($order->circles()->count() != 0 && $order->aggregate->orders()->count() == 1)
+                    @include('order.partials.groups', ['order' => $order, 'readonly' => true])
                 @endif
 
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
@@ -76,6 +67,8 @@
             @include('commons.orderstatus', ['order' => $order])
         </div>
         <div class="col-12 col-lg-4">
+            @include('order.partials.groups', ['order' => $order, 'readonly' => false])
+
             @include('commons.modifications', [
                 'obj' => $order,
                 'skip_void' => true,

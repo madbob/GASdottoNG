@@ -5,7 +5,6 @@ namespace App\Printers\Concerns;
 use App\Printers\Components\Table;
 use App\Printers\Components\Header;
 use App\Formatters\Order as OrderFormatter;
-use App\Delivery;
 use App\ModifiedValue;
 
 trait Summary
@@ -47,12 +46,12 @@ trait Summary
         return $rows;
     }
 
-    private function formatSummaryShipping($order, $fields, $status, $shipping_place, $extra_modifiers)
+    private function formatSummaryShipping($order, $fields, $status, $circles, $extra_modifiers)
     {
         $rows = [];
         $total = 0;
         $formattable = OrderFormatter::formattableColumns('summary');
-        $summary = $order->reduxData(['shipping_place' => $shipping_place]);
+        $summary = $order->reduxData(['circles' => $circles]);
         $internal_offsets = $this->offsetsByStatus($status);
         $price_offset = $this->getPriceOffsetFromFields($fields);
 
@@ -87,8 +86,11 @@ trait Summary
         }
     }
 
-    protected function formatSummary($order, $document, $fields, $status, $shipping_place, $extra_modifiers)
+    protected function formatSummary($order, $document, $fields, $status, $circles, $extra_modifiers)
     {
+        /*
+            TODO: FIXARE QUESTO
+        */
         if ($shipping_place && $shipping_place == 'all_by_place') {
             $places = Delivery::orderBy('name', 'asc')->get();
             foreach($places as $place) {
@@ -100,7 +102,7 @@ trait Summary
             }
         }
         else {
-            $table = $this->formatSummaryShipping($order, $fields, $status, $shipping_place, $extra_modifiers);
+            $table = $this->formatSummaryShipping($order, $fields, $status, $circles, $extra_modifiers);
             if ($table) {
                 $document->append($table);
             }

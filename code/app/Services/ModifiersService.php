@@ -48,7 +48,7 @@ class ModifiersService extends BaseService
 
                 break;
 
-            case 'App\Delivery':
+            case 'App\Circle':
                 $this->ensureAuth(['gas.config' => 'gas']);
                 break;
         }

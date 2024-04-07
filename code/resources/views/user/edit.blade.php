@@ -123,9 +123,9 @@ if ($user->isFriend() && $admin_editable) {
 
                             @foreach($user->eligibleGroups() as $ug)
                                 @if($admin_editable || $ug->user_selectable)
-                                    <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => sprintf('group_%s', $ug->id), 'label' => $ug->name, 'options' => $ug->circles]" />
+                                    <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => 'circles', 'npostfix' => '[]', 'label' => $ug->name, 'options' => $ug->circles]" />
                                 @elseif($ug->visible)
-                                    <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => sprintf('group_%s', $ug->id), 'label' => $ug->name, 'options' => $ug->circles]" disabled readonly />
+                                    <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => 'circles', 'npostfix' => '[]', 'label' => $ug->name, 'options' => $ug->circles]" disabled readonly />
                                 @endif
                             @endforeach
                         @endif
