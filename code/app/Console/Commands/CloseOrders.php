@@ -14,7 +14,7 @@ class CloseOrders extends Command
 
     public function handle()
     {
-        $orders = Order::where('status', 'open')->where('end', '<', date('Y-m-d'))->get();
+        $orders = Order::withoutGlobalScopes()->where('status', 'open')->where('end', '<', date('Y-m-d'))->get();
         $closed = [];
 
         foreach($orders as $order) {

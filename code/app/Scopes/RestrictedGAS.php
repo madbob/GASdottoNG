@@ -53,6 +53,7 @@ class RestrictedGAS implements Scope
         */
         if ($hub->hubRequired() && $hub->enabled()) {
             $gas_id = $hub->getGas();
+
             /*
                 Deve inoltre esserci un GAS attivo, altrimenti i risultati delle
                 successive query alterate dallo scope sono non definiti.
