@@ -19,7 +19,7 @@ class OpenOrders extends Command
     {
         $dates = Date::where('type', 'order')->get();
         $today = date('Y-m-d');
-        \Log::debug('Oggi . ' $today ' . ci sono ' . $dates->count() . ' date per apertura ordini');
+        \Log::debug('Oggi ' . $today . ' ci sono ' . $dates->count() . ' date per apertura ordini');
         $aggregable = [];
 
         foreach($dates as $date) {
