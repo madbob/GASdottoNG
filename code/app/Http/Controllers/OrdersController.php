@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
-use DB;
-use Log;
+use Illuminate\Support\Facades\DB;
 
 use FeedIo\FeedIo;
 use FeedIo\Feed;
 use FeedIo\Feed\Item\Author;
 use FeedIo\Factory\Builder\GuzzleClientBuilder;
+use Psr\Log\NullLogger;
 
+use App\Http\Controllers\Controller;
 use App\Services\OrdersService;
 use App\Services\BookingsService;
 use App\Printers\Order as Printer;
@@ -87,7 +86,12 @@ class OrdersController extends BackedController
 			$feed->add($item);
         }
 
-		$feedIo = new FeedIo((new GuzzleClientBuilder())->getClient(), Log::getLogger());
+        /*
+            FeedIo genera il suo proprio log di debug che va a mischiarsi con le
+            informazioni utili per GASdotto: qui disabilito del tutto il suo
+            proprio logging
+        */
+		$feedIo = new FeedIo((new GuzzleClientBuilder())->getClient(), new NullLogger());
         return $feedIo->getPsrResponse($feed, 'rss');
     }
 
