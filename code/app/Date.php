@@ -88,14 +88,11 @@ class Date extends Model implements Datable
         else {
             $dates = unrollPeriodic(json_decode($this->recurring));
 
-            \Log::debug($this->type . ' - ' . $this->action);
-
             if ($this->type == 'order' && $this->action != 'open') {
                 $offset = $this->first_offset;
                 $shifted = [];
 
                 foreach($dates as $date) {
-                    \Log::debug($date . ' / ' . Carbon::parse($date)->subDays($offset)->format('Y-m-d'));
                     $shifted[] = Carbon::parse($date)->subDays($offset)->format('Y-m-d');
                 }
 
