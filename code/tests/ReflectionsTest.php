@@ -10,7 +10,7 @@ class ReflectionsTest extends TestCase
     public function testTraitsDetection()
     {
         $user = User::inRandomOrder()->first();
-        $this->assetTrue(hasTrait($user, CreditableTrait::class));
+        $this->assertTrue(hasTrait($user, CreditableTrait::class));
 
         $creditables = modelsUsingTrait(CreditableTrait::class);
         $this->assertTrue(isset($creditables['App\User']));
