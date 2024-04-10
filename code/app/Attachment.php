@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -16,9 +17,7 @@ class Attachment extends Model
 
     public function attached(): MorphTo
     {
-        $uses = class_uses($this->target_type);
-
-        if ($this->target_type && $uses && in_array('Illuminate\Database\Eloquent\SoftDeletes', $uses)) {
+        if ($this->target_type && hasTrait($this->target_type, SoftDeletes::class)) {
             // @phpstan-ignore-next-line
             return $this->morphTo('target')->withoutGlobalScopes()->withTrashed();
         }

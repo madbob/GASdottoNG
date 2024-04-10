@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -287,7 +288,7 @@ class Role extends Model
                 continue;
             }
 
-            if ($exclude_trashed == false && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class))) {
+            if ($exclude_trashed == false && hasTrait($class, SoftDeletes::class)) {
                 $objs = $class::withTrashed()->whereIn('id', $ids)->get();
             }
             else {

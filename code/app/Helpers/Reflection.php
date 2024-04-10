@@ -71,7 +71,7 @@ function modelsUsingTrait($trait_name)
         }
 
         $classname = 'App\\' . substr($result, 0, -4);
-        if (class_exists($classname) && in_array($trait_name, class_uses($classname))) {
+        if (class_exists($classname) && hasTrait($classname, $trait_name)) {
             $out[$classname] = $classname::commonClassName();
         }
     }
@@ -81,7 +81,8 @@ function modelsUsingTrait($trait_name)
 
 function hasTrait($obj, $trait)
 {
-    return in_array($trait, class_uses(get_class($obj)));
+    $traits = class_uses_recursive($obj);
+    return in_array($trait, $traits);
 }
 
 function accessAttr($obj, $name, $default = '')
