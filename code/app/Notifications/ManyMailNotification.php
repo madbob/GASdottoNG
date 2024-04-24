@@ -46,7 +46,7 @@ class ManyMailNotification extends Notification
     {
         $message = new MailMessage();
 
-        if (in_array(ContactableTrait::class, class_uses(get_class($notifiable)))) {
+        if (hasTrait($notifiable, ContactableTrait::class)) {
             $notifiable->messageAll($message);
         }
 
