@@ -1,5 +1,7 @@
 require('./aggregation');
 
+import utils from "./utils";
+
 class Orders
 {
     static init(container)
