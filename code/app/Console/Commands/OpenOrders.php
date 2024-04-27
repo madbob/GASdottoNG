@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
@@ -52,7 +53,7 @@ class OpenOrders extends Command
                             oggi per il fornitore desiderato, passo oltre
                         */
                         $supplier = $d->target;
-                        if (is_null($supplier) || $supplier->orders()->where('start', $today)->count() != 0) {
+                        if (is_null($supplier) || $supplier->orders()->withoutGlobalScopes()->where('start', $today)->count() != 0) {
                             continue;
                         }
 
@@ -66,7 +67,6 @@ class OpenOrders extends Command
                 }
 
                 if ($all_previous) {
-                    Log::debug('Rimosso ordine ricorrente non più operativo: ' . $date->id);
                     $date->delete();
                 }
             }
@@ -115,7 +115,7 @@ class OpenOrders extends Command
             futura
         */
 
-        $pending = Order::where('status', 'suspended')->where('start', Carbon::today()->format('Y-m-d'))->get();
+        $pending = Order::withoutGlobalScopes()->where('status', 'suspended')->where('start', Carbon::today()->format('Y-m-d'))->get();
         foreach($pending as $p) {
             $p->status = 'open';
             $p->save();

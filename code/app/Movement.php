@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -44,7 +45,7 @@ class Movement extends Model
 
     public function sender(): MorphTo
     {
-        if ($this->sender_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->sender_type))) {
+        if ($this->sender_type && hasTrait($this->sender_type, SoftDeletes::class)) {
             // @phpstan-ignore-next-line
             return $this->morphTo()->withoutGlobalScopes()->withTrashed();
         }
@@ -55,7 +56,7 @@ class Movement extends Model
 
     public function target(): MorphTo
     {
-        if ($this->target_type && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->target_type))) {
+        if ($this->target_type && hasTrait($this->target_type, SoftDeletes::class)) {
             // @phpstan-ignore-next-line
             return $this->morphTo()->withoutGlobalScopes()->withTrashed();
         }

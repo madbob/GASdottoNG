@@ -344,7 +344,6 @@ class ModifierEngine
                     $modifier_value->delete();
                 }
 
-				Log::debug('Modificatore non applicabile');
                 return null;
             }
         }

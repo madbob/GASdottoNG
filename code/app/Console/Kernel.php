@@ -13,10 +13,18 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-    	$schedule->command('check:fees')->daily();
-        $schedule->command('close:orders')->daily();
-        $schedule->command('open:orders')->daily();
-        $schedule->command('remind:orders')->daily();
+        /*
+            Le istanze su gasdotto.net vengono gestite con l'apposito script
+            cron_daily.sh per evitare sovrapposizioni sugli orari di esecuzione.
+            Se si fa qualche modifica nell'elenco di questi comandi, apportare
+            le stesse modifiche nel suddetto script
+        */
+        if (env('GASDOTTO_NET', false) == false) {
+            $schedule->command('check:fees')->daily();
+            $schedule->command('close:orders')->daily();
+            $schedule->command('open:orders')->daily();
+            $schedule->command('remind:orders')->daily();
+        }
     }
 
     protected function commands()

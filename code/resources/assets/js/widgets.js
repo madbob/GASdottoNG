@@ -254,23 +254,6 @@ class Widgets {
                 current.datepicker('setStartDate', current_ref);
             }
         });
-
-		$('input[data-enforce-more]', container).each((index, item) => {
-            var current = $(item);
-            var target = this.dateEnforcePeer(current, 'data-enforce-more');
-
-            target.on('change', function() {
-                var current_start = current.val();
-                var current_ref = target.val();
-                if (current_start < current_ref) {
-                    current.val(current_ref);
-                }
-            });
-        }).focus((e) => {
-			var current = $(e.currentTarget);
-            var current_ref = this.dateEnforcePeer(current, 'data-enforce-more').val();
-            current.attr('min', current_ref);
-        });
     }
 
     static handlingContactSelection(container)

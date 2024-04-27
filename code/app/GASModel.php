@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Auth;
 use URL;
@@ -24,7 +25,7 @@ trait GASModel
     {
         $class = get_called_class();
 
-        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class))) {
+        if (hasTrait($class, SoftDeletes::class)) {
             // @phpstan-ignore-next-line
             $ret = $class::where('id', $id)->withoutGlobalScopes()->withTrashed()->first();
         }
@@ -47,7 +48,7 @@ trait GASModel
     {
         $class = get_called_class();
 
-        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($class))) {
+        if (hasTrait($class, SoftDeletes::class)) {
             // @phpstan-ignore-next-line
             return $class::withTrashed()->get();
         }
