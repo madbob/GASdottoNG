@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Env;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
@@ -79,6 +80,13 @@ class AppServiceProvider extends ServiceProvider
         if ($gas_id) {
             app()->make('GlobalScopeHub')->setGas($gas_id);
         }
+
+        /*
+            Per scrupolo, all'inizio di ogni job invalido tutte le cache tenute
+            in RAM
+        */
+        Artisan::call('modelCache:clear');
+        app()->make('TempCache')->wipeAll();
     }
 
     /*
