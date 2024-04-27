@@ -12,7 +12,7 @@ use App\Notifications\RemindOrderNotification;
 use App\Gas;
 use App\Order;
 
-class NotifyRemindOrder extends Job
+class NotifyRemindOrder implements ShouldQueue
 {
 	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
