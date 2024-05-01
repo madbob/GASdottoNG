@@ -27,22 +27,17 @@ class AppServiceProvider extends ServiceProvider
     */
     private function initMailing()
     {
-        $mailer = env('MAIL_MAILER');
+		Mail::extend('sendinblue', function () {
+            return (new SendinblueTransportFactory)->create(
+                new Dsn('sendinblue+api', 'default', config('services.sendinblue.key'))
+            );
+        });
 
-		if ($mailer == 'sendinblue') {
-			Mail::extend('sendinblue', function () {
-	            return (new SendinblueTransportFactory)->create(
-	                new Dsn('sendinblue+api', 'default', config('services.sendinblue.key'))
-	            );
-	        });
-		}
-        else if ($mailer == 'scaleway') {
-			Mail::extend('scaleway', function () {
-	            return (new ScalewayTransportFactory)->create(
-	                new Dsn('scaleway+api', 'default', config('mail.mailers.scaleway.username'), config('mail.mailers.scaleway.password'))
-	            );
-	        });
-		}
+		Mail::extend('scaleway', function () {
+            return (new ScalewayTransportFactory)->create(
+                new Dsn('scaleway+api', 'default', config('mail.mailers.scaleway.username'), config('mail.mailers.scaleway.password'))
+            );
+        });
     }
 
     protected function getEventPayload($event): ?array
