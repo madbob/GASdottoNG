@@ -100,13 +100,7 @@ class BookedProduct extends Model
                 $content = 0;
             }
 
-            if ($this->product) {
-                return $this->product->getPrice($rectify) * $content;
-            }
-            else {
-                \Log::error('Prodotto non trovato: ' . $this->product_id . ' - ' . $this->booking->order_id);
-                return 0;
-            }
+            return $this->product->getPrice($rectify) * $content;
         }
     }
 

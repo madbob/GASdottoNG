@@ -100,13 +100,20 @@ class NotifyClosedOrder implements ShouldQueue
         $aggregates = [];
 
         $hub = app()->make('GlobalScopeHub');
+        $hub->enable(false);
 
         foreach($this->orders as $order_id) {
             $order = Order::find($order_id);
+            if (is_null($order)) {
+                \Log::error('Non trovato ordine in fase di notifica chiusura: ' . $order_id . ' / ' . env('DB_DATABASE'));
+                continue;
+            }
+
             $aggregate = $order->aggregate;
             $closed_aggregate = ($aggregate->last_notify == null && $aggregate->status == 'closed');
 
             foreach($aggregate->gas as $gas) {
+                $hub->enable(true);
                 $hub->setGas($gas->id);
 
                 /*

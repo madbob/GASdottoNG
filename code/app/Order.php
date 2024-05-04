@@ -353,12 +353,20 @@ class Order extends Model
 
     public function detachProduct($product)
     {
+        $altered_bookings = 0;
+
         /*
             Se vengono rimossi dei prodotti dall'ordine, ne elimino tutte le
             relative prenotazioni sinora avvenute
         */
         foreach($this->bookings as $booking) {
-            $booking->products()->where('product_id', $product->id)->delete();
+            $products = $booking->products()->where('product_id', $product->id)->get();
+            if ($products->isEmpty() == false) {
+                $altered_bookings++;
+                foreach($products as $p) {
+                    $p->delete();
+                }
+            }
 
             /*
                 Se i prodotti rimossi erano gli unici contemplati nella
@@ -370,6 +378,7 @@ class Order extends Model
         }
 
         $this->products()->detach($product->id);
+        \Log::info('Rimosso prodotto ' . $product->id . ' da ordine ' . $this->id . ', alterate ' . $altered_bookings . ' prenotazioni');
     }
 
     public function showableContacts()
