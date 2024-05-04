@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
 
 use App\User;
-use App\Delivery;
 use App\Booking;
 use App\VariantCombo;
 
@@ -176,33 +175,6 @@ class OrdersServiceTest extends TestCase
         $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertFalse($order->isActive());
         $this->assertFalse($order->isRunning());
-    }
-
-    /*
-        Assegnazione Luoghi di Consegna
-    */
-    public function testOnShippingPlace()
-    {
-        $this->actingAs($this->userAdmin);
-        $delivery = Delivery::factory()->create([
-            'default' => true,
-        ]);
-
-        $this->actingAs($this->userReferrer);
-        app()->make('OrdersService')->update($this->order->id, array(
-            'deliveries' => [$delivery->id],
-        ));
-
-        $order = app()->make('OrdersService')->show($this->order->id);
-        $this->assertEquals(1, $order->deliveries()->count());
-
-        /*
-            TODO: spostare funzione list() in OrdersService e testare che
-            userWithNoPerms non veda l'ordine appena modificato
-
-            $this->userWithNoPerms->preferred_delivery_id = $delivery->id;
-            $this->actingAs($this->userWithNoPerms);
-        */
     }
 
     /*

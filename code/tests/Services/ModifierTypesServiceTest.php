@@ -33,10 +33,10 @@ class ModifierTypesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $type = app()->make('ModifierTypesService')->store(array(
+        $type = app()->make('ModifierTypesService')->store([
             'name' => 'Donazione',
             'classes' => ['App\Booking'],
-        ));
+        ]);
 
         $this->assertTrue($type->exists);
 

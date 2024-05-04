@@ -31,10 +31,9 @@ class GroupsService extends BaseService
 
         $g = Group::findOrFail($id);
         $this->setIfSet($g, $request, 'name');
-        $this->setIfSet($g, $request, 'context');
+        $this->setIfSet($g, $request, 'context', 'user');
 
-        $context = $request['context'] ?? 'user';
-        switch($context) {
+        switch($g->context) {
             case 'user':
                 $this->setIfSet($g, $request, 'cardinality');
                 $this->boolIfSet($g, $request, 'filters_orders');

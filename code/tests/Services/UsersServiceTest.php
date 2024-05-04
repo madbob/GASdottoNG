@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 use Tests\TestCase;
 use App\Exceptions\IllegalArgumentException;
@@ -356,6 +357,24 @@ class UsersServiceTest extends TestCase
 
         app()->make('UsersService')->update($user->id, [
             'card_number' => $sample->card_number,
+        ]);
+    }
+
+    /*
+        Modifica Utente con parametri errati
+    */
+    public function testInvalidName()
+    {
+        $this->expectException(IllegalArgumentException::class);
+
+        $this->actingAs($this->userWithAdminPerm);
+        $sample = User::where('gas_id', $this->gas->id)->inRandomOrder()->first();
+
+        app()->make('UsersService')->store([
+            'username' => Str::random(10),
+            'firstname' => $sample->firstname,
+            'lastname' => $sample->lastname,
+            'password' => Str::random(10),
         ]);
     }
 

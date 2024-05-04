@@ -396,7 +396,7 @@ class BookingsService extends BaseService
         $booking = $this->readBooking($request, $order, $booking, $delivering);
 
         if ($booking) {
-            $booking->circles()->sync($request['circles']);
+            $booking->circles()->sync($request['circles'] ?? []);
 
             if ($delivering) {
                 BookingDelivered::dispatch($booking, $request['action'], $user);

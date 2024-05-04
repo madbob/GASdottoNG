@@ -68,7 +68,7 @@ class UserObserver
         foreach($groups as $group) {
             $circle = $group->circles()->where('is_default', true)->first();
             if ($circle) {
-                $circles[] = $circle;
+                $circles[] = $circle->id;
             }
         }
 

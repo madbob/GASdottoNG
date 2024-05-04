@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
 
+use App\User;
 use App\Circle;
 use App\Group;
 
@@ -29,9 +30,21 @@ class CirclesService extends BaseService
 
         if ($group->circles()->count() == 0) {
             $c->is_default = true;
+            $was_first = true;
+        }
+        else {
+            $was_first = false;
         }
 
         $c->save();
+
+        if ($was_first) {
+            if ($group->context == 'user') {
+                foreach(User::all() as $user) {
+                    $user->circles()->attach($c->id);
+                }
+            }
+        }
 
         return $c;
     }
@@ -67,6 +80,14 @@ class CirclesService extends BaseService
                 $new_default = $other->first();
                 $new_default->is_default = true;
                 $new_default->save();
+
+                $users = User::whereHas('circles', function($query) use ($c) {
+                    $query->where('circles.id', $c->id);
+                })->get();
+
+                foreach($users as $user) {
+                    $user->circles()->attach($new_default->id);
+                }
             }
         }
 

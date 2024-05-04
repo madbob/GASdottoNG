@@ -20,9 +20,11 @@ class ServicesProvider extends ServiceProvider implements DeferrableProvider
         */
         return [
             \App\Services\BookingsService::class,
+            \App\Services\CirclesService::class,
             \App\Services\DatesService::class,
             \App\Services\DynamicBookingsService::class,
             \App\Services\FastBookingsService::class,
+            \App\Services\GroupsService::class,
             \App\Services\InvoicesService::class,
             \App\Services\ModifiersService::class,
             \App\Services\ModifierTypesService::class,

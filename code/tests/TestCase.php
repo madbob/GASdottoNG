@@ -13,7 +13,6 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
     protected $baseUrl = 'http://localhost';
-    protected $services = null;
 
     public function setUp(): void
     {
@@ -66,9 +65,12 @@ abstract class TestCase extends BaseTestCase
     */
     protected function createRoleAndUser($gas, $permissions, $target = null)
     {
-        $role = \App\Role::factory()->create([
-            'actions' => $permissions
-        ]);
+        $role = \App\Role::where('actions', $permissions)->first();
+        if (is_null($role)) {
+            $role = \App\Role::factory()->create([
+                'actions' => $permissions
+            ]);
+        }
 
         $user = \App\User::factory()->create(['gas_id' => $gas->id]);
         $user->addRole($role->id, $target ?: $gas);

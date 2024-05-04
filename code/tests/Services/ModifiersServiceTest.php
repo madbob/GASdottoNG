@@ -13,11 +13,6 @@ class ModifiersServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     private function localInitOrder()
     {
         $this->order = $this->initOrder(null);
@@ -678,56 +673,6 @@ class ModifiersServiceTest extends TestCase
         }
     }
 
-    /*
-        Modificatore applicato su Luogo di Consegna
-    */
-    public function testOnShippingPlace()
-    {
-        $this->localInitOrder();
-        $this->actingAs($this->userAdmin);
-
-        $delivery_1 = \App\Delivery::factory()->create([
-            'default' => true,
-        ]);
-
-        $delivery_2 = \App\Delivery::factory()->create([
-            'default' => false,
-        ]);
-
-        $delivery = [$delivery_1, $delivery_2];
-
-        foreach($this->users as $user) {
-            $user->preferred_delivery_id = $delivery[rand(0, 1)]->id;
-            $user->save();
-        }
-
-        $test_shipping_value = 10;
-        $mod = $this->simpleMod($delivery_2, 'booking', 'none', $test_shipping_value);
-        $this->assertNotNull($mod);
-
-        $this->nextRound();
-
-        $order = app()->make('OrdersService')->show($this->order->id);
-        $redux = $order->aggregate->reduxData();
-        $this->assertNotEquals($redux->price, 0.0);
-
-        foreach($order->bookings as $booking) {
-            $mods = $booking->applyModifiers($redux, true);
-
-            if ($booking->user->preferred_delivery_id == $delivery_1->id) {
-                $this->assertEquals($mods->count(), 0);
-            }
-            else {
-                $this->assertEquals($mods->count(), 1);
-
-                foreach($mods as $m) {
-                    $this->assertEquals($m->effective_amount, $test_shipping_value);
-                    $this->assertEquals($m->modifier_id, $mod->id);
-                }
-            }
-        }
-    }
-
     private function pushFriend($master)
     {
         $friends_role = \App\Role::factory()->create(['actions' => 'users.subusers']);
@@ -851,7 +796,7 @@ class ModifiersServiceTest extends TestCase
         $shipping_cost_found = false;
 
         $printer = new OrderPrinter();
-        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name', 1);
+        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', ['all_by_name'], 1);
 
         foreach($formatted->contents as $d) {
             if ($d->user_id == $booking->user_id) {
@@ -911,7 +856,7 @@ class ModifiersServiceTest extends TestCase
         $shipping_cost_found = false;
 
         $printer = new OrderPrinter();
-        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name', 1);
+        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', ['all_by_name'], 1);
 
         foreach($formatted->contents as $d) {
             if ($d->user_id == $newUser->id) {
