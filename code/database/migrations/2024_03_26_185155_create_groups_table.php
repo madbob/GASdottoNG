@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('cardinality')->default('single');
             $table->boolean('user_selectable')->default(false);
             $table->boolean('filters_orders')->default(true);
-            $table->boolean('visible')->default(true);
         });
     }
 

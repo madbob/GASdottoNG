@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use App\User;
 use App\Contact;
 use App\Group;
+use App\Circle;
 
 class Users extends CSVImporter
 {

@@ -432,7 +432,7 @@ class Order extends Model
         })->pluck('id');
 
         if ($user_circles->isEmpty() == false) {
-            $query_users->whereHas('circles', function($query) {
+            $query_users->whereHas('circles', function($query) use ($user_circles) {
                 $query->whereIn('id', $user_circles);
             });
         }

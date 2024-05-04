@@ -59,7 +59,7 @@ class Group extends Model
             $tmp_bookings = [];
 
             foreach($bookings as $booking) {
-                $mycircles = $b->involvedCircles();
+                $mycircles = $booking->involvedCircles();
                 $valid = true;
 
                 foreach($circles as $required_circle) {

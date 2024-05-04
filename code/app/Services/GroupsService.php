@@ -38,21 +38,18 @@ class GroupsService extends BaseService
                 $this->setIfSet($g, $request, 'cardinality');
                 $this->boolIfSet($g, $request, 'filters_orders');
                 $this->boolIfSet($g, $request, 'user_selectable');
-                $this->boolIfSet($g, $request, 'visible');
                 break;
 
             case 'booking':
                 $g->cardinality = 'single';
                 $g->filters_orders = false;
                 $g->user_selectable = true;
-                $g->visible = true;
                 break;
 
             case 'order':
                 $g->cardinality = 'many';
                 $g->filters_orders = false;
                 $g->user_selectable = true;
-                $g->visible = true;
                 break;
         }
 

@@ -111,7 +111,6 @@ class FixDatabase extends Command
             $group->context = 'user';
             $group->user_selectable = true;
             $group->filters_orders = true;
-            $group->visible = true;
             $group->save();
 
             foreach($old_deliveries as $old) {

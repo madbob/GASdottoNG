@@ -52,7 +52,7 @@ trait InCircles
                 ];
             }
             else {
-                $ret = $ret[$circle->group->id];
+                $ret = $ret[$group->id];
             }
         }
 
