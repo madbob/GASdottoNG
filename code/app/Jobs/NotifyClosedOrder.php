@@ -2,19 +2,26 @@
 
 namespace App\Jobs;
 
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+
 use App\Notifications\ClosedOrdersNotification;
 use App\Notifications\SupplierOrderShipping;
 use App\Printers\Order as OrderPrinter;
 use App\User;
 use App\Order;
 
-class NotifyClosedOrder extends Job
+class NotifyClosedOrder implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     public $orders;
 
     public function __construct($orders)
     {
-        parent::__construct();
         $this->orders = $orders;
     }
 
@@ -45,9 +52,11 @@ class NotifyClosedOrder extends Job
             $supplier = $order->supplier;
 
             if ($supplier->notify_on_close_enabled != 'none') {
+                $hub = app()->make('GlobalScopeHub');
+
                 foreach($order->aggregate->gas as $gas) {
                     try {
-                        $this->hub->enable(false);
+                        $hub->enable(false);
                         $files = $this->filesForSupplier($order);
 
                         /*
@@ -57,7 +66,7 @@ class NotifyClosedOrder extends Job
                         */
                         $supplier->notify(new SupplierOrderShipping($gas, $order, $files));
 
-                        $this->hub->enable(true);
+                        $hub->enable(true);
                     }
                     catch(\Exception $e) {
                         \Log::error('Errore in notifica chiusura ordine a fornitore: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
@@ -83,20 +92,29 @@ class NotifyClosedOrder extends Job
         }
     }
 
-    protected function realHandle()
+    public function handle()
     {
         $printer = new OrderPrinter();
         $notifiable_users = [];
         $all_files = [];
         $aggregates = [];
 
+        $hub = app()->make('GlobalScopeHub');
+        $hub->enable(false);
+
         foreach($this->orders as $order_id) {
             $order = Order::find($order_id);
+            if (is_null($order)) {
+                \Log::error('Non trovato ordine in fase di notifica chiusura: ' . $order_id . ' / ' . env('DB_DATABASE'));
+                continue;
+            }
+
             $aggregate = $order->aggregate;
             $closed_aggregate = ($aggregate->last_notify == null && $aggregate->status == 'closed');
 
             foreach($aggregate->gas as $gas) {
-                $this->hub->setGas($gas->id);
+                $hub->enable(true);
+                $hub->setGas($gas->id);
 
                 /*
                     Nota: il flag send_mail serve solo a farsi restituire il

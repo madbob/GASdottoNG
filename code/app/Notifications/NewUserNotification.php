@@ -5,6 +5,8 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use App\Notifications\Concerns\ManyMailNotification;
+
 class NewUserNotification extends ManyMailNotification implements ShouldQueue
 {
     use Queueable;

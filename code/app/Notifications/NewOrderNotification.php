@@ -2,6 +2,10 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Concerns\ManyMailNotification;
+use App\Notifications\Concerns\MailFormatter;
+use App\Notifications\Concerns\MailReplyTo;
+
 class NewOrderNotification extends ManyMailNotification
 {
     use MailFormatter, MailReplyTo;

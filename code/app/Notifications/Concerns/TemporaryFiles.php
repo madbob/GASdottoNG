@@ -8,7 +8,7 @@
     recuperare i files e rimuoverli.
 */
 
-namespace App\Notifications;
+namespace App\Notifications\Concerns;
 
 trait TemporaryFiles
 {

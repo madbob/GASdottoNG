@@ -8,6 +8,9 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Concerns\ManyMailNotification;
+use App\Notifications\Concerns\MailFormatter;
+
 class DeclinedMessage extends ManyMailNotification
 {
     use MailFormatter;

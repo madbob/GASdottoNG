@@ -1,19 +1,25 @@
 <?php
 
-namespace App\Notifications;
-
-use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
-
-use App\Models\Concerns\ContactableTrait;
-
 /*
     Di norma le notifiche mail vanno a leggere il campo "email" dell'oggetto da
     notificare, ma nel nostro caso i contatti sono da un'altra parte e possono
     essere molteplici.
     Le classi per le notifiche che estendono questa qua vanno a popolare i
     destinatari delle mail tenendo conto di questo.
+
+    Reminder: non cedere alla tentazione di rendere tutte le mail schedulabili
+    in coda, in molti casi il payload annesso è troppo grande per essere immesso
+    nella queue. E comunque, gran parte delle notifiche più onerose vengono già
+    mandate da Jobs asincroni
 */
+
+namespace App\Notifications\Concerns;
+
+use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\MailMessage;
+
+use App\Models\Concerns\ContactableTrait;
+
 class ManyMailNotification extends Notification
 {
     public function via($notifiable)

@@ -2,25 +2,30 @@
 
 namespace App\Jobs;
 
-use Log;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 use App\Notifications\RemindOrderNotification;
 use App\Gas;
 use App\Order;
 
-class NotifyRemindOrder extends Job
+class NotifyRemindOrder implements ShouldQueue
 {
+	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
 	public $gas_id;
     public $orders_id;
 
     public function __construct($gas_id, $orders_id)
     {
-        parent::__construct();
 		$this->gas_id = $gas_id;
         $this->orders_id = $orders_id;
     }
 
-    protected function realHandle()
+    public function handle()
     {
 		$gas = Gas::find($this->gas_id);
 		if ($gas->hasFeature('send_order_reminder') == false) {
@@ -28,11 +33,12 @@ class NotifyRemindOrder extends Job
 		}
 
 		$aggregate_users = [];
+		$hub = app()->make('GlobalScopeHub');
 
 		foreach($this->orders_id as $order_id) {
 	        $order = Order::find($order_id);
 
-	        $this->hub->setGas($gas->id);
+	        $hub->setGas($gas->id);
 	        $users = $order->notifiableUsers($gas);
 
 			foreach($users as $user) {
@@ -52,7 +58,7 @@ class NotifyRemindOrder extends Job
 				$auser->user->notify(new RemindOrderNotification($auser->orders));
 			}
 			catch(\Exception $e) {
-				Log::error('Impossibile inoltrare mail di promemoria ordine: ' . $e->getMessage());
+				\Log::error('Impossibile inoltrare mail di promemoria ordine: ' . $e->getMessage());
 			}
 		}
     }

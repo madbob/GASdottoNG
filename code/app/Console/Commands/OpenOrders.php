@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
@@ -19,7 +20,6 @@ class OpenOrders extends Command
     {
         $dates = Date::where('type', 'order')->get();
         $today = date('Y-m-d');
-        \Log::debug('Oggi ' . $today . ' ci sono ' . $dates->count() . ' date per apertura ordini');
         $aggregable = [];
 
         foreach($dates as $date) {
@@ -27,8 +27,6 @@ class OpenOrders extends Command
                 $all_previous = true;
 
                 foreach($date->order_dates as $d) {
-                    \Log::debug($date->id . ' / ' . $d->start . ' / ' . $d->end . ' / ' . $d->shipping);
-
                     if ($d->start < $today) {
                         // @phpstan-ignore-next-line
                         $all_previous = $all_previous && true;
@@ -37,7 +35,6 @@ class OpenOrders extends Command
                         $all_previous = false;
                     }
                     else if ($d->start == $today) {
-                        \Log::debug('Data apertura ordine!');
                         $all_previous = false;
 
                         /*
@@ -47,7 +44,6 @@ class OpenOrders extends Command
                             scaduto o meno, e nel caso va eliminato
                         */
                         if ($date->suspend) {
-                            \Log::debug('Data sospesa');
                             continue;
                         }
 
@@ -58,7 +54,6 @@ class OpenOrders extends Command
                         */
                         $supplier = $d->target;
                         if (is_null($supplier) || $supplier->orders()->withoutGlobalScopes()->where('start', $today)->count() != 0) {
-                            \Log::debug('Fornitore non trovato, o ordine già aperto');
                             continue;
                         }
 
@@ -72,7 +67,6 @@ class OpenOrders extends Command
                 }
 
                 if ($all_previous) {
-                    Log::debug('Rimosso ordine ricorrente non più operativo: ' . $date->id);
                     $date->delete();
                 }
             }

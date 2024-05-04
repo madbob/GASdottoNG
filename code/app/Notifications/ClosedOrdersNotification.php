@@ -2,7 +2,8 @@
 
 namespace App\Notifications;
 
-use Auth;
+use App\Notifications\Concerns\ManyMailNotification;
+use App\Notifications\Concerns\MailFormatter;
 
 class ClosedOrdersNotification extends ManyMailNotification
 {
