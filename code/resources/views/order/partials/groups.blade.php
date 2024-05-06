@@ -36,7 +36,7 @@ if (is_null($order)) {
     @endif
 
     @if($selectable->isEmpty() == false)
-        <x-larastrap::checklist-model :label="_i('Permetti selezione')" name="circles" :options="$selectable" :readonly="$readonly" />
+        <x-larastrap::checklist-model :label="_i('Permetti selezione')" name="circles" :options="$selectable" :readonly="$readonly" :pophelp="_i('Selezionando uno o più elementi, gli utenti potranno sceglierne uno di questi in fase di prenotazione.')" />
     @endif
 
     @if($info_groups->isEmpty() == false)

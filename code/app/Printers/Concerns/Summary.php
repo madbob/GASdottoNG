@@ -88,15 +88,11 @@ trait Summary
 
     protected function formatSummary($order, $document, $fields, $status, $circles, $extra_modifiers)
     {
-        /*
-            TODO: FIXARE QUESTO
-        */
-        if ($shipping_place && $shipping_place == 'all_by_place') {
-            $places = Delivery::orderBy('name', 'asc')->get();
-            foreach($places as $place) {
-                $table = $this->formatSummaryShipping($order, $fields, $status, $place->id, $extra_modifiers);
+        if (in_array('all_by_place', $circles)) {
+            foreach($order->circles as $circle) {
+                $table = $this->formatSummaryShipping($order, $fields, $status, [$circle->id], $extra_modifiers);
                 if ($table) {
-                    $document->append(new Header($place->printableName()));
+                    $document->append(new Header($circle->printableName()));
                     $document->append($table);
                 }
             }

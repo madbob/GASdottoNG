@@ -84,15 +84,22 @@ class User extends Authenticatable
     public function scopeFilterEnabled($query)
     {
         $user = Auth::user();
-        if ($user->can('users.admin', $user->gas))
+        if ($user->can('users.admin', $user->gas)) {
             return $query->withTrashed();
-        else
+        }
+        else {
             return $query;
+        }
     }
 
     public function scopeSorted($query)
     {
         return $query->orderBy('lastname', 'asc')->orderBy('firstname', 'asc');
+    }
+
+    public function scopeTopLevel($query)
+    {
+        return $query->whereNull('parent_id');
     }
 
     public function getPaymentMethodAttribute()

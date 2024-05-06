@@ -50,25 +50,25 @@ app()->make('AggregationSwitch')->setEnforced(true);
 
                 <?php
 
-                    $o = $order->userBooking($user->id);
+                $o = $order->userBooking($user->id);
 
-                    $existing = ($existing || $o->exists || $o->friends_bookings->isEmpty() == false);
+                $existing = ($existing || $o->exists || $o->friends_bookings->isEmpty() == false);
 
-                    if ($o->status == 'pending') {
-                        $now_delivered = 0;
-                        $mods = [];
-                    }
-                    else if ($o->status == 'saved') {
-                        $now_delivered = $o->getValue('effective', true);
-                        $mods = $o->applyModifiers($master_summary, false);
-                    }
-                    else {
-                        $now_delivered = $o->getValue('effective', true);
-                        $mods = $o->applyModifiers($master_summary, true);
-                    }
+                if ($o->status == 'pending') {
+                    $now_delivered = 0;
+                    $mods = [];
+                }
+                else if ($o->status == 'saved') {
+                    $now_delivered = $o->getValue('effective', true);
+                    $mods = $o->applyModifiers($master_summary, false);
+                }
+                else {
+                    $now_delivered = $o->getValue('effective', true);
+                    $mods = $o->applyModifiers($master_summary, true);
+                }
 
-                    $tot_delivered[$o->id] = $now_delivered;
-                    $tot_amount += $now_delivered;
+                $tot_delivered[$o->id] = $now_delivered;
+                $tot_amount += $now_delivered;
 
                 ?>
 

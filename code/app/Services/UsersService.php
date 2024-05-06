@@ -245,7 +245,7 @@ class UsersService extends BaseService
         $this->readRID($user, $request);
         $user->save();
 
-        $user->circles()->sync($request['circles'] ?? []);
+        $user->readCircles($request);
 
         handleFileUpload($request, $user, 'picture');
         $user->updateContacts($request);

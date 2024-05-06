@@ -39,7 +39,7 @@ class User extends Formatter
                 'name' => _i('Gruppo %s', [$group->name]),
                 'checked' => true,
                 'format' => function($obj, $context) use ($group) {
-                    return join(' - ', $obj->circlesByGroup($group)->circles);
+                    return join(' - ', array_map(fn($c) => $c->printableName(), $obj->circlesByGroup($group)->circles));
                 },
             ];
         }

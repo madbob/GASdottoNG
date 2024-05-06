@@ -40,7 +40,7 @@ class CirclesService extends BaseService
 
         if ($was_first) {
             if ($group->context == 'user') {
-                foreach(User::all() as $user) {
+                foreach(User::topLevel()->get() as $user) {
                     $user->circles()->attach($c->id);
                 }
             }
@@ -81,7 +81,7 @@ class CirclesService extends BaseService
                 $new_default->is_default = true;
                 $new_default->save();
 
-                $users = User::whereHas('circles', function($query) use ($c) {
+                $users = User::topLevel()->whereHas('circles', function($query) use ($c) {
                     $query->where('circles.id', $c->id);
                 })->get();
 

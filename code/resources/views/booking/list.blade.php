@@ -78,7 +78,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($aggregate->bookings as $booking)
+                        @php
+
+                        $bookings = $aggregate->bookings;
+                        usort($bookings, function($a, $b) {
+                            return $a->user->printableName() <=> $b->user->printableName();
+                        });
+
+                        @endphp
+
+                        @foreach($bookings as $booking)
                             <tr>
                                 <td>{{ $booking->user->printableName() }}</td>
                                 <td>{{ printableDate($booking->created_at) }}</td>

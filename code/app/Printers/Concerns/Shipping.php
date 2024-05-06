@@ -76,7 +76,7 @@ trait Shipping
         $internal_offsets = $this->offsetsByStatus($status);
 
         $bookings = $order->topLevelBookings(null);
-        $bookings = Group::sortBookings($bookings, $circles);
+        $bookings = $circles->sortBookings($bookings);
         $listed_products = [];
 
         $modifiers = $order->involvedModifiers(true);

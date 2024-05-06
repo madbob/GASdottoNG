@@ -75,16 +75,30 @@ class Aggregate extends Model
     public function circlesByGroup(): array
     {
         $ret = [];
+        $user_groups = [];
 
         foreach($this->circles as $circle) {
             if (isset($ret[$circle->group->id]) == false) {
                 $ret[$circle->group->id] = (object) [
                     'group' => $circle->group,
-                    'circles' => [],
+                    'circles' => new Collection(),
                 ];
             }
 
-            $ret[$circle->group->id]->circles[] = $circle;
+            $ret[$circle->group->id]->circles->push($circle);
+
+            if ($circle->group->context == 'user') {
+                $user_groups[] = $circle->group->id;
+            }
+        }
+
+        $user_groups = array_unique($user_groups);
+        $extra_groups = Group::where('context', 'user')->whereNotIn('id', $user_groups)->get();
+        foreach($extra_groups as $extra) {
+            $ret[$extra->id] = (object) [
+                'group' => $extra,
+                'circles' => $extra->circles,
+            ];
         }
 
         return $ret;

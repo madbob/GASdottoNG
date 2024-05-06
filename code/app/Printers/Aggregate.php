@@ -4,11 +4,11 @@ namespace App\Printers;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
-
-use App;
+use Illuminate\Support\Facades\App;
 use PDF;
 use ezcArchive;
 
+use App\Helpers\CirclesFilter;
 use App\Printers\Concerns\Orders;
 use App\Printers\Components\Document;
 use App\Printers\Components\Header;
@@ -27,7 +27,7 @@ class Aggregate extends Printer
 
         $fields = splitFields($required_fields);
         $status = $request['status'] ?? 'pending';
-        $circles = $request['circles'] ?? ['all_by_name'];
+        $circles = new CirclesFilter($obj, $request);
 
         $temp_data = [];
         foreach($obj->orders as $order) {
@@ -79,7 +79,7 @@ class Aggregate extends Printer
             $all_gas = (App::make('GlobalScopeHub')->enabled() == false);
 
             usort($data->contents, function($a, $b) use ($circles, $all_gas) {
-                if (in_array('all_by_place', $circles) && $a->circles_sorting != $b->circles_sorting) {
+                if ($circles->getMode() == 'all_by_place' && $a->circles_sorting != $b->circles_sorting) {
                     return $a->circles_sorting <=> $b->circles_sorting;
                 }
 
@@ -172,7 +172,7 @@ class Aggregate extends Printer
 		else {
             $required_fields = $request['fields'] ?? [];
             $status = $request['status'];
-            $circles = $request['circles'] ?? ['no'];
+            $circles = new CirclesFilter($obj, $request);
 
 			$document = new Document($subtype);
 
@@ -217,7 +217,7 @@ class Aggregate extends Printer
 			$bookings = $bookings->where('status', $status);
 		}
 
-		return Group::sortBookings($bookings, $circles);
+		return $circles->sortBookings($bookings);
 	}
 
 	private function formatTableRows($aggregate, $circles, $status, $fields, &$all_products)

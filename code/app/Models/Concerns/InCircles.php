@@ -5,6 +5,7 @@ namespace App\Models\Concerns;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use App\Circle;
+use App\Group;
 
 trait InCircles
 {
@@ -57,6 +58,21 @@ trait InCircles
         }
 
         return $ret;
+    }
+
+    public function readCircles($request)
+    {
+        $groups = $request['groups'] ?? [];
+        $groups = Group::whereIn('id', $groups)->get();
+
+        $circles = [];
+
+        foreach($groups as $group) {
+            $key = sprintf('circles__%s__%s', $this->id, $group->id);
+            $circles = array_merge($circles, $request[$key] ?? []);
+        }
+
+        $this->circles()->sync($circles);
     }
 
     public abstract function eligibleGroups();

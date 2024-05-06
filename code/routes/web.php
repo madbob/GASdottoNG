@@ -146,6 +146,8 @@ Route::middleware(['auth'])->group(function() {
         Route::get('booking/{aggregate_id}/user/{user_id}/document', 'BookingUserController@document');
         Route::get('booking/{id}/header', 'BookingController@objhead')->name('booking.objhead');
 
+        Route::get('groups/matrix', 'GroupsController@matrix')->name('groups.matrix');
+        Route::post('groups/matrix/save', 'GroupsController@saveMatrix')->name('groups.matrix.save');
         Route::get('groups/{id}/header', 'GroupsController@objhead')->name('groups.objhead');
         Route::get('circles/{id}/header', 'CirclesController@objhead')->name('circles.objhead');
 

@@ -2,10 +2,11 @@
 
 namespace App\Printers;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use PDF;
-use Mail;
 
+use App\Helpers\CirclesFilter;
 use App\Printers\Concerns\Orders;
 use App\Formatters\User as UserFormatter;
 use App\Notifications\GenericOrderShipping;
@@ -19,12 +20,6 @@ use App\Group;
 class Order extends Printer
 {
 	use Orders;
-
-    private function orderTopBookingsByShipping($order, $circles, $status = null)
-    {
-        $bookings = $order->topLevelBookings($status);
-        return Group::sortBookings($bookings, $circles);
-    }
 
     private function sendDocumentMail($request, $temp_file_path)
     {
@@ -50,7 +45,7 @@ class Order extends Printer
         $extra_modifiers = $request['extra_modifiers'] ?? 0;
         $required_fields = $request['fields'] ?? [];
 		$fields = splitFields($required_fields);
-        $circles = $request['circles'] ?? ['all_by_name'];
+        $circles = new CirclesFilter($obj->aggregate, $request);
 
         $data = $this->formatShipping($obj, $fields, $status, $circles, $extra_modifiers);
 
@@ -158,7 +153,7 @@ class Order extends Printer
 	            $required_fields = $this->autoGuessFields($obj);
 	        }
 
-	        $circles = $request['circles'] ?? ['no'];
+	        $circles = new CirclesFilter($obj->aggregate, $request);
 
 			$document = new Document($subtype);
 
@@ -185,7 +180,9 @@ class Order extends Printer
 
     private function formatTableRows($order, $circles, $status, $fields, &$all_products)
     {
-        $bookings = $this->orderTopBookingsByShipping($order, $circles, $status == 'saved' ? 'saved' : null);
+		$bookings = $order->topLevelBookings($status == 'saved' ? 'saved' : null);
+        $bookings = $circles->sortBookings($bookings);
+
 		list($get_total, $get_function) = $this->bookingsRules($status);
 
         $data = [];
@@ -211,7 +208,7 @@ class Order extends Printer
         $send_mail = isset($request['send_mail']);
         $status = $request['status'] ?? 'pending';
 		$include_missing = $request['include_missing'] ?? 'no';
-        $circles = $request['circles'] ?? ['no'];
+        $circles = new CirclesFilter($obj->aggregate, $request);
 
         $required_fields = $request['fields'] ?? [];
         $fields = splitFields($required_fields);

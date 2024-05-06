@@ -123,9 +123,10 @@ if ($user->isFriend() && $admin_editable) {
 
                             @foreach($user->eligibleGroups() as $ug)
                                 @if($admin_editable || $ug->user_selectable)
-                                    <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => 'circles', 'npostfix' => '[]', 'label' => $ug->name, 'options' => $ug->circles]" />
+                                    <x-larastrap::hidden name="groups[]" :value="$ug->id" />
+                                    <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => 'circles', 'npostfix' => sprintf('__%s__%s[]', $user->id, $ug->id), 'label' => $ug->name, 'options' => $ug->circles]" />
                                 @else
-                                    <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => 'circles', 'npostfix' => '[]', 'label' => $ug->name, 'options' => $ug->circles]" disabled readonly />
+                                    <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => 'circles', 'npostfix' => sprintf('__%s__%s[]', $user->id, $ug->id), 'label' => $ug->name, 'options' => $ug->circles]" disabled readonly />
                                 @endif
                             @endforeach
                         @endif

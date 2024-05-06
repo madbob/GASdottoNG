@@ -66,19 +66,6 @@ foreach($data->contents as $d) {
             </h3>
         @endif
 
-        @php
-
-        $place = null;
-        if (isset($shipping_place) && $shipping_place && $shipping_place != 'all_by_name' && $shipping_place != 'all_by_place') {
-            $place = App\Delivery::find($shipping_place);
-        }
-
-        @endphp
-
-        @if($place)
-            <h4>{{ sprintf('%s - %s', _i('Luogo di Consegna'), $place->name) }}</h4>
-        @endif
-
         <br/><hr><br/>
 
         <div class="extended">
@@ -104,9 +91,9 @@ foreach($data->contents as $d) {
         ?>
 
         @foreach($data->contents as $d)
-            @if($shipping_place == 'all_by_place' && $previous_shipping != $d->shipping_sorting)
-                <h4>{{ sprintf('%s - %s', _i('Luogo di Consegna'), $d->shipping_sorting) }}</h4>
-                <?php $previous_shipping = $d->shipping_sorting ?>
+            @if($circles->getMode() == 'all_by_place' && $previous_shipping != $d->circles_sorting)
+                <h4>{{ $d->circles_sorting }}</h4>
+                <?php $previous_shipping = $d->circles_sorting ?>
             @endif
 
             @if($preferred_style == 'breakup')
