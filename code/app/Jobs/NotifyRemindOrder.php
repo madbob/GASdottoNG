@@ -24,6 +24,9 @@ class NotifyRemindOrder implements ShouldQueue
 
     public function handle()
     {
+		$hub = app()->make('GlobalScopeHub');
+		$gas = $hub->getGasObj();
+
 		$aggregate_users = [];
 
 		foreach($this->orders_id as $order_id) {
