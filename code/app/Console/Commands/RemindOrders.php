@@ -48,7 +48,7 @@ class RemindOrders extends Command
 
         foreach($notifications as $gas_id => $orders) {
             Log::info('Invio promemoria per ordini ' . join(', ', $orders));
-            NotifyRemindOrder::dispatch($gas_id, $orders);
+            NotifyRemindOrder::dispatch($orders);
         }
 
 		$gas = Gas::all();
