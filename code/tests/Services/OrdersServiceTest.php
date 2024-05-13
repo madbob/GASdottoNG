@@ -411,6 +411,48 @@ class OrdersServiceTest extends TestCase
 	}
 
     /*
+		Preserva prodotto eliminato dal listino
+	*/
+	public function testKeepRemovedProduct()
+	{
+		$this->actingAs($this->userWithBasePerms);
+
+        $count_products = $this->order->products()->count();
+		$target_product_1 = $this->order->products()->orderBy('id', 'asc')->first();
+		$target_product_2 = $this->order->products()->orderBy('id', 'asc')->skip(1)->first();
+
+		$data = [
+			'action' => 'booked',
+			$target_product_1->id => 2,
+			$target_product_2->id => 3,
+		];
+
+		$booking = $this->updateAndFetch($data, $this->order, $this->userWithBasePerms, false);
+
+		$this->nextRound();
+
+		$this->actingAs($this->userReferrer);
+        app()->make('ProductsService')->destroy($target_product_2->id);
+        $this->order = app()->make('OrdersService')->show($this->order->id);
+        $this->assertEquals($count_products, $this->order->products()->count());
+
+        $this->nextRound();
+
+		app()->make('OrdersService')->update($this->order->id, [
+            'supplier_id' => $this->order->supplier_id,
+            'start' => printableDate($this->order->start),
+            'end' => printableDate($this->order->end),
+            'shipping' => printableDate($this->order->shipping),
+            'status' => 'open',
+			'enabled' => $this->order->products->pluck('id')->toArray(),
+        ]);
+
+		$this->nextRound();
+        $this->order = app()->make('OrdersService')->show($this->order->id);
+        $this->assertEquals($count_products, $this->order->products()->count());
+	}
+
+    /*
         Cambio prezzo di un prodotto
     */
     public function testChangeProductPrice()
