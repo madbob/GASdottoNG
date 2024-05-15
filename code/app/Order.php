@@ -443,7 +443,7 @@ class Order extends Model
     {
         $order = $this;
 
-        if ($gas->getConfig('notify_all_new_orders')) {
+        if ($gas->notify_all_new_orders) {
             $query_users = User::whereNull('parent_id');
         }
         else {

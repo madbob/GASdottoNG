@@ -6,11 +6,13 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use Artisan;
-use Bus;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Notification;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
 
+use App\Gas;
 use App\User;
 use App\Delivery;
 use App\Booking;
@@ -37,9 +39,9 @@ class OrdersServiceTest extends TestCase
         $this->expectException(AuthException::class);
 
         $this->actingAs($this->userWithNoPerms);
-        app()->make('OrdersService')->store(array(
+        app()->make('OrdersService')->store([
             'supplier_id' => $this->order->supplier_id,
-        ));
+        ]);
     }
 
     /*
@@ -47,28 +49,45 @@ class OrdersServiceTest extends TestCase
     */
     public function testStore()
     {
-        Bus::fake();
+        Notification::fake();
 
+        $this->gas->setConfig('notify_all_new_orders', '1');
+        $this->userWithNoPerms->addContact('email', fake()->email());
+        $this->userWithBasePerms->addContact('email', fake()->email());
+
+        $this->nextRound();
+
+        $this->userReferrer = User::find($this->userReferrer->id);
+        $this->gas = Gas::find($this->gas->id);
+        app()->make('GlobalScopeHub')->setGas($this->gas);
         $this->actingAs($this->userReferrer);
+        $this->assertEquals($this->gas->id, $this->userReferrer->gas->id);
 
         $start = date('Y-m-d');
         $end = date('Y-m-d', strtotime('+20 days'));
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
-        $aggregate = app()->make('OrdersService')->store(array(
+        $aggregate = app()->make('OrdersService')->store([
             'supplier_id' => $this->order->supplier_id,
             'comment' => 'Commento di prova',
             'start' => printableDate($start),
             'end' => printableDate($end),
             'shipping' => printableDate($shipping),
             'status' => 'open',
-        ));
+        ]);
 
-        Bus::assertDispatched(\App\Jobs\NotifyNewOrder::class);
         $this->assertEquals(1, $aggregate->orders->count());
         $this->assertTrue($aggregate->isActive());
         $this->assertTrue($aggregate->isRunning());
         $this->assertFalse($aggregate->canShip());
+
+        foreach($aggregate->orders as $order) {
+            $notifiable = $order->notifiableUsers($this->gas);
+            $this->assertTrue($notifiable->count() > 0);
+            foreach($notifiable as $not) {
+                Notification::assertSentTo([$not], \App\Notifications\NewOrderNotification::class);
+            }
+        }
 
         $this->actingAs($this->userWithShippingPerms);
         $this->assertTrue($aggregate->canShip());
@@ -137,6 +156,43 @@ class OrdersServiceTest extends TestCase
         $this->assertEquals($order->shipping, $new_shipping);
         $this->assertEquals($order->start, $this->order->start);
         $this->assertEquals($order->end, $this->order->end);
+    }
+
+    /*
+        Chiusura ordini automatica
+    */
+    public function testAutoClose()
+    {
+        Notification::fake();
+        $this->populateOrder($this->order);
+
+        $this->nextRound();
+
+        $booking = $this->order->bookings()->first();
+
+        $booking->user->addContact('email', fake()->email());
+        $this->userReferrer->addContact('email', fake()->email());
+
+        $this->gas->setConfig('auto_referent_order_summary', '1');
+        $this->gas->setConfig('auto_user_order_summary', '1');
+        $this->order->supplier->notify_on_close_enabled = 'shipping_summary';
+        $this->order->supplier->addContact('email', fake()->email());
+        $this->order->supplier->save();
+
+        $this->nextRound();
+
+        $this->travel(6)->days();
+
+        $this->nextRound();
+
+        Artisan::call('close:orders');
+
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $this->assertEquals('closed', $order->status);
+
+        Notification::assertSentTo([$order->supplier], \App\Notifications\SupplierOrderShipping::class);
+        Notification::assertSentTo([$this->userReferrer], \App\Notifications\ClosedOrdersNotification::class);
+        Notification::assertSentTo([$booking->user], \App\Notifications\BookingNotification::class);
     }
 
     /*

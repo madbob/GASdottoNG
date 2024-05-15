@@ -26,7 +26,13 @@ class NotifyNewOrder implements ShouldQueue
     {
         $order = Order::find($this->order_id);
 
-        if (is_null($order) || is_null($order->first_notify) == false) {
+        if (is_null($order)) {
+            \Log::warning('Richiesta notifica creazione ordine non esistente');
+            return;
+        }
+
+        if (is_null($order->first_notify) == false) {
+            \Log::warning('Richiesta notifica creazione ordine già inoltrata');
             return;
         }
 

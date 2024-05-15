@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Carbon\Carbon;
 
 use App\Jobs\NotifyClosedOrder;
 use App\Order;
@@ -14,7 +15,8 @@ class CloseOrders extends Command
 
     public function handle()
     {
-        $orders = Order::withoutGlobalScopes()->where('status', 'open')->where('end', '<', date('Y-m-d'))->get();
+        $today = Carbon::today()->format('Y-m-d');
+        $orders = Order::withoutGlobalScopes()->where('status', 'open')->where('end', '<', $today)->get();
         $closed = [];
 
         foreach($orders as $order) {
