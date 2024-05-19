@@ -32,7 +32,7 @@ class NotifyRemindOrder implements ShouldQueue
 		foreach($this->orders_id as $order_id) {
 	        $order = Order::find($order_id);
 			if (is_null($order)) {
-				\Log::error('Ordine non trovato per notifica reminder: ' . $order_id . ', ' . $gas->id);
+				\Log::error('Ordine non trovato per notifica reminder: ' . $order_id);
 				continue;
 			}
 

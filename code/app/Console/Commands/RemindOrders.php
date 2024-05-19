@@ -46,8 +46,11 @@ class RemindOrders extends Command
 			}
 		}
 
+        $hub = app()->make('GlobalScopeHub');
+
         foreach($notifications as $gas_id => $orders) {
             Log::info('Invio promemoria per ordini ' . join(', ', $orders));
+            $hub->setGas($gas_id);
             NotifyRemindOrder::dispatch($orders);
         }
 
