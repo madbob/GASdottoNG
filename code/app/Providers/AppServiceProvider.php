@@ -71,7 +71,7 @@ class AppServiceProvider extends ServiceProvider
             URL::forceRootUrl(env('APP_URL'));
         }
         else {
-            \Log::error('Job senza env file definito!');
+            \Log::error('Job ' . get_class($event) . ' senza env file definito!');
         }
 
         $gas_id = $payload['gas_id'] ?? null;
@@ -79,7 +79,7 @@ class AppServiceProvider extends ServiceProvider
             app()->make('GlobalScopeHub')->setGas($gas_id);
         }
         else {
-            \Log::error('Job senza GAS definito!');
+            \Log::error('Job ' . get_class($event) . ' senza GAS definito!');
         }
 
         /*
