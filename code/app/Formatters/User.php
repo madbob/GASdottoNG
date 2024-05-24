@@ -102,6 +102,20 @@ class User extends Formatter
 					return $obj->member_since;
 				},
 			];
+
+            $ret['birthplace'] = (object) [
+				'name' => _i('Luogo di Nascita'),
+				'format' => function($obj, $context) {
+					return $obj->birthplace;
+				},
+			];
+
+            $ret['birthday'] = (object) [
+				'name' => _i('Data di Nascita'),
+				'format' => function($obj, $context) {
+					return $obj->birthday;
+				},
+			];
         }
 
         return $ret;
