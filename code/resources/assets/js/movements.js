@@ -32,17 +32,6 @@ class Movements {
 
     static initModals(container)
     {
-        $('input[name=method]', container).change(function() {
-            if ($(this).prop('checked') == false) {
-                return;
-            }
-
-            var method_string = 'when-method-' + $(this).val();
-            $(this).closest('.movement-modal').find('[class*="when-method-"]').each(function() {
-                $(this).toggleClass('hidden', ($(this).hasClass(method_string) == false));
-            });
-        });
-
         $('input[name=amount]', container).change(function() {
             var status = $(this).closest('.movement-modal').find('.sender-credit-status');
             if (status.length) {
