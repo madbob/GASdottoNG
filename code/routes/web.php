@@ -111,6 +111,7 @@ Route::middleware(['auth'])->group(function() {
 
         Route::get('orders/{id}/header', 'OrdersController@objhead')->name('orders.objhead');
         Route::get('orders/search', 'OrdersController@search');
+        Route::get('orders/nodestroy/{id}', 'OrdersController@noDestroyNotice')->name('orders.nodestroy');
         Route::get('orders/fixes/{id}/{product_id}', 'OrdersController@getFixes');
         Route::post('orders/fixes/{id}', 'OrdersController@postFixes');
         Route::get('orders/fixmods/{id}', 'OrdersController@getFixModifiers')->name('orders.fixmodifiers');

@@ -184,6 +184,12 @@ class OrdersController extends BackedController
         return easyFilterOrders($supplier_id, '1970-01-01', date('Y-m-d', strtotime('-1 years')), ['open', 'closed']);
     }
 
+    public function noDestroyNotice(Request $request, $id)
+    {
+        $order = $this->service->show($id, true);
+        return view('order.partials.nodestroy', ['order' => $order]);
+    }
+
     /*
         Questa funzione è usata per aggiornare manualmente le quantità
         di un certo prodotto all'interno di un ordine
