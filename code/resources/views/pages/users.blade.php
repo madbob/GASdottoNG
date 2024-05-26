@@ -19,7 +19,10 @@
 
             <x-larastrap::mbutton :label="_i('Esporta CSV')" triggers_modal="exportCSVusers" />
             <x-larastrap::modal id="exportCSVusers" :title="_i('Esporta CSV')" classes="close-on-submit">
-                <x-larastrap::form method="GET" :action="url('users/export')" :buttons="[['label' => _i('Download'), 'type' => 'submit']]">
+                <x-larastrap::iform method="GET" :action="url('users/export')" :buttons="[['label' => _i('Download'), 'type' => 'submit']]">
+                    <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
+                    <input type="hidden" name="pre-saved-function" value="formToDownload">
+
                     <p>
                         {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
                     </p>
@@ -27,7 +30,8 @@
                     <hr/>
 
                     <x-larastrap::structchecks name="fields" :label="_i('Colonne')" :options="App\Formatters\User::formattableColumns('export')" />
-                </x-larastrap::form>
+                    <x-larastrap::radios name="exportables" :label="_i('Esporta')" :options="['all' => _i('Tutti'), 'selected' => _i('Solo selezionati')]" value="all" />
+                </x-larastrap::iform>
             </x-larastrap::modal>
 
             @if(Gate::check('users.admin', $currentgas) || Gate::check('users.movements', $currentgas))

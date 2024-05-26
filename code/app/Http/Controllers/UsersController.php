@@ -94,6 +94,11 @@ class UsersController extends BackedController
         $headers = UserFormatter::getHeaders($fields);
         $users = $this->service->list('', true);
 
+        if ($request->input('exportables') == 'selected') {
+            $selected = $request->input('users', []);
+            $users = $users->filter(fn($u) => in_array($u->id, $selected));
+        }
+
         return output_csv(_i('utenti.csv'), $headers, $users, function($user) use ($fields) {
             return UserFormatter::format($user, $fields);
         });

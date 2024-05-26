@@ -128,18 +128,33 @@ class Callables {
         }
     }
 
+    /*
+        Usata in diversi ambiti per ottenere l'elenco degli utenti attualmente
+        visualizzati e iniettarlo nel form in elaborazione, per fungere da
+        filtro
+    */
     static collectFilteredUsers(form) {
 		form.find('input:hidden[name^="users"]').remove();
+        let table = $('#user-list');
 
-        $('#credits_status_table tbody tr:visible').each(function() {
-            var user_id = $(this).find('input[name^=user_id]').val();
-            form.append('<input type="hidden" name="users[]" value="' + user_id + '">');
-        });
+        if (table.is('table')) {
+            $('tbody tr:visible', table).each(function() {
+                var user_id = $(this).find('input[name^=user_id]').val();
+                form.append('<input type="hidden" name="users[]" value="' + user_id + '">');
+            });
+        }
+        else {
+            $('.accordion-item:visible', table).each(function() {
+                var user_id = $(this).attr('data-element-id');
+                form.append('<input type="hidden" name="users[]" value="' + user_id + '">');
+            });
+        }
     }
 
     static formToDownload(form) {
-        var data = form.find('input, select').serializeArray();
-        var url = form.attr('action') + '&' + $.param(data);
+        let data = form.find('input, select').serializeArray();
+        let baseaction = form.attr('action');
+        let url = baseaction + (baseaction.match(/[\?]/g) ? '&' : '?') + $.param(data);
         window.open(url, '_blank');
         throw "Done!";
     }

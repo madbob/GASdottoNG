@@ -31,7 +31,7 @@
 				<hr/>
 
                 <div class="row">
-					<div class="col" id="credits_status_table">
+					<div class="col" id="user-list">
 						<div class="table-responsive">
 							<table class="table" id="suppliersTable">
 								<?php $currencies = App\Currency::enabled() ?>
