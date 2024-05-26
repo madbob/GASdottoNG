@@ -263,10 +263,10 @@ $form_buttons = [
     <div class="fixed-bottom bg-success p-2 booking-bottom-helper">
         <div class="row justify-content-end align-items-center">
             <div class="col-auto text-white">
-                Totale: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}
+                {{ _i('Totale:') }} <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}
             </div>
             <div class="col-auto">
-                <button class="btn btn-success" type="submit">Salva</button>
+                <button class="btn btn-success" type="submit">{{ _i('Salva') }}</button>
             </div>
         </div>
     </div>

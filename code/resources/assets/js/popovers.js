@@ -70,6 +70,7 @@ $(document).ready(function() {
                     input.val(street + ', ' + city + ', ' + cap);
                 }
 
+                input.change();
                 input.popover('dispose');
             });
 
@@ -165,6 +166,7 @@ $(document).ready(function() {
                 var from = ret.find('input[name=from]').val().trim().replace(',', '');
                 var to = ret.find('input[name=to]').val().trim().replace(',', '');
                 input.val(day + ' - ' + cycle + ' - ' + from + ' - ' + to).change();
+                input.change();
                 input.popover('dispose');
             });
 

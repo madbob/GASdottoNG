@@ -236,6 +236,19 @@ function formatMainFormButtons($component, $params)
         }
 
         $params['buttons'] = $buttons;
+
+        if (isset($params['appendNodes']) == false) {
+            $params['appendNodes'] = [];
+        }
+
+        $params['appendNodes'][] = sprintf('<div class="fixed-bottom bg-danger p-2 bottom-helper" hidden>
+            <div class="row justify-content-end align-items-center">
+                <div class="col-auto text-white">%s</div>
+                <div class="col-auto">
+                    <button class="btn btn-success" type="submit">%s</button>
+                </div>
+            </div>
+        </div>', _i('Ricorda di cliccare il tasto "Salva" quando hai finito!'), _i('Salva'));
     }
 
     unset($params['attributes']['other_buttons'], $params['attributes']['nodelete'], $params['attributes']['nosave']);

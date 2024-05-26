@@ -516,6 +516,7 @@ class Bookings
     			if (Object.entries(data.bookings).length == 0) {
     				$('.booking-product-price span', form).text(utils.priceRound(0));
     				$('.booking-modifier, .booking-total', container).textVal(utils.priceRound(0));
+                    $('.all-bookings-total', form).text(utils.priceRound(0));
     			}
     			else {
                     var action = $('input:hidden[name=action]', form).val();

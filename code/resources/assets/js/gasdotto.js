@@ -19,6 +19,7 @@ require('./translate');
 require('./password');
 import utils from "./utils";
 import Lists from "./lists";
+import Forms from "./forms";
 import Widgets from "./widgets";
 import Triggers from "./triggers";
 import Filters from "./filters";
@@ -141,6 +142,7 @@ function generalInit(container) {
     utils.init(container);
     Modifiers.init(container);
 	Products.init(container);
+    Forms.init(container);
     Lists.init(container);
     Widgets.init(container);
     Bookings.init(container);
