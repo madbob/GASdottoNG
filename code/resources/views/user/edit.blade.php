@@ -196,6 +196,11 @@ if ($user->isFriend() && $admin_editable) {
         </x-larastrap::remotetabpane>
     @endif
 
+    @if($has_accounting && $user->gas->hasFeature('extra_invoicing'))
+        <x-larastrap::remotetabpane :id="sprintf('receipts-%s', sanitizeId($user->id))" :label="_i('Ricevute')" :button_attributes="['data-tab-url' => route('receipts.index', ['user_id' => $user->id])]" icon="bi-graph-up">
+        </x-larastrap::remotetabpane>
+    @endif
+
     @if($has_bookings)
         <x-larastrap::remotetabpane :id="sprintf('bookings-%s', sanitizeId($user->id))" :label="_i('Prenotazioni')" :button_attributes="['data-tab-url' => route('users.bookings', $user->id)]" icon="bi-list-task">
         </x-larastrap::remotetabpane>
