@@ -29,6 +29,18 @@ class UsersController extends BackedController
         return $this->easyExecute(function() use ($request) {
             $user = $request->user();
             $users = $this->service->list('', $user->can('users.admin', $user->gas));
+
+            /*
+                Il grosso collo di bottiglia nell'enumerazione degli utenti è
+                il recupero sullo stato del saldo di ciascuno, da cui dipendono
+                poi icone e filtri.
+                Qui pre-carico il saldo corrente di ognuno, premesso che nella
+                funzione CreditableTrait::currentBalance() verifico che
+                effettivamente esista o se è necessario allocare un nuovo saldo
+                corrente
+            */
+            $users->loadMissing(['balances' => fn($query) => $query->where('current', true)]);
+
             return view('pages.users', ['users' => $users]);
         });
     }
@@ -93,6 +105,11 @@ class UsersController extends BackedController
         $fields = $request->input('fields', []);
         $headers = UserFormatter::getHeaders($fields);
         $users = $this->service->list('', true);
+
+        if ($request->input('exportables') == 'selected') {
+            $selected = $request->input('users', []);
+            $users = $users->filter(fn($u) => in_array($u->id, $selected));
+        }
 
         return output_csv(_i('utenti.csv'), $headers, $users, function($user) use ($fields) {
             return UserFormatter::format($user, $fields);

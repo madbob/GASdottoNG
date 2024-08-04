@@ -53,6 +53,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $payload = $this->getEventPayload($event);
 
+        \Log::debug('Inizializzazione job: ' . ($payload['env_file'] ?? '[no env]') . ' / ' . ($payload['gas_id'] ?? '[no gas]'));
+
         $env_file = $payload['env_file'] ?? null;
         if ($env_file) {
             /*
@@ -70,10 +72,16 @@ class AppServiceProvider extends ServiceProvider
 
             URL::forceRootUrl(env('APP_URL'));
         }
+        else {
+            \Log::error('Job ' . get_class($event) . ' senza env file definito!');
+        }
 
         $gas_id = $payload['gas_id'] ?? null;
         if ($gas_id) {
             app()->make('GlobalScopeHub')->setGas($gas_id);
+        }
+        else {
+            \Log::error('Job ' . get_class($event) . ' senza GAS definito!');
         }
 
         /*
@@ -100,6 +108,7 @@ class AppServiceProvider extends ServiceProvider
                 $ret['env_file'] = env_file();
             }
 
+            \Log::debug('Avvio job: ' . print_r($ret, true));
             return $ret;
         });
 

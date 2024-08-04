@@ -103,7 +103,13 @@ class OrdersService extends BaseService
             $order->detachProduct($rp);
         }
 
-        $products = $order->supplier->products()->whereIn('id', $enabled)->get();
+        /*
+            Nota bene: mentre l'ordine è aperto, alcuni prodotti potrebbero
+            essere stati rimossi ma comunque lasciati nell'ordine stesso.
+            Quando aggiorno l'elenco, devo tenere in considerazione l'elenco di
+            tutti i prodotti del fornitore inclusi quelli marcati come eliminati
+        */
+        $products = $order->supplier->products()->withTrashed()->whereIn('id', $enabled)->get();
         $order->syncProducts($products, false);
         return $order->aggregate;
     }

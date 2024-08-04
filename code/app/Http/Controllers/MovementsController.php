@@ -95,19 +95,20 @@ class MovementsController extends BackedController
 		$filename = sanitizeFilename(_i('Esportazione movimenti GAS %s.%s', [date('d/m/Y'), $format]));
 
 		if ($format == 'csv') {
-			$headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
+			$headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Identificativo'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
 
 			return output_csv($filename, $headers, $movements, function($mov) {
-				$row = [];
-				$row[] = $mov->registration_date;
-				$row[] = $mov->date;
-				$row[] = $mov->printableType();
-				$row[] = $mov->printablePayment();
-				$row[] = $mov->sender ? $mov->sender->printableName() : '';
-				$row[] = $mov->target ? $mov->target->printableName() : '';
-				$row[] = printablePrice($mov->amount);
-				$row[] = $mov->notes;
-				return $row;
+                $row = [];
+                $row[] = $mov->registration_date;
+                $row[] = $mov->date;
+                $row[] = $mov->printableType();
+                $row[] = $mov->printablePayment();
+                $row[] = $mov->identifier;
+                $row[] = $mov->sender ? $mov->sender->printableName() : '';
+                $row[] = $mov->target ? $mov->target->printableName() : '';
+                $row[] = printablePrice($mov->amount);
+                $row[] = $mov->notes;
+                return $row;
 			});
 		}
 		else if ($format == 'pdf') {

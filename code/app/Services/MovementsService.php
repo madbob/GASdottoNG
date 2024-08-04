@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 use App\Models\Concerns\CreditableTrait;
+use App\Booking;
 use App\Movement;
 use App\User;
 use App\Balance;
@@ -146,7 +148,11 @@ class MovementsService extends BaseService
             $query->where('amount', '<=', $request['amountend']);
         }
 
-        return $query->with(['currency'])->get();
+        return $query->with(['sender', 'currency', 'target' => function(MorphTo $morphTo) {
+            $morphTo->morphWith([
+                Booking::class => ['order'],
+            ]);
+        }])->get();
     }
 
     public function show($id)

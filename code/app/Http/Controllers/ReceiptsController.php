@@ -22,13 +22,21 @@ class ReceiptsController extends BackedController
         ]);
     }
 
+    private function filterByUser($request)
+    {
+        return $request->input('user_id', '0');
+    }
+
 	public function index(Request $request)
 	{
 		$past = date('Y-m-d', strtotime('-1 months'));
 		$future = date('Y-m-d', strtotime('+10 years'));
-		$receipts = $this->service->list($past, $future, 0);
+        $user_id = $this->filterByUser($request);
+		$receipts = $this->service->list($past, $future, 0, $user_id);
+
 		return view('receipt.index', [
 			'receipts' => $receipts,
+            'user_id' => $user_id,
 		]);
 	}
 
@@ -40,7 +48,7 @@ class ReceiptsController extends BackedController
         if ($user->can('movements.admin', $user->gas)) {
             return view('receipt.edit', ['receipt' => $receipt]);
         }
-        else if ($user->can('movements.view', $user->gas)) {
+        else if ($user->can('movements.view', $user->gas) || $receipt->user->id == $user->id) {
             return view('receipt.show', ['receipt' => $receipt]);
         }
         else {
@@ -50,7 +58,7 @@ class ReceiptsController extends BackedController
 
     private function testAccess($user, $receipt)
     {
-        if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas) || $receipt->user_id == $user->id) {
+        if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas) || $receipt->user->id == $user->id) {
             return true;
         }
         else {
@@ -120,14 +128,14 @@ class ReceiptsController extends BackedController
 
     private function send($elements): void
     {
-        foreach($elements as $receipt) {
-            if ($receipt->mailed == false) {
-                try {
-                    $this->sendByMail($receipt);
-                }
-                catch(\Exception $e) {
-                    \Log::error('Errore in inoltro ricevuta: ' . $e->getMessage());
-                }
+        $to_send = $elements->filter(fn($r) => $r->mailed == false);
+
+        foreach($to_send as $receipt) {
+            try {
+                $this->sendByMail($receipt);
+            }
+            catch(\Exception $e) {
+                \Log::error('Errore in inoltro ricevuta: ' . $e->getMessage());
             }
         }
     }
@@ -136,8 +144,9 @@ class ReceiptsController extends BackedController
 	{
 		$start = decodeDate($request->input('startdate'));
 		$end = decodeDate($request->input('enddate'));
-		$supplier_id = $request->input('supplier_id');
-		$elements = $this->service->list($start, $end, $supplier_id);
+		$supplier_id = $request->input('supplier_id', '0');
+        $user_id = $this->filterByUser($request);
+		$elements = $this->service->list($start, $end, $supplier_id, $user_id);
 
 		$format = $request->input('format', 'none');
 

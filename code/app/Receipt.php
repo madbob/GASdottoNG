@@ -35,7 +35,7 @@ class Receipt extends Model implements Datable
 
     public function getUserAttribute()
     {
-        $first = $this->bookings()->first();
+        $first = $this->bookings->first();
         if ($first)
             return $first->user;
         else

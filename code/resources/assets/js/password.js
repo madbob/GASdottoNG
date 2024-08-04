@@ -48,6 +48,7 @@ $(document).ready(function() {
 
                         input.val(password);
                         input.popover('dispose');
+                        input.change();
                     }
                     else {
                         alert('Le password sono diverse!');

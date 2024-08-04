@@ -733,6 +733,16 @@ i[class^='bi-hidden-'] {
             }
         }
     }
+
+    /*
+        Questo è per assicurarsi che i pulsanti a destra del menu siano
+        visualizzati anche su mobile
+    */
+    .navbar-collapse {
+        .position-absolute {
+            position: relative !important;
+        }
+    }
 }
 
 @include media-breakpoint-down(md) {
@@ -752,6 +762,10 @@ i[class^='bi-hidden-'] {
         padding: 0.375rem 0.75rem;
     }
 
+    .btn-group {
+        width: 100%;
+    }
+
     .modal {
         .modal-footer {
             padding: 0.15rem;
@@ -769,16 +783,16 @@ i[class^='bi-hidden-'] {
             }
         }
     }
-}
 
-@include media-breakpoint-down(lg) {
-    /*
-        Questo è per assicurarsi che i pulsanti a destra del menu siano
-        visualizzati anche su mobile
-    */
-    .navbar-collapse {
-        .position-absolute {
-            position: relative !important;
+    .modifier-modal {
+        .dynamic-table {
+            tr {
+                display: grid;
+
+                td {
+                    padding: 0;
+                }
+            }
         }
     }
 }

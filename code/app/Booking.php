@@ -93,6 +93,11 @@ class Booking extends Model
         return $this->belongsTo(Movement::class);
     }
 
+    public function receipts(): BelongsToMany
+    {
+        return $this->belongsToMany('App\Receipt');
+    }
+
     /*
         Con questo scope si caricano le relazioni utilizzate per il calcolo dei
         modificatori.

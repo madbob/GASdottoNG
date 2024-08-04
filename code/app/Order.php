@@ -316,8 +316,33 @@ class Order extends Model
         return json_encode($row);
     }
 
+    /*
+        Dato il nuovo elenco di prodotti abilitati nell'ordine, verifica la
+        consistenza delle relative prenotazioni.
+        Se ci sono prodotti già prenotati ma che non appaiono nel suddetto
+        elenco, l'intera applicazione va in errore
+    */
+    private function checkConsistency($new_products)
+    {
+        $order_id = $this->id;
+
+        $booked_products = DB::table('booked_products')->select('product_id')->distinct()->join('bookings', function($join) use ($order_id) {
+            $join->on('booking_id', '=', 'bookings.id')->where('order_id', $order_id);
+        })->get();
+
+        $products_ids = $new_products->pluck('id')->toArray();
+
+        foreach($booked_products as $bp) {
+            if (in_array($bp->product_id, $products_ids) == false) {
+                throw new \Exception("Un prodotto già prenotato non è nell'elenco dei nuovi prodotti per l'ordine! Ordine: " . $this->id . ', prodotto: ' . $bp->product_id, 1);
+            }
+        }
+    }
+
     public function syncProducts($products, $update_prices)
     {
+        $this->checkConsistency($products);
+
         if ($update_prices) {
             $data = [];
 
@@ -418,7 +443,7 @@ class Order extends Model
     {
         $order = $this;
 
-        if ($gas->getConfig('notify_all_new_orders')) {
+        if ($gas->notify_all_new_orders) {
             $query_users = User::whereNull('parent_id');
         }
         else {

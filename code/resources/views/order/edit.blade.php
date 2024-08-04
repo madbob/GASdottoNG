@@ -1,6 +1,34 @@
-<?php $summary = $master_summary->orders[$order->id] ?>
+<?php
 
-<x-larastrap::mform :obj="$order" classes="order-editor" method="PUT" :action="route('orders.update', $order->id)" :nodelete="$order->bookings()->count() > 0" :other_buttons="[['label' => _i('Esporta'), 'classes' => ['float-start', 'link-button', 'me-2'], 'attributes' => ['data-link' => $order->exportableURL()]]]">
+$summary = $master_summary->orders[$order->id];
+
+$custom_buttons = [
+    [
+        'label' => _i('Esporta'),
+        'classes' => ['float-start', 'link-button', 'me-2'],
+        'attributes' => ['data-link' => $order->exportableURL()]
+    ]
+];
+
+if ($order->bookings()->count() > 0) {
+    $nodelete = true;
+
+    $custom_buttons[] = [
+        'color' => 'danger',
+        'classes' => ['async-modal'],
+        'label' => _i('Elimina'),
+        'attributes' => [
+            'data-modal-url' => route('orders.nodestroy', $order->id),
+        ]
+    ];
+}
+else {
+    $nodelete = false;
+}
+
+?>
+
+<x-larastrap::mform :obj="$order" classes="order-editor" method="PUT" :action="route('orders.update', $order->id)" :nodelete="$nodelete" :other_buttons="$custom_buttons">
     <input type="hidden" name="order_id" value="{{ $order->id }}" />
     <input type="hidden" name="post-saved-function" value="afterAggregateChange" class="skip-on-submit">
 
