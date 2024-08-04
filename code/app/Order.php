@@ -831,12 +831,9 @@ class Order extends Model
             if (is_null($bookings)) {
                 $bookings = $item->angryBookings();
 
-                $shipping_place = $filters['shipping_place'] ?? null;
-                if ($shipping_place) {
-                    $bookings = $bookings->filter(function($booking) use ($shipping_place) {
-                        $sp = $booking->shipping_place;
-                        return $sp && $sp->id == $shipping_place;
-                    });
+                $circles = $filters['circles'] ?? null;
+                if ($circles) {
+                    $bookings = $circles->sortBookings($bookings);
                 }
             }
 

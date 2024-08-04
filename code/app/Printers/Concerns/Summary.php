@@ -88,11 +88,11 @@ trait Summary
 
     protected function formatSummary($order, $document, $fields, $status, $circles, $extra_modifiers)
     {
-        if (in_array('all_by_place', $circles)) {
-            foreach($order->circles as $circle) {
-                $table = $this->formatSummaryShipping($order, $fields, $status, [$circle->id], $extra_modifiers);
+        if ($circles->getMode() == 'all_by_place') {
+            foreach($circles->combinations() as $combo) {
+                $table = $this->formatSummaryShipping($order, $fields, $status, $combo, $extra_modifiers);
                 if ($table) {
-                    $document->append(new Header($circle->printableName()));
+                    $document->append(new Header($combo->printableName()));
                     $document->append($table);
                 }
             }

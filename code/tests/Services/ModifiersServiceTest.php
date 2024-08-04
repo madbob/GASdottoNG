@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
 
+use App\Helpers\CirclesFilter;
 use App\Exceptions\AuthException;
 use App\Printers\Order as OrderPrinter;
 
@@ -796,7 +797,7 @@ class ModifiersServiceTest extends TestCase
         $shipping_cost_found = false;
 
         $printer = new OrderPrinter();
-        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', ['all_by_name'], 1);
+        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', new CirclesFilter($order->aggregate, null), 1);
 
         foreach($formatted->contents as $d) {
             if ($d->user_id == $booking->user_id) {
@@ -856,7 +857,7 @@ class ModifiersServiceTest extends TestCase
         $shipping_cost_found = false;
 
         $printer = new OrderPrinter();
-        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', ['all_by_name'], 1);
+        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', new CirclesFilter($order->aggregate, null), 1);
 
         foreach($formatted->contents as $d) {
             if ($d->user_id == $newUser->id) {
