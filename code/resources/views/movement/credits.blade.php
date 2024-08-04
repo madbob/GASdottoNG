@@ -90,6 +90,7 @@
             <div class="modal-footer">
                 <form class="form-inline iblock inner-form" action="{{ url('movements/document/credits/csv?dummy=1') }}" method="GET">
                     <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
+                    <input type="hidden" name="collectFilteredUsers" value="#creditsTable">
                     <input type="hidden" name="pre-saved-function" value="formToDownload">
                     <button type="submit" class="btn btn-success">{{ _i('Esporta CSV') }} <i class="bi-download"></i></button>
                 </form>
@@ -129,6 +130,7 @@
                     <form class="form-horizontal inner-form" method="POST" action="{{ route('notifications.store') }}">
                         <input type="hidden" name="close-modal" value="1">
                         <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
+                        <input type="hidden" name="collectFilteredUsers" value="#creditsTable">
                         <input type="hidden" name="type" value="notification">
 
                         @include('notification.base-edit', [

@@ -21,6 +21,7 @@
             <x-larastrap::modal id="exportCSVusers" :title="_i('Esporta CSV')" classes="close-on-submit">
                 <x-larastrap::iform method="GET" :action="url('users/export')" :buttons="[['label' => _i('Download'), 'type' => 'submit']]">
                     <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
+                    <input type="hidden" name="collectFilteredUsers" value="#user-list">
                     <input type="hidden" name="pre-saved-function" value="formToDownload">
 
                     <p>

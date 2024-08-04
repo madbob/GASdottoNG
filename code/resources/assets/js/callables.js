@@ -135,7 +135,7 @@ class Callables {
     */
     static collectFilteredUsers(form) {
 		form.find('input:hidden[name^="users"]').remove();
-        let table = $('#user-list');
+        let table = $(form.find('input:hidden[name=collectFilteredUsers]').val());
 
         if (table.is('table')) {
             $('tbody tr:visible', table).each(function() {
