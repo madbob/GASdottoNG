@@ -56,41 +56,6 @@ class MailController extends Controller
         }
     }
 
-    public function postStatusSES(Request $request)
-    {
-		if (env('MAIL_MAILER') == 'ses') {
-	        $message = Message::fromRawPostData();
-	        $validator = new MessageValidator();
-
-	        try {
-	            $validator->validate($message);
-	        }
-	        catch (InvalidSnsMessageException $e) {
-	            Log::error('SNS Message Validation Error: ' . $e->getMessage());
-	            abort(404);
-	        }
-
-	        if ($message['Type'] === 'SubscriptionConfirmation') {
-	            Http::get($message['SubscribeURL']);
-	        }
-	        else if ($message['Type'] === 'Notification') {
-	            $data = json_decode($message['Message']);
-                $event = $data->notificationType;
-
-	            if ($event == 'Bounce') {
-					try {
-						$email = $data->bounce->bouncedRecipients[0]->emailAddress;
-			            $message = $data->bounce->bouncedRecipients[0]->diagnosticCode ?? '???';
-		                $this->registerBounce($event, $email, $message);
-					}
-					catch(\Exception $e) {
-						Log::error('Notifica SNS illeggibile: ' . $e->getMessage() . ' - ' . print_r($data, true));
-					}
-	            }
-	        }
-		}
-    }
-
 	public function postStatusSendinblue(Request $request)
 	{
 		if (env('MAIL_MAILER') == 'sendinblue') {
@@ -120,4 +85,47 @@ class MailController extends Controller
 			}
 		}
 	}
+
+    public function postStatusScaleway(Request $request)
+    {
+        if (env('MAIL_MAILER') == 'scaleway') {
+            $api_endpoint = 'https://api.scaleway.com/transactional-email/v1alpha1/regions/fr-par/webhooks';
+
+            $message = Message::fromRawPostData();
+            $validator = new MessageValidator();
+
+            try {
+                $validator->validate($message);
+            }
+            catch (InvalidSnsMessageException $e) {
+                Log::error('SNS Message Validation Error: ' . $e->getMessage());
+                abort(404);
+            }
+
+            try {
+                $body = json_decode($request->getContent());
+
+                if ($body) {
+                    /*
+                        Per automatizzare la procedura di conferma della
+                        registrazione del webhook
+                    */
+                    if (isset($body->SubscribeURL)) {
+                        @file_get_contents($body->SubscribeURL);
+                        return;
+                    }
+                    else {
+                        $payload = json_decode($body->Message);
+                        $event = $payload->type;
+                        $email = $payload->email_to;
+                        $message = $payload->email_error;
+                        $this->registerBounce($event, $email, $message);
+                    }
+                }
+            }
+            catch(\Exception $e) {
+                Log::error('Notifica Scaleway illeggibile: ' . $e->getMessage() . ' - ' . print_r($request->all(), true));
+            }
+		}
+    }
 }
