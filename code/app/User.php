@@ -93,11 +93,6 @@ class User extends Authenticatable
         }
     }
 
-    public function scopeTopLevel($query)
-    {
-        return $query->whereNull('parent_id');
-    }
-
     public function scopeSorted($query)
     {
         return $query->orderBy('lastname', 'asc')->orderBy('firstname', 'asc');
