@@ -153,9 +153,9 @@ trait CreditableTrait
     {
         $proxy = $this->getActualObject();
 
-        $balance = $proxy->balances->where('current', true)->where('currency_id', $currency->id)->sortByDesc('date')->first();
+        $balance = $proxy->balances()->where('current', true)->where('currency_id', $currency->id)->orderBy('date', 'desc')->first();
         if (is_null($balance)) {
-            $balance = $this->balances->where('current', false)->where('currency_id', $currency->id)->sortByDesc('date')->first();
+            $balance = $this->balances()->where('current', false)->where('currency_id', $currency->id)->orderBy('date', 'desc')->first();
             if (is_null($balance)) {
                 $balance = $this->fixFirstBalance($currency);
             }
