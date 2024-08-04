@@ -29,7 +29,7 @@ class UsersService extends BaseService
         $user = $this->ensureAuth(['users.admin' => 'gas', 'users.movements' => 'gas', 'users.view' => 'gas', 'supplier.shippings' => null]);
 
         $gas_id = $user->gas['id'];
-        $query = User::with('roles')->where('parent_id', null)->where('gas_id', '=', $gas_id);
+        $query = User::with('roles')->topLevel()->where('gas_id', '=', $gas_id);
 
         if (!empty($term)) {
             $query->where(function ($query) use ($term) {

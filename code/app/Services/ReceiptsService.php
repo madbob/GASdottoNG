@@ -21,7 +21,7 @@ class ReceiptsService extends BaseService
             }
         }
 
-        $query = Receipt::where('date', '>=', $start)->where('date', '<=', $end)->orderBy('date', 'desc');
+        $query = Receipt::where('date', '>=', $start)->where('date', '<=', $end)->with(['bookings', 'bookings.user'])->orderBy('date', 'desc');
 
         if ($supplier_id != '0' || $user_id != 0) {
             $query->whereHas('bookings', function($query) use ($supplier_id, $user_id) {
