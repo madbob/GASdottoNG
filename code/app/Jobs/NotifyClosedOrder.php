@@ -39,8 +39,12 @@ class NotifyClosedOrder implements ShouldQueue
 
         $files = [];
         foreach($types as $type) {
-            $files[] = $printer->document($order, $type, ['format' => 'pdf', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
-            $files[] = $printer->document($order, $type, ['format' => 'csv', 'status' => 'pending', 'extra_modifiers' => 0, 'send_mail' => true]);
+            foreach(['pdf', 'csv'] as $format) {
+                $f = $printer->document($order, $type, ['format' => $format, 'status' => 'pending', 'extra_modifiers' => 0, 'action' => 'save']);
+                if ($f) {
+                    $files[] = $f;
+                }
+            }
         }
 
         return $files;
@@ -116,12 +120,8 @@ class NotifyClosedOrder implements ShouldQueue
                 $hub->enable(true);
                 $hub->setGas($gas->id);
 
-                /*
-                    Nota: il flag send_mail serve solo a farsi restituire il
-                    path del file generato. Cfr. il TODO in Order::document()
-                */
-                $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'pending', 'send_mail' => true]);
-                $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'pending', 'send_mail' => true]);
+                $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'pending', 'action' => 'save']);
+                $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'pending', 'action' => 'save']);
 
                 $all_files[] = $pdf_file_path;
                 $all_files[] = $csv_file_path;

@@ -13,7 +13,7 @@
 
     <hr/>
 
-    <x-larastrap::check name="send_mail" :label="_i('Inoltra Mail')" triggers_collapse="send_mail" />
+    <x-larastrap::check name="action" value="email" :label="_i('Inoltra Mail')" triggers_collapse="send_mail" />
 
     <x-larastrap::collapse id="send_mail">
         <x-larastrap::field :label="_i('Destinatari')">

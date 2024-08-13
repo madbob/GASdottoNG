@@ -288,6 +288,15 @@ class OrdersController extends BackedController
     {
         $printer = new Printer();
         $order = Order::findOrFail($id);
-        return $printer->document($order, $type, $request->all());
+        $params = $request->all();
+        $ret = $printer->document($order, $type, $params);
+
+        $action = $params['action'] ?? 'download';
+        if ($action == 'email') {
+            return redirect()->route('orders.index');
+        }
+        else {
+            return $ret;
+        }
     }
 }
