@@ -73,7 +73,7 @@ class NotifyClosedOrder implements ShouldQueue
                         $hub->enable(true);
                     }
                     catch(\Exception $e) {
-                        \Log::error('Errore in notifica chiusura ordine a fornitore: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+                        \Log::error('Errore in notifica chiusura ordine a fornitore: ' . $e->getMessage());
                     }
 
                     break;

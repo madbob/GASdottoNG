@@ -38,7 +38,13 @@ class Order extends Printer
             return;
         }
 
-        Mail::to($real_recipient_mails)->send(new GenericOrderShipping($temp_file_path, $request['subject_mail'], $request['body_mail']));
+		try {
+        	Mail::to($real_recipient_mails)->send(new GenericOrderShipping($temp_file_path, $request['subject_mail'], $request['body_mail']));
+		}
+		catch(\Exception $e) {
+			\Log::error('Impossibile inoltrare documento ordine: ' . $e->getMessage());
+		}
+
         @unlink($temp_file_path);
     }
 
@@ -120,21 +126,15 @@ class Order extends Printer
     {
 		$guessed_fields = [];
 
-        foreach($order->products as $product) {
-            if (empty($product->code) == false) {
-                $guessed_fields[] = 'code';
-				break;
-            }
+		if ($order->products->filter(fn($p) => empty($p->code) == false)->count() != 0) {
+            $guessed_fields[] = 'code';
 		}
 
 		$guessed_fields[] = 'name';
         $guessed_fields[] = 'quantity';
 
-		foreach($order->products as $product) {
-            if ($product->package_size != 0) {
-                $guessed_fields[] = 'boxes';
-				break;
-            }
+		if ($order->products->filter(fn($p) => $p->package_size != 0)->count() != 0) {
+            $guessed_fields[] = 'boxes';
         }
 
         $guessed_fields[] = 'measure';
@@ -157,13 +157,19 @@ class Order extends Printer
 		if ($subtype == 'gdxp') {
             $contents = view('gdxp.json.supplier', ['obj' => $obj->supplier, 'order' => $obj, 'bookings' => true])->render();
 
-            if (in_array($action, ['save', 'email'])) {
-                file_put_contents($temp_file_path, $contents);
-            }
-            else {
-                download_headers('application/json', $filename);
-                return $contents;
-            }
+			if ($action == 'email') {
+				file_put_contents($temp_file_path, $contents);
+	            $this->sendDocumentMail($request, $temp_file_path);
+	            return $temp_file_path;
+	        }
+			else if ($action == 'download') {
+				download_headers('application/json', $filename);
+				return $contents;
+			}
+			else if ($action == 'save') {
+				file_put_contents($temp_file_path, $contents);
+				return $temp_file_path;
+			}
         }
 		else {
 			$status = $request['status'];
