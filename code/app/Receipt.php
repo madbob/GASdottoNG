@@ -45,12 +45,14 @@ class Receipt extends Model implements Datable
     public function getNameAttribute()
     {
         $user = $this->user;
-        if ($user)
+        if ($user) {
             $user_name = $user->printableName();
-        else
+        }
+        else {
             $user_name = '???';
+        }
 
-        return sprintf('%s - %s', $user_name, $this->number);
+        return sprintf('%s - %s - %s', $user_name, printableDate($this->date), $this->number);
     }
 
     private function calculateTotal()

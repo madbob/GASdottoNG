@@ -44,6 +44,33 @@ class OrdersController extends BackedController
         ]);
     }
 
+    private function rssItem($feed, $aggregate)
+    {
+        $summary = '';
+
+        foreach($aggregate->orders as $order) {
+            $summary .= $order->printableName() . "\n";
+
+            foreach($order->products as $product) {
+                $summary .= $product->printableName() . "\n";
+            }
+
+            $summary .= "\n";
+        }
+
+        $author = new Author();
+        $author->setName($aggregate->gas->first()->printableName());
+
+        $item = $feed->newItem();
+        $item->setTitle($aggregate->printableName());
+        $item->setAuthor($author);
+        $item->setLink($aggregate->getBookingURL());
+        $item->setLastModified($aggregate->updated_at);
+        $item->setContent($summary);
+
+        return $item;
+    }
+
     public function rss(Request $request)
     {
         $aggregates = getOrdersByStatus(null, 'open');
@@ -62,27 +89,7 @@ class OrdersController extends BackedController
                 continue;
             }
 
-            $summary = '';
-
-            foreach($aggregate->orders as $order) {
-                $summary .= $order->printableName() . "\n";
-
-                foreach($order->products as $product) {
-                    $summary .= $product->printableName() . "\n";
-                }
-
-                $summary .= "\n";
-            }
-
-			$author = new Author();
-			$author->setName($aggregate->gas->first()->printableName());
-
-			$item = $feed->newItem();
-            $item->setTitle($aggregate->printableName());
-            $item->setAuthor($author);
-            $item->setLink($aggregate->getBookingURL());
-            $item->setLastModified($aggregate->updated_at);
-            $item->setContent($summary);
+            $item = $this->rssItem($feed, $aggregate);
 			$feed->add($item);
         }
 
@@ -288,6 +295,15 @@ class OrdersController extends BackedController
     {
         $printer = new Printer();
         $order = Order::findOrFail($id);
-        return $printer->document($order, $type, $request->all());
+        $params = $request->all();
+        $ret = $printer->document($order, $type, $params);
+
+        $action = $params['action'] ?? 'download';
+        if ($action == 'email') {
+            return redirect()->route('orders.index');
+        }
+        else {
+            return $ret;
+        }
     }
 }

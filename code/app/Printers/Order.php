@@ -33,13 +33,19 @@ class Order extends Printer
             return;
         }
 
-        Mail::to($real_recipient_mails)->send(new GenericOrderShipping($temp_file_path, $request['subject_mail'], $request['body_mail']));
+		try {
+        	Mail::to($real_recipient_mails)->send(new GenericOrderShipping($temp_file_path, $request['subject_mail'], $request['body_mail']));
+		}
+		catch(\Exception $e) {
+			\Log::error('Impossibile inoltrare documento ordine: ' . $e->getMessage());
+		}
+
         @unlink($temp_file_path);
     }
 
     protected function handleShipping($obj, $request)
     {
-        $send_mail = isset($request['send_mail']);
+		$action = $request['action'] ?? 'download';
         $subtype = $request['format'] ?? 'pdf';
         $status = $request['status'] ?? 'pending';
         $extra_modifiers = $request['extra_modifiers'] ?? 0;
@@ -63,7 +69,7 @@ class Order extends Printer
 
             enablePdfPagesNumbers($pdf);
 
-            if ($send_mail) {
+            if (in_array($action, ['save', 'email'])) {
                 $pdf->save($temp_file_path);
             }
             else {
@@ -79,7 +85,7 @@ class Order extends Printer
                 }
             }
 
-            if ($send_mail) {
+            if (in_array($action, ['save', 'email'])) {
                 output_csv($filename, $data->headers, $flat_contents, function($row) {
                     return $row;
                 }, $temp_file_path);
@@ -91,30 +97,27 @@ class Order extends Printer
             }
         }
 
-        if ($send_mail) {
+        if ($action == 'email') {
             $this->sendDocumentMail($request, $temp_file_path);
         }
+		else if ($action == 'save') {
+			return $temp_file_path;
+		}
     }
 
     private function autoGuessFields($order)
     {
 		$guessed_fields = [];
 
-        foreach($order->products as $product) {
-            if (empty($product->code) == false) {
-                $guessed_fields[] = 'code';
-				break;
-            }
+		if ($order->products->filter(fn($p) => empty($p->code) == false)->count() != 0) {
+            $guessed_fields[] = 'code';
 		}
 
 		$guessed_fields[] = 'name';
         $guessed_fields[] = 'quantity';
 
-		foreach($order->products as $product) {
-            if ($product->package_size != 0) {
-                $guessed_fields[] = 'boxes';
-				break;
-            }
+		if ($order->products->filter(fn($p) => $p->package_size != 0)->count() != 0) {
+            $guessed_fields[] = 'boxes';
         }
 
         $guessed_fields[] = 'measure';
@@ -126,7 +129,7 @@ class Order extends Printer
 
     protected function handleSummary($obj, $request)
     {
-        $send_mail = isset($request['send_mail']);
+        $action = $request['action'] ?? 'download';
         $subtype = $request['format'] ?? 'pdf';
 		$extra_modifiers = $request['extra_modifiers'] ?? 0;
 
@@ -137,13 +140,19 @@ class Order extends Printer
 		if ($subtype == 'gdxp') {
             $contents = view('gdxp.json.supplier', ['obj' => $obj->supplier, 'order' => $obj, 'bookings' => true])->render();
 
-            if ($send_mail) {
-                file_put_contents($temp_file_path, $contents);
-            }
-            else {
-                download_headers('application/json', $filename);
-                return $contents;
-            }
+			if ($action == 'email') {
+				file_put_contents($temp_file_path, $contents);
+	            $this->sendDocumentMail($request, $temp_file_path);
+	            return $temp_file_path;
+	        }
+			else if ($action == 'download') {
+				download_headers('application/json', $filename);
+				return $contents;
+			}
+			else if ($action == 'save') {
+				file_put_contents($temp_file_path, $contents);
+				return $temp_file_path;
+			}
         }
 		else {
 			$status = $request['status'];
@@ -167,13 +176,17 @@ class Order extends Printer
 
 	        $document = $this->formatSummary($obj, $document, $required_fields, $status, $circles, $extra_modifiers);
 
-			if ($send_mail) {
+			if ($action == 'email') {
 				$document->save($temp_file_path);
 	            $this->sendDocumentMail($request, $temp_file_path);
 	            return $temp_file_path;
 	        }
-			else {
+			else if ($action == 'download') {
 				return $document->download($filename);
+			}
+			else if ($action == 'save') {
+				$document->save($temp_file_path);
+				return $temp_file_path;
 			}
 		}
     }
@@ -205,7 +218,7 @@ class Order extends Printer
 
     protected function handleTable($obj, $request)
     {
-        $send_mail = isset($request['send_mail']);
+        $action = $request['action'] ?? 'download';
         $status = $request['status'] ?? 'pending';
 		$include_missing = $request['include_missing'] ?? 'no';
         $circles = new CirclesFilter($obj->aggregate, $request);
@@ -248,13 +261,18 @@ class Order extends Printer
 
         $filename = sanitizeFilename(_i('Tabella Ordine %s presso %s.csv', [$obj->internal_number, $obj->supplier->name]));
 
-        if ($send_mail) {
+        if ($action == 'email') {
             $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
             output_csv($filename, $headers, $data, null, $temp_file_path);
             $this->sendDocumentMail($request, $temp_file_path);
         }
-        else {
+        else if ($action == 'download') {
             return output_csv($filename, $headers, $data, null);
         }
+		else if ($action == 'save') {
+			$temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+            output_csv($filename, $headers, $data, null, $temp_file_path);
+            return $temp_file_path;
+		}
     }
 }

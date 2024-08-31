@@ -53,8 +53,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $payload = $this->getEventPayload($event);
 
-        \Log::debug('Inizializzazione job: ' . ($payload['env_file'] ?? '[no env]') . ' / ' . ($payload['gas_id'] ?? '[no gas]'));
-
         $env_file = $payload['env_file'] ?? null;
         if ($env_file) {
             /*
@@ -103,6 +101,10 @@ class AppServiceProvider extends ServiceProvider
             $ret = [
                 'gas_id' => app()->make('GlobalScopeHub')->getGas(),
             ];
+
+            if (empty($ret['gas_id'])) {
+                \Log::debug(print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 20), true));
+            }
 
             if (global_multi_installation()) {
                 $ret['env_file'] = env_file();
