@@ -59,7 +59,7 @@ class CirclesService extends BaseService
         $this->boolIfSet($c, $request, 'is_default');
 
         if ($c->is_default) {
-            $c->group->circles()->update(['is_default' => false]);
+            $c->group->circles()->where('circles.id', '!=', $c->id)->update(['is_default' => false]);
         }
 
         $c->save();

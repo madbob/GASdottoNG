@@ -43,13 +43,8 @@ class OrdersServiceTest extends TestCase
         ]);
     }
 
-    /*
-        Creazione Ordine
-    */
-    public function testStore()
+    private function storeMailableOrder()
     {
-        Notification::fake();
-
         $this->gas->setConfig('notify_all_new_orders', '1');
         $this->userWithNoPerms->addContact('email', fake()->email());
         $this->userWithBasePerms->addContact('email', fake()->email());
@@ -74,6 +69,18 @@ class OrdersServiceTest extends TestCase
             'shipping' => printableDate($shipping),
             'status' => 'open',
         ]);
+
+        return [$aggregate, $start, $end, $shipping];
+    }
+
+    /*
+        Creazione Ordine
+    */
+    public function testStore()
+    {
+        Notification::fake();
+
+        list($aggregate, $start, $end, $shipping) = $this->storeMailableOrder();
 
         $this->assertEquals(1, $aggregate->orders->count());
         $this->assertTrue($aggregate->isActive());
@@ -113,6 +120,19 @@ class OrdersServiceTest extends TestCase
             $this->assertTrue($order->isActive());
             $this->assertTrue($order->isRunning());
         }
+    }
+
+    /*
+        Creazione Ordine.
+        Questa funzione è identica alla precedente, ma non intercetta le
+        notifiche in modo che venga eseguito il codice destinato alla loro
+        formattazione. Non vengono qui eseguiti test rilevanti: basta che non si
+        schianti
+    */
+    public function testStoreMails()
+    {
+        $this->storeMailableOrder();
+        $this->assertTrue(true);
     }
 
     /*
@@ -157,12 +177,8 @@ class OrdersServiceTest extends TestCase
         $this->assertEquals($order->end, $this->order->end);
     }
 
-    /*
-        Chiusura ordini automatica
-    */
-    public function testAutoClose()
+    private function initMailableOrder()
     {
-        Notification::fake();
         $this->populateOrder($this->order);
 
         $this->nextRound();
@@ -186,12 +202,37 @@ class OrdersServiceTest extends TestCase
 
         Artisan::call('close:orders');
 
+        return $booking;
+    }
+
+    /*
+        Chiusura ordini automatica
+    */
+    public function testAutoClose()
+    {
+        Notification::fake();
+
+        $booking = $this->initMailableOrder();
+
         $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals('closed', $order->status);
 
         Notification::assertSentTo([$order->supplier], \App\Notifications\SupplierOrderShipping::class);
         Notification::assertSentTo([$this->userReferrer], \App\Notifications\ClosedOrdersNotification::class);
         Notification::assertSentTo([$booking->user], \App\Notifications\BookingNotification::class);
+    }
+
+    /*
+        Chiusura ordini automatica.
+        Questa funzione è identica alla precedente, ma non intercetta le
+        notifiche in modo che venga eseguito il codice destinato alla loro
+        formattazione. Non vengono qui eseguiti test rilevanti: basta che non si
+        schianti
+    */
+    public function testAutoCloseMails()
+    {
+        $this->initMailableOrder();
+        $this->assertTrue(true);
     }
 
     /*

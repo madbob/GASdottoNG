@@ -82,6 +82,37 @@ class MultiGasServiceTest extends TestCase
     }
 
     /*
+        Aggiornamento GAS
+    */
+    public function testUpdate()
+    {
+        $role = $this->initSubgasAdminRole();
+        $this->nextRound();
+        $gas = $this->createGas();
+
+        $this->nextRound();
+        $this->userSuperAdmin = app()->make('UsersService')->show($this->userSuperAdmin->id);
+
+        $this->nextRound();
+        $this->actingAs($this->userSuperAdmin);
+        $gas = app()->make('MultiGasService')->update($gas->id, ['name' => 'Cambio nome']);
+
+        $this->nextRound();
+
+        $list = app()->make('MultiGasService')->list();
+        $this->assertCount(2, $list);
+
+        $found = 0;
+        foreach($list as $g) {
+            if ($g->name == 'Cambio nome') {
+                $found++;
+            }
+        }
+
+        $this->assertEquals($found, 1);
+    }
+
+    /*
         Assegnazione fornitore a due GAS
     */
     public function testAttach()
@@ -116,8 +147,14 @@ class MultiGasServiceTest extends TestCase
         ]);
 
         /*
-            TODO: verificare effettivo accesso al fornitore da parte del secondo
-            GAS, tenuto conto delle cache sparse
+            Questo è necessario per resettare lo stato interno dell'hub e fargli
+            rileggere i GAS attualmente sul DB
         */
+        app()->forgetInstance('GlobalScopeHub');
+
+        $this->nextRound();
+
+        $suppliers = app()->make('SuppliersService')->list();
+        $this->assertCount(1, $suppliers);
     }
 }
