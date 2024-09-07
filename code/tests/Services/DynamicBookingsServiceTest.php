@@ -319,7 +319,7 @@ class DynamicBookingsServiceTest extends TestCase
     /*
         Lettura dinamica delle prenotazioni, prodotto con modificatori
     */
-    public function testModifiersOnProduct()
+    public function testModifiersOnProductBooking()
     {
         $product = $this->order->products->random();
         $this->attachDiscount($product);
@@ -336,10 +336,60 @@ class DynamicBookingsServiceTest extends TestCase
         $this->assertEquals(count($ret->bookings), 1);
 
         foreach($ret->bookings as $b) {
-            $this->assertEquals(count($b->products), 1);
             $this->assertEquals($b->total, $product->price * 2 - ($product->price * 0.10 * 2));
-            $this->assertEquals(count($b->modifiers), 1);
 
+            $this->assertEquals(count($b->modifiers), 1);
+            foreach($b->modifiers as $mid => $mod) {
+                $this->assertEquals($mod->amount, round($product->price * 0.10 * 2, 2) * -1);
+            }
+
+            $this->assertEquals(count($b->products), 1);
+            foreach($b->products as $pid => $p) {
+                $this->assertEquals($p->quantity, 2);
+                $this->assertEquals($p->total, $product->price * 2);
+            }
+        }
+    }
+
+    /*
+        Lettura dinamica delle consegne, prodotto con modificatori
+    */
+    public function testModifiersOnProductShipping()
+    {
+        $product = $this->order->products->random();
+        $this->attachDiscount($product);
+
+        $this->actingAs($this->userWithBasePerms);
+
+        $data = [
+            'action' => 'booked',
+            $product->id => 2,
+        ];
+
+        app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $this->userWithBasePerms, false);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+
+        $data = [
+            'action' => 'shipped',
+            $product->id => 2,
+        ];
+
+        $ret = app()->make('DynamicBookingsService')->dynamicModifiers($data, $this->order->aggregate, $this->userWithBasePerms);
+
+        $this->assertEquals(count($ret->bookings), 1);
+
+        foreach($ret->bookings as $b) {
+            $this->assertEquals($b->total, $product->price * 2 - ($product->price * 0.10 * 2));
+
+            $this->assertEquals(count($b->modifiers), 1);
+            foreach($b->modifiers as $mid => $mod) {
+                $this->assertEquals($mod->amount, round($product->price * 0.10 * 2, 2) * -1);
+            }
+
+            $this->assertEquals(count($b->products), 1);
             foreach($b->products as $pid => $p) {
                 $this->assertEquals($p->quantity, 2);
                 $this->assertEquals($p->total, $product->price * 2);

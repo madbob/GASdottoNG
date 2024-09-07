@@ -149,7 +149,7 @@ class Booking extends Model
             });
         }
 
-        return $values;
+        return $values->unique('id');
     }
 
     /*
