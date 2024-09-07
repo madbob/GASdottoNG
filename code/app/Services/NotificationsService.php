@@ -14,7 +14,7 @@ class NotificationsService extends BaseService
     {
 		$user = $this->ensureAuth();
 
-		$notifications_query = Notification::orderBy('start_date', 'desc');
+		$notifications_query = Notification::orderBy('start_date', 'desc')->with(['users']);
 
 		if (!is_null($start)) {
 			$notifications_query->where('end_date', '>=', $start);
