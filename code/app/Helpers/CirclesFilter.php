@@ -8,6 +8,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Collection;
+
 use App\Circle;
 
 class CirclesFilter
