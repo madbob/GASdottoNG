@@ -149,7 +149,7 @@ class Booking extends Model
             });
         }
 
-        return $values->unique('id');
+        return $values;
     }
 
     /*
@@ -635,9 +635,6 @@ class Booking extends Model
 
             if ($real == false) {
                 DB::rollback();
-            }
-            else {
-                $this->setRelation('modifiedValues', $values);
             }
         }
 
