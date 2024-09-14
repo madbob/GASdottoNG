@@ -41,9 +41,17 @@ class OrderPayment extends MovementType
         $mov->callbacks = [
             'post' => function (Movement $movement) {
                 $movement->attachToTarget();
+
+                $order = $movement->target;
+                $order->status = 'archived';
+                $order->save();
             },
             'delete' => function(Movement $movement) {
                 $movement->detachFromTarget();
+
+                $order = $movement->target;
+                $order->status = 'shipped';
+                $order->save();
             }
         ];
 

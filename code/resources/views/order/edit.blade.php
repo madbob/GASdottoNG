@@ -116,7 +116,10 @@ else {
                     'label' => _i('Pagamento'),
                     'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered ?? 0),
                     'to_modal' => [
-                        'amount_editable' => true
+                        'amount_editable' => true,
+                        'extra' => [
+                            'reload-loadable' => '#order-list',
+                        ],
                     ],
                     'help_popover' => _i("Da qui è possibile immettere il movimento contabile di pagamento dell'ordine nei confronti del fornitore, che andrà ad alterare il relativo saldo"),
                 ])

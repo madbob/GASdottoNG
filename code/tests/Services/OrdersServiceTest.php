@@ -630,4 +630,47 @@ class OrdersServiceTest extends TestCase
         $new_product = $order->products->firstWhere('id', $product->id);
         $this->assertFalse($product->comparePrices($new_product));
     }
+
+    /*
+        Registra il pagamento al fornitore
+    */
+    public function testOrderPayment()
+    {
+        $this->populateOrder($this->order);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $this->assertTrue($order->bookings()->count() > 0);
+        app()->make('FastBookingsService')->fastShipping($this->userWithShippingPerms, $order->aggregate, null);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userReferrer);
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $summary = $order->aggregate->reduxData();
+        $this->assertTrue($summary->price > 0);
+
+        $this->actingAs($this->userAdmin);
+        $currency = defaultCurrency();
+
+        app()->make('MovementsService')->store(array(
+            'type' => 'order-payment',
+            'method' => 'bank',
+            'sender_id' => $this->gas->id,
+            'sender_type' => 'App\Gas',
+            'target_id' => $this->order->id,
+            'target_type' => 'App\Order',
+            'currency_id' => $currency->id,
+            'amount' => $summary->price,
+        ));
+
+        $this->nextRound();
+
+        $this->actingAs($this->userReferrer);
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $this->assertNotNull($order->payment);
+        $this->assertEquals('archived', $order->status);
+    }
 }

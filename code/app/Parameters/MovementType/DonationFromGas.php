@@ -2,7 +2,7 @@
 
 namespace App\Parameters\MovementType;
 
-class DonationFromGas extends MovementType
+class DonationFromGas extends GasExpense
 {
     public function identifier()
     {
@@ -11,22 +11,8 @@ class DonationFromGas extends MovementType
 
     public function initNew($type)
     {
+        $type = parent::initNew($type);
         $type->name = _i('Donazione dal GAS');
-        $type->sender_type = 'App\Gas';
-        $type->target_type = null;
-
-        $type->function = json_encode($this->voidFunctions([
-            (object) [
-                'method' => 'cash',
-                'sender' => $this->format(['cash' => 'decrement', 'gas' => 'decrement']),
-            ],
-            (object) [
-                'method' => 'bank',
-                'sender' => $this->format(['bank' => 'decrement', 'gas' => 'decrement']),
-                'is_default' => true,
-            ],
-        ]));
-
         return $type;
     }
 }
