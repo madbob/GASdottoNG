@@ -113,17 +113,14 @@ class CirclesFilter
 
     public function sortBookings($bookings)
     {
-        $actual_circles = $this->circles;
+        $tmp_bookings = new Collection();
+        $filter_circles = (empty($this->circles) == false);
 
-        if (empty($this->circles)) {
-            $tmp_bookings = collect($bookings);
-        }
-        else {
-            $tmp_bookings = new Collection();
+        foreach($bookings as $booking) {
+            $valid = true;
 
-            foreach($bookings as $booking) {
+            if ($filter_circles) {
                 $mycircles = $booking->involvedCircles();
-                $valid = true;
 
                 foreach($this->circles as $required_circle) {
                     if (is_null($mycircles->firstWhere('id', $required_circle->id))) {
@@ -131,10 +128,10 @@ class CirclesFilter
                         break;
                     }
                 }
+            }
 
-                if ($valid) {
-                    $tmp_bookings->push($booking);
-                }
+            if ($valid) {
+                $tmp_bookings->push($booking);
             }
         }
 
