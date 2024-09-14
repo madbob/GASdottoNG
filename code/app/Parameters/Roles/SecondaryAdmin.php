@@ -20,6 +20,6 @@ class SecondaryAdmin extends Role
 
 	public function enabled()
 	{
-		return someoneCan('gas.multi');
+		return currentAbsoluteGas()->multigas;
 	}
 }

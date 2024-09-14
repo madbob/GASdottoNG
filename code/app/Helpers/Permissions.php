@@ -2,7 +2,7 @@
 
 function allPermissions()
 {
-    return [
+    $ret = [
         'App\Gas' => [
             'gas.access' => _i('Accesso consentito anche in manutenzione'),
             'gas.permissions' => _i('Modificare tutti i permessi'),
@@ -23,7 +23,6 @@ function allPermissions()
             'measures.admin' => _i('Amministrare le unità di misura'),
             'gas.statistics' => _i('Visualizzare le statistiche'),
             'notifications.admin' => _i('Amministrare le notifiche'),
-            'gas.multi' => _i('Amministrare la modalità Multi-GAS su questa istanza'),
         ],
         'App\Supplier' => [
             'supplier.modify' => _i('Modificare i fornitori assegnati'),
@@ -33,6 +32,13 @@ function allPermissions()
             'supplier.movements' => _i('Amministrare i movimenti contabili del fornitore'),
         ],
     ];
+
+    $gas = currentAbsoluteGas();
+    if ($gas->multigas) {
+        $ret['App\Gas']['gas.multi'] = _i('Amministrare la modalità Multi-GAS su questa istanza');
+    }
+
+    return $ret;
 }
 
 function allRoles()
@@ -85,10 +91,8 @@ function classByRule($rule_id)
     $all_permissions = allPermissions();
 
     foreach ($all_permissions as $class => $rules) {
-        foreach (array_keys($rules) as $identifier) {
-            if ($rule_id == $identifier) {
-                return $class;
-            }
+        if (isset($rules[$rule_id])) {
+            return $class;
         }
     }
 

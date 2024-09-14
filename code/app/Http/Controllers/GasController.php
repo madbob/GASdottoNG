@@ -69,6 +69,7 @@ class GasController extends Controller
 
         $gas->setManyConfigs($request, [
             'restricted',
+            'multigas',
             'language'
         ]);
     }
