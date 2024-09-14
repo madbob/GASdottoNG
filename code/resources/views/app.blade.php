@@ -36,7 +36,7 @@
             </form>
         @endif
 
-        <div class="container-fluid">
+        <div class="container-fluid mb-5">
             <div class="row">
                 <div class="col-md-12" id="main-contents">
                     @include('commons.flashing')
