@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 use App\Exceptions\AuthException;
 
@@ -44,6 +45,39 @@ class RolesService extends BaseService
 		$role->delete();
 
 		return $role;
+	}
+
+	/*
+		Funzione che istruisce il sistema interno di controllo autorizzazioni a
+		gestire i permessi personalizzati. Nella stragrande maggioranza dei casi
+		è sufficiente invocare questa funzione in AuthServiceProvider, ma viene
+		comunque messa qui affinché possa essere nuovamente invocata in casi
+		particolari (e.g. viene abilitata la modalità Multi-GAS, che prevede
+		l'esistenza di un permesso nuovo da applicare)
+	*/
+	public function registerPolicies()
+	{
+		$all_permissions = allPermissions();
+
+		foreach ($all_permissions as $rules) {
+			foreach (array_keys($rules) as $identifier) {
+				if (Gate::has($identifier)) {
+					continue;
+				}
+
+				Gate::define($identifier, function ($user, $obj = null) use ($identifier) {
+					foreach($user->roles as $role) {
+						if ($role->enabledAction($identifier)) {
+							if(is_null($obj) || $role->applies($obj)) {
+								return true;
+							}
+						}
+					}
+
+					return false;
+				});
+			}
+		}
 	}
 
 	public function setMasterRole($gas, $identifier, $role_id)
