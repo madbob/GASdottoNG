@@ -33,9 +33,21 @@ function allPermissions()
         ],
     ];
 
-    $gas = currentAbsoluteGas();
-    if ($gas->multigas) {
-        $ret['App\Gas']['gas.multi'] = _i('Amministrare la modalità Multi-GAS su questa istanza');
+    /*
+        In fase di prima installazione con Composer, per vie traverse si
+        transita da questa funzione (durante l'inizializzazione dei Service
+        Provider). Ma in tale sede la connessione al DB ragionevolmente non è
+        ancora stata configurata, pertanto non è possibile attingere ad
+        eventuali configurazioni dinamiche
+    */
+    try {
+        $gas = currentAbsoluteGas();
+        if ($gas->multigas) {
+            $ret['App\Gas']['gas.multi'] = _i('Amministrare la modalità Multi-GAS su questa istanza');
+        }
+    }
+    catch(\Exception $e) {
+        // dummy
     }
 
     return $ret;
