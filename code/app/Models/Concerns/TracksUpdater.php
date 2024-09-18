@@ -1,6 +1,11 @@
 <?php
 
 /*
+    Usato dai modelli che tracciano data e operatore dell'ultima modifica
+    effettuata.
+    I form primari di gestione delle istanze delle classi che usano questo trait
+    sono processati con la funzione formatUpdater() per generare la nota "Ultima
+    Modifica" che appare al fondo di essi.
     Tutti i modelli che usano questo tratto devono avere una colonna updated_by
     nello schema del DB
 */

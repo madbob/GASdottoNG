@@ -20,6 +20,17 @@ class MultiGasServiceTest extends TestCase
     {
         parent::setUp();
 
+        /*
+            Solo quando la configurazione "multigas" è abilitata, vengono
+            effettivamente caricate le regole di controllo permessi relative.
+            Pertanto qui, dopo aver impostato tale configurazione, le regole
+            vengono ricaricate; altrimenti, tutte le funzioni successive
+            ritornano un "not authorized" non essendo in grado di riconoscere il
+            permesso "gas.multi"
+        */
+        $this->gas->setConfig('multigas', '1');
+        app()->make('RolesService')->registerPolicies();
+
         $this->userSuperAdmin = $this->createRoleAndUser($this->gas, 'users.admin,gas.multi,supplier.view', $this->gas);
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
     }

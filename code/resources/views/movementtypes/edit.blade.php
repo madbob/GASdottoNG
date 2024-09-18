@@ -18,6 +18,7 @@ foreach($classes as $class => $name) {
 ?>
 
 <x-larastrap::mform :obj="$type" classes="main-form movement-type-editor" method="PUT" :action="route('movtypes.update', $type->id)" :nodelete="$type->system">
+    <input type="hidden" name="pre-saved-function" value="filterOutUnusedRules" class="skip-on-submit">
 	<input type="hidden" name="post-saved-function" value="afterMovementTypeChange" class="skip-on-submit">
 
 	@if($type->system)
@@ -70,18 +71,21 @@ foreach($classes as $class => $name) {
             $defaults[$o->method] = isset($o->is_default) ? $o->is_default : false;
             $payments[$o->method] = true;
 
-            $methods[$o->method][$type->target_type] = [];
-            foreach($o->target->operations as $op)
-                $methods[$o->method][$type->target_type][$op->field] = $op->operation;
+            $methods[$o->method]['target'] = [];
+            foreach($o->target->operations as $op) {
+                $methods[$o->method]['target'][$op->field] = $op->operation;
+            }
 
-            $methods[$o->method][$type->sender_type] = [];
-            foreach($o->sender->operations as $op)
-                $methods[$o->method][$type->sender_type][$op->field] = $op->operation;
+            $methods[$o->method]['sender'] = [];
+            foreach($o->sender->operations as $op) {
+                $methods[$o->method]['sender'][$op->field] = $op->operation;
+            }
 
             if($type->target_type != 'App\Gas' && $type->sender_type != 'App\Gas') {
-                $methods[$o->method]['App\Gas'] = [];
-                foreach($o->master->operations as $op)
-                    $methods[$o->method]['App\Gas'][$op->field] = $op->operation;
+                $methods[$o->method]['master'] = [];
+                foreach($o->master->operations as $op) {
+                    $methods[$o->method]['master'][$op->field] = $op->operation;
+                }
             }
         }
 
@@ -103,40 +107,95 @@ foreach($classes as $class => $name) {
                                 </div>
                                 <div class="form-check form-switch p-0">
                                     <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}> {{ _i('Default') }}
-                                </span>
+                                </div>
                             </th>
                         @endforeach
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($target_classes as $classname => $target_class)
-                        @if(empty($classname))
-                            @continue
-                        @endif
+                    @php
 
-                        @foreach((new $classname())->balanceFields() as $field => $fieldname)
-                            <tr data-target-class="{{ $classname }}" class="{{ $classname != 'App\Gas' && $classname != $type->sender_type && $classname != $type->target_type ? 'hidden' : '' }}">
-                                <td>{{ $classname::commonClassName() }}: {{ $fieldname }}</td>
+                    /*
+                        Per ciascuna classe coinvolgibile in un movimento
+                        contabile prevedo una riga per ciascuna voce di
+                        bilancio, ciascuna duplicata per i casi in cui tale
+                        classe sia il pagato o il pagante. In questo modo ho
+                        tutte le possibili combinazioni, incluse quelle in cui
+                        la classe pagante e la classe pagata siano la stessa
+                        (e.g. movimento contabile di trasferimento di credito da
+                        un utente all'altro)
+                    */
+
+                    $actual_classes = [];
+
+                    $classname = 'App\Gas';
+                    $fields = (new $classname())->balanceFields();
+                    $label = $classname::commonClassName();
+
+                    $actual_classes[] = (object) [
+                        'peer' => 'master',
+                        'classname' => $classname,
+                        'fields' => $fields,
+                        'label' => $label,
+                        'visible' => $classname != $type->sender_type && $classname != $type->target_type,
+                    ];
+
+                    foreach($target_classes as $classname => $target_class) {
+                        if (empty($classname)) {
+                            continue;
+                        }
+
+                        $fields = (new $classname())->balanceFields();
+                        $label = $classname::commonClassName();
+
+                        $actual_classes[] = (object) [
+                            'peer' => 'sender',
+                            'classname' => $classname,
+                            'fields' => $fields,
+                            'label' => sprintf('%s - %s', _i('Pagante'), $label),
+                            'visible' => $classname == $type->sender_type,
+                        ];
+
+                        $actual_classes[] = (object) [
+                            'peer' => 'target',
+                            'classname' => $classname,
+                            'fields' => $fields,
+                            'label' => sprintf('%s - %s', _i('Pagato'), $label),
+                            'visible' => $classname == $type->target_type,
+                        ];
+                    }
+
+                    usort($actual_classes, fn($a, $b) => $a->label <=> $b->label);
+
+                    @endphp
+
+                    @foreach($actual_classes as $meta)
+                        @foreach($meta->fields as $field => $fieldname)
+                            <tr data-target-class="{{ $meta->peer }}-{{ $meta->classname }}" {{ $meta->visible ? '' : 'hidden' }}>
+                                <td>{{ $meta->label }} - {{ $fieldname }}</td>
 
                                 @foreach(paymentTypes() as $pay_id => $pay)
                                     <?php
 
                                     $selection = 'ignore';
-                                    if (isset($methods[$pay_id]) && isset($methods[$pay_id][$classname]) && isset($methods[$pay_id][$classname][$field]))
-                                        $selection = $methods[$pay_id][$classname][$field];
+                                    if (isset($methods[$pay_id]) && isset($methods[$pay_id][$meta->peer]) && isset($methods[$pay_id][$meta->peer][$field])) {
+                                        $selection = $methods[$pay_id][$meta->peer][$field];
+                                    }
+
+                                    $row_name = sprintf('%s-%s-%s-%s', $meta->peer, $meta->classname, $field, $pay_id);
 
                                     ?>
 
                                     <td>
                                         <div class="btn-group" data-toggle="buttons">
-                                            <label class="btn btn-light {{ $selection == 'increment' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
-                                                <input type="radio" name="{{ $classname }}-{{ $field }}-{{ $pay_id }}" value="increment" autocomplete="off" {{ $selection == 'increment' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> +
+                                            <label class="btn btn-light" {{ $payments[$pay_id] ? '' : 'disabled' }}>
+                                                <input type="radio" name="{{ $row_name }}" value="increment" autocomplete="off" {{ $selection == 'increment' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> +
                                             </label>
-                                            <label class="btn btn-light {{ $selection == 'decrement' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
-                                                <input type="radio" name="{{ $classname }}-{{ $field }}-{{ $pay_id }}" value="decrement" autocomplete="off" {{ $selection == 'decrement' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> -
+                                            <label class="btn btn-light" {{ $payments[$pay_id] ? '' : 'disabled' }}>
+                                                <input type="radio" name="{{ $row_name }}" value="decrement" autocomplete="off" {{ $selection == 'decrement' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> -
                                             </label>
-                                            <label class="btn btn-light {{ $selection == 'ignore' ? 'active' : '' }}" {{ $payments[$pay_id] ? '' : 'disabled' }}>
-                                                <input type="radio" name="{{ $classname }}-{{ $field }}-{{ $pay_id }}" value="ignore" autocomplete="off" {{ $selection == 'ignore' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> =
+                                            <label class="btn btn-light" {{ $payments[$pay_id] ? '' : 'disabled' }}>
+                                                <input type="radio" name="{{ $row_name }}" value="ignore" autocomplete="off" {{ $selection == 'ignore' ? 'checked' : '' }} {{ $payments[$pay_id] ? '' : 'disabled="disabled"' }}> =
                                             </label>
                                         </div>
                                     </td>

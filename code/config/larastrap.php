@@ -180,6 +180,12 @@ return [
                 ],
             ],
         ],
+
+        /*
+            mform viene usato per le entità rappresentate dentro una
+            loadablelist: al salvataggio, lo slot in cui si trova il form stesso
+            viene chiuso ed il relativo header viene aggiornato
+        */
         'mform' => [
             'extends' => 'form',
             'params' => [
@@ -187,6 +193,7 @@ return [
                 'reviewCallback' => 'formatMainFormButtons',
             ],
         ],
+
         'iform' => [
             'extends' => 'form',
             'params' => [

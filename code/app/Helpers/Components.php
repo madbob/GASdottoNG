@@ -196,6 +196,58 @@ function formatInnerLastUpdater($component, $params)
     return $params;
 }
 
+function appendSaveNotifier($params)
+{
+    $params['appendNodes'] = $params['appendNodes'] ?? [];
+
+    /*
+        Questo aggiunge al form la barra di notifica che viene attivata
+        quando si modifica un qualche parametro ed è richiesto il
+        salvataggio
+    */
+    $params['appendNodes'][] = sprintf('<div class="fixed-bottom bg-danger p-2 bottom-helper" hidden>
+        <div class="row justify-content-end align-items-center">
+            <div class="col-auto text-white">%s</div>
+            <div class="col-auto">
+                <button class="btn btn-success" type="submit">%s</button>
+            </div>
+        </div>
+    </div>', _i('Ricorda di cliccare il tasto "Salva" quando hai finito!'), _i('Salva'));
+
+    return $params;
+}
+
+function mainFormButtons($params)
+{
+    $buttons = $params['attributes']['other_buttons'] ?? [];
+
+    $buttons = formatUpdater($buttons, $params);
+    $obj = $params['obj'];
+
+    $nodelete = filter_var($params['attributes']['nodelete'] ?? false, FILTER_VALIDATE_BOOLEAN);
+    if (!$nodelete) {
+        $buttons[] = [
+            'color' => 'danger',
+            'classes' => ['delete-button'],
+            'label' => $obj && $obj->deleted_at != null ? _i('Elimina Definitivamente') : _i('Elimina'),
+        ];
+    }
+
+    $nosave = filter_var($params['attributes']['nosave'] ?? false, FILTER_VALIDATE_BOOLEAN);
+    if (!$nosave) {
+        $buttons[] = [
+            'color' => 'success',
+            'classes' => ['save-button'],
+            'label' => _i('Salva'),
+            'attributes' => ['type' => 'submit'],
+        ];
+    }
+
+    $params['buttons'] = $buttons;
+
+    return $params;
+}
+
 function formatMainFormButtons($component, $params)
 {
     /*
@@ -211,44 +263,8 @@ function formatMainFormButtons($component, $params)
     }
     else {
         $params['main_form_managed'] = 'ongoing';
-        $buttons = $params['attributes']['other_buttons'] ?? [];
-
-        $buttons = formatUpdater($buttons, $params);
-        $obj = $params['obj'];
-
-        $nodelete = filter_var($params['attributes']['nodelete'] ?? false, FILTER_VALIDATE_BOOLEAN);
-        if (!$nodelete) {
-            $buttons[] = [
-                'color' => 'danger',
-                'classes' => ['delete-button'],
-                'label' => $obj && $obj->deleted_at != null ? _i('Elimina Definitivamente') : _i('Elimina'),
-            ];
-        }
-
-        $nosave = filter_var($params['attributes']['nosave'] ?? false, FILTER_VALIDATE_BOOLEAN);
-        if (!$nosave) {
-            $buttons[] = [
-                'color' => 'success',
-                'classes' => ['save-button'],
-                'label' => _i('Salva'),
-                'attributes' => ['type' => 'submit'],
-            ];
-        }
-
-        $params['buttons'] = $buttons;
-
-        if (isset($params['appendNodes']) == false) {
-            $params['appendNodes'] = [];
-        }
-
-        $params['appendNodes'][] = sprintf('<div class="fixed-bottom bg-danger p-2 bottom-helper" hidden>
-            <div class="row justify-content-end align-items-center">
-                <div class="col-auto text-white">%s</div>
-                <div class="col-auto">
-                    <button class="btn btn-success" type="submit">%s</button>
-                </div>
-            </div>
-        </div>', _i('Ricorda di cliccare il tasto "Salva" quando hai finito!'), _i('Salva'));
+        $params = mainFormButtons($params);
+        $params = appendSaveNotifier($params);
     }
 
     unset($params['attributes']['other_buttons'], $params['attributes']['nodelete'], $params['attributes']['nosave']);

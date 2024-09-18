@@ -55,6 +55,7 @@ class Movements {
             var sender = editor.find('select[name=sender_type] option:selected').val();
             var target = editor.find('select[name=target_type] option:selected').val();
             var table = editor.find('table');
+            var manages_gas = (sender == 'App\\Gas' || target == 'App\\Gas');
 
             table.find('tbody tr').each(function() {
                 var type = $(this).attr('data-target-class');
@@ -63,15 +64,22 @@ class Movements {
                     molti tipi di movimento vanno ad incidere sui saldi globali
                     anche quando il GAS non è direttamente coinvolto
                 */
-                $(this).toggleClass('hidden', (type != 'App\\Gas' && type != sender && type != target));
+                if (type == 'master-App\\Gas') {
+                    $(this).prop('hidden', manages_gas);
+                }
+                else {
+                    $(this).prop('hidden', type != 'sender-' + sender && type != 'target-' + target);
+                }
             });
 
             table.find('thead input[data-active-for]').each(function() {
                 var type = $(this).attr('data-active-for');
-                if(type != '' && type != sender && type != target)
+                if(type != '' && type != sender && type != target) {
                     $(this).prop('checked', false).prop('disabled', true).change();
-                else
+                }
+                else {
                     $(this).prop('disabled', false);
+                }
             });
         });
 

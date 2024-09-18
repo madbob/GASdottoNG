@@ -26,10 +26,12 @@ class FastBookingsServiceTest extends TestCase
         $this->populateOrder($this->sample_order);
 
         $this->actingAs($this->userWithShippingPerms);
-        app()->make('FastBookingsService')->fastShipping($this->userWithShippingPerms, $this->sample_order->aggregate, null);
+        $order = app()->make('OrdersService')->show($this->sample_order->id);
+        app()->make('FastBookingsService')->fastShipping($this->userWithShippingPerms, $order->aggregate, null);
 
         $this->nextRound();
         $order = app()->make('OrdersService')->show($this->sample_order->id);
+        $this->assertTrue($order->bookings->count() > 0);
 
         foreach($order->bookings as $booking) {
             $this->assertEquals($booking->status, 'shipped');
@@ -41,6 +43,9 @@ class FastBookingsServiceTest extends TestCase
 
             $this->assertEquals($booking->payment->amount, $booking->getValue('effective', true));
         }
+
+        $summary = $order->aggregate->reduxData();
+        $this->assertTrue($summary->price_delivered > 0);
     }
 
     /*

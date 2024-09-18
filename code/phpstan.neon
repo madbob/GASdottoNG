@@ -1,5 +1,5 @@
 includes:
-    - ./vendor/nunomaduro/larastan/extension.neon
+    - ./vendor/larastan/larastan/extension.neon
 
 parameters:
 
@@ -13,11 +13,11 @@ parameters:
         - '#Property .* has no type specified#'
         - '#Function .* has parameter .* with no type specified#'
         - '#Function .* has no return type specified#'
+        - identifier: missingType.iterableValue
+        - identifier: missingType.generics
 
     # The level 8 is the highest level
     level: 6
     checkModelProperties: true
-    checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
-    checkGenericClassInNonGenericObjectType: false

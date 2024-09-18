@@ -362,6 +362,31 @@ function miscInnerCallbacks(form, data) {
 	return true;
 }
 
+function preSaveForm(form) {
+    var proceed = true;
+
+    var test = form.find('input[name^=pre-saved-function]');
+    if (test.length != 0) {
+        test.each(function() {
+            var fn = Callables[$(this).val()];
+            if (typeof fn === 'function') {
+                /*
+                    Se una pre-saved-function solleva una eccezione, il form
+                    non viene effettivamente eseguito
+                */
+                try {
+                    fn(form);
+                }
+                catch(error) {
+                    proceed = false;
+                }
+            }
+        });
+    }
+
+    return proceed;
+}
+
 function miscInnerModalCallbacks(modal) {
     var test = modal.find('input[name=reload-portion]');
     if (test.length != 0) {
@@ -487,6 +512,12 @@ $(document).ready(function() {
         event.preventDefault();
 
         var form = $(this);
+
+        var proceed = preSaveForm(form);
+        if (proceed == false) {
+            return;
+        }
+
         form.find('button[type=submit]').prop('disabled', true);
 
         utils.postAjax({
@@ -536,27 +567,7 @@ $(document).ready(function() {
         event.preventDefault();
         var form = $(this);
 
-        var proceed = true;
-
-        var test = form.find('input[name^=pre-saved-function]');
-        if (test.length != 0) {
-            test.each(function() {
-                var fn = Callables[$(this).val()];
-                if (typeof fn === 'function') {
-                    /*
-                        Se una pre-saved-function solleva una eccezione, il form
-                        non viene effettivamente eseguito
-                    */
-                    try {
-                        fn(form);
-                    }
-                    catch(error) {
-                        proceed = false;
-                    }
-                }
-            });
-        }
-
+        var proceed = preSaveForm(form);
         if (proceed == false) {
             return;
         }

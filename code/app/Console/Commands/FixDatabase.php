@@ -134,5 +134,15 @@ class FixDatabase extends Command
                 }
             }
         }
+
+        /*
+            Per abilitare la funzione multi-gas laddove effettivamente
+            utilizzata
+        */
+
+        $all_gas = Gas::all();
+        foreach($all_gas as $gas) {
+            $gas->setConfig('multigas', $all_gas->count() > 1 ? '1' : '0');
+        }
     }
 }

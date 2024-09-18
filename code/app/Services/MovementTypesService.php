@@ -4,6 +4,7 @@ namespace App\Services;
 
 use DB;
 
+use App\Gas;
 use App\Movement;
 use App\MovementType;
 
@@ -57,15 +58,12 @@ class MovementTypesService extends BaseService
     private function parseRules(&$data, $role, $classname, $request)
     {
         $payments = paymentTypes();
+        $valid_payments = array_intersect_key($request, $payments);
         $fields = (new $classname())->balanceFields();
 
         foreach(array_keys($fields) as $f) {
-            foreach(array_keys($payments) as $pay_id) {
-                if (isset($request[$pay_id]) == false) {
-                    continue;
-                }
-
-                $conf = $request[$classname . '-' . $f . '-' . $pay_id] ?? 'ignore';
+            foreach(array_keys($valid_payments) as $pay_id) {
+                $conf = $request[$role . '-' . $classname . '-' . $f . '-' . $pay_id] ?? 'ignore';
                 if ($conf != 'ignore') {
                     $cell = null;
 
@@ -92,12 +90,9 @@ class MovementTypesService extends BaseService
     private function fixVoidMethods(&$data, $request)
     {
         $payments = paymentTypes();
+        $valid_payments = array_intersect_key($request, $payments);
 
-        foreach(array_keys($payments) as $pay_id) {
-            if (isset($request[$pay_id]) == false) {
-                continue;
-            }
-
+        foreach(array_keys($valid_payments) as $pay_id) {
             $exists = array_filter($data, function($d) use ($pay_id) {
                 return $d->method == $pay_id;
             });
@@ -120,17 +115,8 @@ class MovementTypesService extends BaseService
         $this->setIfSet($type, $request, 'default_notes');
 
         if ($type->system == false) {
-            $sender_type = $request['sender_type'];
-            if (!empty($sender_type))
-                $type->sender_type = $sender_type;
-            else
-                $type->sender_type = null;
-
-            $target_type = $request['target_type'];
-            if (!empty($target_type))
-                $type->target_type = $target_type;
-            else
-                $type->target_type = null;
+            $type->sender_type = empty($request['sender_type']) ? null : $request['sender_type'];
+            $type->target_type = empty($request['target_type']) ? null : $request['target_type'];
         }
 
         $data = [];
@@ -139,12 +125,12 @@ class MovementTypesService extends BaseService
             $this->parseRules($data, 'sender', $type->sender_type, $request);
         }
 
-        if ($type->target_type != null && $type->target_type != $type->sender_type) {
+        if ($type->target_type != null) {
             $this->parseRules($data, 'target', $type->target_type, $request);
         }
 
-        if ($type->sender_type != 'App\Gas' && $type->target_type != 'App\Gas') {
-            $this->parseRules($data, 'master', 'App\Gas', $request);
+        if ($type->sender_type != Gas::class && $type->target_type != Gas::class) {
+            $this->parseRules($data, 'master', Gas::class, $request);
         }
 
         /*

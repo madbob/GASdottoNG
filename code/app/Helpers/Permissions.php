@@ -2,7 +2,7 @@
 
 function allPermissions()
 {
-    return [
+    $ret = [
         'App\Gas' => [
             'gas.access' => _i('Accesso consentito anche in manutenzione'),
             'gas.permissions' => _i('Modificare tutti i permessi'),
@@ -23,7 +23,6 @@ function allPermissions()
             'measures.admin' => _i('Amministrare le unità di misura'),
             'gas.statistics' => _i('Visualizzare le statistiche'),
             'notifications.admin' => _i('Amministrare le notifiche'),
-            'gas.multi' => _i('Amministrare la modalità Multi-GAS su questa istanza'),
         ],
         'App\Supplier' => [
             'supplier.modify' => _i('Modificare i fornitori assegnati'),
@@ -33,6 +32,27 @@ function allPermissions()
             'supplier.movements' => _i('Amministrare i movimenti contabili del fornitore'),
         ],
     ];
+
+    /*
+        In fase di prima installazione con Composer, per vie traverse si
+        transita da questa funzione (durante l'inizializzazione dei Service
+        Provider). Ma in tale sede la connessione al DB ragionevolmente non è
+        ancora stata configurata, pertanto non è possibile attingere ad
+        eventuali configurazioni dinamiche
+    */
+    try {
+        $gas = currentAbsoluteGas();
+        $gas = $gas->fresh();
+
+        if ($gas->multigas) {
+            $ret['App\Gas']['gas.multi'] = _i('Amministrare la modalità Multi-GAS su questa istanza');
+        }
+    }
+    catch(\Exception $e) {
+        // dummy
+    }
+
+    return $ret;
 }
 
 function allRoles()
@@ -85,10 +105,8 @@ function classByRule($rule_id)
     $all_permissions = allPermissions();
 
     foreach ($all_permissions as $class => $rules) {
-        foreach (array_keys($rules) as $identifier) {
-            if ($rule_id == $identifier) {
-                return $class;
-            }
+        if (isset($rules[$rule_id])) {
+            return $class;
         }
     }
 

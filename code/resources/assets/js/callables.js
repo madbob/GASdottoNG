@@ -195,6 +195,11 @@ class Callables {
         });
     }
 
+    static filterOutUnusedRules(form)
+    {
+        form.find('table tbody tr[hidden]').remove();
+    }
+
     /* post-saved-function ****************************************************/
 
     static closeAllModals()

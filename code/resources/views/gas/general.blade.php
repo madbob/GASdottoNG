@@ -15,6 +15,8 @@
                 @if(someoneCan('gas.access', $gas))
                     <x-larastrap::check name="restricted" :label="_i('Modalità Manutenzione')" :pophelp="_i('Se abilitato, il login sarà inibito a tutti gli utenti che non hanno il permesso Accesso consentito anche in manutenzione')" />
                 @endif
+
+                <x-larastrap::check name="multigas" :label="_i('Modalità Multi GAS')" :pophelp="_i('Se abilitato, viene attivata la possibilità di amministrare molteplici GAS su questa istanza di GASdotto, che possono condividere listini e ordini')" />
             </div>
         </div>
     </x-larastrap::form>
