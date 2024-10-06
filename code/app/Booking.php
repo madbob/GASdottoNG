@@ -375,7 +375,19 @@ class Booking extends Model
     public function getProductsWithFriendsAttribute()
     {
         return $this->innerCache('friends_products', function($obj) {
-            $products = $this->products;
+            /*
+                Qui devo fare una copia di $this->products anziché usarlo
+                direttamente, altrimenti finisco con l'alterare l'elenco stesso
+                dei prodotti relazionati alla prenotazione aggiungendoci anche
+                quelli degli amici con effetti poco graditi (e.g. in fase di
+                gestione della consegna, altero l'entità del prodotto dell'amico
+                anziché quello della prenotazione primaria)
+            */
+            $products = new Collection();
+            foreach($this->products as $p) {
+                $products->push($p);
+            }
+
             $friends = $this->friends_bookings;
 
             foreach($friends as $sub) {
