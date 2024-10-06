@@ -15,7 +15,7 @@ class FastBookingsServiceTest extends TestCase
         parent::setUp();
 
         $this->sample_order = $this->initOrder(null);
-        $this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book');
+        $this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book,users.subusers');
     }
 
     /*
@@ -86,6 +86,56 @@ class FastBookingsServiceTest extends TestCase
                 $this->assertNull($booking->payment);
             }
         }
+    }
+
+    /*
+        Consegne veloci con amici
+    */
+    public function testFastShippingWithFriend()
+    {
+        $friend = $this->createFriend($this->userWithBasePerms);
+        $this->actingAs($friend);
+
+        \Log::debug('qui: ' . $friend->id);
+
+        list($data_friend, $booked_count_friend, $total_friend) = $this->randomQuantities($this->sample_order->products);
+        $data_friend['action'] = 'booked';
+        app()->make('BookingsService')->bookingUpdate($data_friend, $this->sample_order->aggregate, $friend, false);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+        $order = app()->make('OrdersService')->show($this->sample_order->id);
+        app()->make('FastBookingsService')->fastShipping($this->userWithShippingPerms, $order->aggregate, null);
+
+        $this->nextRound();
+        $order = app()->make('OrdersService')->show($this->sample_order->id);
+        $this->assertEquals(2, $order->bookings->count());
+        $this->assertEquals(1, count($order->topLevelBookings()));
+
+        foreach($order->bookings as $booking) {
+            $this->assertEquals($booking->status, 'shipped');
+
+            foreach($booking->products as $product) {
+                if ($booking->user->isFriend()) {
+                    $this->assertEquals(0, $product->delivered);
+                }
+                else {
+                    $this->assertEquals(0, $product->quantity);
+                    $this->assertEquals($data_friend[$product->product_id], $product->delivered);
+                }
+            }
+
+            if ($booking->user->isFriend()) {
+                $this->assertNull($booking->payment);
+            }
+            else {
+                $this->assertEquals($booking->payment->amount, $booking->getValue('effective', true));
+            }
+        }
+
+        $summary = $order->aggregate->reduxData();
+        $this->assertTrue($summary->price_delivered > 0);
     }
 
 	/*
