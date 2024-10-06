@@ -9,6 +9,10 @@ $existing = false;
 $master_summary = $aggregate->reduxData();
 $currency_symbol = defaultCurrency()->symbol;
 
+$other_bookings = $user->bookings()->where('status', 'pending')->whereHas('order', function($query) use ($aggregate) {
+    $query->where('aggregate_id', '!=', $aggregate->id)->where('shipping', $aggregate->shipping);
+})->get();
+
 /*
     In fase di consegna, aggrego sempre tutte le quantità
 */
@@ -37,11 +41,26 @@ app()->make('AggregationSwitch')->setEnforced(true);
                 <div class="col-md-6">
                     @foreach($user->contacts as $contact)
                         @if($contact->type == 'phone' || $contact->type == 'mobile')
-                            <x-larastrap::text :label="$contact->type_name" :value="$contact->value" disabled readonly />
+                            <x-larastrap::text :label="$contact->type_name" :value="$contact->value" :margins="[0,0,0,0]" disabled readonly />
                         @endif
                     @endforeach
                 </div>
             </div>
+
+            @if($other_bookings->count())
+                <div class="row mt-1">
+                    <div class="col">
+                        <div class="alert alert-info">
+                            {{ _i('Questa persona oggi deve ritirare anche altre prenotazioni:') }}
+                            <ul>
+                                @foreach($other_bookings as $ob)
+                                    <li>{{ $ob->order->printableName() }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
             @foreach($aggregate->orders as $order)
                 @if($more_orders)
