@@ -31,11 +31,22 @@ class MovementType extends Model
         return array_key_exists($type, $valid);
     }
 
+    /*
+        Per identificare i tipi di movimento contabile che possono essere
+        utilizzati in fase di pagamento di una fattura.
+        Da notare che - controintuitivamente - vengono accolti anche i movimenti
+        circoscritti al GAS e che non coinvolgono il fornitore (o la fattura
+        stessa), per dare la possibilità di registrare altri movimenti in
+        qualche modo correlati (e.g. il costo del bonifico bancario, che non
+        intacca il saldo del fornitore ma solo quello del GAS)
+    */
     public function validForInvoices()
     {
         return (
             ($this->sender_type == 'App\Gas' && ($this->target_type == 'App\Supplier' || $this->target_type == 'App\Invoice')) ||
-            ($this->sender_type == 'App\Supplier' && $this->target_type == 'App\Gas')
+            ($this->sender_type == 'App\Supplier' && $this->target_type == 'App\Gas') ||
+            ($this->sender_type == 'App\Gas' && $this->target_type == null) ||
+            ($this->sender_type == null && $this->target_type == 'App\Gas')
         );
     }
 
