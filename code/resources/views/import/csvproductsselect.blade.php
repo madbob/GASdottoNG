@@ -20,6 +20,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
 
         <x-larastrap::wizardform :action="url('import/csv?type=products&step=run')">
             <input type="hidden" name="supplier_id" value="{{ $supplier->id }}">
+            <input type="hidden" name="sorted_fields" value="{{ join(',', $sorted_fields) }}">
 
             <div class="row">
                 <div class="col-md-6">

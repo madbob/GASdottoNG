@@ -83,6 +83,7 @@ class Products extends CSVImporter
             'extra_fields' => ['supplier_id' => $s->id],
             'extra_description' => [_i('Le categorie e le unità di misura il cui nome non sarà trovato tra quelle esistenti saranno create.')],
             'sorting_fields' => $this->fields(),
+            'sorted_fields' => json_decode($s->import_template),
         ]);
     }
 
@@ -204,7 +205,12 @@ class Products extends CSVImporter
             }
         }
 
-        return ['products' => $products, 'supplier' => $s, 'errors' => $errors];
+        return [
+            'products' => $products,
+            'supplier' => $s,
+            'errors' => $errors,
+            'sorted_fields' => $columns,
+        ];
     }
 
     public function formatSelect($parameters)
@@ -284,6 +290,9 @@ class Products extends CSVImporter
                 $s->products()->whereNotIn('id', $products_ids)->update(['active' => false]);
                 break;
         }
+
+        $s->import_template = json_encode(explode(',', $request['sorted_fields']));
+        $s->save();
 
         DB::commit();
 

@@ -43,14 +43,17 @@ if (!isset($extra_description)) {
                 </div>
                 <div class="col-4">
                     <ul class="list-group">
-                        @foreach($columns as $index => $column)
-                            <li class="list-group-item im_droppable">{{ _i('Colonna') }} <span class="columns_index">{{ $index + 1 }}</span>: <span class="column_content"><input type="hidden" name="column[]" value="none" />{{ _i('[Ignora]') }}</span></li>
+                        @foreach($selected as $index => $sel)
+                            <li class="list-group-item im_droppable">
+                                {{ _i('Colonna') }} <span class="columns_index">{{ $index + 1 }}</span>: <span class="column_content"><input type="hidden" name="column[]" value="{{ $sel->name }}" />{{ $sel->label }}</span>
+                            </li>
                         @endforeach
                     </ul>
                 </div>
                 <div class="col-4">
                     <ul class="list-group">
                         <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="none" />{{ _i('[Ignora]') }}</li>
+
                         @foreach($sorting_fields as $name => $metadata)
                             <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="{{ $name }}" />
                                 {{ $metadata->label }}
