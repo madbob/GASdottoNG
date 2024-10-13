@@ -91,6 +91,7 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                                 <td>
                                     {{ printablePriceCurrency($mov->amount) }}
                                     <x-larastrap::hidden name="amount" npostfix="[]" />
+                                    <x-larastrap::hidden name="identifier" npostfix="[]" />
                                 </td>
                                 <td>
                                     <x-larastrap::selectobj name="currency_id" npostfix="[]" squeeze :options="$currencies" classes="csv_movement_currency_select" />

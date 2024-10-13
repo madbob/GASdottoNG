@@ -240,7 +240,6 @@ class Booking extends Model
                 }
 
                 foreach ($products as $booked) {
-                    $booked->setRelation('booking', $obj);
                     $value += $booked->getValue($type);
                 }
             }
@@ -385,6 +384,7 @@ class Booking extends Model
             */
             $products = new Collection();
             foreach($this->products as $p) {
+                $p->setRelation('booking', $obj);
                 $products->push($p);
             }
 
@@ -392,6 +392,8 @@ class Booking extends Model
 
             foreach($friends as $sub) {
                 foreach($sub->products as $sub_p) {
+                    $sub_p->setRelation('booking', $sub);
+
                     $master_p = $products->firstWhere('product_id', $sub_p->product_id);
 
                     if (is_null($master_p)) {
@@ -419,10 +421,6 @@ class Booking extends Model
 
             $products = $products->sort(function($a, $b) {
                 return $a->product->name <=> $b->product->name;
-            });
-
-            $products = $products->map(function($a) use ($obj) {
-                return $a->setRelation('booking', $obj);
             });
 
             return $products;

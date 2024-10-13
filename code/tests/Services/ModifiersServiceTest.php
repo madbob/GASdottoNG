@@ -782,6 +782,7 @@ class ModifiersServiceTest extends TestCase
         $mods = $booking->applyModifiers(null, true);
         $this->assertEquals($mods->count(), 1);
         $second_initial_amount = $booking->getValue('booked', true);
+        $this->assertTrue($second_initial_amount > 0);
         $this->assertEquals($second_initial_amount, $initial_amount + $amount_of_friend);
         $second_initial_amount = $booking->getValue('effective', true);
         $this->assertEquals(round($second_initial_amount, 2), round(($initial_amount + $amount_of_friend) * 1.10, 2));

@@ -226,10 +226,16 @@ class Movement extends Model
     {
         $ret = new self();
         $ret->type = $type;
-        $ret->sender_type = get_class($sender);
-        $ret->sender_id = $sender->id;
-        $ret->target_type = get_class($target);
-        $ret->target_id = $target->id;
+
+        if ($sender) {
+            $ret->sender_type = get_class($sender);
+            $ret->sender_id = $sender->id;
+        }
+
+        if ($target) {
+            $ret->target_type = get_class($target);
+            $ret->target_id = $target->id;
+        }
 
         $type_descr = movementTypes($type);
         if ($type_descr->fixed_value != false) {

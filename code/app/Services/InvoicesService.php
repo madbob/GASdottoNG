@@ -185,9 +185,6 @@ class InvoicesService extends BaseService
         else if ($mov_target_type == Gas::class) {
             $peer = $user->gas;
         }
-        else {
-            \Log::error(_('Tipo movimento non riconosciuto durante il salvataggio della fattura'));
-        }
 
         return $peer;
     }
@@ -219,10 +216,6 @@ class InvoicesService extends BaseService
             $type = $movement_types[$i];
 
             list($sender, $target) = $this->movementAttach($type, $user, $invoice);
-            if (is_null($sender) || is_null($target)) {
-                continue;
-            }
-
             $amount = $movement_amounts[$i];
             $mov = Movement::generate($type, $sender, $target, $amount);
             $mov->notes = $movement_notes[$i];

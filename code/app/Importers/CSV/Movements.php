@@ -23,6 +23,9 @@ class Movements extends CSVImporter
             'amount' => (object) [
                 'label' => _i('Valore'),
             ],
+            'identifier' => (object) [
+                'label' => _i('Identificativo'),
+            ],
             'notes' => (object) [
                 'label' => _i('Note'),
             ],
@@ -234,6 +237,7 @@ class Movements extends CSVImporter
         $types = $request->input('mtype', []);
         $methods = $request->input('method', []);
         $amounts = $request->input('amount', []);
+        $identifiers = $request->input('identifier', []);
         $currencies = $request->input('currency_id', []);
 
         $errors = [];
@@ -249,6 +253,7 @@ class Movements extends CSVImporter
                 $m->date = $dates[$index];
                 $m->type = $types[$index];
                 $m->amount = $amounts[$index];
+                $m->identifier = $identifiers[$index];
                 $m->method = $methods[$index];
                 $m->currency_id = $currencies[$index];
                 $m->notes = $notes[$index];
