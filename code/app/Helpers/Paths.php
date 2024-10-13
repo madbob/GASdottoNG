@@ -29,9 +29,22 @@ function gas_storage_path($path = null, $folder = false)
 
 function env_file()
 {
-    if (global_multi_installation() && isset($_SERVER['HTTP_HOST'])) {
-        $instance = substr($_SERVER['HTTP_HOST'], 0, strpos($_SERVER['HTTP_HOST'], '.'));
-        return ('.env.' . $instance);
+    if (global_multi_installation()) {
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $instance = substr($_SERVER['HTTP_HOST'], 0, strpos($_SERVER['HTTP_HOST'], '.'));
+        }
+        else {
+            /*
+                Quando eseguo i comandi in cron sulle istanze di gasdotto.net
+                non ho nessun parametro $_SERVER['HTTP_HOST'] di riferimento.
+                Pertanto desumo il corretto file .env da cui attingere in
+                funzione dell'URL definito nella configurazione
+            */
+            $domain = parse_url(env('APP_URL'), PHP_URL_HOST);
+            $instance = preg_replace('/^([^\.]*)\.gasdotto\.net.*$/', '\1', $domain);
+        }
+
+        return '.env.' . $instance;
     }
     else {
         return '.env';
