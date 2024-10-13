@@ -16,28 +16,14 @@ abstract class CSVImporter
         return null;
     }
 
+    /*
+        Come parametro di questa funzione si usa il nome della sotto-classe di
+        CSVImporter che si intende usare, scritto tutto minuscolo
+    */
     public static function getImporter($type)
     {
-        $ret = null;
-
-        switch($type) {
-            case 'products':
-                $ret = new Products();
-                break;
-            case 'users':
-                $ret = new Users();
-                break;
-            case 'movements':
-                $ret = new Movements();
-                break;
-            case 'deliveries':
-                $ret = new Deliveries();
-                break;
-            default:
-                Log::error('Unexpected type for CSV import: ' . $type);
-                break;
-        }
-
+        $classname = 'App\\Importers\\CSV\\' . ucwords($type);
+        $ret = new $classname;
         return $ret;
     }
 
@@ -67,6 +53,48 @@ abstract class CSVImporter
         return $target_separator;
     }
 
+    /*
+        Se la sotto-classe specifica un attributo "sorted_fields" tra i
+        parametri, pre-popolo l'array dei campi selezionati in fase di revisione
+        del CSV. Questo viene usato, ad esempio, dall'importer "Products" per
+        inizializzare l'importazione dei prodotti di un certo fornitore usando
+        sempre le stesse colonne (anziché doverle riassegnare a mano ogni volta)
+    */
+    private function retrievePreSelectedFields($parameters)
+    {
+        $selected = [];
+
+        if (isset($parameters['sorted_fields']) && empty($parameters['sorted_fields']) == false) {
+            $sorted = $parameters['sorted_fields'];
+            $fields = $this->fields();
+
+            foreach($parameters['columns'] as $index => $c) {
+                if (isset($sorted[$index])) {
+                    $selected[] = (object) [
+                        'label' => $fields[$sorted[$index]]->label,
+                        'name' => $sorted[$index],
+                    ];
+                }
+                else {
+                    $selected[] = (object) [
+                        'label' => _i('[Ignora]'),
+                        'name' => 'none',
+                    ];
+                }
+            }
+        }
+        else {
+            foreach($parameters['columns'] as $c) {
+                $selected[] = (object) [
+                    'label' => _i('[Ignora]'),
+                    'name' => 'none',
+                ];
+            }
+        }
+
+        return $selected;
+    }
+
     protected function storeUploadedFile($request, $parameters)
     {
         try {
@@ -94,7 +122,7 @@ abstract class CSVImporter
             }
 
             $parameters['columns'] = $sample_line;
-
+            $parameters['selected'] = $this->retrievePreSelectedFields($parameters);
             return $parameters;
         }
         catch (\Exception $e) {
