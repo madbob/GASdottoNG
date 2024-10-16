@@ -535,6 +535,57 @@ class OrdersServiceTest extends TestCase
     }
 
     /*
+        Cambio prezzo di un prodotto e consegna
+    */
+    public function testChangeProductPriceOnDelivery()
+    {
+        $this->populateOrder($this->order);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $this->assertTrue($order->bookings()->count() > 0);
+        app()->make('FastBookingsService')->fastShipping($this->userWithShippingPerms, $order->aggregate, null);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userReferrer);
+        $order = app()->make('OrdersService')->show($this->order->id);
+        foreach($order->bookings as $booking) {
+            foreach($booking->products as $product) {
+                $target_product = $product->product;
+                break;
+            }
+        }
+
+        $old_price = $target_product->getPrice();
+        $new_price = $old_price + 2;
+        app()->make('ProductsService')->update($target_product->id, array(
+            'name' => $target_product->name,
+            'price' => $new_price,
+        ));
+
+        $this->nextRound();
+
+        $this->actingAs($this->userReferrer);
+        $tested = false;
+        $order = app()->make('OrdersService')->show($this->order->id);
+        foreach($order->bookings as $booking) {
+            foreach($booking->products as $product) {
+                if ($product->product_id == $target_product->id) {
+                    $this->assertTrue($product->final_price != 0);
+                    $assigned = closestNumber([$old_price, $new_price], $product->getFinalUnitPrice());
+                    $this->assertTrue($assigned == $old_price);
+                    $tested = true;
+                }
+            }
+        }
+
+        $this->assertTrue($tested);
+    }
+
+    /*
         Cambio prezzo di un prodotto e aggiornamento ordine
     */
     public function testDoNotUpdatePrice()

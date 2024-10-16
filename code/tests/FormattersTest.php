@@ -218,12 +218,23 @@ class FormattersTest extends TestCase
         }
     }
 
-    function testGuessDecimal()
+    public function testGuessDecimal()
     {
         $this->assertEquals(1000.00, (float) guessDecimal('1000'));
         $this->assertEquals(1.00, (float) guessDecimal('1.000'));
         $this->assertEquals(1.00, (float) guessDecimal('1,000'));
         $this->assertEquals(1000.00, (float) guessDecimal('1.000,00'));
         $this->assertEquals(1000.00, (float) guessDecimal('1,000.00'));
+    }
+
+    public function testClosestNumber()
+    {
+        $this->assertEquals(10, closestNumber([10, 20], 10));
+        $this->assertEquals(10, closestNumber([10, 20], 9));
+        $this->assertEquals(10, closestNumber([10, 20], 14));
+        $this->assertEquals(10, closestNumber([20, 10], 10));
+        $this->assertEquals(10, closestNumber([20, 10], 9));
+        $this->assertEquals(10, closestNumber([20, 10], 14));
+        $this->assertEquals(10.5, closestNumber([10.5, 20.5], 12.3));
     }
 }

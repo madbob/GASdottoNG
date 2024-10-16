@@ -17,13 +17,21 @@ if ($booking->order->status == 'closed') {
         $then_price = $base_prod->getPrice();
         $key = sprintf('apply_price_%s', $product->product->id);
     }
+
+    /*
+        Devo badare a selezionare il prezzo che eventualmente è già stato
+        utilizzato in fase di consegna, nel caso in cui la consegna stessa venga
+        riaperta successivamente per essere ulteriormente modificata
+    */
+    $assigned_price = $product->getFinalUnitPrice();
+    $actual_price = closestNumber([$now_price, $then_price], $assigned_price);
 }
 else {
     if ($combo) {
-        $now_price = $then_price = $combo->getPrice();
+        $now_price = $then_price = $actual_price = $combo->getPrice();
     }
     else {
-        $now_price = $then_price = $product->product->getPrice();
+        $now_price = $then_price = $actual_price = $product->product->getPrice();
     }
 }
 
@@ -38,7 +46,7 @@ else {
     ];
 
     ?>
-    <x-larastrap::radios :name="$key" :options="$price_options" classes="alt_price_selector" :value="$now_price" squeeze />
+    <x-larastrap::radios :name="$key" :options="$price_options" classes="alt_price_selector" :value="$actual_price" squeeze />
 @else
     <label class="static-label">{{ printablePriceCurrency($now_price) }}</label>
 @endif
