@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_DRIVER', 'beanstalkd'),
+    'default' => env('QUEUE_DRIVER', 'loopback'),
 
     /*
     |--------------------------------------------------------------------------
