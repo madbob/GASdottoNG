@@ -42,7 +42,7 @@ class MovementType extends Model
     */
     public function validForInvoices()
     {
-        return (
+        return $this->visibility && (
             ($this->sender_type == 'App\Gas' && ($this->target_type == 'App\Supplier' || $this->target_type == 'App\Invoice')) ||
             ($this->sender_type == 'App\Supplier' && $this->target_type == 'App\Gas') ||
             ($this->sender_type == 'App\Gas' && $this->target_type == null) ||
