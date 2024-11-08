@@ -183,7 +183,7 @@ class BookingsServiceTest extends TestCase
 
         $merged_data = [];
         foreach($this->sample_order->products as $prod) {
-            $merged_data[$prod->id] = $data[$prod->id] + $friend_data[$prod->id];
+            $merged_data[$prod->id] = ($data[$prod->id] ?? 0) + ($friend_data[$prod->id] ?? 0);
         }
 
         $this->actingAs($this->userWithShippingPerms);

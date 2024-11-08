@@ -325,6 +325,16 @@ class BookedProduct extends Model
         return $ret;
     }
 
+    public function getFinalUnitPrice()
+    {
+        if ($this->delivered) {
+            return $this->final_price / $this->delivered;
+        }
+        else {
+            return $this->product->getPrice();
+        }
+    }
+
     /********************************************************** ModifiedTrait */
 
     public function getModifiedRelations()

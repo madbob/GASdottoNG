@@ -773,6 +773,12 @@ class Order extends Model
                     $booking->status = $enforce_status;
                 }
 
+                /*
+                    Reminder: qui vengono iterate tutte le prenotazioni
+                    nell'ordine, incluse quelle degli amici, dunque i
+                    modificatori vanno applicati su ciascuna in modo
+                    indipendente
+                */
                 $modifiers = $modifiers->merge($booking->applyModifiers($aggregate_data));
             }
 

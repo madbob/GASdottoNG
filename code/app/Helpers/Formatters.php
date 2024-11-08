@@ -209,6 +209,16 @@ function normalizeAddress($street, $city, $cap)
 }
 
 /*
+    https://stackoverflow.com/a/65718002/3135371
+*/
+function closestNumber(array $array, $goal)
+{
+    return array_reduce($array, function($carry, $item) use($goal) {
+        return (abs($item - $goal) < abs($carry - $goal) ? $item : $carry);
+    }, reset($array));
+}
+
+/*
     Questo serve a separare le colonne per utenti e prodotti quando si generano
     i Dettagli Consegne che contengono tutto
 */

@@ -56,6 +56,7 @@ class Notification extends Model implements Datable
     public function sendMail()
     {
         if ($this->mailed == false) {
+            \Log::info('Notification ' . $this->id . ' already delivered by mail');
             return;
         }
 
