@@ -8,13 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-use Log;
-use Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class Attachment extends Model
 {
     use GASModel, Cachable;
 
+    /**
+        @return MorphTo<Model, $this>
+    */
     public function attached(): MorphTo
     {
         if ($this->target_type && hasTrait($this->target_type, SoftDeletes::class)) {
