@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
 
+use App\Booking;
 use App\Exceptions\AuthException;
 use App\Printers\Order as OrderPrinter;
 
@@ -216,7 +217,7 @@ class ModifiersServiceTest extends TestCase
         app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, false);
         $booking = $booking->fresh();
 
-        $mods = $booking->applyModifiers(null, false);
+        $mods = $booking->applyModifiersWithFriends(null, false);
         $this->assertEquals(\App\ModifiedValue::count(), 0);
         $this->assertEquals($mods->count(), 1);
 
@@ -239,7 +240,7 @@ class ModifiersServiceTest extends TestCase
         $this->actingAs($booking->user);
         app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, false);
         $booking = $booking->fresh();
-        $mods = $booking->applyModifiers(null, false);
+        $mods = $booking->applyModifiersWithFriends(null, false);
         $this->assertEquals(\App\ModifiedValue::count(), 0);
         $this->assertEquals($mods->count(), 1);
 
@@ -265,7 +266,7 @@ class ModifiersServiceTest extends TestCase
         ];
         app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $booking->user, true);
         $booking = $booking->fresh();
-        $mods = $booking->applyModifiers(null, false);
+        $mods = $booking->applyModifiersWithFriends(null, false);
         $this->assertEquals(\App\ModifiedValue::count(), 1);
         $this->assertEquals($mods->count(), 1);
 
@@ -299,7 +300,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->assertTrue($found);
 
-        $mods = $booking->applyModifiers(null, false);
+        $mods = $booking->applyModifiersWithFriends(null, false);
         $this->assertEquals(\App\ModifiedValue::count(), 1);
         $this->assertEquals($mods->count(), 1);
 
@@ -319,7 +320,10 @@ class ModifiersServiceTest extends TestCase
     {
         $this->localInitOrder();
         $this->actingAs($this->userReferrer);
-        $product = $this->order->products->random();
+        $booked_product = $this->order->bookings->random()->products->filter(fn($p) => $p->quantity != 0)->random();
+        $booked_product->quantity = 7;
+        $booked_product->save();
+        $product = $booked_product->product;
 
         $modifiers = $product->applicableModificationTypes();
         $this->assertEquals(count($modifiers), 2);
@@ -348,14 +352,15 @@ class ModifiersServiceTest extends TestCase
 
         $order = app()->make('OrdersService')->show($this->order->id);
         $modifiers = $order->applyModifiers();
+        $this->assertEquals(1, $modifiers->count());
         $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
-        $this->assertEquals(count($aggregated_modifiers), 1);
+        $this->assertEquals(1, count($aggregated_modifiers));
 
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->price, 0);
 
         foreach($order->bookings as $booking) {
-            $mods = $booking->applyModifiers($redux, true);
+            $mods = $booking->applyModifiersWithFriends($redux, true);
             $booked_product = $booking->products()->where('product_id', $product->id)->first();
 
             if (is_null($booked_product)) {
@@ -728,12 +733,21 @@ class ModifiersServiceTest extends TestCase
         }
     }
 
-    private function pushFriend($master)
+    private function pushFriend($master, $overlap)
     {
-        $friends_role = \App\Role::factory()->create(['actions' => 'users.subusers']);
-        $master->addRole($friends_role->id, $this->gas);
+        if (is_a($master, Booking::class)) {
+            $user = $master->user;
+            $booking = $master;
+        }
+        else {
+            $user = $master;
+            $booking = null;
+        }
 
-        $this->actingAs($master);
+        $friends_role = \App\Role::factory()->create(['actions' => 'users.subusers']);
+        $user->addRole($friends_role->id, $this->gas);
+
+        $this->actingAs($user);
         $friend = app()->make('UsersService')->storeFriend(array(
             'username' => 'test friend user',
             'firstname' => 'gianni',
@@ -744,11 +758,53 @@ class ModifiersServiceTest extends TestCase
         $friend->addRole($this->booking_role->id, $this->gas);
 
         $this->actingAs($friend);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
+        $data = [];
+
+        if ($booking && $overlap) {
+            $added = false;
+
+            do {
+                foreach($booking->products as $p) {
+                    $q = rand(0, 3);
+                    if ($q) {
+                        $data[$p->product_id] = $q;
+                        $added = true;
+                    }
+                }
+            } while($added == false);
+        }
+        else {
+            if ($booking) {
+                $booked = $booking->products->map(fn($p) => $p->product_id)->toArray();
+            }
+            else {
+                $booked = [];
+            }
+
+            $added = false;
+
+            foreach($this->order->products as $p) {
+                if (in_array($p->id, $booked)) {
+                    continue;
+                }
+
+                $q = rand(1, 5);
+                $data[$p->id] = $q;
+                $added = true;
+            }
+
+            $this->assertTrue($added);
+        }
+
+        $this->assertFalse(empty($data));
         $data['action'] = 'booked';
         app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $friend, false);
 
-        $friend_booking = $this->order->bookings()->where('user_id', $friend->id)->first();
+        $this->nextRound();
+
+        $this->actingAs($this->userReferrer);
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $friend_booking = $order->bookings()->where('user_id', $friend->id)->first();
         $this->assertNotNull($friend_booking);
 
         return [$friend, $friend_booking];
@@ -796,7 +852,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Prenotazione di un amico insieme alla prenotazione dell'utente padre
     */
-    public function testWithFriend()
+    private function testWithFriend($overlap)
     {
         $this->localInitOrder();
 
@@ -806,7 +862,7 @@ class ModifiersServiceTest extends TestCase
 
         $booking = $this->order->bookings->random();
         $initial_amount = $booking->getValue('effective', true);
-        list($friend, $friend_booking) = $this->pushFriend($booking->user);
+        list($friend, $friend_booking) = $this->pushFriend($booking, $overlap);
 
         /*
             Creo una prenotazione per l'utente
@@ -821,6 +877,7 @@ class ModifiersServiceTest extends TestCase
         $this->assertNotEquals($amount_of_friend, 0);
         $amount_with_friend = $booking->getValue('effective', true);
         $this->assertEquals($amount_with_friend, $initial_amount + $amount_of_friend);
+        $amount_of_friend = $friend_booking->getValue('booked', true);
 
         /*
             Aggiungo un modificatore
@@ -838,6 +895,10 @@ class ModifiersServiceTest extends TestCase
         $second_initial_amount = $booking->getValue('booked', true);
         $this->assertTrue($second_initial_amount > 0);
         $this->assertEquals($second_initial_amount, $initial_amount + $amount_of_friend);
+
+        $this->nextRound();
+
+        $booking = $this->order->bookings()->where('id', $booking->id)->first();
         $second_initial_amount = $booking->getValue('effective', true);
         $this->assertEquals(round($second_initial_amount, 2), round(($initial_amount + $amount_of_friend) * 1.10, 2));
 
@@ -857,20 +918,27 @@ class ModifiersServiceTest extends TestCase
         foreach($formatted->contents as $d) {
             if ($d->user_id == $booking->user_id) {
                 $booking_found = true;
-                $mods = $booking->applyModifiers(null, true);
+                $mods = $booking->applyModifiersWithFriends(null, false);
+                $actual_mods = [];
+
+                foreach($mods as $mod) {
+                    if (isset($actual_mods[$mod->modifier->modifierType->name]) == false) {
+                        $actual_mods[$mod->modifier->modifierType->name] = 0;
+                    }
+
+                    $actual_mods[$mod->modifier->modifierType->name] += $mod->effective_amount;
+                }
 
                 foreach($d->totals as $key => $value) {
+                    $value = (float) $value;
+
                     if ($key == 'total') {
                         $this->assertEquals($value, $second_initial_amount);
                     }
                     else {
-                        foreach($mods as $mod) {
-                            if ($mod->modifier->modifierType->name == $key) {
-                                $shipping_cost_found = true;
-                                $this->assertEquals($mod->effective_amount, $value);
-                                $this->assertEquals(round(($initial_amount + $amount_of_friend) * 0.10, 2), round($value, 2));
-                            }
-                        }
+                        $this->assertEquals(round($actual_mods[$key], 2), round($value, 2));
+                        $this->assertEquals(round(($initial_amount + $amount_of_friend) * 0.10, 2), round($value, 2));
+                        $shipping_cost_found = true;
                     }
                 }
 
@@ -880,6 +948,16 @@ class ModifiersServiceTest extends TestCase
 
         $this->assertEquals($booking_found, true);
         $this->assertEquals($shipping_cost_found, true);
+    }
+
+    public function testWithFriendOverlap()
+    {
+        $this->testWithFriend(true);
+    }
+
+    public function testWithFriendNoOverlap()
+    {
+        $this->testWithFriend(false);
     }
 
     /*
@@ -903,7 +981,7 @@ class ModifiersServiceTest extends TestCase
         ));
 
         $newUser->addRole($this->booking_role->id, $this->gas);
-        list($friend, $booking) = $this->pushFriend($newUser);
+        list($friend, $booking) = $this->pushFriend($newUser, false);
 
         $this->nextRound();
 
@@ -917,19 +995,26 @@ class ModifiersServiceTest extends TestCase
         foreach($formatted->contents as $d) {
             if ($d->user_id == $newUser->id) {
                 $booking_found = true;
-                $mods = $booking->applyModifiers(null, true);
+                $mods = $booking->applyModifiersWithFriends(null, false);
+                $actual_mods = [];
+
+                foreach($mods as $mod) {
+                    if (isset($actual_mods[$mod->modifier->modifierType->name]) == false) {
+                        $actual_mods[$mod->modifier->modifierType->name] = 0;
+                    }
+
+                    $actual_mods[$mod->modifier->modifierType->name] += $mod->effective_amount;
+                }
 
                 foreach($d->totals as $key => $value) {
+                    $value = (float) $value;
+
                     if ($key == 'total') {
                         $this->assertEquals($value, $booking->getValue('effective', true));
                     }
                     else {
-                        foreach($mods as $mod) {
-                            if ($mod->modifier->modifierType->name == $key) {
-                                $shipping_cost_found = true;
-                                $this->assertEquals($mod->effective_amount, $value);
-                            }
-                        }
+                        $this->assertEquals(round($actual_mods[$key], 2), round($value, 2));
+                        $shipping_cost_found = true;
                     }
                 }
 

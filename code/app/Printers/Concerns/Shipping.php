@@ -14,12 +14,7 @@ trait Shipping
         $total_modifiers = 0;
         $labels = [];
 
-        $modifiers = $booking->applyModifiers($aggregate_data, false);
-        foreach($booking->friends_bookings as $friend) {
-            $friend_modifiers = $friend->applyModifiers($aggregate_data, false);
-            $modifiers = $modifiers->merge($friend_modifiers);
-        }
-
+        $modifiers = $booking->applyModifiersWithFriends($aggregate_data, false);
         $modifiers = $this->filterExtraModifiers($modifiers, $extra_modifiers);
 
         $aggregated_modifiers = ModifiedValue::aggregateByType($modifiers);

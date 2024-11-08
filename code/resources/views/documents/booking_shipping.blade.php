@@ -1,9 +1,13 @@
 <?php
 
-if ($with_friends == true)
+if ($with_friends == true) {
     $products_source = 'products_with_friends';
-else
+    $modifiers = $booking->aggregatedModifiersWithFriends();
+}
+else {
     $products_source = 'products';
+    $modifiers = $booking->aggregatedModifiers();
+}
 
 ?>
 
@@ -29,7 +33,7 @@ else
     @endif
 @endforeach
 
-@foreach($booking->aggregatedModifiers() as $am)
+@foreach($modifiers as $am)
     <tr>
         <td width="40%">{{ $am->name }}</td>
         <td width="40%">&nbsp;</td>

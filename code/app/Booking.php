@@ -226,7 +226,8 @@ class Booking extends Model
 
                             if ($with_friends) {
                                 foreach($obj->friends_bookings as $friend_booking) {
-                                    $friend_modified_values = $friend_booking->calculateModifiers($aggregate_data, false);
+                                    $friend_aggregate_data = $friend_booking->minimumRedux($modifiers);
+                                    $friend_modified_values = $friend_booking->calculateModifiers($friend_aggregate_data, false);
                                     $modified_values = $modified_values->merge($friend_modified_values);
                                 }
                             }
@@ -383,6 +384,7 @@ class Booking extends Model
             */
             $products = new Collection();
             foreach($this->products as $p) {
+                $p = clone $p;
                 $p->setRelation('booking', $obj);
                 $products->push($p);
             }
@@ -661,9 +663,27 @@ class Booking extends Model
         }
     }
 
+    public function applyModifiersWithFriends($aggregate_data = null, $real = true)
+    {
+        $modifiers = $this->applyModifiers($aggregate_data, false);
+
+        foreach($this->friends_bookings as $friend) {
+            $friend_modifiers = $friend->applyModifiers($aggregate_data, false);
+            $modifiers = $modifiers->merge($friend_modifiers);
+        }
+
+        return $modifiers;
+    }
+
     public function aggregatedModifiers()
     {
         $modifiers = $this->applyModifiers(null, false);
+        return ModifiedValue::aggregateByType($modifiers);
+    }
+
+    public function aggregatedModifiersWithFriends()
+    {
+        $modifiers = $this->applyModifiersWithFriends(null, false);
         return ModifiedValue::aggregateByType($modifiers);
     }
 
