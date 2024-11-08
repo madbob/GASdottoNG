@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Collection;
+
 use App\Exceptions\AuthException;
 use App\Notification;
 use App\Date;
@@ -44,7 +46,9 @@ class NotificationsService extends BaseService
 
 		$dates = $dates_query->get();
 
-		$all = $notifications->merge($dates)->sort(function($a, $b) {
+        $all = new Collection();
+
+        $all->merge($notifications)->merge($dates)->sort(function($a, $b) {
 			return $b->sorting_date <=> $a->sorting_date;
 		});
 

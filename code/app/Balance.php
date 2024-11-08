@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+/**
+    @property-read Booking|Gas|Invoice|Order|Supplier|null $target
+*/
 class Balance extends Model
 {
 	use Cachable;
