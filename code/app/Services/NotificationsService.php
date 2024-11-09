@@ -32,7 +32,7 @@ class NotificationsService extends BaseService
 			});
 		}
 
-		$notifications = collect($notifications_query->get()->all());
+		$notifications = $notifications_query->get();
 
 		$dates_query = Date::where('type', 'internal')->where('target_type', GAS::class)->where('target_id', $user->gas->id);
 
@@ -48,11 +48,9 @@ class NotificationsService extends BaseService
 
         $all = new Collection();
 
-        $all->merge($notifications)->merge($dates)->sort(function($a, $b) {
+        return $all->concat($notifications)->concat($dates)->sort(function($a, $b) {
 			return $b->sorting_date <=> $a->sorting_date;
 		});
-
-		return $all;
     }
 
     public function show($id)
