@@ -215,6 +215,33 @@ class User extends Authenticatable
         }
     }
 
+    /*
+        Genera la notifica relativa ad altre prenotazioni (oltre a quella
+        dell'aggregato specificato) che devono essere ritirate dall'utente nel
+        corso della giornata. Viene aggiunta nel pannello delle consegne e nel
+        Dettaglio Consegne PDF
+    */
+    public function morePendingBookings($aggregate)
+    {
+        $other_bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function($query) use ($aggregate) {
+            $query->where('aggregate_id', '!=', $aggregate->id)->where('shipping', $aggregate->shipping);
+        })->get();
+
+        if ($other_bookings->isEmpty() == false) {
+            $notice = _i('Questa persona oggi deve ritirare anche altre prenotazioni:');
+            $notice .= '<ul>';
+
+            foreach ($other_bookings as $ob) {
+                $notice .= '<li>' . $ob->order->printableName() . '</li>';
+            }
+
+            $notice .= '</ul>';
+            return $notice;
+        }
+
+        return null;
+    }
+
     /************************************************************ SluggableID */
 
     public function getSlugID()

@@ -94,6 +94,8 @@ trait Shipping
                 'products' => [],
                 'totals' => [],
                 'notes' => !empty($booking->notes) ? [$booking->notes] : [],
+
+                'others' => $booking->user->morePendingBookings($order->aggregate),
             ];
 
             foreach($booking->products_with_friends as $booked) {
