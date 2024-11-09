@@ -283,7 +283,7 @@ class MovementsController extends BackedController
             case 'credits':
                 $users = User::sorted()->topLevel()->get();
 
-                $filtered_users = $request->input('users', []);
+                $filtered_users = $this->collectedFilteredUsers($request);
                 if (!empty($filtered_users)) {
                     $users = $users->filter(function($u) use ($filtered_users) {
                         return in_array($u->id, $filtered_users);

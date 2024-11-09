@@ -134,21 +134,24 @@ class Callables {
         filtro
     */
     static collectFilteredUsers(form) {
-		form.find('input:hidden[name^="users"]').remove();
+		form.find('input:hidden[name="users"]').remove();
         let table = $(form.find('input:hidden[name=collectFilteredUsers]').val());
+        let users = [];
 
         if (table.is('table')) {
             $('tbody tr:visible', table).each(function() {
                 var user_id = $(this).find('input[name^=user_id]').val();
-                form.append('<input type="hidden" name="users[]" value="' + user_id + '">');
+                users.push(user_id);
             });
         }
         else {
             $('.accordion-item:visible', table).each(function() {
                 var user_id = $(this).attr('data-element-id');
-                form.append('<input type="hidden" name="users[]" value="' + user_id + '">');
+                users.push(user_id);
             });
         }
+
+        form.append('<input type="hidden" name="users" value="' + users.join(',') + '">');
     }
 
     static formToDownload(form) {
