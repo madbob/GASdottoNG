@@ -12,7 +12,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use App\Models\Concerns\TracksUpdater;
 
 /**
-    @property-read Aggregate|Delivery|Order|Product|Supplier|null $target
+    @property-read Aggregate|Order|Product|Supplier|null $target
 */
 class Modifier extends Model
 {
