@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Collection;
+
 use App\Exceptions\AuthException;
 use App\Notification;
 use App\Date;
@@ -30,7 +32,7 @@ class NotificationsService extends BaseService
 			});
 		}
 
-		$notifications = collect($notifications_query->get()->all());
+		$notifications = $notifications_query->get();
 
 		$dates_query = Date::where('type', 'internal')->where('target_type', GAS::class)->where('target_id', $user->gas->id);
 
@@ -44,11 +46,11 @@ class NotificationsService extends BaseService
 
 		$dates = $dates_query->get();
 
-		$all = $notifications->merge($dates)->sort(function($a, $b) {
+        $all = new Collection();
+
+        return $all->concat($notifications)->concat($dates)->sort(function($a, $b) {
 			return $b->sorting_date <=> $a->sorting_date;
 		});
-
-		return $all;
     }
 
     public function show($id)

@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
+/**
+    @property-read BookedProduct|Booking|null $target
+*/
 class ModifiedValue extends Model
 {
     public function modifier(): BelongsTo

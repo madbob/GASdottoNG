@@ -12,6 +12,7 @@
 				<th>{{ _i('Valore') }}</th>
 				<th>{{ _i('Pagante') }}</th>
 				<th>{{ _i('Pagato') }}</th>
+                <th>{{ _i('Identificativo') }}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -33,6 +34,8 @@
 							{{ $m->target->printableName() }}
 						@endif
 					</td>
+
+                    <td>{{ $m->identifier }}</td>
 				</tr>
 			@endforeach
 		</tbody>

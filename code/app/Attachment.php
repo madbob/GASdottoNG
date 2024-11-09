@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-use Log;
-use Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
+/**
+    @property-read Gas|Invoice|Notification|Order|Supplier|null $attached
+*/
 class Attachment extends Model
 {
     use GASModel, Cachable;
