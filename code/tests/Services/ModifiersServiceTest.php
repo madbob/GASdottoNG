@@ -685,25 +685,17 @@ class ModifiersServiceTest extends TestCase
     public function testOnShippingPlace()
     {
         $this->localInitOrder();
-        $this->actingAs($this->userAdmin);
 
-        $delivery_1 = \App\Delivery::factory()->create([
-            'default' => true,
-        ]);
-
-        $delivery_2 = \App\Delivery::factory()->create([
-            'default' => false,
-        ]);
-
-        $delivery = [$delivery_1, $delivery_2];
+        list($group, $circle0, $circle1) = $this->createGroupWithCircle();
+        $circles = [$circle0, $circle1];
 
         foreach($this->users as $user) {
-            $user->preferred_delivery_id = $delivery[rand(0, 1)]->id;
-            $user->save();
+            $cir = $circles[rand(0, 1)];
+            $user->circles()->sync([$cir->id]);
         }
 
         $test_shipping_value = 10;
-        $mod = $this->simpleMod($delivery_2, 'booking', 'none', $test_shipping_value);
+        $mod = $this->simpleMod($circle0, 'booking', 'none', $test_shipping_value);
         $this->assertNotNull($mod);
 
         $this->nextRound();
@@ -712,13 +704,16 @@ class ModifiersServiceTest extends TestCase
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->price, 0.0);
 
+        $found = false;
+
         foreach($order->bookings as $booking) {
             $mods = $booking->applyModifiers($redux, true);
 
-            if ($booking->user->preferred_delivery_id == $delivery_1->id) {
+            if ($booking->user->circles->contains($circle1)) {
                 $this->assertEquals($mods->count(), 0);
             }
             else {
+                $found = true;
                 $this->assertEquals($mods->count(), 1);
 
                 foreach($mods as $m) {
@@ -727,6 +722,8 @@ class ModifiersServiceTest extends TestCase
                 }
             }
         }
+
+        $this->assertTrue($found);
     }
 
     private function pushFriend($master, $overlap)

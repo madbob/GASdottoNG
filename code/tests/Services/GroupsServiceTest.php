@@ -21,38 +21,6 @@ class GroupsServiceTest extends TestCase
         $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
     }
 
-    private function createGroupWithCircle()
-    {
-        $this->actingAs($this->userAdmin);
-
-        $group = app()->make('GroupsService')->store(array(
-            'name' => 'Luoghi di Consegna',
-        ));
-
-        $this->nextRound();
-        $group = Group::find($group->id);
-
-        $circle = app()->make('CirclesService')->store([
-            'name' => 'Bar Sport',
-            'description' => 'Un test',
-            'group_id' => $group->id,
-        ]);
-
-        $this->nextRound();
-        $circle = Circle::find($circle->id);
-
-        $circle2 = app()->make('CirclesService')->store([
-            'name' => 'Da Mario',
-            'description' => 'Un altro test',
-            'group_id' => $group->id,
-        ]);
-
-        $this->nextRound();
-        $circle2 = Circle::find($circle2->id);
-
-        return [$group, $circle, $circle2];
-    }
-
     /*
         Salvataggio Gruppo e Cerchie
     */
