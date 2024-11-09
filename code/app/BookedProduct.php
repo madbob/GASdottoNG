@@ -327,7 +327,7 @@ class BookedProduct extends Model
 
     public function getFinalUnitPrice()
     {
-        if ($this->delivered) {
+        if ($this->delivered > 0) {
             return $this->final_price / $this->delivered;
         }
         else {

@@ -79,4 +79,20 @@ class Controller extends BaseController
 
         abort(404);
     }
+
+    /*
+        Controparte della funzione JS collectFilteredUsers(), questa funzione ne
+        deserializza il contenuto
+    */
+    protected function collectedFilteredUsers($request)
+    {
+        $users = $request->input('users', []);
+
+        if (is_array($users)) {
+            return $users;
+        }
+        else {
+            return explode(',', $users);
+        }
+    }
 }

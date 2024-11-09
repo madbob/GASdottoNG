@@ -9,9 +9,7 @@ $existing = false;
 $master_summary = $aggregate->reduxData();
 $currency_symbol = defaultCurrency()->symbol;
 
-$other_bookings = $user->bookings()->where('status', 'pending')->whereHas('order', function($query) use ($aggregate) {
-    $query->where('aggregate_id', '!=', $aggregate->id)->where('shipping', $aggregate->shipping);
-})->get();
+$other_bookings = $user->morePendingBookings($aggregate);
 
 /*
     In fase di consegna, aggrego sempre tutte le quantità
@@ -47,16 +45,11 @@ app()->make('AggregationSwitch')->setEnforced(true);
                 </div>
             </div>
 
-            @if($other_bookings->count())
+            @if($other_bookings)
                 <div class="row mt-1">
                     <div class="col">
                         <div class="alert alert-info">
-                            {{ _i('Questa persona oggi deve ritirare anche altre prenotazioni:') }}
-                            <ul>
-                                @foreach($other_bookings as $ob)
-                                    <li>{{ $ob->order->printableName() }}</li>
-                                @endforeach
-                            </ul>
+                            {!! $other_bookings !!}
                         </div>
                     </div>
                 </div>

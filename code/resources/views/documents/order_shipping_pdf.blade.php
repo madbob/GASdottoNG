@@ -49,6 +49,14 @@ foreach($data->contents as $d) {
                 padding: 4px 0;
                 width: 100%;
             }
+
+            ul {
+                margin: 0;
+            }
+
+            li {
+                margin: 0;
+            }
         </style>
     </head>
 
@@ -125,6 +133,10 @@ foreach($data->contents as $d) {
 
                 ?>
             </div>
+
+            @if($d->others)
+                <div class="extended">{!! $d->others !!}</div>
+            @endif
 
             <div class="main-wrapper">
                 @foreach($d->products as $product)

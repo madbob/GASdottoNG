@@ -17,13 +17,16 @@ class NotificationsService extends BaseService
 		$user = $this->ensureAuth();
 
 		$notifications_query = Notification::orderBy('start_date', 'desc')->with(['users']);
+        $dates_query = Date::where('type', 'internal')->where('target_type', GAS::class)->where('target_id', $user->gas->id);
 
 		if (!is_null($start)) {
 			$notifications_query->where('end_date', '>=', $start);
+            $dates_query->where('date', '>=', $start);
 		}
 
 		if (!is_null($end)) {
 			$notifications_query->where('start_date', '<=', $end);
+            $dates_query->where('date', '<=', $end);
 		}
 
 		if ($user->can('notifications.admin', $user->gas) == false) {
@@ -33,17 +36,6 @@ class NotificationsService extends BaseService
 		}
 
 		$notifications = $notifications_query->get();
-
-		$dates_query = Date::where('type', 'internal')->where('target_type', GAS::class)->where('target_id', $user->gas->id);
-
-		if (!is_null($start)) {
-			$dates_query->where('date', '>=', $start);
-		}
-
-		if (!is_null($end)) {
-			$dates_query->where('date', '<=', $end);
-		}
-
 		$dates = $dates_query->get();
 
         $all = new Collection();
@@ -61,6 +53,10 @@ class NotificationsService extends BaseService
 	private function syncUsers($notification, $request)
 	{
 		$users = $request['users'] ?? [];
+        if (is_string($users)) {
+            $users = explode(',', $users);
+        }
+
 		if (empty($users)) {
 			$us = User::select('id')->whereNull('parent_id')->get();
 			foreach ($us as $u) {

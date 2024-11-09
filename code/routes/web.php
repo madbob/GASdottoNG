@@ -51,8 +51,9 @@ Route::middleware(['auth'])->group(function() {
         Route::get('users/{id}/stats', 'UsersController@statistics')->name('users.stats');
         Route::get('users/{id}/accounting', 'UsersController@accounting')->name('users.accounting');
         Route::get('users/{id}/friends', 'UsersController@friends')->name('users.friends');
-        Route::get('users/tour/start', 'UsersController@startTour')->name('users.tour.start');
-        Route::get('users/tour/finish', 'UsersController@finishTour')->name('users.tour.finish');
+
+        Route::get('users/tour/start', 'TourController@startTour')->name('users.tour.start');
+        Route::get('users/tour/finish', 'TourController@finishTour')->name('users.tour.finish');
 
         Route::get('friends/{id}/header', 'FriendsController@objhead')->name('friends.objhead');
 
