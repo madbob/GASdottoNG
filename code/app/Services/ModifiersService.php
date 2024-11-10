@@ -96,7 +96,7 @@ class ModifiersService extends BaseService
         }
         else {
             $thresholds = $request['threshold'] ?? [];
-            $amounts = $request['amount'];
+            $amounts = $request['amount'] ?? [];
 
             foreach($thresholds as $index => $threshold) {
                 $threshold = trim($threshold);
