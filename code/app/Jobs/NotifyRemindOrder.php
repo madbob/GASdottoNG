@@ -25,9 +25,6 @@ class NotifyRemindOrder implements ShouldQueue
     public function handle()
     {
 		$hub = app()->make('GlobalScopeHub');
-		$gas = $hub->getGasObj();
-
-		$aggregate_users = [];
 
 		foreach($this->orders_id as $order_id) {
 	        $order = Order::find($order_id);
@@ -36,26 +33,31 @@ class NotifyRemindOrder implements ShouldQueue
 				continue;
 			}
 
-	        $users = $order->notifiableUsers($gas);
+			foreach($order->aggregate->gas as $gas) {
+				$hub->setGas($gas->id);
 
-			foreach($users as $user) {
-				if (isset($aggregate_users[$user->id]) == false) {
-					$aggregate_users[$user->id] = (object) [
-						'user' => $user,
-						'orders' => [],
-					];
+				$aggregate_users = [];
+		        $users = $order->notifiableUsers($gas);
+
+				foreach($users as $user) {
+					if (isset($aggregate_users[$user->id]) == false) {
+						$aggregate_users[$user->id] = (object) [
+							'user' => $user,
+							'orders' => [],
+						];
+					}
+
+					$aggregate_users[$user->id]->orders[] = $order;
 				}
 
-				$aggregate_users[$user->id]->orders[] = $order;
-			}
-		}
-
-		foreach($aggregate_users as $auser) {
-			try {
-				$auser->user->notify(new RemindOrderNotification($auser->orders));
-			}
-			catch(\Exception $e) {
-				\Log::error('Impossibile inoltrare mail di promemoria ordine: ' . $e->getMessage());
+				foreach($aggregate_users as $auser) {
+					try {
+						$auser->user->notify(new RemindOrderNotification($auser->orders));
+					}
+					catch(\Exception $e) {
+						\Log::error('Impossibile inoltrare mail di promemoria ordine: ' . $e->getMessage());
+					}
+				}
 			}
 		}
     }
