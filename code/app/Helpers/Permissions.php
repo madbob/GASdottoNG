@@ -42,10 +42,13 @@ function allPermissions()
     */
     try {
         $gas = currentAbsoluteGas();
-        $gas = $gas->fresh();
 
-        if ($gas->multigas) {
-            $ret['App\Gas']['gas.multi'] = _i('Amministrare la modalità Multi-GAS su questa istanza');
+        if (isset($gas)) {
+            $gas = $gas->fresh();
+
+            if ($gas->multigas) {
+                $ret['App\Gas']['gas.multi'] = _i('Amministrare la modalità Multi-GAS su questa istanza');
+            }
         }
     }
     catch(\Exception $e) {
