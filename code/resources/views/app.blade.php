@@ -76,6 +76,11 @@
             <p>
                 {{ _i('Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS.') }}
             </p>
+			<ul>
+				@foreach(everybodyCan('gas.permissions', $currentgas) as $admin)
+					<li>{{ $admin->printableName() }} - {{ join(', ', $admin->getContactsByType('email')) }}</li>
+				@endforeach
+			</ul>
 
             @if(currentLang() != 'it_IT')
                 <p>

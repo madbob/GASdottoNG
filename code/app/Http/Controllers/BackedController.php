@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 use App\Http\Controllers\Controller;
-
-use Log;
-
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
 
@@ -31,7 +30,7 @@ class BackedController extends Controller
             return $func();
         }
         catch (AuthException $e) {
-			\Log::debug('Errore autorizzazione: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+			\Log::debug('Errore autorizzazione: ' . $e->getMessage());
             abort($e->status());
         }
         catch (IllegalArgumentException $e) {
@@ -39,7 +38,7 @@ class BackedController extends Controller
             return $this->errorResponse($e->getMessage(), $e->getArgument());
         }
         catch (\Exception $e) {
-            \Log::debug('Errore non identificato: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+			\Log::error('Errore non identificato: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             return $this->errorResponse(_i('Errore') . ': ' . $e->getMessage());
         }
     }
