@@ -49,6 +49,7 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                         <th>{{ _i('Data') }}</th>
                         <th>{{ _i('Utente') }}</th>
                         <th>{{ _i('Fornitore') }}</th>
+						<th>{{ _i('Identificativo') }}</th>
                         <th>{{ _i('Note') }}</th>
                         <th>
                             <x-larastrap::select name="type" nprefix="skip" squeeze :options="$types" classes="triggers-all-selects csv_movement_type_select" data-target-class="csv_movement_type_select" />
@@ -79,6 +80,9 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                                 <td>
                                     <x-larastrap::selectobj name="target_id" npostfix="[]" squeeze :options="$suppliers" :extraitem="_i('Nessuno')" />
                                 </td>
+								<td>
+									<x-larastrap::text name="identifier" npostfix="[]" squeeze />
+                                </td>
                                 <td>
                                     <x-larastrap::text name="notes" npostfix="[]" squeeze />
                                 </td>
@@ -91,7 +95,6 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                                 <td>
                                     {{ printablePriceCurrency($mov->amount) }}
                                     <x-larastrap::hidden name="amount" npostfix="[]" />
-                                    <x-larastrap::hidden name="identifier" npostfix="[]" />
                                 </td>
                                 <td>
                                     <x-larastrap::selectobj name="currency_id" npostfix="[]" squeeze :options="$currencies" classes="csv_movement_currency_select" />
