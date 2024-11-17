@@ -11,23 +11,33 @@
                 ?>
 
                 @foreach($targets as $target)
-                    @if ($targets->count() > 1 && $last_class != get_class($target))
-                        <?php $last_class = get_class($target) ?>
-                        <li class="list-group-item list-group-item-danger">
-                            {{ _i('Tutti (%s)', [$last_class::commonClassName()]) }}<br/>
-                            <small>
-                                {{ _i("Questo permesso speciale si applica automaticamente a tutti i soggetti (presenti e futuri) e permette di agire su tutti, benché l'utente assegnatario non sarà esplicitamente visibile dagli altri.") }}
-                            </small>
-                            <span class="float-end">
-                                <input type="checkbox" class="all-{{ $user->id }}-{{ $role->id }}" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="*" data-target-class="{{ $last_class }}" {{ $r->appliesAll($last_class) ? 'checked' : '' }}>
-                            </span>
-                        </li>
+                    @if ($last_class != get_class($target))
+						@php
+						$last_class = get_class($target);
+						$last_applies_all = null;
+						@endphp
+
+						@if($targets->count() > 1)
+	                        <li class="list-group-item list-group-item-danger">
+	                            {{ _i('Tutti (%s)', [$last_class::commonClassName()]) }}<br/>
+	                            <small>
+	                                {{ _i("Questo permesso speciale si applica automaticamente a tutti i soggetti (presenti e futuri) e permette di agire su tutti, benché l'utente assegnatario non sarà esplicitamente visibile dagli altri.") }}
+	                            </small>
+	                            <span class="float-end">
+	                                <input type="checkbox" class="all-{{ $user->id }}-{{ $role->id }}" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="*" data-target-class="{{ $last_class }}" {{ $r->appliesAll($last_class) ? 'checked' : '' }}>
+	                            </span>
+	                        </li>
+						@else
+							@php
+							$last_applies_all = $r->appliesAll($last_class);
+							@endphp
+						@endif
                     @endif
 
                     <li class="list-group-item">
                         {{ $target->printableName() }}
                         <span class="float-end">
-                            <input type="checkbox" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="{{ $target->id }}" data-target-class="{{ get_class($target) }}" {{ $r->appliesOnly($target) ? 'checked' : '' }} {{ $user->id == $currentuser->id && $target->id == $currentgas->id ? 'disabled' : '' }}>
+							<input type="checkbox" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="{{ $target->id }}" data-target-class="{{ get_class($target) }}" {{ $r->appliesOnly($target) || $last_applies_all ? 'checked' : '' }} {{ $user->id == $currentuser->id && $target->id == $currentgas->id ? 'disabled' : '' }}>
                         </span>
                     </li>
                 @endforeach
