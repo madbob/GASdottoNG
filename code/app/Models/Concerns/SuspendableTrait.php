@@ -46,4 +46,9 @@ trait SuspendableTrait
                 return _i('Cessato');
         }
     }
+
+	public function scopeFullEnabled($query)
+	{
+		$query->whereNull('deleted_at')->whereNull('suspended_at');
+	}
 }

@@ -80,6 +80,7 @@ class UsersServiceTest extends TestCase
         $this->actingAs($this->userWithAdminPerm);
         $users = app()->make('UsersService')->list();
         $initial_count = $users->count();
+		$initial_count_db = User::fullEnabled()->count();
 
         $user = $users->random();
         app()->make('UsersService')->update($user->id, [
@@ -88,9 +89,37 @@ class UsersServiceTest extends TestCase
             'suspended_at' => printableDate(date('Y-m-d')),
         ]);
 
+		$this->nextRound();
+
         $this->actingAs($this->userWithViewPerm);
         $users = app()->make('UsersService')->list('', true);
         $this->assertEquals($initial_count - 1, $users->count());
+		$this->assertEquals($initial_count_db - 1, User::fullEnabled()->count());
+    }
+
+	/*
+		Sospensione utente
+    */
+	public function testSuspend()
+    {
+        $this->actingAs($this->userWithAdminPerm);
+        $users = app()->make('UsersService')->list();
+        $initial_count = $users->count();
+		$initial_count_db = User::fullEnabled()->count();
+
+        $user = $users->random();
+        app()->make('UsersService')->update($user->id, [
+			'status' => 'suspended',
+			'deleted_at' => printableDate(date('Y-m-d')),
+            'suspended_at' => printableDate(date('Y-m-d')),
+        ]);
+
+		$this->nextRound();
+
+        $this->actingAs($this->userWithViewPerm);
+        $users = app()->make('UsersService')->list('', true);
+        $this->assertEquals($initial_count, $users->count());
+		$this->assertEquals($initial_count_db - 1, User::fullEnabled()->count());
     }
 
     /*

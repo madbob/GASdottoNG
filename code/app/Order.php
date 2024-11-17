@@ -452,6 +452,8 @@ class Order extends Model
             });
         }
 
+		$query_users->fullEnabled();
+
         $deliveries = $order->deliveries;
         if ($deliveries->isEmpty() == false) {
             $query_users->where(function($query) use ($deliveries) {
