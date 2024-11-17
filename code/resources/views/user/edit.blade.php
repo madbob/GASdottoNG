@@ -14,7 +14,7 @@ $display_page = $display_page ?? false;
 $has_accounting = ($admin_editable || $currentuser->id == $user->id || $currentuser->can('movements.admin', $currentgas) || $currentuser->can('movements.view', $currentgas)) && ($user->isFriend() == false && someoneCan('movements.admin', $user->gas));
 $has_stats = $has_accounting;
 $has_bookings = ($currentuser->id == $user->id);
-$has_friends = $editable && $user->can('users.subusers');
+$has_friends = $editable && $user->can('users.subusers', $user->gas);
 $has_notifications = $user->isFriend() == false && $editable && ($currentgas->getConfig('notify_all_new_orders') == false);
 
 $friend_admin_buttons = [];
@@ -187,7 +187,7 @@ if ($user->isFriend() && $admin_editable) {
                                     {{ _i('Da qui è possibile riassegnare un amico ad un altro utente. Tutti i pagamenti pregressi resteranno addebitati a %s.', $user->parent->printableName()) }}
                                 </p>
 
-                                <x-larastrap::selectobj :label="_i('Nuovo assegnatario')" name="parent_id" :options="App\User::where('id', '!=', $user->parent_id)->topLevel()->sorted()->get()->filter(fn($u) => $u->can('users.subusers'))" />
+								<x-larastrap::selectobj :label="_i('Nuovo assegnatario')" name="parent_id" :options="App\User::where('id', '!=', $user->parent_id)->with(['gas'])->topLevel()->sorted()->get()->filter(fn($u) => $u->can('users.subusers', $u->gas))" />
                             </x-larastrap::mform>
                         </x-larastrap::accordionitem>
                     </x-larastrap::accordion>

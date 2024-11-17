@@ -29,6 +29,25 @@ trait RoleableTrait
         return Role::sortedByHierarchy($all_roles == false);
     }
 
+	public function checkRoleTargets($role)
+	{
+		$test = $this->roles()->where('roles.id', $role->id)->first();
+		if ($test) {
+			$classes = $role->getAllClasses();
+			foreach($classes as $class) {
+				$targets = $test->applications(true, false, $class);
+				if ($targets->isEmpty()) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
     public function addRole($role, $assigned)
     {
         $role_id = normalizeId($role);

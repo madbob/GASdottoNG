@@ -39,6 +39,9 @@
                             <li class="nav-item" data-user="{{ $user->id }}">
                                 <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#permissions-{{ sanitizeId($user->id) }}-{{ $role->id }}">
                                     {{ $user->printableName() }}
+									@if($user->checkRoleTargets($role) == false)
+										<span class="text-danger" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="{{ _i("A questo ruolo manca l'assegnazione a uno o più elementi per i quali sono concessi permessi, ed il comportamento potrebbe non essere quello desiderato") }}"><i class="bi-exclamation-circle"></i></span>
+									@endif
                                 </button>
                             </li>
                         @endforeach
@@ -58,7 +61,7 @@
                 @endforeach
             </div>
         </div>
-    </x-larastrap::form>
+	</x-larastrap::mform>
 
     @stack('postponed')
 </div>

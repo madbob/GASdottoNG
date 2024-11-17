@@ -242,7 +242,10 @@ class Role extends Model
     /*
         Questa funzione va chiamata solo sugli oggetti Role restituiti da
         User::roles(), in quanto si applica solo sull'istanza del ruolo
-        assegnata ad uno specifico utente
+		assegnata ad uno specifico utente.
+		Verifica se il ruolo si applica a tutti i soggetti della classe
+		specificata (o più in generale a tutti i soggetti di tutte le classi
+		disponibili)
     */
     public function appliesAll($class = null)
     {
@@ -268,7 +271,8 @@ class Role extends Model
     /*
         Questa funzione va chiamata solo sugli oggetti Role restituiti da
         User::roles(), in quanto si applica solo sull'istanza del ruolo
-        assegnata ad uno specifico utente
+		assegnata ad uno specifico utente.
+		Restituisce l'elenco dei soggetti cui il ruolo si applica
     */
     public function applications($all = false, $exclude_trashed = false, $target_class = null)
     {

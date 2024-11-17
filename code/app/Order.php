@@ -452,6 +452,8 @@ class Order extends Model
             });
         }
 
+		$query_users->fullEnabled();
+
         $user_circles = $order->circles()->whereHas('group', function($query) {
             $query->where('context', 'user')->where('filters_orders', true);
         })->pluck('id');

@@ -37,7 +37,7 @@ else {
                     @endif
                 </x-larastrap::tabpane>
 
-                @if($user->can('users.subusers'))
+                @if($user->can('users.subusers', $user->gas))
                     <x-larastrap::tabpane :label="_i('Prenotazioni per gli Amici')" icon="bi-person-add" :id="sprintf('bookings-friends-%s-%s', sanitizeId($user->id), sanitizeId($aggregate->id))">
                         <div class="row">
                             <div class="col-md-12">
