@@ -250,7 +250,8 @@ class ModifierEngine
             $check_target è l'elemento su cui valutare l'applicabilità del
             modificatore
         */
-        switch($modifier->getCheckTargetLevel()) {
+        $target_level = $modifier->getCheckTargetLevel();
+        switch($target_level) {
             case 'order':
                 $check_target = $aggregate_data->orders[$order_id] ?? null;
                 break;
@@ -266,6 +267,10 @@ class ModifierEngine
             case 'global_product':
                 $check_target = $aggregate_data->orders[$order_id]->products[$modifier->target->id] ?? null;
                 break;
+
+            default:
+                Log::error('Tipo di soggetto non riconosciuto per modificatore: ' . $target_level);
+                return null;
         }
 
         /*
