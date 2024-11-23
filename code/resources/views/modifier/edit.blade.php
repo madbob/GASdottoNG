@@ -47,6 +47,7 @@
                         'none' => _i('Nessuna soglia'),
                         'quantity' => _i('Quantità'),
                         'price' => _i('Valore'),
+                        'order_price' => _i("Valore dell'Ordine"),
                         'weight' => _i('Peso'),
                     ];
 

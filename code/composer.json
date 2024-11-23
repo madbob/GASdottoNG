@@ -12,6 +12,7 @@
         "barryvdh/laravel-debugbar": "^3.8",
         "barryvdh/laravel-dompdf": "^2.0.0",
         "debril/feed-io": "^5.0",
+        "doctrine/dbal": "^3.9",
         "dotworkers/laravel-gettext": "^7.6.2",
         "eluceo/ical": "^2.0",
         "genealabs/laravel-model-caching": "^0.13.4",

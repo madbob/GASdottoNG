@@ -104,13 +104,14 @@ class ModifierEngine
 			non ancora consegnato. Questo si applica in particolare in fase di
 			consegna
 		*/
-		if ($modifier->applies_target == 'order' || $booking->order->status == 'closed') {
+        if ($modifier->applies_target == 'order' || $booking->order->status == 'closed' || $modifier->applies_type == 'order_price') {
 			switch($modifier->$attribute) {
                 case 'quantity':
                     $attribute = 'relative_quantity';
                     break;
 				case 'none':
                 case 'price':
+                case 'order_price':
                     $attribute = 'relative_price';
                     break;
                 case 'weight':
@@ -237,62 +238,53 @@ class ModifierEngine
             return null;
         }
 
+        $order_id = $booking->order_id;
+
 		$aggregate_data = $this->normalizeAggregateData($aggregate_data, $booking);
 		if (is_null($aggregate_data)) {
-			Log::debug('Applicazione modificatore: mancano dati ordine ' . $booking->order_id);
+			Log::debug('Applicazione modificatore: mancano dati ordine ' . $order_id);
 			return null;
 		}
 
-        $product_target_id = 0;
+        /*
+            $check_target è l'elemento su cui valutare l'applicabilità del
+            modificatore
+        */
+        switch($modifier->getCheckTargetLevel()) {
+            case 'order':
+                $check_target = $aggregate_data->orders[$order_id] ?? null;
+                break;
 
-        if ($modifier->target_type == Product::class) {
-            $product_target_id = $modifier->target_id;
+            case 'booking':
+                $check_target = $aggregate_data->orders[$order_id]->bookings[$booking->id] ?? null;
+                break;
 
-            switch($modifier->applies_target) {
-                case 'order':
-                    $check_target = $aggregate_data->orders[$booking->order_id]->products[$product_target_id] ?? null;
-                    break;
+            case 'product':
+                $check_target = $aggregate_data->orders[$order_id]->bookings[$booking->id]->products[$modifier->target->id] ?? null;
+                break;
 
-                default:
-                    $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
-                    break;
-            }
-        }
-        else {
-            switch($modifier->applies_target) {
-                case 'order':
-                    $check_target = $aggregate_data->orders[$booking->order_id] ?? null;
-                    break;
-
-                case 'booking':
-                    $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id] ?? null;
-                    break;
-
-                case 'product':
-                    $check_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$modifier->target->id] ?? null;
-                    break;
-
-                default:
-                    Log::error('applies_target non riconosciuto per modificatore: ' . $modifier->applies_target);
-                    return null;
-            }
+            case 'global_product':
+                $check_target = $aggregate_data->orders[$order_id]->products[$modifier->target->id] ?? null;
+                break;
         }
 
+        /*
+            $mod_target è l'elemento su cui si applica il modificatore
+        */
         switch($modifier->applies_target) {
             case 'order':
-                $mod_target = $aggregate_data->orders[$booking->order_id] ?? null;
+                $mod_target = $aggregate_data->orders[$order_id] ?? null;
                 $obj_mod_target = $booking;
                 break;
 
             case 'booking':
-                $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id] ?? null;
+                $mod_target = $aggregate_data->orders[$order_id]->bookings[$booking->id] ?? null;
                 $obj_mod_target = $booking;
                 break;
 
             case 'product':
-                $product_target_id = $modifier->target->id;
-                $mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
-                $obj_mod_target = $booking->products()->where('product_id', $product_target_id)->first();
+                $mod_target = $aggregate_data->orders[$order_id]->bookings[$booking->id]->products[$modifier->target->id] ?? null;
+                $obj_mod_target = $booking->products()->where('product_id', $modifier->target->id)->first();
                 break;
 
             default:
@@ -322,11 +314,11 @@ class ModifierEngine
 					list($distribution_attribute, $useless) = $this->handlingAttributes($booking, $modifier, 'distribution_type');
 
                     if ($modifier->target_type == Product::class) {
-                        $booking_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id]->products[$product_target_id] ?? null;
-                        $reference = $mod_target->products[$product_target_id]->$distribution_attribute;
+                        $booking_mod_target = $aggregate_data->orders[$order_id]->bookings[$booking->id]->products[$modifier->target->id] ?? null;
+                        $reference = $mod_target->products[$modifier->target->id]->$distribution_attribute;
                     }
                     else {
-                        $booking_mod_target = $aggregate_data->orders[$booking->order_id]->bookings[$booking->id] ?? null;
+                        $booking_mod_target = $aggregate_data->orders[$order_id]->bookings[$booking->id] ?? null;
                         $reference = $mod_target->$distribution_attribute;
                     }
 
