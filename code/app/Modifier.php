@@ -114,6 +114,37 @@ class Modifier extends Model
         return route('modifiers.show', $this->id);
     }
 
+    /*
+        Questa funzione permette di capire a che livello della gerarchia si
+        applica il modificatore.
+        "order" e "booking" si riferiscono, rispettivamente, all'ordine nel suo
+        complesso o alla specifica prenotazione.
+        "product" si riferisce al prodotto all'interno della prenotazione.
+        "global_product" si riferisce al prodotto complessivo nell'ordine
+    */
+    public function getCheckTargetLevel()
+    {
+        if ($this->target_type == Product::class) {
+            if ($this->applies_type == 'order_price') {
+                return 'order';
+            }
+            else {
+                switch($this->applies_target) {
+                    case 'order':
+                        return 'global_product';
+                        break;
+
+                    default:
+                        return 'product';
+                        break;
+                }
+            }
+        }
+        else {
+            return $this->applies_target;
+        }
+    }
+
     public function getActiveAttribute()
     {
         $data = $this->definitions;

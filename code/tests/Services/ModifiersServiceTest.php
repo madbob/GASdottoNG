@@ -146,7 +146,7 @@ class ModifiersServiceTest extends TestCase
             $order = app()->make('OrdersService')->show($this->order->id);
             $modifiers = $order->applyModifiers();
             $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
-            $this->assertEquals(count($aggregated_modifiers), 1);
+            $this->assertEquals(1, count($aggregated_modifiers));
 
             $without_discount = $product->price * $total_quantity;
             $total = $threshold_prices[$threshold_index] * $total_quantity;
@@ -358,6 +358,7 @@ class ModifiersServiceTest extends TestCase
 
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->price, 0);
+        $exists = false;
 
         foreach($order->bookings as $booking) {
             $mods = $booking->applyModifiersWithFriends($redux, true);
@@ -367,6 +368,8 @@ class ModifiersServiceTest extends TestCase
                 $this->assertEquals($mods->count(), 0);
             }
             else {
+                $exists = true;
+
                 if ($booked_product->quantity <= 5) {
                     $this->assertEquals($mods->count(), 0);
                 }
@@ -383,6 +386,86 @@ class ModifiersServiceTest extends TestCase
                 }
             }
         }
+
+        $this->assertTrue($exists);
+    }
+
+    /*
+        Modificatore sul Prodotto, con soglia sull'Ordine
+    */
+    public function testOrderPrice()
+    {
+        $this->localInitOrder();
+        $this->actingAs($this->userReferrer);
+
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $redux = $order->aggregate->reduxData();
+        $current_total = $redux->price;
+
+        $booked_product = $order->bookings->random()->products->filter(fn($p) => $p->quantity != 0)->random();
+        $product = $booked_product->product;
+
+        $modifiers = $product->applicableModificationTypes();
+        $this->assertEquals(count($modifiers), 2);
+        $mod = null;
+
+        foreach ($modifiers as $mod) {
+            if ($mod->id == 'sconto') {
+                $mod = $product->modifiers()->where('modifier_type_id', $mod->id)->first();
+                app()->make('ModifiersService')->update($mod->id, [
+                    'arithmetic' => 'sub',
+                    'scale' => 'major',
+                    'applies_type' => 'order_price',
+                    'applies_target' => 'product',
+                    'value' => 'percentage',
+                    'threshold' => [$current_total + 10],
+                    'amount' => [5],
+                ]);
+
+                break;
+            }
+        }
+
+        $this->assertNotNull($mod);
+
+        $this->nextRound();
+
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $modifiers = $order->applyModifiers();
+        $this->assertEquals(0, $modifiers->count());
+
+        do {
+            $other_booked_product = $order->bookings->random()->products->filter(fn($p) => $p->quantity != 0)->random();
+        } while($other_booked_product->product_id != $booked_product->product_id);
+
+        $other_booked_product->quantity += 20;
+        $other_booked_product->save();
+
+        $this->nextRound();
+
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $redux = $order->aggregate->reduxData();
+        $modifiers = $order->applyModifiers();
+        $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
+        $this->assertEquals(1, count($aggregated_modifiers));
+        $exists = false;
+
+        foreach($order->bookings as $booking) {
+            $mods = $booking->applyModifiersWithFriends($redux, true);
+            $booked_product = $booking->products()->where('product_id', $product->id)->first();
+
+            if (is_null($booked_product)) {
+                $this->assertEquals(0, $mods->count());
+            }
+            else {
+                $exists = true;
+                $this->assertEquals(1, $mods->count());
+                $m = $mods->first();
+                $this->assertEquals($m->effective_amount * -1, round(($product->price * $booked_product->quantity) * 0.05, 4));
+            }
+        }
+
+        $this->assertTrue($exists);
     }
 
     private function reviewBookingsIntoOrder($mod, $test_shipping_value)

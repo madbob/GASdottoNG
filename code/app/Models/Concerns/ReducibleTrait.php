@@ -225,15 +225,34 @@ trait ReducibleTrait
                 break;
         }
 
-        $priority = ['product', 'booking', 'order', 'aggregate'];
+        /*
+            Se il modificatore riguarda solo il prodotto nel contesto della
+            prenotazione o la prenotazione stessa, riduco solo la singola
+            prenotazione.
+            Se si applica all'ordine o ad prodotto complessivo, riduco solo
+            l'ordine.
+            In extremis, riduco l'intero aggregato
+        */
+        $priority = [
+            ['product'],
+            ['booking'],
+            ['order', 'global_product'],
+            ['aggregate']
+        ];
+
         $target_priority = -1;
         $aggregate_data = null;
         $faster = true;
 
         foreach($modifiers as $mod) {
-            $p = array_search($mod->applies_target, $priority);
-            if ($p > $target_priority) {
-                $target_priority = $p;
+            $target_level = $mod->getCheckTargetLevel();
+            \Log::debug('target_level = ' . $target_level);
+
+            foreach($priority as $priority_index => $items) {
+                if (in_array($target_level, $items) && $priority_index > $target_priority) {
+                    $target_priority = $priority_index;
+                    break;
+                }
             }
 
             if ($mod->value != 'percentage' || $mod->distribution_type != 'price') {
@@ -241,32 +260,19 @@ trait ReducibleTrait
             }
         }
 
-        if (($faster && $target_priority <= 1) && ($booking && $order)) {
-            $aggregate_data = $aggregate->reduxData([
-                'orders' => [$order],
-                'bookings' => [$booking]
-            ]);
-        }
-        else {
-            $target_priority = 2;
-        }
+        $redux_filters = [];
 
-        if (is_null($aggregate_data)) {
-            if ($target_priority == 2 && $order) {
-                $aggregate_data = $aggregate->reduxData([
-                    'orders' => [$order]
-                ]);
-            }
-            else {
-                $target_priority = 3;
+        \Log::debug('target_priority = ' . $target_priority);
+
+        if ($target_priority <= 2 && $order) {
+            if ($target_priority <= 1 && $faster && $booking) {
+                $redux_filters['bookings'] = [$booking];
             }
 
-            if ($target_priority == 3) {
-                $aggregate_data = $aggregate->reduxData();
-            }
+            $redux_filters['orders'] = [$order];
         }
 
-        return $aggregate_data;
+        return $aggregate_data = $aggregate->reduxData($redux_filters);
     }
 
     /*

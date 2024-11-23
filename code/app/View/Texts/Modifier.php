@@ -12,6 +12,7 @@ class Modifier
             'none' => '',
             'quantity' => _i('la quantità'),
             'price' => _i('il valore'),
+            'order_price' => _i("il valore dell'ordine"),
             'weight' => _i('il peso'),
         ];
     }
@@ -61,6 +62,7 @@ class Modifier
             'none' => 'X',
             'quantity' => $quantity_label,
             'price' => $currency,
+            'order_price' => $currency,
             'weight' => _i('Chili'),
         ];
     }
