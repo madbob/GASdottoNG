@@ -132,11 +132,9 @@ class Modifier extends Model
                 switch($this->applies_target) {
                     case 'order':
                         return 'global_product';
-                        break;
 
                     default:
                         return 'product';
-                        break;
                 }
             }
         }

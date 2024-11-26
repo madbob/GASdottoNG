@@ -134,10 +134,6 @@ foreach($data->contents as $d) {
                 ?>
             </div>
 
-            @if($d->others)
-                <div class="extended">{!! $d->others !!}</div>
-            @endif
-
             <div class="main-wrapper">
                 @foreach($d->products as $product)
                     <div class="row">

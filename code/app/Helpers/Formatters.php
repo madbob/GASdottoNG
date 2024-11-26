@@ -224,7 +224,7 @@ function closestNumber(array $array, $goal)
 */
 function splitFields($fields)
 {
-    $formattable_user = App\Formatters\User::formattableColumns();
+    $formattable_user = App\Formatters\User::formattableColumns('shipping');
     $formattable_product = App\Formatters\Order::formattableColumns('shipping');
 
     $ret = (object) [

@@ -114,6 +114,18 @@ class User extends Formatter
 			];
         }
 
+        if ($type == 'shipping' || $type == 'all') {
+            $ret['other_shippings'] = (object) [
+                'name' => _i('Altre Prenotazioni'),
+                'format' => function($obj, $context) {
+                    /*
+                        Qui, $context deve essere un Aggregate
+                    */
+                    return $obj->morePendingBookings($context) ?: '';
+                },
+            ];
+        }
+
         return $ret;
     }
 
