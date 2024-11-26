@@ -90,12 +90,10 @@ trait Shipping
                 'gas_sorting' => $booking->user->gas_id,
                 'shipping_sorting' => $booking->user->shippingplace ? $booking->user->shippingplace->name : 'AAAA',
 
-                'user' => UserFormatter::format($booking->user, $fields->user_columns),
+                'user' => UserFormatter::format($booking->user, $fields->user_columns, $order->aggregate),
                 'products' => [],
                 'totals' => [],
                 'notes' => !empty($booking->notes) ? [$booking->notes] : [],
-
-                'others' => $booking->user->morePendingBookings($order->aggregate),
             ];
 
             foreach($booking->products_with_friends as $booked) {
