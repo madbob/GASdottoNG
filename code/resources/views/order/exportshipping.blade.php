@@ -18,7 +18,13 @@
         <x-larastrap::checks name="fields" :label="_i('Colonne Prodotti')" :options="$options" :value="$currentgas->orders_shipping_product_columns" />
 
         <x-larastrap::radios name="status" :label="_i('Stato Prenotazioni')" :options="['pending' => _i('Prenotate'), 'shipped' => _i('Consegnate')]" value="pending" />
+
         @include('order.partials.export.modifiers', ['order' => $order])
+
+        @if(someoneCan('users.subusers'))
+            <x-larastrap::radios name="isolate_friends" :label="_i('Amici separati')" :options="['0' => _i('No'), '1' => _i('Sì')]" value="0" :pophelp="_i('Di default, le prenotazioni degli utenti \'amici\' vengono aggregate in quelle dei rispettivi utenti principali. Selezionando \'Sì\', vengono rappresentate nel documento come prenotazioni autonome.')" />
+        @endif
+
         <x-larastrap::radios name="format" :label="_i('Formato')" :options="['pdf' => _i('PDF'), 'csv' => _i('CSV')]" value="pdf" />
 
         @include('order.filesmail', ['contacts' => $order->supplier->involvedEmails()])

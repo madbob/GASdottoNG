@@ -48,11 +48,17 @@ class Order extends Printer
         @unlink($temp_file_path);
     }
 
+    /*
+        Se extra_modifiers == false (o non definito affatto): non contempla i
+        modificatori che hanno un tipo movimento contabile esplicito (e dunque
+        non sono destinati al fonitore)
+    */
     protected function handleShipping($obj, $request)
     {
 		$action = $request['action'] ?? 'download';
         $subtype = $request['format'] ?? 'pdf';
         $status = $request['status'] ?? 'pending';
+        $isolate_friends = $request['isolate_friends'] ?? 0;
         $extra_modifiers = $request['extra_modifiers'] ?? 0;
         $required_fields = $request['fields'] ?? [];
 
@@ -70,7 +76,7 @@ class Order extends Printer
 
         $fields = splitFields($required_fields);
 
-        $data = $this->formatShipping($obj, $fields, $status, $shipping_place, $extra_modifiers);
+        $data = $this->formatShipping($obj, $fields, $status, $isolate_friends, $shipping_place, $extra_modifiers);
 
         $title = _i('Dettaglio Consegne ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
         $filename = sanitizeFilename($title . '.' . $subtype);

@@ -43,11 +43,7 @@ class Delivery extends Model
 
     private static function sortByUserName($bookings)
     {
-        usort($bookings, function($a, $b) {
-            return $a->user->printableName() <=> $b->user->printableName();
-        });
-
-        return $bookings;
+        return $bookings->sortBy(fn($b, $index) => $b->user->printableName());
     }
 
     private static function sortByPlace($bookings)
@@ -84,6 +80,8 @@ class Delivery extends Model
 
     public static function sortBookingsByShippingPlace($bookings, $shipping_place)
     {
+        $bookings = collect($bookings);
+
         if ($shipping_place == 0 || $shipping_place == 'all_by_name') {
             $bookings = self::sortByUserName($bookings);
         }
@@ -91,10 +89,7 @@ class Delivery extends Model
             $bookings = self::sortByPlace($bookings);
         }
         else {
-            $tmp_bookings = array_filter($bookings, function($b) use ($shipping_place) {
-                return $b->shipping_place && $b->shipping_place->id == $shipping_place;
-            });
-
+            $tmp_bookings = $bookings->filter(fn($b) => $b->shipping_place && $b->shipping_place->id == $shipping_place);
             $bookings = self::sortByUserName($tmp_bookings);
         }
 

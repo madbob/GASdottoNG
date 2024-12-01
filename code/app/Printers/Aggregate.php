@@ -31,7 +31,7 @@ class Aggregate extends Printer
 
         $temp_data = [];
         foreach($obj->orders as $order) {
-            $temp_data[] = $this->formatShipping($order, $fields, $status, $shipping_place, true);
+            $temp_data[] = $this->formatShipping($order, $fields, $status, false, $shipping_place, true);
         }
 
         if (empty($temp_data)) {
