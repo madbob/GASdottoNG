@@ -996,7 +996,7 @@ class ModifiersServiceTest extends TestCase
         $shipping_cost_found = false;
 
         $printer = new OrderPrinter();
-        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name', 1);
+        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', false, 'all_by_name', 1);
 
         foreach($formatted->contents as $d) {
             if ($d->user_id == $booking->user_id) {
@@ -1073,7 +1073,7 @@ class ModifiersServiceTest extends TestCase
         $shipping_cost_found = false;
 
         $printer = new OrderPrinter();
-        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', 'all_by_name', 1);
+        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', false, 'all_by_name', 1);
 
         foreach($formatted->contents as $d) {
             if ($d->user_id == $newUser->id) {
