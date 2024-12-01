@@ -69,7 +69,7 @@ abstract class CSVImporter
             $fields = $this->fields();
 
             foreach($parameters['columns'] as $index => $c) {
-                if (isset($sorted[$index])) {
+                if (isset($sorted[$index]) && isset($fields[$sorted[$index]])) {
                     $selected[] = (object) [
                         'label' => $fields[$sorted[$index]]->label,
                         'name' => $sorted[$index],
