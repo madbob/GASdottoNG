@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use App\Models\Concerns\ModifiableTrait;
@@ -80,7 +81,7 @@ class Delivery extends Model
 
     public static function sortBookingsByShippingPlace($bookings, $shipping_place)
     {
-        $bookings = collect($bookings);
+        $bookings = new Collection($bookings);
 
         if ($shipping_place == 0 || $shipping_place == 'all_by_name') {
             $bookings = self::sortByUserName($bookings);
