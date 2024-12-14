@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-2">
         <div class="col">
             @include('commons.addingbutton', [
                 'template' => 'permissions.base-edit',
@@ -30,6 +30,8 @@
                 'typename_readable' => _i('Ruolo'),
                 'targeturl' => 'roles'
             ])
+
+            <x-larastrap::downloading :label="_i('Esporta Permessi ')" :href="route('roles.export')" />
         </div>
     </div>
 

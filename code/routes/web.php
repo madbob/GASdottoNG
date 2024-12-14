@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('roles/supplier/{supplier_id}', 'RolesController@formBySupplier');
         Route::post('roles/attach', 'RolesController@attach');
         Route::post('roles/detach', 'RolesController@detach');
+        Route::get('roles/export', 'RolesController@export')->name('roles.export');
 
         Route::get('suppliers/ro/{id}', 'SuppliersController@show_ro');
         Route::get('suppliers/{id}/header', 'SuppliersController@objhead')->name('suppliers.objhead');

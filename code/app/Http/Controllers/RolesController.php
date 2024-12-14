@@ -137,4 +137,11 @@ class RolesController extends BackedController
             return $this->successResponse();
         });
     }
+
+    public function export()
+    {
+        return $this->easyExecute(function () {
+            return $this->service->export();
+        });
+    }
 }

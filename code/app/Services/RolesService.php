@@ -211,4 +211,41 @@ class RolesService extends BaseService
         $r->actions = implode(',', $new_actions);
         $r->save();
     }
+
+    public function export()
+    {
+        $filename = sprintf('%s.csv', _i('Permessi'));
+
+        $headers = [''];
+        $data = [];
+
+        $users = User::topLevel()->with('roles')->get();
+        foreach ($users as $index => $user) {
+            $data[] = [$user->printableName()];
+        }
+
+        $roles = Role::has('users')->orderBy('name')->get();
+        foreach ($roles as $role) {
+            $headers[] = $role->printableName();
+
+            foreach ($users as $index => $user) {
+                $cell = '';
+
+                $attached = $user->roles->firstWhere('id', $role->id);
+                if ($attached) {
+                    $app_string = [];
+                    $applications = $attached->applications(true, true);
+                    foreach ($applications as $app) {
+                        $app_string[] = $app->printableName();
+                    }
+
+                    $cell = implode("\n", $app_string);
+                }
+
+                $data[$index][] = $cell;
+            }
+        }
+
+        return output_csv($filename, $headers, $data, null);
+    }
 }

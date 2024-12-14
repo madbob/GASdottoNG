@@ -164,6 +164,14 @@ return [
                 'postlabel' => '<i class="bi-window"></i>',
             ],
         ],
+        'downloading' => [
+            'extends' => 'link',
+            'params' => [
+                'classes' => ['btn'],
+                'color' => 'light',
+                'postlabel' => '<i class="bi-download"></i>',
+            ],
+        ],
         'iconbutton' => [
             'extends' => 'button',
             'params' => [
