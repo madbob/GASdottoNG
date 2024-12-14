@@ -18,11 +18,13 @@ class Users extends CSVImporter
 	private function essentialFields(&$ret)
 	{
 		$ret['firstname'] = (object) [
-			'label' => _i('Nome'),
+            'label' => _i('Nome'),
+            'mandatory' => true,
 		];
 
 		$ret['lastname'] = (object) [
 			'label' => _i('Cognome'),
+            'mandatory' => true,
 		];
 
 		$ret['username'] = (object) [
@@ -82,6 +84,10 @@ class Users extends CSVImporter
 		$ret['member_since'] = (object) [
 			'label' => _i('Membro da'),
 			'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
+		];
+
+        $ret['card_number'] = (object) [
+            'label' => _i('Numero Tessera'),
 		];
 
 		$ret['last_login'] = (object) [
