@@ -180,7 +180,7 @@ class Users extends CSVImporter
     {
         DB::beginTransaction();
 
-        [$reader, $columns] = $this->initRead($request);
+        $columns = $this->initRead($request);
         [$login_index] = $this->getColumnsIndex($columns, ['username']);
 
         $gas = Auth::user()->gas;
@@ -193,7 +193,7 @@ class Users extends CSVImporter
             TODO: aggiornare questo per adattarlo a UsersService
         */
 
-        foreach ($reader->getRecords() as $line) {
+        foreach ($this->getRecords() as $line) {
             try {
                 $new_user = false;
                 $login = $line[$login_index];
@@ -251,7 +251,7 @@ class Users extends CSVImporter
                         $address[$index] = $value;
                     }
                     elseif ($field == 'preferred_delivery_id') {
-                        $value = trim($value);
+                        $value = $value;
                         $shipping = Delivery::where('name', $value)->first();
                         if ($shipping) {
                             $u->$field = $shipping->id;

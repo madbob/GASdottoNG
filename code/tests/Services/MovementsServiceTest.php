@@ -79,7 +79,7 @@ class MovementsServiceTest extends TestCase
     */
     public function test_recalculate()
     {
-        $this->testStore();
+        $this->test_store();
 
         $currency = defaultCurrency();
 
@@ -98,7 +98,7 @@ class MovementsServiceTest extends TestCase
     */
     public function test_close_balance()
     {
-        $this->testStore();
+        $this->test_store();
 
         $previous_balances = Balance::all()->count();
 

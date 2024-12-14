@@ -1036,12 +1036,12 @@ class ModifiersServiceTest extends TestCase
 
     public function test_with_friend_overlap()
     {
-        $this->testWithFriend(true);
+        $this->test_with_friend(true);
     }
 
     public function test_with_friend_no_overlap()
     {
-        $this->testWithFriend(false);
+        $this->test_with_friend(false);
     }
 
     /*

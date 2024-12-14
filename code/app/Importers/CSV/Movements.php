@@ -71,7 +71,7 @@ class Movements extends CSVImporter
 
     public function select($request)
     {
-        [$reader, $columns] = $this->initRead($request);
+        $columns = $this->initRead($request);
         $target_separator = ',';
 
         $movements = [];
@@ -81,7 +81,7 @@ class Movements extends CSVImporter
         $default_currency = defaultCurrency();
         $cached_currencies[$default_currency->symbol] = $default_currency;
 
-        foreach ($reader->getRecords() as $line) {
+        foreach ($this->getRecords() as $line) {
             try {
                 /*
                     In questa fase, genero dei Movement
@@ -104,7 +104,7 @@ class Movements extends CSVImporter
                     elseif ($field == 'user') {
                         $field = 'sender_id';
 
-                        $name = trim($line[$index]);
+                        $name = $line[$index];
                         if (filled($name)) {
                             $user = User::where('username', $name)->first();
 
@@ -130,7 +130,7 @@ class Movements extends CSVImporter
                     elseif ($field == 'supplier') {
                         $field = 'target_id';
 
-                        $name = trim($line[$index]);
+                        $name = $line[$index];
                         if (filled($name)) {
                             $supplier = Supplier::where('name', $name)->first();
 

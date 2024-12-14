@@ -128,7 +128,7 @@ class FormattersTest extends TestCase
 
     public function test_unroll_periodic_month_first()
     {
-        $this->testUnrollPeriodicMonth('month_first', [
+        $this->test_unroll_periodic_month('month_first', [
             '2021-08-04',
             '2021-09-01',
             '2021-10-06',
@@ -137,7 +137,7 @@ class FormattersTest extends TestCase
 
     public function test_unroll_periodic_month_second()
     {
-        $this->testUnrollPeriodicMonth('month_second', [
+        $this->test_unroll_periodic_month('month_second', [
             '2021-08-11',
             '2021-09-08',
             '2021-10-13',
@@ -146,7 +146,7 @@ class FormattersTest extends TestCase
 
     public function test_unroll_periodic_month_third()
     {
-        $this->testUnrollPeriodicMonth('month_third', [
+        $this->test_unroll_periodic_month('month_third', [
             '2021-08-18',
             '2021-09-15',
             '2021-10-20',
@@ -155,7 +155,7 @@ class FormattersTest extends TestCase
 
     public function test_unroll_periodic_month_fourth()
     {
-        $this->testUnrollPeriodicMonth('month_fourth', [
+        $this->test_unroll_periodic_month('month_fourth', [
             '2021-08-25',
             '2021-09-22',
             '2021-10-27',
@@ -164,7 +164,7 @@ class FormattersTest extends TestCase
 
     public function test_unroll_periodic_month_last()
     {
-        $this->testUnrollPeriodicMonth('month_last', [
+        $this->test_unroll_periodic_month('month_last', [
             '2021-08-25',
             '2021-09-29',
             '2021-10-27',

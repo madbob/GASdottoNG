@@ -11,6 +11,8 @@ use App\Exceptions\MissingFieldException;
 
 abstract class CSVImporter
 {
+    private $reader;
+
     public function extraInformations()
     {
         return null;
@@ -110,14 +112,14 @@ abstract class CSVImporter
             $path = $filepath . '/' . $filename;
 
             $target_separator = $this->guessCsvFileSeparator($path);
-            $reader = Reader::createFromPath($path, 'r');
-            $reader->setDelimiter($target_separator);
+            $this->reader = Reader::createFromPath($path, 'r');
+            $this->reader->setDelimiter($target_separator);
 
             $parameters['path'] = $path;
 
             $sample_line = '';
 
-            foreach ($reader->getRecords() as $line) {
+            foreach ($this->reader->getRecords() as $line) {
                 $sample_line = $line;
                 break;
             }
@@ -180,10 +182,32 @@ abstract class CSVImporter
         }
 
         $target_separator = $this->guessCsvFileSeparator($path);
-        $reader = Reader::createFromPath($path, 'r');
-        $reader->setDelimiter($target_separator);
+        $this->reader = Reader::createFromPath($path, 'r');
+        $this->reader->setDelimiter($target_separator);
 
-        return [$reader, $columns];
+        return $columns;
+    }
+
+    protected function getRecords()
+    {
+        $ret = $this->reader->getRecords();
+        $ret = iterator_to_array($ret);
+
+        /*
+            Faccio il trim() di tutti i valori
+        */
+        $ret = array_map(fn ($row) => array_map(fn ($v) => trim($v), $row), $ret);
+
+        /*
+            Elimino tutte le righe vuote (ovvero: i cui valori sono tutti vuoti)
+        */
+        $ret = array_filter($ret, function ($row) {
+            $test = array_filter($row, fn ($v) => ! empty($v));
+
+            return ! empty($test);
+        });
+
+        return $ret;
     }
 
     protected function mapNewElements($value, &$cached, $createNew)

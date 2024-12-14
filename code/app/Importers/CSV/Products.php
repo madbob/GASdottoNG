@@ -104,7 +104,7 @@ class Products extends CSVImporter
 
     public function select($request)
     {
-        [$reader, $columns] = $this->initRead($request);
+        $columns = $this->initRead($request);
         [$name_index, $supplier_code_index] = $this->getColumnsIndex($columns, ['name', 'supplier_code']);
         $s = $this->getSupplier($request);
 
@@ -114,7 +114,7 @@ class Products extends CSVImporter
         $all_measures = Measure::all();
         $all_vatrates = VatRate::all();
 
-        foreach ($reader->getRecords() as $line) {
+        foreach ($this->getRecords() as $line) {
             if (empty($line) || (count($line) == 1 && empty($line[0]))) {
                 continue;
             }
@@ -152,7 +152,7 @@ class Products extends CSVImporter
                 }
 
                 foreach ($columns as $index => $field) {
-                    $value = trim($line[$index]);
+                    $value = $line[$index];
 
                     if ($field == 'category') {
                         $field = $this->mapSelection($all_categories, 'name', $value, 'category', $p);

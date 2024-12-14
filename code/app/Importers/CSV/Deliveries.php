@@ -63,7 +63,7 @@ class Deliveries extends CSVImporter
         $service = app()->make('BookingsService');
         $errors = [];
 
-        [$reader, $columns] = $this->initRead($request);
+        $columns = $this->initRead($request);
         $target_separator = ',';
 
         $aggregate_id = $request->input('aggregate_id');
@@ -73,7 +73,7 @@ class Deliveries extends CSVImporter
         $target_order = null;
 
         [$first_product_index] = $this->getColumnsIndex($columns, ['first']);
-        $csvdata = iterator_to_array($reader->getRecords());
+        $csvdata = iterator_to_array($this->getRecords());
 
         $header = $csvdata[0];
 
