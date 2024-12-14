@@ -23,5 +23,5 @@ abstract class ModifierType extends Parameter
         $type->save();
     }
 
-    public abstract function initNew($type);
+    abstract public function initNew($type);
 }

@@ -10,10 +10,7 @@ use FeedIo\Feed;
 use FeedIo\Feed\Item\Author;
 use FeedIo\Factory\Builder\GuzzleClientBuilder;
 use Psr\Log\NullLogger;
-
-use App\Http\Controllers\Controller;
 use App\Services\OrdersService;
-use App\Services\BookingsService;
 use App\Printers\Order as Printer;
 use App\Product;
 use App\Order;
@@ -48,10 +45,10 @@ class OrdersController extends BackedController
     {
         $summary = '';
 
-        foreach($aggregate->orders as $order) {
+        foreach ($aggregate->orders as $order) {
             $summary .= $order->printableName() . "\n";
 
-            foreach($order->products as $product) {
+            foreach ($order->products as $product) {
                 $summary .= $product->printableName() . "\n";
             }
 
@@ -84,13 +81,13 @@ class OrdersController extends BackedController
             $feed->setLastModified(new \DateTime());
         }
 
-        foreach($aggregates as $aggregate) {
+        foreach ($aggregates as $aggregate) {
             if ($aggregate->gas->isEmpty()) {
                 continue;
             }
 
             $item = $this->rssItem($feed, $aggregate);
-			$feed->add($item);
+            $feed->add($item);
         }
 
         /*
@@ -98,7 +95,8 @@ class OrdersController extends BackedController
             informazioni utili per GASdotto: qui disabilito del tutto il suo
             proprio logging
         */
-		$feedIo = new FeedIo((new GuzzleClientBuilder())->getClient(), new NullLogger());
+        $feedIo = new FeedIo((new GuzzleClientBuilder())->getClient(), new NullLogger());
+
         return $feedIo->getPsrResponse($feed, 'rss');
     }
 
@@ -107,18 +105,18 @@ class OrdersController extends BackedController
         $events = [];
 
         $orders = defaultOrders(false);
-        foreach($orders as $o) {
+        foreach ($orders as $o) {
             if ($o->start && $o->end) {
-				$event = (new \Eluceo\iCal\Domain\Entity\Event())
-					->setSummary($o->printableName())
-					->setOccurrence(
-						new \Eluceo\iCal\Domain\ValueObject\MultiDay(
-							new \Eluceo\iCal\Domain\ValueObject\Date(new \DateTime($o->start)),
-							new \Eluceo\iCal\Domain\ValueObject\Date(new \DateTime($o->end)),
-						)
-					);
+                $event = (new \Eluceo\iCal\Domain\Entity\Event())
+                    ->setSummary($o->printableName())
+                    ->setOccurrence(
+                        new \Eluceo\iCal\Domain\ValueObject\MultiDay(
+                            new \Eluceo\iCal\Domain\ValueObject\Date(new \DateTime($o->start)),
+                            new \Eluceo\iCal\Domain\ValueObject\Date(new \DateTime($o->end)),
+                        )
+                    );
 
-				$events[] = $event;
+                $events[] = $event;
             }
         }
 
@@ -128,13 +126,14 @@ class OrdersController extends BackedController
         $calendar = new \Eluceo\iCal\Domain\Entity\Calendar($events);
         $componentFactory = new \Eluceo\iCal\Presentation\Factory\CalendarFactory();
         $calendarComponent = $componentFactory->createCalendar($calendar);
+
         return (string) $calendarComponent;
     }
 
     public function index(Request $request)
     {
         $user = $request->user();
-        $orders = defaultOrders(!$user->can('order.view', $user->gas));
+        $orders = defaultOrders(! $user->can('order.view', $user->gas));
 
         return view('pages.orders', [
             'orders' => $orders,
@@ -178,11 +177,11 @@ class OrdersController extends BackedController
     {
         $supplier_id = [];
 
-        foreach($user->targetsByAction('supplier.modify') as $supplier) {
+        foreach ($user->targetsByAction('supplier.modify') as $supplier) {
             $supplier_id[] = $supplier->id;
         }
 
-        foreach($user->targetsByAction('supplier.orders') as $supplier) {
+        foreach ($user->targetsByAction('supplier.orders') as $supplier) {
             $supplier_id[] = $supplier->id;
         }
 
@@ -194,6 +193,7 @@ class OrdersController extends BackedController
     public function noDestroyNotice(Request $request, $id)
     {
         $order = $this->service->show($id, true);
+
         return view('order.partials.nodestroy', ['order' => $order]);
     }
 
@@ -224,7 +224,7 @@ class OrdersController extends BackedController
         $notes = $request->input('notes') ?? '';
         $order->products()->updateExistingPivot($product_id, ['notes' => $notes]);
 
-        for ($i = 0; $i < count($bookings); ++$i) {
+        for ($i = 0; $i < count($bookings); $i++) {
             $booking_id = $bookings[$i];
 
             $booking = Booking::find($booking_id);
@@ -236,7 +236,7 @@ class OrdersController extends BackedController
             if ($product->exists && empty($quantities[$i])) {
                 $product->delete();
             }
-            else if (!empty($quantities[$i])) {
+            elseif (! empty($quantities[$i])) {
                 $product->quantity = $quantities[$i];
                 $product->save();
             }
@@ -252,6 +252,7 @@ class OrdersController extends BackedController
     public function getFixModifiers(Request $request, $id)
     {
         $order = $this->service->show($id, true);
+
         return view('order.fixemodifiers', ['order' => $order]);
     }
 
@@ -259,6 +260,7 @@ class OrdersController extends BackedController
     {
         $action = $request->input('action');
         $this->service->fixModifiers($id, $action);
+
         return $this->successResponse();
     }
 
@@ -271,10 +273,10 @@ class OrdersController extends BackedController
         $orders = easyFilterOrders($supplier_id, $startdate, $enddate, $status);
 
         return view('commons.loadablelist', [
-            'identifier' => !empty($supplier_id) ? 'order-list-' . $supplier_id : 'order-list',
+            'identifier' => ! empty($supplier_id) ? 'order-list-' . $supplier_id : 'order-list',
             'items' => $orders,
-            'legend' => (object)[
-                'class' => Aggregate::class
+            'legend' => (object) [
+                'class' => Aggregate::class,
             ],
             'sorting_rules' => [
                 'supplier_name' => _i('Fornitore'),
@@ -288,6 +290,7 @@ class OrdersController extends BackedController
     public function exportModal(Request $request, $id, $type)
     {
         $order = $this->service->show($id);
+
         return view('order.export' . $type, ['order' => $order]);
     }
 

@@ -9,12 +9,13 @@ class User extends Role
         return 'user';
     }
 
-	public function initNew($type)
+    public function initNew($type)
     {
         $type->name = _i('Utente');
         $type->system = true;
-		$type->actions = 'users.self,users.view,supplier.view,supplier.book';
-		$type->parent_id = $this->getID('admin');
+        $type->actions = 'users.self,users.view,supplier.view,supplier.book';
+        $type->parent_id = $this->getID('admin');
+
         return $type;
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Auth;
-use Log;
 use DB;
 
 use App\Events\VariantChanged;
@@ -11,7 +9,6 @@ use App\Product;
 use App\Variant;
 use App\VariantValue;
 use App\VariantCombo;
-use App\BookedProductVariant;
 
 class VariantsService extends BaseService
 {
@@ -19,6 +16,7 @@ class VariantsService extends BaseService
     {
         $variant = Variant::findOrFail($id);
         $this->ensureAuth(['supplier.modify' => $variant->product->supplier]);
+
         return $variant;
     }
 
@@ -34,13 +32,14 @@ class VariantsService extends BaseService
         $val->variant_id = $variant->id;
         $val->value = $value;
         $val->save();
+
         return $val;
     }
 
     private function retrieveVariant($request)
     {
         $variant_id = $request['variant_id'] ?? '';
-        if (!empty($variant_id)) {
+        if (! empty($variant_id)) {
             $variant = Variant::findOrFail($variant_id);
         }
         else {
@@ -67,7 +66,7 @@ class VariantsService extends BaseService
         $new_values = $request['value'] ?? [];
         $new_ids = [];
 
-        foreach($new_values as $i => $value) {
+        foreach ($new_values as $i => $value) {
             $value = trim($value);
             if (empty($value)) {
                 continue;
@@ -79,7 +78,7 @@ class VariantsService extends BaseService
         }
 
         $values_to_remove = VariantValue::where('variant_id', '=', $variant->id)->whereNotIn('id', $new_ids)->get();
-        foreach($values_to_remove as $vtr) {
+        foreach ($values_to_remove as $vtr) {
             $vtr->delete();
         }
 
@@ -92,7 +91,7 @@ class VariantsService extends BaseService
 
     public function matrix($product, $combinations, $actives, $codes, $prices, $weights)
     {
-        foreach($combinations as $index => $combination) {
+        foreach ($combinations as $index => $combination) {
             $combo = VariantCombo::byValues(explode(',', $combination));
             $combo->code = $codes[$index];
             $combo->active = in_array($combo->id, $actives);

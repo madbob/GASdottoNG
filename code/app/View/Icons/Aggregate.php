@@ -14,13 +14,13 @@ class Aggregate extends IconsMap
         $ret = [
             'plus-circle' => (object) [
                 'test' => function ($obj) {
-                    return ($obj->status == 'closed' && $obj->hasPendingPackages());
+                    return $obj->status == 'closed' && $obj->hasPendingPackages();
                 },
                 'text' => _i('Confezioni Da Completare'),
-            ]
+            ],
         ];
 
-        foreach(Status::orders() as $identifier => $meta) {
+        foreach (Status::orders() as $identifier => $meta) {
             $ret[$meta->icon] = (object) [
                 'test' => function ($obj) use ($identifier) {
                     return $obj->status == $identifier;

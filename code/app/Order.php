@@ -26,13 +26,14 @@ use App\Events\SluggableCreating;
 
 class Order extends Model
 {
-    use HasFactory, TracksUpdater, AttachableTrait, ExportableTrait, ModifiableTrait, PayableTrait, CreditableTrait, GASModel, SluggableID, ReducibleTrait;
+    use AttachableTrait, CreditableTrait, ExportableTrait, GASModel, HasFactory, ModifiableTrait, PayableTrait, ReducibleTrait, SluggableID, TracksUpdater;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class
+        'creating' => SluggableCreating::class,
     ];
 
     protected static function boot()
@@ -102,7 +103,7 @@ class Order extends Model
     {
         $ret = $this->supplier->name;
 
-        if (!empty($this->comment) && strlen($this->comment) < longCommentLimit()) {
+        if (! empty($this->comment) && strlen($this->comment) < longCommentLimit()) {
             $ret .= ' - ' . $this->comment;
         }
 
@@ -114,6 +115,7 @@ class Order extends Model
     public function statusIcons()
     {
         $icons = $this->icons('status');
+
         return $this->formatIcons($icons);
     }
 
@@ -122,9 +124,9 @@ class Order extends Model
         $user = Auth::user();
 
         if ($user && $user->gas->hasFeature('shipping_places')) {
-            $query->where(function($query) use ($user) {
-                $query->where(function($query) use ($user) {
-                    $query->doesnthave('deliveries')->orWhereHas('deliveries', function($query) use ($user) {
+            $query->where(function ($query) use ($user) {
+                $query->where(function ($query) use ($user) {
+                    $query->doesnthave('deliveries')->orWhereHas('deliveries', function ($query) use ($user) {
                         if ($user->isFriend()) {
                             $shippingplace = $user->parent->shippingplace;
                         }
@@ -159,7 +161,7 @@ class Order extends Model
                 $ret->push($product);
             }
             else {
-                foreach($product->variant_combos as $combo) {
+                foreach ($product->variant_combos as $combo) {
                     $ret->push($combo);
                 }
             }
@@ -199,7 +201,7 @@ class Order extends Model
             $userobj = Auth::user();
             $userid = $userobj->id;
         }
-        else if (is_object($userid)) {
+        elseif (is_object($userid)) {
             $userobj = $userid;
             $userid = $userobj->id;
         }
@@ -216,7 +218,7 @@ class Order extends Model
         }
         else {
             $ret->loadMissing(['products', 'products.modifiedValues']);
-            $ret->products->each(fn($p) => $p->setRelation('booking', $ret));
+            $ret->products->each(fn ($p) => $p->setRelation('booking', $ret));
         }
 
         if ($userobj) {
@@ -224,6 +226,7 @@ class Order extends Model
         }
 
         $ret->setRelation('order', $this);
+
         return $ret;
     }
 
@@ -238,11 +241,11 @@ class Order extends Model
             $bookings = $this->bookings()->where('status', $status)->get();
         }
 
-        foreach($bookings as $booking) {
+        foreach ($bookings as $booking) {
             $booking->setRelation('order', $this);
 
             if ($booking->user->isFriend()) {
-                if (!isset($ret[$booking->user->parent_id])) {
+                if (! isset($ret[$booking->user->parent_id])) {
                     $ret[$booking->user->parent_id] = $this->userBooking($booking->user->parent_id);
                 }
             }
@@ -261,7 +264,7 @@ class Order extends Model
 
     public function getLongCommentAttribute()
     {
-        if (!empty($this->comment) && strlen($this->comment) >= longCommentLimit()) {
+        if (! empty($this->comment) && strlen($this->comment) >= longCommentLimit()) {
             return $this->comment;
         }
         else {
@@ -285,6 +288,7 @@ class Order extends Model
         foreach ($this->products as $p) {
             if ($p->id == $product->id) {
                 $product = $p;
+
                 return true;
             }
         }
@@ -307,7 +311,7 @@ class Order extends Model
         if ($variants->isEmpty() == false) {
             $row['variants'] = [];
 
-            foreach($variants as $variant) {
+            foreach ($variants as $variant) {
                 $id = $variant->innerIdentifier();
                 $row['variants'][$id] = $variant->price_offset;
             }
@@ -326,13 +330,13 @@ class Order extends Model
     {
         $order_id = $this->id;
 
-        $booked_products = DB::table('booked_products')->select('product_id')->distinct()->join('bookings', function($join) use ($order_id) {
+        $booked_products = DB::table('booked_products')->select('product_id')->distinct()->join('bookings', function ($join) use ($order_id) {
             $join->on('booking_id', '=', 'bookings.id')->where('order_id', $order_id);
         })->get();
 
         $products_ids = $new_products->pluck('id')->toArray();
 
-        foreach($booked_products as $bp) {
+        foreach ($booked_products as $bp) {
             if (in_array($bp->product_id, $products_ids) == false) {
                 throw new \Exception("Un prodotto già prenotato non è nell'elenco dei nuovi prodotti per l'ordine! Ordine: " . $this->id . ', prodotto: ' . $bp->product_id, 1);
             }
@@ -346,7 +350,7 @@ class Order extends Model
         if ($update_prices) {
             $data = [];
 
-            foreach($products as $product) {
+            foreach ($products as $product) {
                 $data[$product->id] = [
                     'prices' => $this->extractProductPrices($product),
                 ];
@@ -384,11 +388,11 @@ class Order extends Model
             Se vengono rimossi dei prodotti dall'ordine, ne elimino tutte le
             relative prenotazioni sinora avvenute
         */
-        foreach($this->bookings as $booking) {
+        foreach ($this->bookings as $booking) {
             $products = $booking->products()->where('product_id', $product->id)->get();
             if ($products->isEmpty() == false) {
                 $altered_bookings++;
-                foreach($products as $p) {
+                foreach ($products as $p) {
                     $p->delete();
                 }
             }
@@ -410,7 +414,7 @@ class Order extends Model
     {
         $gas = currentAbsoluteGas();
 
-        switch($gas->booking_contacts) {
+        switch ($gas->booking_contacts) {
             case 'none':
                 return new Collection();
 
@@ -429,7 +433,7 @@ class Order extends Model
 
     public function enforcedContacts()
     {
-        return $this->innerCache('enforced_contacts', function($obj) {
+        return $this->innerCache('enforced_contacts', function ($obj) {
             $contacts = $obj->showableContacts();
             if ($contacts->isEmpty()) {
                 $contacts = everybodyCan('supplier.orders', $obj->supplier);
@@ -447,21 +451,21 @@ class Order extends Model
             $query_users = User::whereNull('parent_id');
         }
         else {
-            $query_users = User::whereHas('suppliers', function($query) use ($order) {
+            $query_users = User::whereHas('suppliers', function ($query) use ($order) {
                 $query->where('suppliers.id', $order->supplier->id);
             });
         }
 
-		$query_users->fullEnabled();
+        $query_users->fullEnabled();
 
         $deliveries = $order->deliveries;
         if ($deliveries->isEmpty() == false) {
-            $query_users->where(function($query) use ($deliveries) {
+            $query_users->where(function ($query) use ($deliveries) {
                 $query->whereIn('preferred_delivery_id', $deliveries->pluck('id'))->orWhere('preferred_delivery_id', '0');
             });
         }
 
-        $query_users->whereHas('contacts', function($query) {
+        $query_users->whereHas('contacts', function ($query) {
             $query->where('type', 'email');
         });
 
@@ -472,10 +476,10 @@ class Order extends Model
     {
         $had_cache = $this->hasInnerCache('angry_bookings');
 
-        $bookings = $this->innerCache('angry_bookings', function($obj) {
+        $bookings = $this->innerCache('angry_bookings', function ($obj) {
             $bookings = $obj->bookings()->angryload()->get();
 
-            foreach($bookings as $booking) {
+            foreach ($bookings as $booking) {
                 $booking->setRelation('order', $obj);
             }
 
@@ -495,12 +499,13 @@ class Order extends Model
             modificatori quando necessario
         */
         if ($had_cache) {
-            foreach($bookings as $booking) {
+            foreach ($bookings as $booking) {
                 $booking->unsetModifiedValues();
             }
         }
 
         $this->setRelation('bookings', $bookings);
+
         return $bookings;
     }
 
@@ -511,28 +516,28 @@ class Order extends Model
 
     public function isRunning()
     {
-        return (($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages != 'no' && $this->pendingPackages()->isEmpty() == false));
+        return ($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages != 'no' && $this->pendingPackages()->isEmpty() == false);
     }
 
     public function pendingPackages()
     {
-        return $this->innerCache('pending_packages', function($obj) {
+        return $this->innerCache('pending_packages', function ($obj) {
             $ret = new Collection();
             $products = $obj->products()->where('package_size', '!=', 0)->with('measure')->get();
 
             if ($products->isEmpty() == false) {
                 $order = $this;
-                $order_data = app()->make('GlobalScopeHub')->executedForAll($this->keep_open_packages != 'each', function() use ($order) {
+                $order_data = app()->make('GlobalScopeHub')->executedForAll($this->keep_open_packages != 'each', function () use ($order) {
                     return $order->reduxData();
                 });
 
-                foreach($products as $p) {
+                foreach ($products as $p) {
                     $quantity = $order_data->products[$p->id]->quantity ?? 0;
                     if ($quantity != 0) {
                         $test = round(fmod($quantity, $p->fixed_package_size));
                         if ($test != 0) {
                             $fake_max_available = 0;
-                            while($fake_max_available < $quantity) {
+                            while ($fake_max_available < $quantity) {
                                 $fake_max_available += $p->fixed_package_size;
                             }
 
@@ -610,22 +615,22 @@ class Order extends Model
             'selection' => (object) [
                 'label' => _i('Selezione'),
                 'help' => _i("Per abilitare o disabilitare prodotti del listino fornitore all'interno dell'ordine"),
-                'width' => 3
+                'width' => 3,
             ],
             'name' => (object) [
                 'label' => _i('Prodotto'),
                 'help' => _i('Nome e descrizione del prodotto'),
-                'width' => 20
+                'width' => 20,
             ],
             'price' => (object) [
                 'label' => _i('Prezzo'),
                 'help' => _i('Prezzo unitario del prodotto'),
-                'width' => 5
+                'width' => 5,
             ],
             'available' => (object) [
                 'label' => _i('Disponibile'),
                 'help' => _i('Quantità disponibile del prodotto'),
-                'width' => 5
+                'width' => 5,
             ],
         ];
 
@@ -638,17 +643,17 @@ class Order extends Model
             prodotto all'interno dell'ordine
         */
         $products_modifiers = ModifierType::byClass(Product::class);
-        foreach($products_modifiers as $pmod) {
+        foreach ($products_modifiers as $pmod) {
             $ret['modifier-pending-' . $pmod->id] = (object) [
                 'label' => sprintf('%s (%s)', $pmod->name, _i('Prenotato')),
                 'help' => _i("Modificatore Prodotto, sul Prenotato. Mostrato solo se il modificatore è attivo per un qualche prodotto nell'ordine"),
-                'width' => 7
+                'width' => 7,
             ];
 
             $ret['modifier-shipped-' . $pmod->id] = (object) [
                 'label' => sprintf('%s (%s)', $pmod->name, _i('Consegnato')),
                 'help' => _i("Modificatore Prodotto, sul Consegnato. Mostrato solo se il modificatore è attivo per un qualche prodotto nell'ordine"),
-                'width' => 7
+                'width' => 7,
             ];
         }
 
@@ -656,42 +661,42 @@ class Order extends Model
             'unit_measure' => (object) [
                 'label' => _i('Unità di Misura'),
                 'help' => _i('Unità di misura assegnata al prodotto'),
-                'width' => 9
+                'width' => 9,
             ],
             'quantity' => (object) [
                 'label' => _i('Quantità Prenotata'),
                 'help' => _i('Quantità complessivamente prenotata del prodotto'),
-                'width' => 8
+                'width' => 8,
             ],
             'weight' => (object) [
                 'label' => _i('Peso Prenotato'),
                 'help' => _i('Peso complessivamente prenotato del prodotto'),
-                'width' => 8
+                'width' => 8,
             ],
             'total_price' => (object) [
                 'label' => _i('Totale Prezzo'),
                 'help' => _i('Totale prezzo della quantità prenotata'),
-                'width' => 8
+                'width' => 8,
             ],
             'quantity_delivered' => (object) [
                 'label' => _i('Quantità Consegnata'),
                 'help' => _i('Quantità complessivamente consegnata del prodotto'),
-                'width' => 8
+                'width' => 8,
             ],
             'weight_delivered' => (object) [
                 'label' => _i('Peso Consegnato'),
                 'help' => _i('Peso complessivamente consegnato del prodotto'),
-                'width' => 8
+                'width' => 8,
             ],
             'price_delivered' => (object) [
                 'label' => _i('Totale Consegnato'),
                 'help' => _i('Totale prezzo della quantità consegnata'),
-                'width' => 8
+                'width' => 8,
             ],
             'notes' => (object) [
                 'label' => _i('Note'),
                 'help' => _i('Pannello da cui modificare direttamente le quantità di prodotto in ogni prenotazione, ed aggiungere note per il fornitore'),
-                'width' => 3
+                'width' => 3,
             ],
         ];
 
@@ -707,7 +712,7 @@ class Order extends Model
     {
         $key = 'involved_modifiers_' . ($include_shipping_places ? 'shipping' : 'no_shipping');
 
-        return $this->innerCache($key, function($obj) use ($include_shipping_places) {
+        return $this->innerCache($key, function ($obj) use ($include_shipping_places) {
             $modifiers = $this->modifiers;
 
             foreach ($this->products as $product) {
@@ -719,14 +724,14 @@ class Order extends Model
 
                 foreach ($this->bookings as $booking) {
                     $booker = $booking->user;
-                    if ($booker->shippingplace && !isset($managed_shipping_places[$booker->shippingplace->id])) {
+                    if ($booker->shippingplace && ! isset($managed_shipping_places[$booker->shippingplace->id])) {
                         $managed_shipping_places[$booker->shippingplace->id] = true;
                         $modifiers = $modifiers->merge($booker->shippingplace->modifiers);
                     }
                 }
             }
 
-            return $modifiers->filter(function($mod) {
+            return $modifiers->filter(function ($mod) {
                 return $mod->active;
             })->sortBy('priority');
         });
@@ -765,7 +770,7 @@ class Order extends Model
 
             $bookings = $this->angryBookings();
 
-            foreach($bookings as $booking) {
+            foreach ($bookings as $booking) {
                 $booking->setRelation('order', $this);
 
                 if ($enforce_status !== false) {
@@ -808,8 +813,8 @@ class Order extends Model
         $pending_modifiers = ModifiedValue::aggregateByType($this->applyModifiers($master_summary, 'pending'));
         $shipped_modifiers = ModifiedValue::aggregateByType($this->applyModifiers($master_summary, 'shipped'));
 
-        foreach($pending_modifiers as $pending_id => $pending_mod) {
-            foreach($shipped_modifiers as $shipped_id => $shipped_mod) {
+        foreach ($pending_modifiers as $pending_id => $pending_mod) {
+            foreach ($shipped_modifiers as $shipped_id => $shipped_mod) {
                 if ($pending_id == $shipped_id) {
                     if (round($pending_mod->amount, 2) != round($shipped_mod->amount, 2)) {
                         $ret[] = (object) [
@@ -830,7 +835,7 @@ class Order extends Model
     {
         $ret = $this->emptyReduxBehaviour();
 
-        $ret->children = function($item, $filters) {
+        $ret->children = function ($item, $filters) {
             $bookings = $filters['bookings'] ?? null;
 
             if (is_null($bookings)) {
@@ -838,8 +843,9 @@ class Order extends Model
 
                 $shipping_place = $filters['shipping_place'] ?? null;
                 if ($shipping_place) {
-                    $bookings = $bookings->filter(function($booking) use ($shipping_place) {
+                    $bookings = $bookings->filter(function ($booking) use ($shipping_place) {
                         $sp = $booking->shipping_place;
+
                         return $sp && $sp->id == $shipping_place;
                     });
                 }
@@ -850,6 +856,7 @@ class Order extends Model
 
         $ret->collected = 'bookings';
         $ret->merged = 'products';
+
         return $ret;
     }
 
@@ -857,8 +864,9 @@ class Order extends Model
 
     public function getSlugID()
     {
-		$start = Carbon::parse($this->start)->isoFormat('DD MMMM YYYY');
-		return sprintf('%s::%s', $this->supplier->id, Str::slug($start));
+        $start = Carbon::parse($this->start)->isoFormat('DD MMMM YYYY');
+
+        return sprintf('%s::%s', $this->supplier->id, Str::slug($start));
     }
 
     /******************************************************** CreditableTrait */
@@ -886,6 +894,7 @@ class Order extends Model
     {
         $hub = app()->make('GlobalScopeHub');
         $gas = Gas::find($hub->getGas());
+
         return view('gdxp.json.supplier', ['obj' => $this->supplier, 'order' => $this, 'currentgas' => $gas])->render();
     }
 

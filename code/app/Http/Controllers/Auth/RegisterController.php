@@ -12,7 +12,6 @@ use App\Rules\EMail;
 use App\Notifications\WelcomeMessage;
 use App\Notifications\NewUserNotification;
 
-use Mail;
 use Session;
 use Hash;
 use Log;
@@ -56,7 +55,7 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $gas = currentAbsoluteGas();
-        if($gas->hasFeature('public_registrations') == false) {
+        if ($gas->hasFeature('public_registrations') == false) {
             return redirect()->route('login');
         }
         else {
@@ -64,6 +63,7 @@ class RegisterController extends Controller
             $second = rand(1, 20);
             $captcha = sprintf('%s + %s =', $first, $second);
             Session::put('captcha_solution', $first + $second);
+
             return view('auth.register', ['captcha' => $captcha]);
         }
     }
@@ -71,7 +71,6 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -84,7 +83,7 @@ class RegisterController extends Controller
         $options = [
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            'verify' => [new Captcha()]
+            'verify' => [new Captcha()],
         ];
 
         $mandatory = $gas->public_registrations['mandatory_fields'];
@@ -111,7 +110,6 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
      * @return \App\User
      */
     protected function create(array $data)
@@ -133,7 +131,7 @@ class RegisterController extends Controller
 
         $user->save();
 
-        if (!empty($data['email'])) {
+        if (! empty($data['email'])) {
             $contact = new Contact();
             $contact->target_id = $user->id;
             $contact->target_type = get_class($user);
@@ -142,7 +140,7 @@ class RegisterController extends Controller
             $contact->save();
         }
 
-        if (!empty($data['phone'])) {
+        if (! empty($data['phone'])) {
             $contact = new Contact();
             $contact->target_id = $user->id;
             $contact->target_type = get_class($user);
@@ -161,16 +159,16 @@ class RegisterController extends Controller
         try {
             $user->notify(new WelcomeMessage());
         }
-        catch(\Exception $e) {
+        catch (\Exception $e) {
             Log::error('Impossibile inviare mail di verifica a nuovo utente: ' . $e->getMessage());
         }
 
         $admins = everybodyCan('users.admin', $user->gas);
-        foreach($admins as $ad) {
+        foreach ($admins as $ad) {
             try {
                 $ad->notify(new NewUserNotification($user));
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 Log::error('Impossibile inviare notifica registrazione nuovo utente: ' . $e->getMessage());
             }
         }

@@ -29,6 +29,7 @@ class IntegralCES extends Config
     {
         $ret = (array) json_decode($gas->getConfig('integralces'));
         $ret['symbol'] = Currency::where('context', 'integralces')->first()->symbol ?? '';
+
         return $ret;
     }
 

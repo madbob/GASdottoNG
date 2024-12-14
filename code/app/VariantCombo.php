@@ -20,7 +20,7 @@ use App\Models\Concerns\Priceable;
 
 class VariantCombo extends Model
 {
-    use Priceable, ProductConcept, Cachable;
+    use Cachable, Priceable, ProductConcept;
 
     public function values(): BelongsToMany
     {
@@ -62,8 +62,8 @@ class VariantCombo extends Model
     {
         $query = self::orderBy('id', 'asc');
 
-        foreach($values as $value) {
-            $query->whereHas('values', function($query) use ($value) {
+        foreach ($values as $value) {
+            $query->whereHas('values', function ($query) use ($value) {
                 $query->where('variant_value_id', $value);
             });
         }
@@ -80,14 +80,14 @@ class VariantCombo extends Model
     {
         $ret = [];
 
-        $combos = $combos->filter(function($combo) {
+        $combos = $combos->filter(function ($combo) {
             return $combo->active;
         });
 
-        foreach($combos as $combo) {
-            foreach($combo->values->sortBy('value') as $value) {
+        foreach ($combos as $combo) {
+            foreach ($combo->values->sortBy('value') as $value) {
                 $variant_id = $value->variant_id;
-                if (!isset($ret[$variant_id])) {
+                if (! isset($ret[$variant_id])) {
                     $ret[$variant_id] = [];
                 }
 
@@ -95,7 +95,7 @@ class VariantCombo extends Model
             }
         }
 
-        foreach($ret as $variant_id => $values) {
+        foreach ($ret as $variant_id => $values) {
             asort($values);
             $ret[$variant_id] = $values;
         }

@@ -9,7 +9,7 @@ class ConfigObserver
 {
     public function saved(Config $config)
     {
-        switch($config->name) {
+        switch ($config->name) {
             case 'integralces':
                 $value = json_decode($config->value);
                 $integralces_currency = Currency::where('context', 'integralces')->first();

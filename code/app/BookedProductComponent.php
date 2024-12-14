@@ -8,7 +8,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class BookedProductComponent extends Model
 {
-    use GASModel, Cachable;
+    use Cachable, GASModel;
 
     public function variant(): BelongsTo
     {

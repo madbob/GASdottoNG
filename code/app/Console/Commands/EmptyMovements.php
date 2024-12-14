@@ -10,17 +10,18 @@ use App\Balance;
 class EmptyMovements extends Command
 {
     protected $signature = 'empty:movements';
+
     protected $description = 'Invalida tutti i movimenti contabili';
 
     private function emptyMovements()
     {
         $movements = Movement::all();
-        foreach($movements as $movement) {
+        foreach ($movements as $movement) {
             try {
                 $movement->delete();
             }
-            catch(\Exception $e) {
-                echo "Errore rimozione movimento " . $movement->id . "\n";
+            catch (\Exception $e) {
+                echo 'Errore rimozione movimento ' . $movement->id . "\n";
             }
         }
     }
@@ -28,12 +29,12 @@ class EmptyMovements extends Command
     private function emptyBalances()
     {
         $balances = Balance::all();
-        foreach($balances as $balance) {
+        foreach ($balances as $balance) {
             try {
                 $balance->delete();
             }
-            catch(\Exception $e) {
-                echo "Errore rimozione bilancio " . $balance->id . "\n";
+            catch (\Exception $e) {
+                echo 'Errore rimozione bilancio ' . $balance->id . "\n";
             }
         }
     }

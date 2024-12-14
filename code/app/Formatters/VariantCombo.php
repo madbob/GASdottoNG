@@ -98,6 +98,7 @@ class VariantCombo extends Formatter
         $ret['min_quantity']->format = 'static::formatMinimum';
         $ret['max_quantity']->format = 'static::formatMaximum';
         $ret['max_available']->format = 'static::formatAvailable';
+
         return $ret;
     }
 }

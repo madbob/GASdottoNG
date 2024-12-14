@@ -2,16 +2,12 @@
 
 namespace App\Services;
 
-use Auth;
-use Log;
 use DB;
 
-use App\User;
 use App\Supplier;
 use App\Product;
 use App\Category;
 use App\Measure;
-use App\Role;
 
 class ProductsService extends BaseService
 {
@@ -22,15 +18,15 @@ class ProductsService extends BaseService
                 (object) [
                     'id' => 0,
                     'text' => _i('Nessuno'),
-                ]
-            ]
+                ],
+            ],
         ];
 
         $supplier = Supplier::findOrFail($supplier_id);
         $term = sprintf('%%%s%%', $term);
         $products = $supplier->products()->where('name', 'like', $term)->orderBy('name', 'asc')->get();
 
-        foreach($products as $prod) {
+        foreach ($products as $prod) {
             $ret->results[] = (object) [
                 'id' => $prod->id,
                 'text' => $prod->printableName(),
@@ -80,7 +76,7 @@ class ProductsService extends BaseService
             $product->measure_id = Measure::defaultValue();
         }
 
-        $this->transformAndSetIfSet($product, $request, 'vat_rate_id', function($value) {
+        $this->transformAndSetIfSet($product, $request, 'vat_rate_id', function ($value) {
             return $value != 0 ? $value : null;
         });
 
@@ -104,13 +100,13 @@ class ProductsService extends BaseService
 
     private function duplicateVariants($from, $to)
     {
-        foreach($from->variants as $old_variant) {
+        foreach ($from->variants as $old_variant) {
             $new_variant = $old_variant->replicate();
             $new_variant->id = '';
             $new_variant->product_id = $to->id;
             $new_variant->save();
 
-            foreach($old_variant->values as $old_value) {
+            foreach ($old_variant->values as $old_value) {
                 $new_value = $old_value->replicate();
                 $new_value->id = '';
                 $new_value->variant_id = $new_variant->id;
@@ -121,7 +117,7 @@ class ProductsService extends BaseService
 
     private function duplicateModifiers($from, $to)
     {
-        foreach($from->modifiers as $old_modifier) {
+        foreach ($from->modifiers as $old_modifier) {
             $new_modifier = $old_modifier->replicate();
             unset($new_modifier->id);
             $new_modifier->target_id = $to->id;
@@ -144,6 +140,7 @@ class ProductsService extends BaseService
         }
 
         $product->save();
+
         return $product;
     }
 
@@ -156,6 +153,7 @@ class ProductsService extends BaseService
         handleFileUpload($request, $product, 'picture');
 
         DB::commit();
+
         return $product;
     }
 
@@ -178,24 +176,26 @@ class ProductsService extends BaseService
         $product = $this->show($id);
         $this->ensureAuth(['supplier.modify' => $product->supplier]);
         $product = $this->commonsSaving($product, $request);
+
         return $product;
     }
 
     public function picture($id)
     {
         $product = Product::findOrFail($id);
+
         return downloadFile($product, 'picture');
     }
 
     public function destroy($id)
     {
-        $product = DB::transaction(function() use ($id) {
+        $product = DB::transaction(function () use ($id) {
             $product = $this->show($id);
             $this->ensureAuth(['supplier.modify' => $product->supplier]);
 
             $request = request();
 
-            foreach($request->all() as $key => $value) {
+            foreach ($request->all() as $key => $value) {
                 if (str_starts_with($key, 'order_')) {
                     if ($value == 'leave') {
                         $order_id = substr($key, strpos($key, '_') + 1);
@@ -206,6 +206,7 @@ class ProductsService extends BaseService
             }
 
             $product->delete();
+
             return $product;
         });
 

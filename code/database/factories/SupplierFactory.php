@@ -16,7 +16,7 @@ class SupplierFactory extends Factory
             'name' => $this->faker->name(),
             'business_name' => $this->faker->company(),
             'payment_method' => $this->faker->text(100),
-            'order_method' => $this->faker->text(100)
+            'order_method' => $this->faker->text(100),
         ];
     }
 }

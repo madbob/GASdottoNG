@@ -52,6 +52,7 @@ class UserObserver
         }
 
         $user->preferred_delivery_id = '0';
+
         return $user;
     }
 

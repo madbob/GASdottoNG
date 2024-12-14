@@ -16,9 +16,9 @@ class Cash extends PaymentType
             'identifier' => false,
             'icon' => 'cash',
             'active_for' => null,
-            'valid_config' => function($target) {
+            'valid_config' => function ($target) {
                 return true;
-            }
+            },
         ];
     }
 }

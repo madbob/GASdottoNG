@@ -13,12 +13,13 @@ Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')
 Route::post('mail/status/sib', 'MailController@postStatusSendinblue');
 Route::post('mail/status/sway', 'MailController@postStatusScaleway');
 
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth'])->group(function () {
     Route::get('users/blocked', 'UsersController@blocked')->name('users.blocked');
 
-    Route::middleware(['commonuser'])->group(function() {
+    Route::middleware(['commonuser'])->group(function () {
         Route::get('/', function () {
             Session::reflash();
+
             return Redirect::to('/dashboard');
         })->name('root');
 
@@ -95,8 +96,8 @@ Route::middleware(['auth'])->group(function() {
         Route::get('invoices/search', 'InvoicesController@search')->name('invoices.search');
         Route::get('invoices/{id}/header', 'InvoicesController@objhead');
 
-		Route::get('receipts', 'ReceiptsController@index')->name('receipts.index');
-		Route::get('receipts/search', 'ReceiptsController@search')->name('receipts.search');
+        Route::get('receipts', 'ReceiptsController@index')->name('receipts.index');
+        Route::get('receipts/search', 'ReceiptsController@search')->name('receipts.search');
         Route::get('receipts/{id}/header', 'ReceiptsController@objhead')->name('receipts.objhead');
         Route::get('receipts/{id}/handle', 'ReceiptsController@handle')->name('receipts.handle');
         Route::get('receipts/{id}/download', 'ReceiptsController@download')->name('receipts.download');
@@ -169,17 +170,17 @@ Route::middleware(['auth'])->group(function() {
         Route::get('movtypes/{id}/header', 'MovementTypesController@objhead')->name('movtypes.objhead');
         Route::get('movements/credits/{type}', 'MovementsController@creditsTable')->name('movements.credits');
         Route::get('movements/{targetid}/history', 'MovementsController@getHistory')->name('movements.history');
-		Route::get('movements/history/details', 'MovementsController@getHistoryDetails')->name('movements.history.details');
+        Route::get('movements/history/details', 'MovementsController@getHistoryDetails')->name('movements.history.details');
         Route::get('movements/{targetid}/balance', 'MovementsController@getBalance')->name('movements.balance');
         Route::post('movements/recalculate', 'MovementsController@recalculate');
         Route::post('movements/close', 'MovementsController@closeBalance');
         Route::get('movements/askdelete/{id}', 'MovementsController@askDelete')->name('movements.askdelete');
-		Route::get('movements/askdeletebalance/{id}', 'MovementsController@askDeleteBalance')->name('movements.askdeletebalance');
+        Route::get('movements/askdeletebalance/{id}', 'MovementsController@askDeleteBalance')->name('movements.askdeletebalance');
         Route::post('movements/deletebalance/{id}', 'MovementsController@deleteBalance')->name('movements.deletebalance');
         Route::get('movements/document/{type}/{subtype?}', 'MovementsController@document');
 
-		Route::get('movtypes/{id}/post_feedback', 'MovementTypesController@postFeedback')->name('movtypes.feedback');
-		Route::get('movtypes/{id}/brokenmodifier', 'MovementTypesController@brokenModifier')->name('movtypes.notifybrokenmodifier');
+        Route::get('movtypes/{id}/post_feedback', 'MovementTypesController@postFeedback')->name('movtypes.feedback');
+        Route::get('movtypes/{id}/brokenmodifier', 'MovementTypesController@brokenModifier')->name('movtypes.notifybrokenmodifier');
 
         Route::get('import/esmodal', 'ImportController@esModal')->name('import.esmodal');
         Route::post('import/csv', 'ImportController@postCsv');

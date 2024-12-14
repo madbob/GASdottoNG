@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
     private function involvedTables()
     {
@@ -29,7 +29,7 @@ return new class extends Migration
     {
         $involved_tables = $this->involvedTables();
 
-        foreach($involved_tables as $it) {
+        foreach ($involved_tables as $it) {
             Schema::table($it, function (Blueprint $table) {
                 $table->string('updated_by')->default('')->after('updated_at');
             });
@@ -43,7 +43,7 @@ return new class extends Migration
     {
         $involved_tables = $this->involvedTables();
 
-        foreach($involved_tables as $it) {
+        foreach ($involved_tables as $it) {
             Schema::table($it, function (Blueprint $table) {
                 $table->dropColumn('updated_by');
             });

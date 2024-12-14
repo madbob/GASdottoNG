@@ -4,15 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
 
 use App\Services\InvoicesService;
-use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
 use App\Invoice;
-use App\Order;
 use App\Movement;
-use App\MovementType;
 
 class InvoicesController extends BackedController
 {
@@ -44,12 +39,12 @@ class InvoicesController extends BackedController
 
         if ($user->can('supplier.invoices', $invoice->supplier)) {
             return view('invoice.edit', [
-                'invoice' => $invoice
+                'invoice' => $invoice,
             ]);
         }
         else {
             return view('invoice.show', [
-                'invoice' => $invoice
+                'invoice' => $invoice,
             ]);
         }
     }
@@ -62,6 +57,7 @@ class InvoicesController extends BackedController
     public function orders($id)
     {
         $invoice = $this->service->show($id);
+
         return view('invoice.orders', [
             'invoice' => $invoice,
         ]);
@@ -72,7 +68,7 @@ class InvoicesController extends BackedController
         $alternative_types = [];
         $available_types = movementTypes();
 
-        foreach($available_types as $at) {
+        foreach ($available_types as $at) {
             if ($at->validForInvoices()) {
                 $alternative_types[$at->id] = $at->name;
             }
@@ -92,7 +88,7 @@ class InvoicesController extends BackedController
         $movements = new Collection();
         $movements->push($main);
 
-        list($orders_total_taxable, $orders_total_tax) = $invoice->totals();
+        [$orders_total_taxable, $orders_total_tax] = $invoice->totals();
         $alternative_types = $this->validMovementTypes();
 
         return view('invoice.movements', [
@@ -100,24 +96,26 @@ class InvoicesController extends BackedController
             'total_orders' => $orders_total_taxable,
             'tax_orders' => $orders_total_tax,
             'movements' => $movements,
-            'alternative_types' => $alternative_types
+            'alternative_types' => $alternative_types,
         ]);
     }
 
     public function postMovements(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($id, $request) {
-	        $this->service->saveMovements($id, $request->all());
+        return $this->easyExecute(function () use ($id, $request) {
+            $this->service->saveMovements($id, $request->all());
+
             return $this->successResponse();
-		});
+        });
     }
 
     public function wiring(Request $request, $step, $id)
     {
-		return $this->easyExecute(function() use ($id, $step, $request) {
-	        $this->service->wire($id, $step, $request->all());
+        return $this->easyExecute(function () use ($id, $step, $request) {
+            $this->service->wire($id, $step, $request->all());
+
             return $this->successResponse();
-		});
+        });
     }
 
     private function outputCSV($elements)
@@ -125,14 +123,14 @@ class InvoicesController extends BackedController
         $filename = _i('Esportazione fatture GAS %s.csv', date('d/m/Y'));
         $headers = [_i('Fornitore'), _i('Data'), _i('Numero'), _i('Imponibile'), _i('IVA')];
 
-        return output_csv($filename, $headers, $elements, function($invoice) {
-			return [
-				$invoice->supplier->printableName(),
-				$invoice->date,
-				$invoice->number,
-				$invoice->total,
-				$invoice->total_vat,
-			];
+        return output_csv($filename, $headers, $elements, function ($invoice) {
+            return [
+                $invoice->supplier->printableName(),
+                $invoice->date,
+                $invoice->number,
+                $invoice->total,
+                $invoice->total_vat,
+            ];
         });
     }
 
@@ -147,15 +145,16 @@ class InvoicesController extends BackedController
 
         if ($format == 'none') {
             $list_identifier = $request->input('list_identifier', 'invoice-list');
+
             return view('commons.loadablelist', [
                 'identifier' => $list_identifier,
                 'items' => $elements,
-                'legend' => (object)[
+                'legend' => (object) [
                     'class' => Invoice::class,
                 ],
             ]);
         }
-        else if ($format == 'csv') {
+        elseif ($format == 'csv') {
             return $this->outputCSV($elements);
         }
     }

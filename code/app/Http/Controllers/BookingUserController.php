@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 
 use DB;
-use URL;
-use Auth;
 
 use App\Services\BookingsService;
 use App\Services\DynamicBookingsService;
@@ -18,8 +15,9 @@ use App\Aggregate;
 
 class BookingUserController extends Controller
 {
-	private $booking_service;
-	private $dynamic_service;
+    private $booking_service;
+
+    private $dynamic_service;
 
     public function __construct(BookingsService $booking_service, DynamicBookingsService $dynamic_service)
     {
@@ -50,7 +48,7 @@ class BookingUserController extends Controller
             abort(503);
         }
 
-        if (!is_null($request->user()->suspended_at)) {
+        if (! is_null($request->user()->suspended_at)) {
             $required_mode = 'show';
             $extended = 'false';
         }
@@ -119,6 +117,7 @@ class BookingUserController extends Controller
         $user = User::find($user_id);
         $aggregate = Aggregate::findOrFail($aggregate_id);
         $ret = $this->dynamic_service->dynamicModifiers($request->all(), $aggregate, $user);
+
         return response()->json($ret);
     }
 
@@ -150,6 +149,7 @@ class BookingUserController extends Controller
         $printer = new Printer();
         $aggregate = Aggregate::findOrFail($aggregate_id);
         $booking = $aggregate->bookingBy($user_id);
+
         return $printer->document($booking, '', $request->all());
     }
 
@@ -166,7 +166,7 @@ class BookingUserController extends Controller
             return response()->json([
                 'id' => $user->id,
                 'header' => $user->printableFriendHeader($aggregate),
-                'url' => route('booking.user.show', ['booking' => $aggregate_id, 'user' => $user_id])
+                'url' => route('booking.user.show', ['booking' => $aggregate_id, 'user' => $user_id]),
             ]);
         }
         else {

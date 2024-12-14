@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 use App\User;
 use App\Aggregate;
@@ -18,15 +17,16 @@ class UsersController extends BackedController
     {
         $this->commonInit([
             'reference_class' => User::class,
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function index(Request $request)
     {
-        return $this->easyExecute(function() use ($request) {
+        return $this->easyExecute(function () use ($request) {
             $user = $request->user();
             $users = $this->service->list('', $user->can('users.admin', $user->gas));
+
             return view('pages.users', ['users' => $users]);
         });
     }
@@ -47,36 +47,40 @@ class UsersController extends BackedController
 
     public function revisioned(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($id, $request) {
+        return $this->easyExecute(function () use ($id, $request) {
             $status = $request->input('action');
             $this->service->revisioned($id, $status == 'approve');
+
             return $this->successResponse(['action' => $status]);
         });
     }
 
     public function promote(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($id, $request) {
+        return $this->easyExecute(function () use ($id, $request) {
             $subject = $this->service->promoteFriend($request->all(), $id);
+
             return $this->commonSuccessResponse($subject);
         });
     }
 
     public function reassign(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($id, $request) {
+        return $this->easyExecute(function () use ($id, $request) {
             $new_parent = $request->input('parent_id');
             $this->service->reassignFriend($id, $new_parent);
+
             return $this->successResponse();
         });
     }
 
     public function search(Request $request)
     {
-        return $this->easyExecute(function() use ($request) {
+        return $this->easyExecute(function () use ($request) {
             $term = $request->input('term');
             $users = $this->service->list($term);
             $users = $this->toJQueryAutocompletionFormat($users);
+
             return json_encode($users);
         });
     }
@@ -94,18 +98,18 @@ class UsersController extends BackedController
 
         if ($request->input('exportables') == 'selected') {
             $selected = $this->collectedFilteredUsers($request);
-            $users = $users->filter(fn($u) => in_array($u->id, $selected));
+            $users = $users->filter(fn ($u) => in_array($u->id, $selected));
         }
 
-        return output_csv(_i('utenti.csv'), $headers, $users, function($user) use ($fields) {
+        return output_csv(_i('utenti.csv'), $headers, $users, function ($user) use ($fields) {
             return UserFormatter::format($user, $fields);
         });
     }
 
     private function getOrders($user_id, $supplier_id, $start, $end)
     {
-        return Aggregate::whereHas('orders', function($query) use ($user_id, $supplier_id, $start, $end) {
-            $query->whereHas('bookings', function($query) use ($user_id) {
+        return Aggregate::whereHas('orders', function ($query) use ($user_id, $supplier_id, $start, $end) {
+            $query->whereHas('bookings', function ($query) use ($user_id) {
                 $query->where('user_id', $user_id);
             });
 
@@ -125,10 +129,11 @@ class UsersController extends BackedController
 
     public function profile(Request $request)
     {
-        return $this->easyExecute(function() use ($request) {
+        return $this->easyExecute(function () use ($request) {
             $id = $request->user()->id;
             $active_tab = $request->input('tab');
             $user = $this->service->show($id);
+
             return view('pages.profile', ['user' => $user, 'active_tab' => $active_tab]);
         });
     }
@@ -139,28 +144,31 @@ class UsersController extends BackedController
         $start = decodeDate($request->input('startdate'));
         $end = decodeDate($request->input('enddate'));
         $orders = $this->getOrders($id, $supplier_id, $start, $end);
+
         return view('commons.orderslist', ['orders' => $orders]);
     }
 
     public function show($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $user = $this->service->show($id);
+
             return view('user.edit', ['user' => $user]);
         });
     }
 
     public function show_ro($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $user = $this->service->show($id);
+
             return view('user.edit', ['user' => $user, 'read_only' => true]);
         });
     }
 
     public function picture($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             return $this->service->picture($id);
         });
     }
@@ -171,7 +179,7 @@ class UsersController extends BackedController
         $access = ($admin_editable || $requester->id == $target->id || $target->parent_id == $requester->id);
 
         if ($access == false) {
-            switch($type) {
+            switch ($type) {
                 case 'accounting':
                     $access = $requester->can('movements.admin', $target->gas) || $requester->can('movements.view', $target->gas);
                     break;
@@ -189,37 +197,41 @@ class UsersController extends BackedController
 
     public function bookings(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($request, $id) {
+        return $this->easyExecute(function () use ($request, $id) {
             $user = $this->service->show($id);
             $this->testInternalFunctionsAccess($request->user(), $user, 'bookings');
             $booked_orders = $this->getOrders($id, 0, date('Y-m-d', strtotime('-1 months')), '2100-01-01');
+
             return view('user.bookings', ['user' => $user, 'booked_orders' => $booked_orders]);
         });
     }
 
     public function statistics(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($request, $id) {
+        return $this->easyExecute(function () use ($request, $id) {
             $user = $this->service->show($id);
             $this->testInternalFunctionsAccess($request->user(), $user, 'accounting');
+
             return view('commons.statspage', ['target' => $user]);
         });
     }
 
     public function accounting(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($request, $id) {
+        return $this->easyExecute(function () use ($request, $id) {
             $user = $this->service->show($id);
             $this->testInternalFunctionsAccess($request->user(), $user, 'accounting');
+
             return view('user.accounting', ['user' => $user]);
         });
     }
 
     public function friends(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($request, $id) {
+        return $this->easyExecute(function () use ($request, $id) {
             $user = $this->service->show($id);
             $this->testInternalFunctionsAccess($request->user(), $user, 'friends');
+
             return view('user.friends', ['user' => $user]);
         });
     }
@@ -229,13 +241,14 @@ class UsersController extends BackedController
         $ret = [];
         foreach ($users as $user) {
             $fullname = $user->printableName();
-            $u = (object)array(
+            $u = (object) [
                 'id' => $user->id,
                 'label' => $fullname,
-                'value' => $fullname
-            );
+                'value' => $fullname,
+            ];
             $ret[] = $u;
         }
+
         return $ret;
     }
 
@@ -244,10 +257,11 @@ class UsersController extends BackedController
     */
     public function fees(Request $request)
     {
-        return $this->easyExecute(function() {
+        return $this->easyExecute(function () {
             $this->ensureAuth(['users.admin' => 'gas', 'users.movements' => 'gas']);
             $users = $this->service->list('', true);
             $users->loadMissing(['fee', 'gas']);
+
             return view('user.fees', ['users' => $users]);
         });
     }
@@ -260,9 +274,10 @@ class UsersController extends BackedController
     */
     public function feeRow(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $this->ensureAuth(['users.admin' => 'gas', 'users.movements' => 'gas']);
             $user = User::findOrFail($id);
+
             return view('user.partials.fee_row', ['user' => $user]);
         });
     }
@@ -274,7 +289,7 @@ class UsersController extends BackedController
         if ($user->can('users.admin') || $user->can('users.movements')) {
             $users = $request->input('user_id');
 
-            foreach($users as $user_id) {
+            foreach ($users as $user_id) {
                 $user = User::tFind($user_id);
                 $user->setStatus($request->input('status' . $user_id), $request->input('deleted_at' . $user_id), $request->input('suspended_at' . $user_id));
                 $user->save();
@@ -289,8 +304,9 @@ class UsersController extends BackedController
 
     public function notifications(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($request, $id) {
+        return $this->easyExecute(function () use ($request, $id) {
             $this->service->notifications($id, $request->input('suppliers'));
+
             return $this->successResponse();
         });
     }

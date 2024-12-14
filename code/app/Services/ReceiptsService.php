@@ -24,13 +24,13 @@ class ReceiptsService extends BaseService
         $query = Receipt::where('date', '>=', $start)->where('date', '<=', $end)->with(['bookings', 'bookings.user'])->orderBy('date', 'desc');
 
         if ($supplier_id != '0' || $user_id != 0) {
-            $query->whereHas('bookings', function($query) use ($supplier_id, $user_id) {
+            $query->whereHas('bookings', function ($query) use ($supplier_id, $user_id) {
                 if ($user_id != 0) {
                     $query->where('user_id', $user_id);
                 }
 
                 if ($supplier_id != '0') {
-                    $query->whereHas('order', function($query) use ($supplier_id) {
+                    $query->whereHas('order', function ($query) use ($supplier_id) {
                         $query->where('supplier_id', $supplier_id);
                     });
                 }
@@ -48,16 +48,18 @@ class ReceiptsService extends BaseService
     public function update($id, array $request)
     {
         $this->ensureAuth(['movements.admin' => 'gas']);
-		$receipt = $this->show($id);
-		$this->transformAndSetIfSet($receipt, $request, 'date', "decodeDate");
+        $receipt = $this->show($id);
+        $this->transformAndSetIfSet($receipt, $request, 'date', 'decodeDate');
         $receipt->save();
-		return $receipt;
+
+        return $receipt;
     }
 
     public function destroy($id)
     {
         $receipt = $this->show($id);
         $receipt->delete();
+
         return $receipt;
     }
 }

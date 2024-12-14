@@ -2,9 +2,6 @@
 
 namespace App\Importers\CSV;
 
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -14,227 +11,228 @@ use App\Order;
 
 class Deliveries extends CSVImporter
 {
-	public function fields()
-	{
-		$ret = [
-			'username' => (object) [
-				'label' => _i('Username'),
-				'mandatory' => true,
-			],
-			'first' => (object) [
-				'label' => _i('Primo prodotto'),
-				'mandatory' => true,
-				'explain' => _i("Usa questo elemento per identificare il primo prodotto che appare nell'elenco"),
-			],
-		];
+    public function fields()
+    {
+        $ret = [
+            'username' => (object) [
+                'label' => _i('Username'),
+                'mandatory' => true,
+            ],
+            'first' => (object) [
+                'label' => _i('Primo prodotto'),
+                'mandatory' => true,
+                'explain' => _i("Usa questo elemento per identificare il primo prodotto che appare nell'elenco"),
+            ],
+        ];
 
-		return $ret;
-	}
+        return $ret;
+    }
 
-	public function extraInformations()
+    public function extraInformations()
     {
         return _i('Da qui puoi reimportare un CSV generato dalla funzione "Tabella Complessiva Prodotti" dell\'ordine, dopo averlo manualmente elaborato con le quantità consegnate per ogni utente.');
     }
 
-	public function testAccess($request)
-	{
-		$user = $request->user();
-		$aggregate_id = $request->input('aggregate_id');
-		$aggregate = Aggregate::findOrFail($aggregate_id);
-		return $user->can('supplier.shippings', $aggregate);
-	}
+    public function testAccess($request)
+    {
+        $user = $request->user();
+        $aggregate_id = $request->input('aggregate_id');
+        $aggregate = Aggregate::findOrFail($aggregate_id);
 
-	public function guess($request)
-	{
-		return $this->storeUploadedFile($request, [
-			'type' => 'deliveries',
-			'next_step' => 'select',
-			'sorting_fields' => $this->fields(),
-			'extra_fields' => [
-				'aggregate_id' => $request->input('aggregate_id'),
-			],
-			'extra_description' => [
-				_i("Nota bene: come nelle normali consegne, si assume che la quantità consegnata dei prodotti con pezzatura sia qui espressa a peso e non in numero di pezzi."),
-			]
-		]);
-	}
+        return $user->can('supplier.shippings', $aggregate);
+    }
 
-	public function select($request)
-	{
-		$user = Auth::user();
-		$service = app()->make('BookingsService');
-		$errors = [];
+    public function guess($request)
+    {
+        return $this->storeUploadedFile($request, [
+            'type' => 'deliveries',
+            'next_step' => 'select',
+            'sorting_fields' => $this->fields(),
+            'extra_fields' => [
+                'aggregate_id' => $request->input('aggregate_id'),
+            ],
+            'extra_description' => [
+                _i('Nota bene: come nelle normali consegne, si assume che la quantità consegnata dei prodotti con pezzatura sia qui espressa a peso e non in numero di pezzi.'),
+            ],
+        ]);
+    }
 
-		list($reader, $columns) = $this->initRead($request);
-		$target_separator = ',';
+    public function select($request)
+    {
+        $user = Auth::user();
+        $service = app()->make('BookingsService');
+        $errors = [];
 
-		$aggregate_id = $request->input('aggregate_id');
-		$aggregate = Aggregate::findOrFail($aggregate_id);
+        [$reader, $columns] = $this->initRead($request);
+        $target_separator = ',';
 
-		$mapped_products = [];
-		$target_order = null;
+        $aggregate_id = $request->input('aggregate_id');
+        $aggregate = Aggregate::findOrFail($aggregate_id);
 
-		list($first_product_index) = $this->getColumnsIndex($columns, ['first']);
-		$csvdata = iterator_to_array($reader->getRecords());
+        $mapped_products = [];
+        $target_order = null;
 
-		$header = $csvdata[0];
+        [$first_product_index] = $this->getColumnsIndex($columns, ['first']);
+        $csvdata = iterator_to_array($reader->getRecords());
 
-		for ($i = $first_product_index; $i < count($header); $i++) {
-			$name = $header[$i];
+        $header = $csvdata[0];
 
-			foreach ($aggregate->orders as $order) {
-				if ($name == _i('Totale Prezzo')) {
-					continue;
-				}
+        for ($i = $first_product_index; $i < count($header); $i++) {
+            $name = $header[$i];
 
-				$p = productByString($name, $order->products);
+            foreach ($aggregate->orders as $order) {
+                if ($name == _i('Totale Prezzo')) {
+                    continue;
+                }
 
-				if ($p) {
-					if ($target_order && $target_order->id != $order->id) {
-						throw new \Exception(_i('Operazione fallita: nel documento importato sono presenti prodotti di diversi ordini'), 1);
-					}
+                $p = productByString($name, $order->products);
 
-					$target_order = $order;
+                if ($p) {
+                    if ($target_order && $target_order->id != $order->id) {
+                        throw new \Exception(_i('Operazione fallita: nel documento importato sono presenti prodotti di diversi ordini'), 1);
+                    }
 
-					$mapped_products[$i] = (object) [
-						'product' => $p[0],
-						'combo' => $p[1],
-					];
+                    $target_order = $order;
 
-					break;
-				}
-				else {
-					$errors[] = _i('Prodotto non identificato: %s', [$name]);
-				}
-			}
-		}
+                    $mapped_products[$i] = (object) [
+                        'product' => $p[0],
+                        'combo' => $p[1],
+                    ];
 
-		$bookings = [];
-		$data = [];
+                    break;
+                }
+                else {
+                    $errors[] = _i('Prodotto non identificato: %s', [$name]);
+                }
+            }
+        }
 
-		if (is_null($target_order)) {
-			$errors[] = _i('Ordine non identificato');
-		}
-		else {
-			DB::beginTransaction();
+        $bookings = [];
+        $data = [];
 
-			for ($i = 2; $i < count($csvdata); $i++) {
-				$line = $csvdata[$i];
+        if (is_null($target_order)) {
+            $errors[] = _i('Ordine non identificato');
+        }
+        else {
+            DB::beginTransaction();
 
-				try {
-					$datarow = [
-						'action' => 'saved',
-					];
+            for ($i = 2; $i < count($csvdata); $i++) {
+                $line = $csvdata[$i];
 
-					$target_user = null;
+                try {
+                    $datarow = [
+                        'action' => 'saved',
+                    ];
 
-					foreach ($columns as $index => $field) {
-						if ($field == 'username') {
-							$username = trim($line[$index]);
-							$target_user = User::where('username', $username)->first();
-						}
-						elseif ($index >= $first_product_index) {
-							if (isset($mapped_products[$index])) {
-								$quantity = guessDecimal($line[$index]);
-								$product_id = $mapped_products[$index]->product->id;
-								$datarow[$product_id] = $quantity;
+                    $target_user = null;
 
-								if ($mapped_products[$index]->combo) {
-									if (isset($datarow['variant_quantity_' . $product_id]) == false) {
-										$datarow['variant_quantity_' . $product_id] = [];
-									}
+                    foreach ($columns as $index => $field) {
+                        if ($field == 'username') {
+                            $username = trim($line[$index]);
+                            $target_user = User::where('username', $username)->first();
+                        }
+                        elseif ($index >= $first_product_index) {
+                            if (isset($mapped_products[$index])) {
+                                $quantity = guessDecimal($line[$index]);
+                                $product_id = $mapped_products[$index]->product->id;
+                                $datarow[$product_id] = $quantity;
 
-									foreach ($mapped_products[$index]->combo->values as $val) {
-										$variant_id = $val->variant->id;
+                                if ($mapped_products[$index]->combo) {
+                                    if (isset($datarow['variant_quantity_' . $product_id]) == false) {
+                                        $datarow['variant_quantity_' . $product_id] = [];
+                                    }
 
-										if (isset($datarow['variant_selection_' . $variant_id]) == false) {
-											$datarow['variant_selection_' . $variant_id] = [];
-										}
+                                    foreach ($mapped_products[$index]->combo->values as $val) {
+                                        $variant_id = $val->variant->id;
 
-										$datarow['variant_selection_' . $variant_id][] = $val->id;
-									}
+                                        if (isset($datarow['variant_selection_' . $variant_id]) == false) {
+                                            $datarow['variant_selection_' . $variant_id] = [];
+                                        }
 
-									$datarow['variant_quantity_' . $product_id][] = $quantity;
-								}
-							}
-						}
-					}
+                                        $datarow['variant_selection_' . $variant_id][] = $val->id;
+                                    }
 
-					if ($target_user) {
-						$booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
+                                    $datarow['variant_quantity_' . $product_id][] = $quantity;
+                                }
+                            }
+                        }
+                    }
 
-						$data[] = $datarow;
-						$bookings[] = (object) [
-							'user_id' => $target_user->id,
-							'user_name' => $target_user->printableName(),
-							'total' => $booking->getValue('effective', true),
-						];
-					}
-				}
-				catch (\Exception $e) {
-					$errors[] = implode($target_separator, $line) . '<br/>' . $e->getMessage();
-				}
-			}
+                    if ($target_user) {
+                        $booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
 
-			DB::rollback();
-		}
+                        $data[] = $datarow;
+                        $bookings[] = (object) [
+                            'user_id' => $target_user->id,
+                            'user_name' => $target_user->printableName(),
+                            'total' => $booking->getValue('effective', true),
+                        ];
+                    }
+                }
+                catch (\Exception $e) {
+                    $errors[] = implode($target_separator, $line) . '<br/>' . $e->getMessage();
+                }
+            }
 
-		return [
-			'bookings' => $bookings,
-			'aggregate_id' => $aggregate_id,
-			'order_id' => $target_order ? $target_order->id : 0,
-			'data' => $data,
-			'errors' => $errors,
-		];
-	}
+            DB::rollback();
+        }
 
-	public function formatSelect($parameters)
-	{
-		return view('import.csvbookingsselect', $parameters);
-	}
+        return [
+            'bookings' => $bookings,
+            'aggregate_id' => $aggregate_id,
+            'order_id' => $target_order ? $target_order->id : 0,
+            'data' => $data,
+            'errors' => $errors,
+        ];
+    }
 
-	public function run($request)
-	{
-		$user = Auth::user();
-		$service = app()->make('BookingsService');
+    public function formatSelect($parameters)
+    {
+        return view('import.csvbookingsselect', $parameters);
+    }
 
-		$data = json_decode($request->input('data', '[]'), true);
-		$users = $request->input('user', []);
+    public function run($request)
+    {
+        $user = Auth::user();
+        $service = app()->make('BookingsService');
 
-		$order_id = $request->input('order_id');
-		$target_order = Order::findOrFail($order_id);
+        $data = json_decode($request->input('data', '[]'), true);
+        $users = $request->input('user', []);
 
-		$errors = [];
-		$bookings = [];
+        $order_id = $request->input('order_id');
+        $target_order = Order::findOrFail($order_id);
 
-		DB::beginTransaction();
+        $errors = [];
+        $bookings = [];
 
-		foreach($data as $index => $datarow) {
-			try {
-				$target_user = User::find($users[$index]);
-				$booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
-				$bookings[] = $booking;
-			}
-			catch (\Exception $e) {
-				$errors[] = $index . '<br/>' . $e->getMessage();
-			}
-		}
+        DB::beginTransaction();
 
-		DB::commit();
+        foreach ($data as $index => $datarow) {
+            try {
+                $target_user = User::find($users[$index]);
+                $booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
+                $bookings[] = $booking;
+            }
+            catch (\Exception $e) {
+                $errors[] = $index . '<br/>' . $e->getMessage();
+            }
+        }
 
-		$action = $request->input('action', 'save');
-		if ($action == 'close') {
-			app()->make('FastBookingsService')->fastShipping($user, $target_order->aggregate, null);
-		}
+        DB::commit();
 
-		return [
-			'title' => _i('Consegne importate'),
-			'objects' => $bookings,
-			'errors' => $errors
-		];
-	}
+        $action = $request->input('action', 'save');
+        if ($action == 'close') {
+            app()->make('FastBookingsService')->fastShipping($user, $target_order->aggregate, null);
+        }
 
-	public function finalTemplate()
+        return [
+            'title' => _i('Consegne importate'),
+            'objects' => $bookings,
+            'errors' => $errors,
+        ];
+    }
+
+    public function finalTemplate()
     {
         return 'import.csvimportbookingsfinal';
     }

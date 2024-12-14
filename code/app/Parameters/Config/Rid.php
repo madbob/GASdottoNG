@@ -19,7 +19,7 @@ class Rid extends Config
         return (object) [
             'iban' => '',
             'id' => '',
-            'org' => ''
+            'org' => '',
         ];
     }
 

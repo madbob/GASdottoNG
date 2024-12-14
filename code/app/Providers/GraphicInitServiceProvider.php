@@ -5,7 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
-use Event;
 use Auth;
 
 class GraphicInitServiceProvider extends ServiceProvider
@@ -49,7 +48,5 @@ class GraphicInitServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
     }
 
-    public function register()
-    {
-    }
+    public function register() {}
 }

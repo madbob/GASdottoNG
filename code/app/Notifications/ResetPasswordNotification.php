@@ -16,7 +16,7 @@ use App\Notifications\Concerns\MailFormatter;
 
 class ResetPasswordNotification extends ManyMailNotification
 {
-    use Queueable, MailFormatter;
+    use MailFormatter, Queueable;
 
     private $reset_token = null;
 

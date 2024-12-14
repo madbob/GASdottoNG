@@ -5,9 +5,7 @@ namespace App;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use Auth;
 use URL;
-use Log;
 use Schema;
 
 use App\Models\Concerns\Iconable;
@@ -81,6 +79,7 @@ trait GASModel
     {
         $class = get_class($this);
         $tokens = explode('\\', $class);
+
         return Str::plural($tokens[1]).'Controller';
     }
 
@@ -100,18 +99,20 @@ trait GASModel
         try {
             return URL::action($action, $this->id);
         }
-        catch(\Exception $e) {
+        catch (\Exception $e) {
             return null;
         }
     }
 
     public function testAndSet($request, $name, $field = null)
     {
-        if (is_null($field))
+        if (is_null($field)) {
             $field = $name;
+        }
 
-        if ($request->has($name))
+        if ($request->has($name)) {
             $this->$field = $request->input($name);
+        }
     }
 
     /*
@@ -132,12 +133,15 @@ trait GASModel
 
     public function scopeSorted($query)
     {
-        if (Schema::hasColumn($this->table, 'name'))
+        if (Schema::hasColumn($this->table, 'name')) {
             return $query->orderBy('name', 'asc');
-        else if (Schema::hasColumn($this->table, 'lastname'))
+        }
+        elseif (Schema::hasColumn($this->table, 'lastname')) {
             return $query->orderBy('lastname', 'asc');
-        else
+        }
+        else {
             return $query->orderBy('id', 'asc');
+        }
     }
 
     public static function easyCreate($params)
@@ -147,11 +151,12 @@ trait GASModel
         // @phpstan-ignore-next-line
         $obj = new self();
 
-        foreach($params as $name => $value) {
+        foreach ($params as $name => $value) {
             $obj->$name = $value;
         }
 
         $obj->save();
+
         return $obj;
     }
 }

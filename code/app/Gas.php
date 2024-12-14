@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-use Log;
 
 use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\Configurable;
@@ -18,10 +17,12 @@ use App\Events\SluggableCreating;
 
 class Gas extends Model
 {
-    use HasFactory, Configurable, AttachableTrait, CreditableTrait, PayableTrait, GASModel, SluggableID, Cachable;
+    use AttachableTrait, Cachable, Configurable, CreditableTrait, GASModel, HasFactory, PayableTrait, SluggableID;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     protected $table = 'gas';
 
     protected $dispatchesEvents = [
@@ -41,10 +42,12 @@ class Gas extends Model
 
     public function getLogoUrlAttribute()
     {
-        if (empty($this->logo))
+        if (empty($this->logo)) {
             return '';
-        else
+        }
+        else {
             return url('gas/' . $this->id . '/logo');
+        }
     }
 
     public function users(): HasMany
@@ -89,18 +92,18 @@ class Gas extends Model
 
     public function hasFeature($name)
     {
-        return $this->innerCache('feature_' . $name, function($obj) use ($name) {
-            switch($name) {
+        return $this->innerCache('feature_' . $name, function ($obj) use ($name) {
+            switch ($name) {
                 case 'shipping_places':
-                    return ($obj->deliveries->isEmpty() == false);
+                    return $obj->deliveries->isEmpty() == false;
                 case 'rid':
-                    return !empty($obj->rid['iban']);
+                    return ! empty($obj->rid['iban']);
                 case 'satispay':
-                    return !empty($obj->satispay['secret']);
+                    return ! empty($obj->satispay['secret']);
                 case 'integralces':
                     return $obj->integralces['enabled'];
                 case 'extra_invoicing':
-                    return (!empty($obj->extra_invoicing['taxcode']) || !empty($obj->extra_invoicing['vat']));
+                    return ! empty($obj->extra_invoicing['taxcode']) || ! empty($obj->extra_invoicing['vat']);
                 case 'public_registrations':
                     return $obj->public_registrations['enabled'];
                 case 'restrict_booking_to_credit':
@@ -143,9 +146,10 @@ class Gas extends Model
         ];
 
         if ($currency) {
-            list($suppliers_balance, $users_balance) = $this->innerCache('virtual_balances_' . $currency->id, function($obj) use ($currency) {
-                $suppliers_balance = sumCurrentBalanceAmounts($currency, Supplier::class);;
+            [$suppliers_balance, $users_balance] = $this->innerCache('virtual_balances_' . $currency->id, function ($obj) use ($currency) {
+                $suppliers_balance = sumCurrentBalanceAmounts($currency, Supplier::class);
                 $users_balance = sumCurrentBalanceAmounts($currency, User::class);
+
                 return [$suppliers_balance, $users_balance];
             });
 

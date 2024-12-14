@@ -14,6 +14,7 @@ use App\Notification;
 class CheckRemoteProducts extends Command
 {
     protected $signature = 'check:remote_products';
+
     protected $description = 'Controlla il repository remoto dei listini per aggiornamenti.';
 
     private function notify($supplier, $e)
@@ -24,7 +25,7 @@ class CheckRemoteProducts extends Command
             $hub = App::make('GlobalScopeHub');
             $hub->enable(true);
 
-            foreach($gas as $g) {
+            foreach ($gas as $g) {
                 $hub->setGas($g->id);
 
                 $new_notification = new Notification();
@@ -38,9 +39,9 @@ class CheckRemoteProducts extends Command
 
                 $users_ids = [];
                 $roles = Role::havingAction('supplier.modify');
-                foreach($roles as $role) {
+                foreach ($roles as $role) {
                     $users = $role->usersByTarget($supplier);
-                    foreach($users as $u) {
+                    foreach ($users as $u) {
                         $users_ids[] = $u->id;
                     }
                 }
@@ -59,8 +60,8 @@ class CheckRemoteProducts extends Command
         if ($suppliers->isEmpty() == false) {
             $entries = App::make('RemoteRepository')->getList();
 
-            foreach($suppliers as $supplier) {
-                foreach($entries as $e) {
+            foreach ($suppliers as $supplier) {
+                foreach ($entries as $e) {
                     if ($e->vat == $supplier->vat && $e->lastchange > $supplier->remote_lastimport) {
                         $this->notify($supplier, $e);
                         break;

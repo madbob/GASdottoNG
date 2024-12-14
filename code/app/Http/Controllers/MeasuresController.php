@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 use DB;
 use Auth;
@@ -16,7 +15,7 @@ class MeasuresController extends Controller
     public function __construct()
     {
         $this->commonInit([
-            'reference_class' => 'App\\Measure'
+            'reference_class' => 'App\\Measure',
         ]);
     }
 
@@ -67,13 +66,14 @@ class MeasuresController extends Controller
         $new_discretes = $request->input('discrete', []);
 
         $saved_ids = [
-            Measure::defaultValue()
+            Measure::defaultValue(),
         ];
 
-        for ($i = 0; $i < count($ids); ++$i) {
+        for ($i = 0; $i < count($ids); $i++) {
             $name = trim($new_names[$i]);
-            if (empty($name))
+            if (empty($name)) {
                 continue;
+            }
 
             $id = $ids[$i];
             $measure = Measure::find($id);
@@ -99,7 +99,7 @@ class MeasuresController extends Controller
         $measures = Measure::all();
         $ret = (object) [];
 
-        foreach($measures as $m) {
+        foreach ($measures as $m) {
             $mid = $m->id;
             $ret->$mid = $m->discrete;
         }

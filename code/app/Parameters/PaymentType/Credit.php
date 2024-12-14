@@ -16,9 +16,9 @@ class Credit extends PaymentType
             'identifier' => false,
             'icon' => 'person-badge',
             'active_for' => 'App\User',
-            'valid_config' => function($target) {
+            'valid_config' => function ($target) {
                 return true;
-            }
+            },
         ];
     }
 }

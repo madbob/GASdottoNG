@@ -24,7 +24,7 @@ trait Shipping
         $modifiers = $this->filterExtraModifiers($modifiers, $extra_modifiers);
 
         $aggregated_modifiers = ModifiedValue::aggregateByType($modifiers);
-        foreach($aggregated_modifiers as $am) {
+        foreach ($aggregated_modifiers as $am) {
             $labels[$am->name] = printablePrice($am->total_amount);
             $total_modifiers += $am->amount;
         }
@@ -47,7 +47,7 @@ trait Shipping
                 $booking->status = $status;
 
                 if ($isolate_friends == false) {
-                    foreach($booking->friends_bookings as $friend) {
+                    foreach ($booking->friends_bookings as $friend) {
                         $friend->status = $status;
                     }
                 }
@@ -63,7 +63,7 @@ trait Shipping
             $booking->status = $original_booking_status;
 
             if ($isolate_friends == false) {
-                foreach($booking->friends_bookings as $friend) {
+                foreach ($booking->friends_bookings as $friend) {
                     $friend->status = $original_booking_status;
                 }
             }
@@ -111,10 +111,10 @@ trait Shipping
                 'user' => UserFormatter::format($booking->user, $fields->user_columns, $order->aggregate),
                 'products' => [],
                 'totals' => [],
-                'notes' => !empty($booking->notes) ? [$booking->notes] : [],
+                'notes' => ! empty($booking->notes) ? [$booking->notes] : [],
             ];
 
-            foreach($booking->$products_source as $booked) {
+            foreach ($booking->$products_source as $booked) {
                 if (isset($listed_products[$booked->product_id])) {
                     $product = $listed_products[$booked->product_id];
                     $booked->setRelation('product', $product);
@@ -127,7 +127,7 @@ trait Shipping
                 $summary = $booked->as_summary;
 
                 $row = $this->formatProduct($fields->product_columns, $formattable_product, $summary->products[$booked->product->id], $product, $internal_offsets);
-                if (!empty($row)) {
+                if (! empty($row)) {
                     $obj->products = array_merge($obj->products, $row);
                 }
             }
@@ -138,7 +138,7 @@ trait Shipping
 
             $original_booking_status = $this->fakeBookingStatus($status, $isolate_friends, $booking);
 
-            list($labels_modifiers, $total_modifiers) = $this->collectModifiersTotal($booking, $aggregate_data, $isolate_friends, $extra_modifiers);
+            [$labels_modifiers, $total_modifiers] = $this->collectModifiersTotal($booking, $aggregate_data, $isolate_friends, $extra_modifiers);
             $obj->totals = array_merge($obj->totals, $labels_modifiers);
             $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, $isolate_friends == false) + $total_modifiers;
 

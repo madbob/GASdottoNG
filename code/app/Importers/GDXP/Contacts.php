@@ -26,8 +26,8 @@ class Contacts extends GDXPImporter
 
     public static function importXML($xml, $parent)
     {
-        foreach($xml->children() as $p) {
-            foreach($p->children() as $e) {
+        foreach ($xml->children() as $p) {
+            foreach ($p->children() as $e) {
                 $type = self::map($e->getName());
                 if (is_null($type)) {
                     continue;

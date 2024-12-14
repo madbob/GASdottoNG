@@ -19,14 +19,14 @@ class Products extends CSVImporter
                 'label' => _i('Nome'),
             ],
             'description' => (object) [
-                'label' => _i('Descrizione')
+                'label' => _i('Descrizione'),
             ],
             'price' => (object) [
                 'label' => _i('Prezzo Unitario'),
             ],
             'price_without_vat' => (object) [
                 'label' => _i('Prezzo Unitario (senza IVA)'),
-                'explain' => _i('Da usare in combinazione con Aliquota IVA')
+                'explain' => _i('Da usare in combinazione con Aliquota IVA'),
             ],
             'vat' => (object) [
                 'label' => _i('Aliquota IVA'),
@@ -45,7 +45,7 @@ class Products extends CSVImporter
             ],
             'package_price' => (object) [
                 'label' => _i('Prezzo Confezione'),
-                'explain' => _i('Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / Dimensione Confezione')
+                'explain' => _i('Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / Dimensione Confezione'),
             ],
             'weight' => (object) [
                 'label' => _i('Peso (in KG)'),
@@ -54,10 +54,10 @@ class Products extends CSVImporter
                 'label' => _i('Ordine Minimo'),
             ],
             'multiple' => (object) [
-                'label' => _i('Ordinabile per Multipli')
+                'label' => _i('Ordinabile per Multipli'),
             ],
             'portion_quantity' => (object) [
-                'label' => _i('Pezzatura')
+                'label' => _i('Pezzatura'),
             ],
         ];
     }
@@ -65,6 +65,7 @@ class Products extends CSVImporter
     private function getSupplier($request)
     {
         $supplier_id = $request->input('supplier_id');
+
         return Supplier::findOrFail($supplier_id);
     }
 
@@ -96,14 +97,15 @@ class Products extends CSVImporter
         else {
             $field_name = sprintf('%s_id', $field);
             $product->$field_name = $test->id;
+
             return null;
         }
     }
 
     public function select($request)
     {
-        list($reader, $columns) = $this->initRead($request);
-        list($name_index, $supplier_code_index) = $this->getColumnsIndex($columns, ['name', 'supplier_code']);
+        [$reader, $columns] = $this->initRead($request);
+        [$name_index, $supplier_code_index] = $this->getColumnsIndex($columns, ['name', 'supplier_code']);
         $s = $this->getSupplier($request);
 
         $products = $errors = [];
@@ -112,7 +114,7 @@ class Products extends CSVImporter
         $all_measures = Measure::all();
         $all_vatrates = VatRate::all();
 
-        foreach($reader->getRecords() as $line) {
+        foreach ($reader->getRecords() as $line) {
             if (empty($line) || (count($line) == 1 && empty($line[0]))) {
                 continue;
             }
@@ -165,6 +167,7 @@ class Products extends CSVImporter
                         $value = guessDecimal($value);
                         if ($value == 0) {
                             $p->vat_rate_id = 0;
+
                             continue;
                         }
                         else {
@@ -177,31 +180,32 @@ class Products extends CSVImporter
                             Qui setto le variabili $price_without_vat o
                             $package_price, in funzione del valore stesso di
                             $field.
-							Dunque $$field NON è un errore
+                            Dunque $$field NON è un errore
                         */
                         $$field = guessDecimal($value);
+
                         continue;
                     }
 
-                    if (!empty($value) && is_null($field) == false && $field != 'none') {
+                    if (! empty($value) && is_null($field) == false && $field != 'none') {
                         $p->$field = $value;
                     }
                 }
 
                 // @phpstan-ignore-next-line
-                if (!empty($package_price) && !empty($p->package_size) && empty($p->price)) {
+                if (! empty($package_price) && ! empty($p->package_size) && empty($p->price)) {
                     $p->price = $package_price / $p->package_size;
                 }
 
                 // @phpstan-ignore-next-line
-                if (!empty($price_without_vat) && !empty($vat_rate)) {
+                if (! empty($price_without_vat) && ! empty($vat_rate)) {
                     $p->price = $price_without_vat + (($price_without_vat * $vat_rate) / 100);
                 }
 
                 $products[] = $p;
             }
             catch (\Exception $e) {
-                $errors[] = join(',', $line) . '<br/>' . $e->getMessage();
+                $errors[] = implode(',', $line) . '<br/>' . $e->getMessage();
             }
         }
 
@@ -229,7 +233,7 @@ class Products extends CSVImporter
         $errors = $products = $products_ids = $new_categories = $new_measures = $new_vats = [];
         $service = app()->make('ProductsService');
 
-        foreach($data['import'] as $index) {
+        foreach ($data['import'] as $index) {
             try {
                 $fields = [];
 
@@ -245,27 +249,28 @@ class Products extends CSVImporter
                 $fields['supplier_id'] = $s->id;
                 $fields['active'] = true;
 
-                foreach($direct_fields as $field) {
+                foreach ($direct_fields as $field) {
                     $v = trim($data[$field][$index]);
                     if (filled($v)) {
                         $fields[$field] = $v;
                     }
                 }
 
-                $fields['category_id'] = $this->mapNewElements($data['category_id'][$index], $new_categories, function($name) {
+                $fields['category_id'] = $this->mapNewElements($data['category_id'][$index], $new_categories, function ($name) {
                     return Category::easyCreate(['name' => $name]);
                 });
 
-                $fields['measure_id'] = $this->mapNewElements($data['measure_id'][$index], $new_measures, function($name) {
+                $fields['measure_id'] = $this->mapNewElements($data['measure_id'][$index], $new_measures, function ($name) {
                     return Measure::easyCreate(['name' => $name]);
                 });
 
-                $fields['vat_rate_id'] = $this->mapNewElements($data['vat_rate_id'][$index], $new_vats, function($name) {
+                $fields['vat_rate_id'] = $this->mapNewElements($data['vat_rate_id'][$index], $new_vats, function ($name) {
                     $name = (float) $name;
                     $vat = new VatRate();
                     $vat->percentage = $name;
                     $vat->name = sprintf('%f %%', round($name, 2));
                     $vat->save();
+
                     return $vat;
                 });
 
@@ -285,7 +290,7 @@ class Products extends CSVImporter
         }
 
         $reset_mode = $request->input('reset_list', 'no');
-        switch($reset_mode) {
+        switch ($reset_mode) {
             case 'disable':
                 $s->products()->whereNotIn('id', $products_ids)->update(['active' => false]);
                 break;
@@ -300,7 +305,7 @@ class Products extends CSVImporter
             'title' => _i('Prodotti importati'),
             'objects' => $products,
             'errors' => $errors,
-            'extra_closing_attributes' => ['data-reload-target' => '#supplier-list']
+            'extra_closing_attributes' => ['data-reload-target' => '#supplier-list'],
         ];
     }
 }

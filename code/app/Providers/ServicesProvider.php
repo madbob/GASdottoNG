@@ -45,7 +45,7 @@ class ServicesProvider extends ServiceProvider implements DeferrableProvider
     {
         $classes = $this->services();
 
-        foreach($classes as $class) {
+        foreach ($classes as $class) {
             $this->app->singleton(class_basename($class), function ($app) use ($class) {
                 return new $class();
             });
@@ -57,7 +57,7 @@ class ServicesProvider extends ServiceProvider implements DeferrableProvider
         $classes = $this->services();
         $ret = [];
 
-        foreach($classes as $class) {
+        foreach ($classes as $class) {
             $ret[] = class_basename($class);
         }
 

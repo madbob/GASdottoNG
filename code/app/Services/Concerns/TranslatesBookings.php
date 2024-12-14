@@ -40,7 +40,7 @@ trait TranslatesBookings
             $final_quantity = $product->testConstraints($quantity, $variant, $delivering);
             $message = '';
         }
-        catch(InvalidQuantityConstraint $e) {
+        catch (InvalidQuantityConstraint $e) {
             $final_quantity = 0;
             $message = $e->getMessage();
 
@@ -52,7 +52,7 @@ trait TranslatesBookings
                 $subject->save();
             }
         }
-        catch(AnnotatedQuantityConstraint $e) {
+        catch (AnnotatedQuantityConstraint $e) {
             $final_quantity = $quantity;
             $message = $e->getMessage();
         }
@@ -62,13 +62,14 @@ trait TranslatesBookings
 
     private function reduceVariants($product, $delivering)
     {
-        return $product->variants->reduce(function($varcarry, $variant) use ($product, $delivering) {
-            list($final_variant_quantity, $variant_message) = $this->handleQuantity($delivering, $product, $variant, $variant);
+        return $product->variants->reduce(function ($varcarry, $variant) use ($product, $delivering) {
+            [$final_variant_quantity, $variant_message] = $this->handleQuantity($delivering, $product, $variant, $variant);
             $combo = $variant->variantsCombo();
 
             $varcarry[] = (object) [
-                'components' => $variant->components->reduce(function($componentcarry, $component) {
+                'components' => $variant->components->reduce(function ($componentcarry, $component) {
                     $componentcarry[] = $component->value->id;
+
                     return $componentcarry;
                 }, []),
 
@@ -101,8 +102,8 @@ trait TranslatesBookings
 
         $booking->status = $delivering ? 'shipped' : 'pending';
         $modified = $booking->applyModifiers(null, false);
-        foreach($modified as $mod) {
-            if (!isset($ret->modifiers[$mod->modifier_id])) {
+        foreach ($modified as $mod) {
+            if (! isset($ret->modifiers[$mod->modifier_id])) {
                 $ret->modifiers[$mod->modifier_id] = $this->initDynamicModifier($mod);
             }
 
@@ -116,9 +117,9 @@ trait TranslatesBookings
     {
         $ret = (object) [
             'modifiers' => [],
-            'products' => $booking->products->reduce(function($carry, $product) use ($booking, $delivering) {
+            'products' => $booking->products->reduce(function ($carry, $product) use ($booking, $delivering) {
                 $product->setRelation('booking', $booking);
-                list($final_quantity, $message) = $this->handleQuantity($delivering, $product, $product, null);
+                [$final_quantity, $message] = $this->handleQuantity($delivering, $product, $product, null);
 
                 $carry[$product->product_id] = (object) [
                     'unitprice' => (float) $product->product->getPrice(false),
@@ -128,6 +129,7 @@ trait TranslatesBookings
                     'message' => $message,
                     'variants' => $this->reduceVariants($product, $delivering),
                 ];
+
                 return $carry;
             }, []),
         ];

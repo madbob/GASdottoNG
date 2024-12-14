@@ -4,5 +4,5 @@ namespace App\Parameters;
 
 abstract class Parameter
 {
-    public abstract function identifier();
+    abstract public function identifier();
 }

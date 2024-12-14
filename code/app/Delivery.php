@@ -7,7 +7,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
@@ -21,14 +20,15 @@ use App\Events\AttachableToGas;
 
 class Delivery extends Model
 {
-    use HasFactory, TracksUpdater, ModifiableTrait, GASModel, SluggableID, WithinGas, Cachable;
+    use Cachable, GASModel, HasFactory, ModifiableTrait, SluggableID, TracksUpdater, WithinGas;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
-        'created' => AttachableToGas::class
+        'created' => AttachableToGas::class,
     ];
 
     protected static function boot()
@@ -44,12 +44,12 @@ class Delivery extends Model
 
     private static function sortByUserName($bookings)
     {
-        return $bookings->sortBy(fn($b, $index) => $b->user->printableName());
+        return $bookings->sortBy(fn ($b, $index) => $b->user->printableName());
     }
 
     private static function sortByPlace($bookings)
     {
-        usort($bookings, function($a, $b) {
+        usort($bookings, function ($a, $b) {
             $a_place = $a->shipping_place;
             $b_place = $b->shipping_place;
 
@@ -58,10 +58,10 @@ class Delivery extends Model
             if (is_null($a_place) && is_null($b_place)) {
                 $ret = $a->user->printableName() <=> $b->user->printableName();
             }
-            else if (is_null($a_place)) {
+            elseif (is_null($a_place)) {
                 $ret = -1;
             }
-            else if (is_null($b_place)) {
+            elseif (is_null($b_place)) {
                 $ret = 1;
             }
             else {
@@ -86,11 +86,11 @@ class Delivery extends Model
         if ($shipping_place == 0 || $shipping_place == 'all_by_name') {
             $bookings = self::sortByUserName($bookings);
         }
-        else if ($shipping_place == 'all_by_place') {
+        elseif ($shipping_place == 'all_by_place') {
             $bookings = self::sortByPlace($bookings);
         }
         else {
-            $tmp_bookings = $bookings->filter(fn($b) => $b->shipping_place && $b->shipping_place->id == $shipping_place);
+            $tmp_bookings = $bookings->filter(fn ($b) => $b->shipping_place && $b->shipping_place->id == $shipping_place);
             $bookings = self::sortByUserName($tmp_bookings);
         }
 

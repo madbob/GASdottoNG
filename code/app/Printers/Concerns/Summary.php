@@ -60,7 +60,7 @@ trait Summary
             $row = $this->formatProduct($fields, $formattable, $summary->products[$product->id] ?? null, $product, $internal_offsets);
             if (empty($row) == false) {
                 if (is_null($price_offset) == false) {
-                    $total = array_reduce($row, fn($carry, $r) => $carry + guessDecimal($r[$price_offset]), $total);
+                    $total = array_reduce($row, fn ($carry, $r) => $carry + guessDecimal($r[$price_offset]), $total);
                 }
 
                 $rows = array_merge($rows, $row);
@@ -68,7 +68,7 @@ trait Summary
         }
 
         if (empty($rows) == false) {
-            $headers = array_map(fn($f) => $formattable[$f]->name, $fields);
+            $headers = array_map(fn ($f) => $formattable[$f]->name, $fields);
 
             if (is_null($price_offset) == false) {
                 $last_row = array_fill(0, count($fields), '');
@@ -91,7 +91,7 @@ trait Summary
     {
         if ($shipping_place && $shipping_place == 'all_by_place') {
             $places = Delivery::orderBy('name', 'asc')->get();
-            foreach($places as $place) {
+            foreach ($places as $place) {
                 $table = $this->formatSummaryShipping($order, $fields, $status, $place->id, $extra_modifiers);
                 if ($table) {
                     $document->append(new Header($place->printableName()));

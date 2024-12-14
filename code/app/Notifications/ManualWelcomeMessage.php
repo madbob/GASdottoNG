@@ -10,7 +10,7 @@ use App\Notifications\Concerns\MailFormatter;
 
 class ManualWelcomeMessage extends ManyMailNotification implements ShouldQueue
 {
-    use Queueable, MailFormatter;
+    use MailFormatter, Queueable;
 
     private $token = null;
 

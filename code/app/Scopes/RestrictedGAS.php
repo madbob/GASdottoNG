@@ -20,6 +20,7 @@ use App;
 class RestrictedGAS implements Scope
 {
     private $key = null;
+
     private $involve_trashed = false;
 
     public function __construct($key = 'gas', $involve_trashed = false)
@@ -31,12 +32,12 @@ class RestrictedGAS implements Scope
     private function initInnerQuery($gas_id)
     {
         if ($this->involve_trashed) {
-            return function($query) use ($gas_id) {
+            return function ($query) use ($gas_id) {
                 $query->withTrashed()->where('gas_id', $gas_id);
             };
         }
         else {
-            return function($query) use ($gas_id) {
+            return function ($query) use ($gas_id) {
                 $query->where('gas_id', $gas_id);
             };
         }
@@ -68,7 +69,7 @@ class RestrictedGAS implements Scope
                     $builder->whereHas($models[0], $inner_query);
                 }
                 else {
-                    $builder->whereHas($models[0], function($query) use ($models, $inner_query) {
+                    $builder->whereHas($models[0], function ($query) use ($models, $inner_query) {
                         $query->whereHas($models[1], $inner_query);
                     });
                 }

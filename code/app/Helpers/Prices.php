@@ -3,8 +3,9 @@
 function printablePrice($price, $separator = '.')
 {
     $ret = sprintf('%.02f', $price);
-    if ($separator != '.')
+    if ($separator != '.') {
         $ret = str_replace('.', $separator, $ret);
+    }
 
     return $ret;
 }

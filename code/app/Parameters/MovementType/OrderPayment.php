@@ -30,7 +30,7 @@ class OrderPayment extends MovementType
                 'target' => $this->format(['bank' => 'decrement']),
                 'sender' => $this->format(['bank' => 'decrement']),
                 'is_default' => true,
-            ]
+            ],
         ]));
 
         return $type;
@@ -46,13 +46,13 @@ class OrderPayment extends MovementType
                 $order->status = 'archived';
                 $order->save();
             },
-            'delete' => function(Movement $movement) {
+            'delete' => function (Movement $movement) {
                 $movement->detachFromTarget();
 
                 $order = $movement->target;
                 $order->status = 'shipped';
                 $order->save();
-            }
+            },
         ];
 
         return $mov;

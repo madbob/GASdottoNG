@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\HtmlString;
-use Illuminate\Support\Facades\DB;
 
 function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.')
 {
@@ -21,10 +20,12 @@ function printableQuantity($quantity, $discrete, $decimals = 2, $separator = '.'
 
 function enforceNumber($value)
 {
-    if (is_numeric($value))
+    if (is_numeric($value)) {
         return $value;
-    else
+    }
+    else {
         return 0;
+    }
 }
 
 function sanitizeId($identifier)
@@ -40,19 +41,23 @@ function sanitizeFilename($filename)
 function normalizeUrl($url)
 {
     $url = strtolower($url);
-    if (starts_with($url, 'http') == false)
+    if (starts_with($url, 'http') == false) {
         $url = 'http://' . $url;
+    }
 
-    if (filter_var($url, FILTER_VALIDATE_URL))
+    if (filter_var($url, FILTER_VALIDATE_URL)) {
         return $url;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 function prettyFormatHtmlText($str)
 {
     $url_pattern = '/(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/';
     $str = preg_replace($url_pattern, '<a href="$0" target="_blank">$0</a>', $str);
+
     return nl2br($str);
 }
 
@@ -74,7 +79,7 @@ function http_csv_headers($filename)
 
 function output_csv($filename, $head, $contents, $format_callback, $out_file = null)
 {
-    $callback = function() use ($head, $contents, $format_callback, $out_file) {
+    $callback = function () use ($head, $contents, $format_callback, $out_file) {
         $csv_separator = currentAbsoluteGas()->getConfig('csv_separator');
 
         if (is_null($out_file)) {
@@ -92,7 +97,7 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
             if (is_string($contents)) {
                 fwrite($FH, $contents);
             }
-            else if (is_array($contents)) {
+            elseif (is_array($contents)) {
                 foreach ($contents as $c) {
                     fputcsv($FH, $c, $csv_separator);
                 }
@@ -120,13 +125,14 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
             'Content-type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename=' . str_replace(' ', '\\', $filename),
             'Expires' => '0',
-            'Pragma' => 'public'
+            'Pragma' => 'public',
         ];
 
         return Response::stream($callback, 200, $headers);
     }
     else {
         $callback();
+
         return $out_file;
     }
 }
@@ -143,8 +149,8 @@ function enablePdfPagesNumbers($pdf)
     $pdf->render();
 
     $dompdf = $pdf->getDomPDF();
-    $font = $dompdf->getFontMetrics()->get_font("helvetica", "bold");
-    $dompdf->get_canvas()->page_text(34, 18, "{PAGE_NUM} / {PAGE_COUNT}", $font, 10, array(0, 0, 0));
+    $font = $dompdf->getFontMetrics()->get_font('helvetica', 'bold');
+    $dompdf->get_canvas()->page_text(34, 18, '{PAGE_NUM} / {PAGE_COUNT}', $font, 10, [0, 0, 0]);
 }
 
 function htmlize($string)
@@ -164,7 +170,7 @@ function htmlize($string)
 
 function iban_split($iban, $field)
 {
-    switch($field) {
+    switch ($field) {
         case 'country':
             $start = 0;
             $length = 2;
@@ -197,6 +203,7 @@ function iban_split($iban, $field)
     }
 
     $iban = str_replace(' ', '', strtoupper($iban));
+
     return substr($iban, $start, $length);
 }
 
@@ -205,6 +212,7 @@ function normalizeAddress($street, $city, $cap)
     $street = str_replace(',', '', trim($street));
     $city = str_replace(',', '', trim($city));
     $cap = str_replace(',', '', trim($cap));
+
     return sprintf('%s, %s, %s', $street, $city, $cap);
 }
 
@@ -213,8 +221,8 @@ function normalizeAddress($street, $city, $cap)
 */
 function closestNumber(array $array, $goal)
 {
-    return array_reduce($array, function($carry, $item) use($goal) {
-        return (abs($item - $goal) < abs($carry - $goal) ? $item : $carry);
+    return array_reduce($array, function ($carry, $item) use ($goal) {
+        return abs($item - $goal) < abs($carry - $goal) ? $item : $carry;
     }, reset($array));
 }
 
@@ -238,7 +246,7 @@ function splitFields($fields)
     $user_headers = [];
     $product_headers = [];
 
-    foreach($fields as $f) {
+    foreach ($fields as $f) {
         if (isset($formattable_user[$f])) {
             $ret->user_columns[] = $f;
             $ret->user_columns_names[] = $formattable_user[$f]->name;
@@ -257,6 +265,7 @@ function splitFields($fields)
         intestazioni nell'ordine giusto
     */
     $ret->headers = array_merge($user_headers, $product_headers);
+
     return $ret;
 }
 

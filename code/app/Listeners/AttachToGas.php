@@ -22,10 +22,11 @@ class AttachToGas
         $group = $event->group;
         if (is_null($group)) {
             Log::error('Relazione oggetto/GAS non riconosciuta per oggetto ' . get_class($event->attachable));
+
             return;
         }
 
-        foreach($gas as $g) {
+        foreach ($gas as $g) {
             $g->$group()->attach($event->attachable->id);
         }
     }

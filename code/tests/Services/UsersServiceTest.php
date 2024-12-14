@@ -17,7 +17,7 @@ class UsersServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -33,8 +33,8 @@ class UsersServiceTest extends TestCase
 
         $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
 
-		$this->supplier = Supplier::factory()->create();
-		$this->userWithShippingPerms = $this->createRoleAndUser($this->gas, 'supplier.shippings', $this->supplier);
+        $this->supplier = Supplier::factory()->create();
+        $this->userWithShippingPerms = $this->createRoleAndUser($this->gas, 'supplier.shippings', $this->supplier);
 
         User::factory()->count(3)->create(['gas_id' => $this->gas->id]);
 
@@ -45,7 +45,7 @@ class UsersServiceTest extends TestCase
     /*
         Permessi sbagliati su elenco Utenti
     */
-    public function testFailsToListUsers()
+    public function test_fails_to_list_users()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -55,7 +55,7 @@ class UsersServiceTest extends TestCase
     /*
         Elenco Utenti corretto
     */
-    public function testList()
+    public function test_list()
     {
         $this->actingAs($this->userWithViewPerm);
 
@@ -75,12 +75,12 @@ class UsersServiceTest extends TestCase
     /*
         Cessazione utente
     */
-    public function testCease()
+    public function test_cease()
     {
         $this->actingAs($this->userWithAdminPerm);
         $users = app()->make('UsersService')->list();
         $initial_count = $users->count();
-		$initial_count_db = User::fullEnabled()->count();
+        $initial_count_db = User::fullEnabled()->count();
 
         $user = $users->random();
         app()->make('UsersService')->update($user->id, [
@@ -89,59 +89,59 @@ class UsersServiceTest extends TestCase
             'suspended_at' => printableDate(date('Y-m-d')),
         ]);
 
-		$this->nextRound();
+        $this->nextRound();
 
         $this->actingAs($this->userWithViewPerm);
         $users = app()->make('UsersService')->list('', true);
         $this->assertEquals($initial_count - 1, $users->count());
-		$this->assertEquals($initial_count_db - 1, User::fullEnabled()->count());
+        $this->assertEquals($initial_count_db - 1, User::fullEnabled()->count());
     }
 
-	/*
-		Sospensione utente
+    /*
+        Sospensione utente
     */
-	public function testSuspend()
+    public function test_suspend()
     {
         $this->actingAs($this->userWithAdminPerm);
         $users = app()->make('UsersService')->list();
         $initial_count = $users->count();
-		$initial_count_db = User::fullEnabled()->count();
+        $initial_count_db = User::fullEnabled()->count();
 
         $user = $users->random();
         app()->make('UsersService')->update($user->id, [
-			'status' => 'suspended',
-			'deleted_at' => printableDate(date('Y-m-d')),
+            'status' => 'suspended',
+            'deleted_at' => printableDate(date('Y-m-d')),
             'suspended_at' => printableDate(date('Y-m-d')),
         ]);
 
-		$this->nextRound();
+        $this->nextRound();
 
         $this->actingAs($this->userWithViewPerm);
         $users = app()->make('UsersService')->list('', true);
         $this->assertEquals($initial_count, $users->count());
-		$this->assertEquals($initial_count_db - 1, User::fullEnabled()->count());
+        $this->assertEquals($initial_count_db - 1, User::fullEnabled()->count());
     }
 
     /*
         Elenco Utenti con parametri di ricerca
     */
-    public function testListWithSearchParam()
+    public function test_list_with_search_param()
     {
         $this->actingAs($this->userWithViewPerm);
 
         $user1 = User::factory()->create([
             'gas_id' => $this->gas->id,
-            'firstname' => 'pippo'
+            'firstname' => 'pippo',
         ]);
 
         $user2 = User::factory()->create([
             'gas_id' => $this->gas->id,
-            'lastname' => 'super pippo'
+            'lastname' => 'super pippo',
         ]);
 
         User::factory()->create([
             'gas_id' => $this->gas->id,
-            'firstname' => 'luigi'
+            'firstname' => 'luigi',
         ]);
 
         $users = app()->make('UsersService')->list('pippo');
@@ -160,10 +160,10 @@ class UsersServiceTest extends TestCase
         $this->assertCount(1, array_filter($users->toArray(), $findByID($user2->id)));
     }
 
-	/*
+    /*
         Elenco Utenti con permessi per le consegne
     */
-    public function testListShipping()
+    public function test_list_shipping()
     {
         $this->actingAs($this->userWithShippingPerms);
 
@@ -178,7 +178,7 @@ class UsersServiceTest extends TestCase
     /*
         Salvataggio Utente con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
@@ -188,7 +188,7 @@ class UsersServiceTest extends TestCase
     /*
         Salvataggio Utente con permessi corretti
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userWithAdminPerm);
 
@@ -196,7 +196,7 @@ class UsersServiceTest extends TestCase
             'username' => 'test user',
             'firstname' => 'mario',
             'lastname' => 'rossi',
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $this->assertEquals('test user', $newUser->username);
@@ -208,7 +208,7 @@ class UsersServiceTest extends TestCase
     /*
         Salvataggio Utente con token per il primo accesso valido
     */
-    public function testStoreAndMail()
+    public function test_store_and_mail()
     {
         $this->actingAs($this->userWithAdminPerm);
 
@@ -217,7 +217,7 @@ class UsersServiceTest extends TestCase
             'firstname' => 'mario',
             'lastname' => 'rossi',
             'sendmail' => true,
-            'email' => 'mario@example.com'
+            'email' => 'mario@example.com',
         ]);
 
         $newUser = app()->make('UsersService')->show($newUser->id);
@@ -229,7 +229,7 @@ class UsersServiceTest extends TestCase
     /*
         Salvataggio Amico
     */
-    public function testStoreFriend()
+    public function test_store_friend()
     {
         $initial_count = User::query()->creditable()->count();
 
@@ -239,7 +239,7 @@ class UsersServiceTest extends TestCase
             'username' => 'test friend user',
             'firstname' => 'mario',
             'lastname' => 'rossi',
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $this->nextRound();
@@ -260,7 +260,7 @@ class UsersServiceTest extends TestCase
     /*
         Promozione amico a utente regolare
     */
-    public function testPromoteFriend()
+    public function test_promote_friend()
     {
         $this->assertEquals(0, $this->userWithViewPerm->friends()->count());
         $friend = $this->createFriend($this->userWithViewPerm);
@@ -288,7 +288,7 @@ class UsersServiceTest extends TestCase
     /*
         Riassegnazione amico
     */
-    public function testAssignFriend()
+    public function test_assign_friend()
     {
         $this->assertEquals(0, $this->userWithViewPerm->friends()->count());
         $this->assertEquals(0, $this->userWithBasePerm->friends()->count());
@@ -313,7 +313,7 @@ class UsersServiceTest extends TestCase
     /*
         Modifica Utente con permessi sbagliati
     */
-    public function testFailsToUpdate()
+    public function test_fails_to_update()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
@@ -323,7 +323,7 @@ class UsersServiceTest extends TestCase
     /*
         Modifica Utente con ID non esistente
     */
-    public function testFailsToUpdateBecauseNoUserWithID()
+    public function test_fails_to_update_because_no_user_with_id()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
@@ -333,12 +333,12 @@ class UsersServiceTest extends TestCase
     /*
         Modifica Utente con permessi corretti
     */
-    public function testUpdate()
+    public function test_update()
     {
         $this->actingAs($this->userWithAdminPerm);
 
         $user = User::factory()->create([
-            'gas_id' => $this->gas->id
+            'gas_id' => $this->gas->id,
         ]);
 
         $updatedUser = app()->make('UsersService')->update($user->id, [
@@ -353,7 +353,7 @@ class UsersServiceTest extends TestCase
     /*
         Modifica Utente con parametri errati
     */
-    public function testInvalidUsername()
+    public function test_invalid_username()
     {
         $this->expectException(IllegalArgumentException::class);
 
@@ -361,7 +361,7 @@ class UsersServiceTest extends TestCase
         $sample = User::inRandomOrder()->first();
 
         $user = User::factory()->create([
-            'gas_id' => $this->gas->id
+            'gas_id' => $this->gas->id,
         ]);
 
         app()->make('UsersService')->update($user->id, [
@@ -372,7 +372,7 @@ class UsersServiceTest extends TestCase
     /*
         Modifica Utente con parametri errati
     */
-    public function testInvalidCardNumber()
+    public function test_invalid_card_number()
     {
         $this->expectException(IllegalArgumentException::class);
 
@@ -380,7 +380,7 @@ class UsersServiceTest extends TestCase
         $sample = User::where('gas_id', $this->gas->id)->where('card_number', '!=', '')->whereNotNull('card_number')->inRandomOrder()->first();
 
         $user = User::factory()->create([
-            'gas_id' => $this->gas->id
+            'gas_id' => $this->gas->id,
         ]);
 
         app()->make('UsersService')->update($user->id, [
@@ -391,7 +391,7 @@ class UsersServiceTest extends TestCase
     /*
         Modifica del proprio Utente con permessi sbagliati
     */
-    public function testFailsToSelfUpdate()
+    public function test_fails_to_self_update()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -407,7 +407,7 @@ class UsersServiceTest extends TestCase
     /*
         Modifica del proprio Utente con permessi corretti
     */
-    public function testSelfUpdate()
+    public function test_self_update()
     {
         $this->actingAs($this->userWithBasePerm);
 
@@ -426,7 +426,7 @@ class UsersServiceTest extends TestCase
     /*
         Salvataggio contatti
     */
-    public function testContacts()
+    public function test_contacts()
     {
         $this->actingAs($this->userWithBasePerm);
 
@@ -445,7 +445,7 @@ class UsersServiceTest extends TestCase
 
         $tested_types = [];
 
-        foreach($user->contacts as $contact) {
+        foreach ($user->contacts as $contact) {
             $this->assertEquals($user->id, $contact->target_id);
             $this->assertEquals(get_class($user), $contact->target_type);
             $this->assertNotEquals('???', $contact->type_name);
@@ -469,7 +469,7 @@ class UsersServiceTest extends TestCase
     /*
         Username come email
     */
-    public function testUsernameAsEmail()
+    public function test_username_as_email()
     {
         $this->actingAs($this->userWithBasePerm);
 
@@ -488,7 +488,7 @@ class UsersServiceTest extends TestCase
     /*
         Modifica del proprio Utente con permessi limitati
     */
-    public function testLimitedSelfUpdate()
+    public function test_limited_self_update()
     {
         /*
             Un utente senza permessi deve comunque poter modificare la propria
@@ -509,7 +509,7 @@ class UsersServiceTest extends TestCase
     /*
         Accesso Utente con permessi sbagliati
     */
-    public function testFailsToShow()
+    public function test_fails_to_show()
     {
         $this->expectException(AuthException::class);
         app()->make('UsersService')->show($this->userWithViewPerm->id);
@@ -518,7 +518,7 @@ class UsersServiceTest extends TestCase
     /*
         Accesso Utente con ID non esistente
     */
-    public function testFailsToShowInexistent()
+    public function test_fails_to_show_inexistent()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithViewPerm);
@@ -528,7 +528,7 @@ class UsersServiceTest extends TestCase
     /*
         Accesso Utente
     */
-    public function testShow()
+    public function test_show()
     {
         $this->actingAs($this->userWithViewPerm);
 
@@ -542,7 +542,7 @@ class UsersServiceTest extends TestCase
     /*
         Pagamento e assegnazione quota di iscrizione
     */
-    public function testAnnualFee()
+    public function test_annual_fee()
     {
         $this->actingAs($this->userWithMovementPerm);
 
@@ -566,7 +566,7 @@ class UsersServiceTest extends TestCase
     /*
         Cancellazione Utente con permessi sbagliati
     */
-    public function testFailsToDestroy()
+    public function test_fails_to_destroy()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithViewPerm);
@@ -576,7 +576,7 @@ class UsersServiceTest extends TestCase
     /*
         Cancellazione Utente
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $this->actingAs($this->userWithAdminPerm);
 

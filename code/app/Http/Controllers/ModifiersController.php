@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Modifier;
 use App\Order;
 
 use App\Services\ModifiersService;
@@ -17,13 +16,13 @@ class ModifiersController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Modifier',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function show($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $modifier = $this->service->show($id);
             if (is_null($modifier)) {
                 abort(404);
@@ -35,8 +34,9 @@ class ModifiersController extends BackedController
 
     public function edit($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $modifier = $this->service->show($id);
+
             return view('modifier.edit', ['modifier' => $modifier]);
         });
     }
@@ -44,12 +44,13 @@ class ModifiersController extends BackedController
     public function strings($target)
     {
         $target = fromInlineId($target);
+
         return response()->json(\App\View\Texts\Modifier::descriptions($target));
     }
 
     public function postFeedback($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $ret = [];
             $modifier = $this->service->show($id);
 
@@ -85,19 +86,20 @@ class ModifiersController extends BackedController
 
     public function getFixOrderAttach($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $modifier = $this->service->show($id);
+
             return view('modifier.fixorders', ['modifier' => $modifier]);
         });
     }
 
     public function postFixOrderAttach(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($request, $id) {
+        return $this->easyExecute(function () use ($request, $id) {
             $modifier = $this->service->show($id);
             $activated = array_unique($request->input('activated', []));
 
-            foreach($activated as $activate) {
+            foreach ($activated as $activate) {
                 $order = Order::find($activate);
 
                 if ($order && $order->supplier_id == $modifier->target_id && $request->user()->can('supplier.orders', $order->supplier)) {

@@ -20,8 +20,6 @@
 
 namespace App\Models\Concerns;
 
-use Log;
-
 use App\Aggregate;
 use App\Order;
 use App\Booking;
@@ -95,11 +93,11 @@ trait ReducibleTrait
         }
 
         foreach ($this->describingAttributes() as $attr) {
-            if (!isset($first->$attr)) {
+            if (! isset($first->$attr)) {
                 $first->$attr = 0;
             }
 
-            if (!isset($second->$attr)) {
+            if (! isset($second->$attr)) {
                 continue;
             }
 
@@ -120,7 +118,7 @@ trait ReducibleTrait
         $ret = $this->describingAttributesMerge($first, $second);
 
         foreach ($this->subArrayMerge() as $subarray) {
-            if (!isset($first->$subarray) && !isset($second->$subarray)) {
+            if (! isset($first->$subarray) && ! isset($second->$subarray)) {
                 continue;
             }
 
@@ -129,7 +127,7 @@ trait ReducibleTrait
             $final = [];
             $ids = array_unique(array_merge(array_keys($first_subarray), array_keys($second_subarray)));
 
-            foreach($ids as $id) {
+            foreach ($ids as $id) {
                 $final[$id] = $this->describingAttributesMerge($first_subarray[$id] ?? null, $second_subarray[$id] ?? null);
             }
 
@@ -142,7 +140,7 @@ trait ReducibleTrait
     protected function descendReduction($ret, $filters)
     {
         foreach ($this->describingAttributes() as $attr) {
-            if (!isset($ret->$attr)) {
+            if (! isset($ret->$attr)) {
                 $ret->$attr = 0;
             }
         }
@@ -151,15 +149,15 @@ trait ReducibleTrait
         $collected = $behaviours->collected;
         $children = ($behaviours->children)($this, $filters);
 
-        foreach($children as $child) {
+        foreach ($children as $child) {
             $child = ($behaviours->optimize)($this, $child);
             $reduxed_child = $child->reduxData($filters);
             $ret->$collected[$reduxed_child->id] = $this->describingAttributesMerge($ret->$collected[$reduxed_child->id] ?? null, $reduxed_child);
             $ret = $this->describingAttributesMerge($ret, $reduxed_child);
 
             $merged = $behaviours->merged ?? '';
-            if (!empty($merged)) {
-                foreach($reduxed_child->$merged as $to_merge) {
+            if (! empty($merged)) {
+                foreach ($reduxed_child->$merged as $to_merge) {
                     $ret->$merged[$to_merge->id] = $this->deepMergingAttributes($child, $ret->$merged[$to_merge->id] ?? null, $to_merge);
                 }
             }
@@ -174,7 +172,7 @@ trait ReducibleTrait
             'master_key' => 'id',
             'merged' => '',
 
-            'optimize' => function($master, $child) {
+            'optimize' => function ($master, $child) {
                 return $child;
             },
         ];
@@ -195,7 +193,7 @@ trait ReducibleTrait
         $order = null;
         $booking = null;
 
-        switch(get_class($this)) {
+        switch (get_class($this)) {
             case Aggregate::class:
                 $aggregate = $this;
                 $order = null;
@@ -237,18 +235,18 @@ trait ReducibleTrait
             ['product'],
             ['booking'],
             ['order', 'global_product'],
-            ['aggregate']
+            ['aggregate'],
         ];
 
         $target_priority = -1;
         $aggregate_data = null;
         $faster = true;
 
-        foreach($modifiers as $mod) {
+        foreach ($modifiers as $mod) {
             $target_level = $mod->getCheckTargetLevel();
             \Log::debug('target_level = ' . $target_level);
 
-            foreach($priority as $priority_index => $items) {
+            foreach ($priority as $priority_index => $items) {
                 if (in_array($target_level, $items) && $priority_index > $target_priority) {
                     $target_priority = $priority_index;
                     break;
@@ -295,7 +293,7 @@ trait ReducibleTrait
         }
 
         $merged = $behaviours->merged ?? '';
-        if (!empty($merged)) {
+        if (! empty($merged)) {
             $ret->$merged = [];
         }
 

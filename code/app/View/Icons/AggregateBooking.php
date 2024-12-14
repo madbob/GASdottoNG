@@ -39,10 +39,10 @@ class AggregateBooking extends IconsMap
                             'hidden-truck-' . $obj->user->preferred_delivery_id,
                         ];
                     },
-                    'options' => function($objs) {
+                    'options' => function ($objs) {
                         $ret = [];
 
-                        foreach($objs as $obj) {
+                        foreach ($objs as $obj) {
                             $key = 'hidden-truck-' . $obj->user->preferred_delivery_id;
                             if (isset($ret[$key]) == false) {
                                 $place = $obj->user->shippingplace;
@@ -53,8 +53,8 @@ class AggregateBooking extends IconsMap
                         }
 
                         return $ret;
-                    }
-                ]
+                    },
+                ],
             ];
         }
         else {

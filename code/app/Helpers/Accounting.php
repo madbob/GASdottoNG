@@ -11,6 +11,7 @@ function movementTypes($identifier = null, $with_trashed = false)
 
     if ($identifier == 'VOID') {
         $types = null;
+
         return null;
     }
 
@@ -24,7 +25,7 @@ function movementTypes($identifier = null, $with_trashed = false)
         $predefined = systemParameters('MovementType');
         $types = new Illuminate\Support\Collection();
 
-        foreach($from_database as $mov) {
+        foreach ($from_database as $mov) {
             $mov->callbacks = [];
 
             if (isset($predefined[$mov->id])) {
@@ -43,7 +44,7 @@ function movementTypes($identifier = null, $with_trashed = false)
                 assumono venga usato findOrFail() sulle query eseguite sul
                 database
             */
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException("Error Processing Request", 1);
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Error Processing Request', 1);
         }
     }
     else {
@@ -57,18 +58,18 @@ function movementTypesAccepting($sender, $target)
 {
     $types = movementTypes();
 
-    return $types->filter(function($value, $key) use ($sender, $target) {
+    return $types->filter(function ($value, $key) use ($sender, $target) {
         $sender_ok = false;
         $target_ok = false;
 
-        foreach($sender as $s) {
+        foreach ($sender as $s) {
             if ($value->sender_type == $s) {
                 $sender_ok = true;
                 break;
             }
         }
 
-        foreach($target as $s) {
+        foreach ($target as $s) {
             if ($value->target_type == $s) {
                 $target_ok = true;
                 break;
@@ -84,7 +85,7 @@ function paymentTypes()
     $ret = [];
 
     $predefined = systemParameters('PaymentType');
-    foreach($predefined as $identifier => $obj) {
+    foreach ($predefined as $identifier => $obj) {
         if ($obj->enabled()) {
             $ret[$identifier] = $obj->definition();
         }
@@ -96,9 +97,9 @@ function paymentTypes()
             'identifier' => true,
             'icon' => 'cloud-plus',
             'active_for' => 'App\User',
-            'valid_config' => function($target) {
-                return (get_class($target) == 'App\User' && !empty($target->getContactsByType('integralces')));
-            }
+            'valid_config' => function ($target) {
+                return get_class($target) == 'App\User' && ! empty($target->getContactsByType('integralces'));
+            },
         ];
     }
 
@@ -113,7 +114,7 @@ function paymentsSimple()
         'none' => _i('Non Specificato'),
     ];
 
-    foreach($payments as $identifier => $meta) {
+    foreach ($payments as $identifier => $meta) {
         $ret[$identifier] = $meta->name;
     }
 
@@ -123,6 +124,7 @@ function paymentsSimple()
 function paymentMethodByType($type)
 {
     $movement_methods = paymentTypes();
+
     return $movement_methods[$type] ?? null;
 }
 
@@ -140,7 +142,7 @@ function paymentsByType($type)
                 $movement_methods = paymentTypes();
 
                 foreach ($movement_methods as $method_id => $info) {
-                    foreach($function as $f) {
+                    foreach ($function as $f) {
                         if ($f->method == $method_id) {
                             $ret[$method_id] = $info->name;
                             break;
@@ -160,11 +162,11 @@ function defaultPaymentByType($type)
     $metadata = movementTypes($type);
     $function = json_decode($metadata->function);
 
-	if (empty($function)) {
+    if (empty($function)) {
         return null;
     }
 
-    foreach($function as $f) {
+    foreach ($function as $f) {
         if ($f->is_default ?? false) {
             return $f->method;
         }
@@ -181,6 +183,7 @@ function sumCurrentBalanceAmounts($currency, $type)
 
     $bank = \App\Balance::where('target_type', $type)->where('current', true)->where('currency_id', $currency->id)->sum('bank');
     $cash = \App\Balance::where('target_type', $type)->where('current', true)->where('currency_id', $currency->id)->sum('cash');
+
     return $bank + $cash;
 }
 
@@ -189,7 +192,7 @@ function resetAllCurrentBalances()
     $current_status = [];
     $classes = \DB::table('balances')->select('target_type')->distinct()->get();
 
-    foreach($classes as $c) {
+    foreach ($classes as $c) {
         $class = $c->target_type;
         $objects = $class::tAll();
 

@@ -46,7 +46,7 @@ class CreateXHProfTable extends Migration
             $table->index(['server name', 'timestamp']);
         });
 
-        if(DB::connection()->getDriverName() === 'mysql') {
+        if (DB::connection()->getDriverName() === 'mysql') {
             DB::statement('ALTER TABLE details MODIFY COLUMN `perfdata` LONGBLOB');
             DB::statement('ALTER TABLE details MODIFY COLUMN `cookie` LONGBLOB');
             DB::statement('ALTER TABLE details MODIFY COLUMN `post` LONGBLOB');
@@ -62,4 +62,4 @@ class CreateXHProfTable extends Migration
     {
         Schema::dropIfExists('details');
     }
-};
+}

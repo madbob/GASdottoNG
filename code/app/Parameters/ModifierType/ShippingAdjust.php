@@ -22,6 +22,7 @@ class ShippingAdjust extends ModifierType
         $type->system = true;
         $type->hidden = true;
         $type->classes = [];
+
         return $type;
     }
 }

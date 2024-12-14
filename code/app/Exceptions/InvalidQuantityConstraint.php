@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class InvalidQuantityConstraint extends \Exception
-{
-}
+class InvalidQuantityConstraint extends \Exception {}

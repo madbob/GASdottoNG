@@ -38,7 +38,7 @@ class MovementsService extends BaseService
             if ($own == false && $user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
                 $this->ensureAuth(['supplier.invoices' => null, 'supplier.movements' => null]);
 
-                $query->where(function($subquery) use ($user) {
+                $query->where(function ($subquery) use ($user) {
                     $suppliers = $user->targetsByAction('supplier.invoices,supplier.movements');
                     foreach ($suppliers as $supplier) {
                         if ($user->can('supplier.movements', null) == false) {
@@ -48,7 +48,7 @@ class MovementsService extends BaseService
                             $type = 'all';
                         }
 
-                        $subquery->orWhere(fn($q) => $supplier->queryMovements($q, $type));
+                        $subquery->orWhere(fn ($q) => $supplier->queryMovements($q, $type));
                     }
                 });
             }
@@ -77,7 +77,7 @@ class MovementsService extends BaseService
             $start = date('Y-m-d', strtotime('-1 weeks'));
         }
 
-        if (!empty($start)) {
+        if (! empty($start)) {
             $query->where('date', '>=', $start);
         }
 
@@ -88,7 +88,7 @@ class MovementsService extends BaseService
             $end = date('Y-m-d');
         }
 
-        if (!empty($end)) {
+        if (! empty($end)) {
             $query->where('date', '<=', $end);
         }
 
@@ -100,7 +100,7 @@ class MovementsService extends BaseService
             $query->where('method', $request['method']);
         }
 
-        if (isset($request['user_id']) && !empty($request['user_id']) && $request['user_id'] != '0') {
+        if (isset($request['user_id']) && ! empty($request['user_id']) && $request['user_id'] != '0') {
             $user_id = $request['user_id'];
             if ($user_id == $currentuser->id) {
                 $own_movements = true;
@@ -140,15 +140,15 @@ class MovementsService extends BaseService
 
         $query = $this->filterBySupplier($supplier, $currentuser, $query, $own_movements);
 
-        if (isset($request['amountstart']) && !empty($request['amountstart']) && $request['amountstart'] != '0') {
+        if (isset($request['amountstart']) && ! empty($request['amountstart']) && $request['amountstart'] != '0') {
             $query->where('amount', '>=', $request['amountstart']);
         }
 
-        if (isset($request['amountend']) && !empty($request['amountend']) && $request['amountend'] != '0') {
+        if (isset($request['amountend']) && ! empty($request['amountend']) && $request['amountend'] != '0') {
             $query->where('amount', '<=', $request['amountend']);
         }
 
-        return $query->with(['sender', 'currency', 'target' => function(MorphTo $morphTo) {
+        return $query->with(['sender', 'currency', 'target' => function (MorphTo $morphTo) {
             $morphTo->morphWith([
                 Booking::class => ['order'],
             ]);
@@ -165,6 +165,7 @@ class MovementsService extends BaseService
         */
         $this->ensureAuth();
         $movement = Movement::findOrFail($id);
+
         return $movement;
     }
 
@@ -202,7 +203,7 @@ class MovementsService extends BaseService
             cui si sta agendo, e se si hanno i permessi o meno.
             Sarebbe meglio spostare queste regole nella classi in Params
         */
-        switch($type) {
+        switch ($type) {
             case 'deposit-pay':
             case 'deposit-return':
             case 'annual-fee':
@@ -227,7 +228,7 @@ class MovementsService extends BaseService
     {
         $this->testAuth($request['type']);
 
-        return DB::transaction(function() use ($request) {
+        return DB::transaction(function () use ($request) {
             $movement = new Movement();
             $movement = $this->setCommonAttributes($movement, $request);
             $movement->save();
@@ -242,14 +243,15 @@ class MovementsService extends BaseService
 
     public function update($id, array $request)
     {
-        return DB::transaction(function() use ($id, $request) {
+        return DB::transaction(function () use ($id, $request) {
             $movement = Movement::findOrFail($id);
             $this->testAuth($movement->type);
             $movement = $this->setCommonAttributes($movement, $request);
             $movement->save();
 
-            if ($movement->saved == false)
+            if ($movement->saved == false) {
                 throw new IllegalArgumentException(_i('Salvataggio fallito'));
+            }
 
             return $movement;
         });
@@ -259,7 +261,7 @@ class MovementsService extends BaseService
     {
         $this->ensureAuth(['movements.admin' => 'gas']);
 
-        DB::transaction(function() {
+        DB::transaction(function () {
             $current_date = date('Y-m-d H:i:s');
             $index = 0;
 
@@ -269,7 +271,7 @@ class MovementsService extends BaseService
                     break;
                 }
 
-                foreach($movements as $m) {
+                foreach ($movements as $m) {
                     $m->updated_at = $current_date;
                     $m->save();
                 }
@@ -277,7 +279,8 @@ class MovementsService extends BaseService
                 unset($movements);
                 $index++;
 
-            } while(true);
+            }
+            while (true);
         });
     }
 
@@ -287,18 +290,20 @@ class MovementsService extends BaseService
         $hub = App::make('MovementsHub');
 
         try {
-            return DB::transaction(function() use ($hub) {
+            return DB::transaction(function () use ($hub) {
                 $hub->setRecalculating(true);
                 $current_status = resetAllCurrentBalances();
                 $this->recalculateCurrentBalance();
                 $hub->setRecalculating(false);
                 $diffs = CreditableTrait::compareBalances($current_status);
+
                 return $diffs;
             });
         }
-        catch(\Exception $e) {
+        catch (\Exception $e) {
             Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
             $hub->setRecalculating(false);
+
             return null;
         }
     }
@@ -311,7 +316,7 @@ class MovementsService extends BaseService
         try {
             $date = decodeDate($request['date']);
 
-            return DB::transaction(function() use ($hub, $date) {
+            return DB::transaction(function () use ($hub, $date) {
                 $hub->setRecalculating(true);
 
                 /*
@@ -331,7 +336,7 @@ class MovementsService extends BaseService
                         break;
                     }
 
-                    foreach($movements as $m) {
+                    foreach ($movements as $m) {
                         $m->updated_at = $current_date;
                         $m->save();
                     }
@@ -339,7 +344,8 @@ class MovementsService extends BaseService
                     unset($movements);
                     $index++;
 
-                } while(true);
+                }
+                while (true);
 
                 /*
                     Archivio i movimenti più vecchi della data indicata
@@ -359,45 +365,49 @@ class MovementsService extends BaseService
                 $this->recalculateCurrentBalance();
 
                 $hub->setRecalculating(false);
+
                 return true;
             });
         }
-        catch(\Exception $e) {
+        catch (\Exception $e) {
             Log::error('Errore nel ricalcolo saldi: ' . $e->getMessage());
             $hub->setRecalculating(false);
+
             return false;
         }
     }
 
-	public function creditHistory($class, $date)
-	{
-		$currencies = Currency::enabled();
-		$balances = Balance::whereDate('date', $date)->where('target_type', $class)->get();
-		$ret = [];
+    public function creditHistory($class, $date)
+    {
+        $currencies = Currency::enabled();
+        $balances = Balance::whereDate('date', $date)->where('target_type', $class)->get();
+        $ret = [];
 
-		foreach($balances as $balance) {
-			$target = $balance->target;
-			if ($target) {
-				$name = $target->printableName();
-				$amounts = [];
+        foreach ($balances as $balance) {
+            $target = $balance->target;
+            if ($target) {
+                $name = $target->printableName();
+                $amounts = [];
 
-				foreach($currencies as $currency) {
-					$amounts[] = $target->retrieveBalanceAmount($currency, $date);
-				}
+                foreach ($currencies as $currency) {
+                    $amounts[] = $target->retrieveBalanceAmount($currency, $date);
+                }
 
-				$ret[$name] = $amounts;
-			}
-		}
+                $ret[$name] = $amounts;
+            }
+        }
 
-		ksort($ret, SORT_STRING | SORT_FLAG_CASE);
-		return $ret;
-	}
+        ksort($ret, SORT_STRING | SORT_FLAG_CASE);
+
+        return $ret;
+    }
 
     public function deleteBalance($id)
     {
         $this->ensureAuth(['movements.admin' => 'gas']);
         $balance = Balance::find($id);
         $balance->delete();
+
         return true;
     }
 
@@ -407,6 +417,7 @@ class MovementsService extends BaseService
             $this->ensureAuth(['movements.admin' => 'gas']);
             $movement = Movement::findOrFail($id);
             $movement->delete();
+
             return $movement;
         });
 

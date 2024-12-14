@@ -21,7 +21,7 @@ class DeleteFiles implements ShouldQueue
 
     public function handle()
     {
-        foreach($this->files as $file) {
+        foreach ($this->files as $file) {
             @unlink($file);
         }
     }

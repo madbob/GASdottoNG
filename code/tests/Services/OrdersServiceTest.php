@@ -22,19 +22,19 @@ class OrdersServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->order = $this->initOrder(null);
         $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
-		$this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book');
+        $this->userWithBasePerms = $this->createRoleAndUser($this->gas, 'supplier.book');
     }
 
     /*
         Creazione Ordine con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
 
@@ -47,7 +47,7 @@ class OrdersServiceTest extends TestCase
     /*
         Creazione Ordine
     */
-    public function testStore()
+    public function test_store()
     {
         Notification::fake();
 
@@ -81,10 +81,10 @@ class OrdersServiceTest extends TestCase
         $this->assertTrue($aggregate->isRunning());
         $this->assertFalse($aggregate->canShip());
 
-        foreach($aggregate->orders as $order) {
+        foreach ($aggregate->orders as $order) {
             $notifiable = $order->notifiableUsers($this->gas);
             $this->assertTrue($notifiable->count() > 0);
-            foreach($notifiable as $not) {
+            foreach ($notifiable as $not) {
                 Notification::assertSentTo([$not], \App\Notifications\NewOrderNotification::class);
             }
         }
@@ -94,7 +94,7 @@ class OrdersServiceTest extends TestCase
 
         $this->actingAs($this->userReferrer);
 
-        foreach($aggregate->orders as $order) {
+        foreach ($aggregate->orders as $order) {
             $order = app()->make('OrdersService')->show($order->id);
 
             $this->assertEquals($this->order->supplier_id, $order->supplier_id);
@@ -119,36 +119,36 @@ class OrdersServiceTest extends TestCase
     /*
         Modifica Ordine con permessi sbagliati
     */
-    public function testFailsToUpdate()
+    public function test_fails_to_update()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('OrdersService')->update($this->order->id, array());
+        app()->make('OrdersService')->update($this->order->id, []);
     }
 
     /*
         Modifica Ordine con ID non esistente
     */
-    public function testFailsToUpdateBecauseNoUserWithID()
+    public function test_fails_to_update_because_no_user_with_id()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userReferrer);
-        app()->make('OrdersService')->update('broken', array());
+        app()->make('OrdersService')->update('broken', []);
     }
 
     /*
         Modifica Ordine
     */
-    public function testUpdate()
+    public function test_update()
     {
         $this->actingAs($this->userReferrer);
 
         $new_shipping = date('Y-m-d', strtotime('+40 days'));
 
-        app()->make('OrdersService')->update($this->order->id, array(
+        app()->make('OrdersService')->update($this->order->id, [
             'comment' => 'Un altro commento',
             'shipping' => $new_shipping,
-        ));
+        ]);
 
         $order = app()->make('OrdersService')->show($this->order->id);
 
@@ -161,7 +161,7 @@ class OrdersServiceTest extends TestCase
     /*
         Chiusura ordini automatica
     */
-    public function testAutoClose()
+    public function test_auto_close()
     {
         Notification::fake();
         $this->populateOrder($this->order);
@@ -198,24 +198,24 @@ class OrdersServiceTest extends TestCase
     /*
         Cambio stato
     */
-    public function testChangeState()
+    public function test_change_state()
     {
         Bus::fake();
 
         $this->actingAs($this->userReferrer);
 
-        app()->make('OrdersService')->update($this->order->id, array(
+        app()->make('OrdersService')->update($this->order->id, [
             'status' => 'closed',
-        ));
+        ]);
 
         $this->nextRound();
         $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertTrue($order->isActive());
         $this->assertFalse($order->isRunning());
 
-        app()->make('OrdersService')->update($this->order->id, array(
+        app()->make('OrdersService')->update($this->order->id, [
             'status' => 'open',
-        ));
+        ]);
 
         Bus::assertDispatched(\App\Jobs\NotifyNewOrder::class);
 
@@ -224,9 +224,9 @@ class OrdersServiceTest extends TestCase
         $this->assertTrue($order->isActive());
         $this->assertTrue($order->isRunning());
 
-        app()->make('OrdersService')->update($this->order->id, array(
+        app()->make('OrdersService')->update($this->order->id, [
             'status' => 'shipped',
-        ));
+        ]);
 
         $this->nextRound();
         $order = app()->make('OrdersService')->show($this->order->id);
@@ -237,7 +237,7 @@ class OrdersServiceTest extends TestCase
     /*
         Assegnazione Luoghi di Consegna
     */
-    public function testOnShippingPlace()
+    public function test_on_shipping_place()
     {
         $this->actingAs($this->userAdmin);
         $delivery = Delivery::factory()->create([
@@ -245,9 +245,9 @@ class OrdersServiceTest extends TestCase
         ]);
 
         $this->actingAs($this->userReferrer);
-        app()->make('OrdersService')->update($this->order->id, array(
+        app()->make('OrdersService')->update($this->order->id, [
             'deliveries' => [$delivery->id],
-        ));
+        ]);
 
         $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals(1, $order->deliveries()->count());
@@ -264,7 +264,7 @@ class OrdersServiceTest extends TestCase
     /*
         Accesso Ordine con ID non esistente
     */
-    public function testFailsToShowInexistent()
+    public function test_fails_to_show_inexistent()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -274,7 +274,7 @@ class OrdersServiceTest extends TestCase
     /*
         Accesso Ordine
     */
-    public function testShow()
+    public function test_show()
     {
         $this->actingAs($this->userWithNoPerms);
         $order = app()->make('OrdersService')->show($this->order->id);
@@ -286,7 +286,7 @@ class OrdersServiceTest extends TestCase
     /*
         Cancellazione Ordine con permessi sbagliati
     */
-    public function testFailsToDestroy()
+    public function test_fails_to_destroy()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -296,7 +296,7 @@ class OrdersServiceTest extends TestCase
     /*
         Cancellazione Ordine
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $this->actingAs($this->userReferrer);
 
@@ -308,7 +308,7 @@ class OrdersServiceTest extends TestCase
     /*
         Assegnazione numeri agli ordini
     */
-    public function testNumbers()
+    public function test_numbers()
     {
         $this->actingAs($this->userReferrer);
 
@@ -318,38 +318,38 @@ class OrdersServiceTest extends TestCase
         $end = date('Y-m-d', strtotime('+20 days'));
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
-        $aggregate = app()->make('OrdersService')->store(array(
+        $aggregate = app()->make('OrdersService')->store([
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($start),
             'end' => printableDate($end),
             'shipping' => printableDate($shipping),
             'status' => 'open',
-        ));
+        ]);
 
         $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals($order->internal_number, '1 / ' . $this_year);
 
-        foreach($aggregate->orders as $order) {
+        foreach ($aggregate->orders as $order) {
             $order = app()->make('OrdersService')->show($order->id);
             $this->assertEquals($order->internal_number, '2 / ' . $this_year);
         }
 
-        $second_aggregate = app()->make('OrdersService')->store(array(
+        $second_aggregate = app()->make('OrdersService')->store([
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate(date('Y-m-d', strtotime($start . ' +1 year'))),
             'end' => printableDate(date('Y-m-d', strtotime($end . ' +1 year'))),
             'status' => 'closed',
-        ));
+        ]);
 
         $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals($order->internal_number, '1 / ' . $this_year);
 
-        foreach($aggregate->orders as $order) {
+        foreach ($aggregate->orders as $order) {
             $order = app()->make('OrdersService')->show($order->id);
             $this->assertEquals($order->internal_number, '2 / ' . $this_year);
         }
 
-        foreach($second_aggregate->orders as $order) {
+        foreach ($second_aggregate->orders as $order) {
             $order = app()->make('OrdersService')->show($order->id);
             $this->assertEquals($order->internal_number, '1 / ' . ($this_year + 1));
         }
@@ -358,7 +358,7 @@ class OrdersServiceTest extends TestCase
     /*
         Modificatori ereditati dal fornitore
     */
-    public function testInitModifiers()
+    public function test_init_modifiers()
     {
         $this->actingAs($this->userReferrer);
 
@@ -379,19 +379,19 @@ class OrdersServiceTest extends TestCase
         $end = date('Y-m-d', strtotime('+20 days'));
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
-		$this->nextRound();
+        $this->nextRound();
 
-        $aggregate = app()->make('OrdersService')->store(array(
+        $aggregate = app()->make('OrdersService')->store([
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($start),
             'end' => printableDate($end),
             'shipping' => printableDate($shipping),
             'status' => 'open',
-        ));
+        ]);
 
         $this->assertEquals(1, $aggregate->orders->count());
 
-        foreach($aggregate->orders as $order) {
+        foreach ($aggregate->orders as $order) {
             $order = app()->make('OrdersService')->show($order->id);
             $this->assertEquals($order->modifiers->count(), 1);
             $this->assertEquals($order->modifiers->first()->modifierType->id, 'spese-trasporto');
@@ -401,127 +401,127 @@ class OrdersServiceTest extends TestCase
     /*
         Esportazione GDXP
     */
-    public function testExportGDXP()
+    public function test_export_gdxp()
     {
         $this->actingAs($this->userReferrer);
         $this->assertNotNull($this->order->exportXML());
         $this->assertNotNull($this->order->exportJSON());
     }
 
-	/*
-		Modifica prodotti nell'ordine
-	*/
-	public function testRemoveProduct()
-	{
-		$this->actingAs($this->userWithBasePerms);
+    /*
+        Modifica prodotti nell'ordine
+    */
+    public function test_remove_product()
+    {
+        $this->actingAs($this->userWithBasePerms);
 
-		$target_product_1 = $this->order->products()->orderBy('id', 'asc')->first();
-		$target_product_2 = $this->order->products()->orderBy('id', 'asc')->skip(1)->first();
+        $target_product_1 = $this->order->products()->orderBy('id', 'asc')->first();
+        $target_product_2 = $this->order->products()->orderBy('id', 'asc')->skip(1)->first();
 
-		$data = [
-			'action' => 'booked',
-			$target_product_1->id => 2,
-			$target_product_2->id => 3,
-		];
+        $data = [
+            'action' => 'booked',
+            $target_product_1->id => 2,
+            $target_product_2->id => 3,
+        ];
 
-		$booking = $this->updateAndFetch($data, $this->order, $this->userWithBasePerms, false);
+        $booking = $this->updateAndFetch($data, $this->order, $this->userWithBasePerms, false);
 
-		$this->nextRound();
-		$booking = Booking::find($booking->id);
-		$this->assertEquals($booking->products()->count(), 2);
-		$this->assertEquals($this->order->bookings()->count(), 1);
+        $this->nextRound();
+        $booking = Booking::find($booking->id);
+        $this->assertEquals($booking->products()->count(), 2);
+        $this->assertEquals($this->order->bookings()->count(), 1);
 
-		$this->actingAs($this->userReferrer);
+        $this->actingAs($this->userReferrer);
 
-		app()->make('OrdersService')->update($this->order->id, [
+        app()->make('OrdersService')->update($this->order->id, [
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($this->order->start),
             'end' => printableDate($this->order->end),
             'shipping' => printableDate($this->order->shipping),
             'status' => 'open',
-			'enabled' => $this->order->products->filter(function($p) use ($target_product_1) {
-				return $p->id != $target_product_1->id;
-			})->pluck('id')->toArray(),
+            'enabled' => $this->order->products->filter(function ($p) use ($target_product_1) {
+                return $p->id != $target_product_1->id;
+            })->pluck('id')->toArray(),
         ]);
 
-		$this->nextRound();
-		$booking = Booking::find($booking->id);
-		$this->assertEquals($booking->products()->count(), 1);
-		$this->assertEquals($this->order->bookings()->count(), 1);
+        $this->nextRound();
+        $booking = Booking::find($booking->id);
+        $this->assertEquals($booking->products()->count(), 1);
+        $this->assertEquals($this->order->bookings()->count(), 1);
 
-		app()->make('OrdersService')->update($this->order->id, [
+        app()->make('OrdersService')->update($this->order->id, [
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($this->order->start),
             'end' => printableDate($this->order->end),
             'shipping' => printableDate($this->order->shipping),
             'status' => 'open',
-			'enabled' => $this->order->products->filter(function($p) use ($target_product_1, $target_product_2) {
-				return $p->id != $target_product_1->id && $p->id != $target_product_2->id;
-			})->pluck('id')->toArray(),
+            'enabled' => $this->order->products->filter(function ($p) use ($target_product_1, $target_product_2) {
+                return $p->id != $target_product_1->id && $p->id != $target_product_2->id;
+            })->pluck('id')->toArray(),
         ]);
 
-		$this->nextRound();
-		$this->assertEquals($this->order->bookings()->count(), 0);
-		$booking = Booking::find($booking->id);
-		$this->assertNull($booking);
-	}
+        $this->nextRound();
+        $this->assertEquals($this->order->bookings()->count(), 0);
+        $booking = Booking::find($booking->id);
+        $this->assertNull($booking);
+    }
 
     /*
-		Preserva prodotto eliminato dal listino
-	*/
-	public function testKeepRemovedProduct()
-	{
-		$this->actingAs($this->userWithBasePerms);
+        Preserva prodotto eliminato dal listino
+    */
+    public function test_keep_removed_product()
+    {
+        $this->actingAs($this->userWithBasePerms);
 
         $count_products = $this->order->products()->count();
-		$target_product_1 = $this->order->products()->orderBy('id', 'asc')->first();
-		$target_product_2 = $this->order->products()->orderBy('id', 'asc')->skip(1)->first();
+        $target_product_1 = $this->order->products()->orderBy('id', 'asc')->first();
+        $target_product_2 = $this->order->products()->orderBy('id', 'asc')->skip(1)->first();
 
-		$data = [
-			'action' => 'booked',
-			$target_product_1->id => 2,
-			$target_product_2->id => 3,
-		];
+        $data = [
+            'action' => 'booked',
+            $target_product_1->id => 2,
+            $target_product_2->id => 3,
+        ];
 
-		$booking = $this->updateAndFetch($data, $this->order, $this->userWithBasePerms, false);
+        $booking = $this->updateAndFetch($data, $this->order, $this->userWithBasePerms, false);
 
-		$this->nextRound();
+        $this->nextRound();
 
-		$this->actingAs($this->userReferrer);
+        $this->actingAs($this->userReferrer);
         app()->make('ProductsService')->destroy($target_product_2->id);
         $this->order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals($count_products, $this->order->products()->count());
 
         $this->nextRound();
 
-		app()->make('OrdersService')->update($this->order->id, [
+        app()->make('OrdersService')->update($this->order->id, [
             'supplier_id' => $this->order->supplier_id,
             'start' => printableDate($this->order->start),
             'end' => printableDate($this->order->end),
             'shipping' => printableDate($this->order->shipping),
             'status' => 'open',
-			'enabled' => $this->order->products->pluck('id')->toArray(),
+            'enabled' => $this->order->products->pluck('id')->toArray(),
         ]);
 
-		$this->nextRound();
+        $this->nextRound();
         $this->order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals($count_products, $this->order->products()->count());
-	}
+    }
 
     /*
         Cambio prezzo di un prodotto
     */
-    public function testChangeProductPrice()
+    public function test_change_product_price()
     {
         $this->actingAs($this->userReferrer);
 
         $product = $this->order->products()->inRandomOrder()->first();
         $old_price = $product->getPrice();
         $new_price = $old_price + 2;
-        app()->make('ProductsService')->update($product->id, array(
+        app()->make('ProductsService')->update($product->id, [
             'name' => $product->name,
             'price' => $new_price,
-        ));
+        ]);
 
         $this->nextRound();
 
@@ -537,7 +537,7 @@ class OrdersServiceTest extends TestCase
     /*
         Cambio prezzo di un prodotto e consegna
     */
-    public function testChangeProductPriceOnDelivery()
+    public function test_change_product_price_on_delivery()
     {
         $this->populateOrder($this->order);
 
@@ -552,8 +552,8 @@ class OrdersServiceTest extends TestCase
 
         $this->actingAs($this->userReferrer);
         $order = app()->make('OrdersService')->show($this->order->id);
-        foreach($order->bookings as $booking) {
-            foreach($booking->products as $product) {
+        foreach ($order->bookings as $booking) {
+            foreach ($booking->products as $product) {
                 $target_product = $product->product;
                 break;
             }
@@ -561,18 +561,18 @@ class OrdersServiceTest extends TestCase
 
         $old_price = $target_product->getPrice();
         $new_price = $old_price + 2;
-        app()->make('ProductsService')->update($target_product->id, array(
+        app()->make('ProductsService')->update($target_product->id, [
             'name' => $target_product->name,
             'price' => $new_price,
-        ));
+        ]);
 
         $this->nextRound();
 
         $this->actingAs($this->userReferrer);
         $tested = false;
         $order = app()->make('OrdersService')->show($this->order->id);
-        foreach($order->bookings as $booking) {
-            foreach($booking->products as $product) {
+        foreach ($order->bookings as $booking) {
+            foreach ($booking->products as $product) {
                 if ($product->product_id == $target_product->id) {
                     $this->assertTrue($product->final_price != 0);
                     $assigned = closestNumber([$old_price, $new_price], $product->getFinalUnitPrice());
@@ -588,17 +588,17 @@ class OrdersServiceTest extends TestCase
     /*
         Cambio prezzo di un prodotto e aggiornamento ordine
     */
-    public function testDoNotUpdatePrice()
+    public function test_do_not_update_price()
     {
         $this->actingAs($this->userReferrer);
 
         $product = $this->order->products()->inRandomOrder()->first();
         $old_price = $product->getPrice();
         $new_price = $old_price + 2;
-        app()->make('ProductsService')->update($product->id, array(
+        app()->make('ProductsService')->update($product->id, [
             'name' => $product->name,
             'price' => $new_price,
-        ));
+        ]);
 
         $this->nextRound();
 
@@ -608,7 +608,7 @@ class OrdersServiceTest extends TestCase
             'end' => printableDate($this->order->end),
             'shipping' => printableDate($this->order->shipping),
             'status' => 'open',
-			'enabled' => $this->order->products->pluck('id')->toArray(),
+            'enabled' => $this->order->products->pluck('id')->toArray(),
         ]);
 
         $this->nextRound();
@@ -621,7 +621,7 @@ class OrdersServiceTest extends TestCase
     /*
         Cambio prezzo di una variante
     */
-    public function testChangeProductVariantPrice()
+    public function test_change_product_variant_price()
     {
         $this->actingAs($this->userReferrer);
 
@@ -631,7 +631,7 @@ class OrdersServiceTest extends TestCase
         $ids = [];
         $active = [];
         $variant = $this->createVariant($product);
-        foreach($variant->values as $index => $val) {
+        foreach ($variant->values as $index => $val) {
             $ids[] = $val->id;
 
             $combo = VariantCombo::byValues([$val->id]);
@@ -659,7 +659,7 @@ class OrdersServiceTest extends TestCase
         $this->assertTrue(isset(json_decode($product_in_order->pivot->prices)->variants));
         $combos = $product_in_order->variant_combos;
         $this->assertFalse($combos->isEmpty());
-        foreach($combos as $combo) {
+        foreach ($combos as $combo) {
             $this->assertEquals($product_price, $combo->getPrice());
         }
 
@@ -685,7 +685,7 @@ class OrdersServiceTest extends TestCase
     /*
         Registra il pagamento al fornitore
     */
-    public function testOrderPayment()
+    public function test_order_payment()
     {
         $this->populateOrder($this->order);
 
@@ -706,7 +706,7 @@ class OrdersServiceTest extends TestCase
         $this->actingAs($this->userAdmin);
         $currency = defaultCurrency();
 
-        app()->make('MovementsService')->store(array(
+        app()->make('MovementsService')->store([
             'type' => 'order-payment',
             'method' => 'bank',
             'sender_id' => $this->gas->id,
@@ -715,7 +715,7 @@ class OrdersServiceTest extends TestCase
             'target_type' => 'App\Order',
             'currency_id' => $currency->id,
             'amount' => $summary->price,
-        ));
+        ]);
 
         $this->nextRound();
 

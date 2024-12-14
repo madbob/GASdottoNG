@@ -27,12 +27,12 @@ class ManyMailNotification extends Notification
         return ['mail'];
     }
 
-	public function viaConnections()
-	{
-		return [
-			'mail' => config('queue.default'),
-		];
-	}
+    public function viaConnections()
+    {
+        return [
+            'mail' => config('queue.default'),
+        ];
+    }
 
     private function attachReplyTo($message, $replyTo)
     {
@@ -40,7 +40,7 @@ class ManyMailNotification extends Notification
             $message->replyTo($replyTo);
         }
         else {
-            if (!empty($replyTo->email)) {
+            if (! empty($replyTo->email)) {
                 $message->replyTo($replyTo->email);
             }
         }
@@ -56,7 +56,7 @@ class ManyMailNotification extends Notification
             $notifiable->messageAll($message);
         }
 
-        if (!empty($replyTo)) {
+        if (! empty($replyTo)) {
             $message = $this->attachReplyTo($message, $replyTo);
         }
 

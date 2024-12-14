@@ -6,7 +6,6 @@
 
 namespace App\Models\Concerns;
 
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use App\Gas;

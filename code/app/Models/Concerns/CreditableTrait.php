@@ -4,7 +4,6 @@ namespace App\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 
 use App\Currency;
 use App\Balance;
@@ -47,6 +46,7 @@ trait CreditableTrait
         $balance->currency_id = $currency->id;
         $balance->date = date('Y-m-d');
         $balance->save();
+
         return $balance;
     }
 
@@ -67,6 +67,7 @@ trait CreditableTrait
                 $new->date = date('Y-m-d G:i:s');
                 $new->current = true;
                 $new->save();
+
                 return $new;
             }
         }
@@ -90,7 +91,7 @@ trait CreditableTrait
             a ritroso i saldi salvati passati.
         */
         foreach ($currencies as $curr) {
-            if (!isset($current_status[$curr->id][$class][$obj->id])) {
+            if (! isset($current_status[$curr->id][$class][$obj->id])) {
                 $cb = $obj->currentBalance($curr);
                 foreach (array_keys($fields) as $field) {
                     $now[$field] = $cb->$field;
@@ -123,11 +124,11 @@ trait CreditableTrait
     {
         $diff = [];
 
-        foreach($old_balances as $currency_id => $data) {
+        foreach ($old_balances as $currency_id => $data) {
             $currency = Currency::find($currency_id);
 
-            foreach($data as $class => $ids) {
-                foreach($ids as $id => $old) {
+            foreach ($data as $class => $ids) {
+                foreach ($ids as $id => $old) {
                     $obj = $class::tFind($id);
                     if (is_null($obj)) {
                         continue;
@@ -168,17 +169,18 @@ trait CreditableTrait
         return $balance;
     }
 
-	public function retrieveBalance($currency, $date)
-	{
-		$proxy = $this->getActualObject();
+    public function retrieveBalance($currency, $date)
+    {
+        $proxy = $this->getActualObject();
+
         return $proxy->balances()->whereDate('date', $date)->where('currency_id', $currency->id)->orderBy('date', 'desc')->first();
-	}
+    }
 
     public function extendedCurrentBalance($currency)
     {
         $balance = $this->currentBalance($currency);
 
-        foreach($this->virtualBalances($currency) as $name => $value) {
+        foreach ($this->virtualBalances($currency) as $name => $value) {
             $balance->$name = $value->value;
         }
 
@@ -192,19 +194,20 @@ trait CreditableTrait
         }
 
         $balance = $this->currentBalance($currency);
+
         return $balance->bank + $balance->cash;
     }
 
-	public function retrieveBalanceAmount($currency, $date)
-	{
-		$balance = $this->retrieveBalance($currency, $date);
-		if ($balance) {
-        	return $balance->bank + $balance->cash;
-		}
-		else {
-			return 0;
-		}
-	}
+    public function retrieveBalanceAmount($currency, $date)
+    {
+        $balance = $this->retrieveBalance($currency, $date);
+        if ($balance) {
+            return $balance->bank + $balance->cash;
+        }
+        else {
+            return 0;
+        }
+    }
 
     public function alterBalance($amount, $currency, $type = 'bank')
     {
@@ -212,7 +215,7 @@ trait CreditableTrait
         $balance = $this->currentBalance($currency);
 
         foreach ($type as $t) {
-            if (!isset($balance->$t)) {
+            if (! isset($balance->$t)) {
                 $balance->$t = 0;
             }
 
@@ -258,7 +261,7 @@ trait CreditableTrait
     {
         $ret = $this->balanceFields();
 
-        foreach($this->virtualBalances(null) as $name => $virtual) {
+        foreach ($this->virtualBalances(null) as $name => $virtual) {
             $ret[$name] = $virtual->label;
         }
 
@@ -266,5 +269,6 @@ trait CreditableTrait
     }
 
     abstract public static function commonClassName();
+
     abstract public function balanceFields();
 }

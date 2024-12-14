@@ -10,7 +10,7 @@ class AggregateBooking extends Printer
     {
         $bookings = [$obj];
 
-        foreach($obj->user->friends as $friend) {
+        foreach ($obj->user->friends as $friend) {
             $friend_booking = $obj->aggregate->bookingBy($friend->id);
             if ($friend_booking->bookings->isEmpty() == false) {
                 $bookings[] = $friend_booking;
@@ -18,11 +18,11 @@ class AggregateBooking extends Printer
         }
 
         $names = [];
-        foreach($obj->aggregate->orders as $order) {
+        foreach ($obj->aggregate->orders as $order) {
             $names[] = sprintf('%s %s', $order->supplier->name, $order->internal_number);
         }
 
-        $names = join(' / ', $names);
+        $names = implode(' / ', $names);
         $filename = sanitizeFilename(_i('Dettaglio Consegne ordini %s.pdf', [$names]));
 
         $pdf = PDF::loadView('documents.personal_aggregate_shipping', [

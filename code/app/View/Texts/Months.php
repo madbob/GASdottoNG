@@ -116,7 +116,7 @@ class Months
     {
         $ret = null;
 
-        switch($locale) {
+        switch ($locale) {
             case 'it_IT':
                 $ret = self::it();
                 break;

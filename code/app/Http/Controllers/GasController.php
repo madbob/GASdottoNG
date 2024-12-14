@@ -3,17 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 
 use Auth;
 use DB;
 use Log;
 
-use App\Role;
 use App\Gas;
-use App\User;
-use App\Currency;
 
 class GasController extends Controller
 {
@@ -22,25 +18,28 @@ class GasController extends Controller
         $this->middleware('auth', ['except' => ['getLogo']]);
 
         $this->commonInit([
-            'reference_class' => 'App\\Gas'
+            'reference_class' => 'App\\Gas',
         ]);
     }
 
     public function index()
     {
         $user = Auth::user();
+
         return redirect()->route('gas.edit', $user->gas->id);
     }
 
     public function show()
     {
         $user = Auth::user();
+
         return redirect()->route('gas.edit', $user->gas->id);
     }
 
     public function getLogo($id)
     {
         $gas = Gas::findOrFail($id);
+
         return downloadFile($gas, 'logo');
     }
 
@@ -64,13 +63,13 @@ class GasController extends Controller
         $gas->message = $request->input('message');
 
         $currency = defaultCurrency();
-		$currency->symbol = $request->input('currency', '€');
-		$currency->save();
+        $currency->symbol = $request->input('currency', '€');
+        $currency->save();
 
         $gas->setManyConfigs($request, [
             'restricted',
             'multigas',
-            'language'
+            'language',
         ]);
     }
 
@@ -84,7 +83,7 @@ class GasController extends Controller
             'rid',
             'satispay',
             'integralces',
-            'extra_invoicing'
+            'extra_invoicing',
         ]);
     }
 
@@ -122,9 +121,9 @@ class GasController extends Controller
             'auto_referent_order_summary',
         ]);
 
-        foreach(array_keys(systemParameters('MailTypes')) as $identifier) {
-            if ($request->has("custom_mails_" . $identifier . "_subject")) {
-                $gas->setConfig("mail_" . $identifier, (object) [
+        foreach (array_keys(systemParameters('MailTypes')) as $identifier) {
+            if ($request->has('custom_mails_' . $identifier . '_subject')) {
+                $gas->setConfig('mail_' . $identifier, (object) [
                     'subject' => $request->input('custom_mails_' . $identifier . '_subject', ''),
                     'body' => $request->input('custom_mails_' . $identifier . '_body', ''),
                 ]);
@@ -166,6 +165,7 @@ class GasController extends Controller
         }
 
         $gas->save();
+
         return $this->successResponse();
     }
 
@@ -178,7 +178,7 @@ class GasController extends Controller
 
         $filepath = sprintf('%s/dump_%s', sys_get_temp_dir(), Str::random(20));
 
-        switch(env('DB_CONNECTION')) {
+        switch (env('DB_CONNECTION')) {
             case 'mysql':
                 \Spatie\DbDumper\Databases\MySql::create()->setDbName(env('DB_DATABASE'))->setUserName(env('DB_USERNAME'))->setPassword(env('DB_PASSWORD'))->dumpToFile($filepath);
                 break;

@@ -17,7 +17,7 @@ abstract class Formatter
         $columns = static::formattableColumns('all');
         $headers = [];
 
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             $headers[] = $columns[$field]->name;
         }
 
@@ -29,7 +29,7 @@ abstract class Formatter
         $columns = static::formattableColumns('all');
         $ret = [];
 
-        foreach($fields as $f) {
+        foreach ($fields as $f) {
             try {
                 $format = $columns[$f]->format ?? null;
 
@@ -40,7 +40,7 @@ abstract class Formatter
                     $ret[] = accessAttr($obj, $f);
                 }
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 Log::error('Formattazione: impossibile accedere al campo ' . $f . ' di ' . $obj->id . ': ' . $e->getMessage());
                 $ret[] = '';
             }
@@ -53,12 +53,12 @@ abstract class Formatter
     {
         $ret = [];
 
-        foreach($objs as $obj) {
+        foreach ($objs as $obj) {
             $children = static::children($obj);
             if ($children) {
                 $child_formatter = $children->formatter;
 
-                foreach($children->children as $child) {
+                foreach ($children->children as $child) {
                     $rows = $child_formatter::format($child, $fields, $context);
                     $ret = array_merge($ret, [$rows]);
                 }
@@ -85,5 +85,5 @@ abstract class Formatter
         le colonne possibili e si formattano solo quelle espressamente richieste
         in quel momento)
     */
-    public static abstract function formattableColumns($type = null);
+    abstract public static function formattableColumns($type = null);
 }

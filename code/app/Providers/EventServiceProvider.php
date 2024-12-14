@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 use App\Observers\MovementObserver;
@@ -22,7 +21,6 @@ use App\User;
 use App\Supplier;
 use App\Order;
 use App\BookedProduct;
-use App\Booking;
 use App\Invoice;
 use App\Modifier;
 use App\Contact;
@@ -54,21 +52,21 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Notifications\Events\NotificationSent' => [
             'App\Listeners\AfterNotification',
         ],
-		'Illuminate\Mail\Events\MessageSending' => [
-			'App\Listeners\CustomMailTag',
-		],
+        'Illuminate\Mail\Events\MessageSending' => [
+            'App\Listeners\CustomMailTag',
+        ],
     ];
 
     public function boot()
     {
         parent::boot();
 
-		Movement::observe(MovementObserver::class);
+        Movement::observe(MovementObserver::class);
         User::observe(UserObserver::class);
         Supplier::observe(SupplierObserver::class);
         Order::observe(OrderObserver::class);
         BookedProduct::observe(BookedProductObserver::class);
-		Invoice::observe(InvoiceObserver::class);
+        Invoice::observe(InvoiceObserver::class);
         Modifier::observe(ModifierObserver::class);
         Contact::observe(ContactObserver::class);
         Variant::observe(VariantObserver::class);

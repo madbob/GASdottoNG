@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use Illuminate\Mail\Mailable;
 use Illuminate\Support\Collection;
 
 use App\Notifications\Concerns\ManyMailNotification;
@@ -15,6 +14,7 @@ class SupplierOrderShipping extends ManyMailNotification
     use MailFormatter, MailReplyTo, TemporaryFiles;
 
     private $gas;
+
     private $order;
 
     public function __construct($gas, $order, $files)
@@ -41,8 +41,8 @@ class SupplierOrderShipping extends ManyMailNotification
         ]);
 
         $users = everybodyCan('supplier.orders', $this->order->supplier);
-        foreach($users as $referent) {
-            if (!empty($referent->email)) {
+        foreach ($users as $referent) {
+            if (! empty($referent->email)) {
                 $message = $message->cc($referent->email);
                 // Segnalazione PHPStan invalida: $referent è sempre uno User,
                 // che usa ContactableTrait
@@ -51,7 +51,7 @@ class SupplierOrderShipping extends ManyMailNotification
             }
         }
 
-        foreach($this->getFiles() as $file) {
+        foreach ($this->getFiles() as $file) {
             $message->attach($file);
         }
 

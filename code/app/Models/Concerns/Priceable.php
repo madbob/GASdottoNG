@@ -40,5 +40,5 @@ trait Priceable
         $this->hard_price = $obj->hard_price;
     }
 
-    public abstract function realPrice($rectify);
+    abstract public function realPrice($rectify);
 }

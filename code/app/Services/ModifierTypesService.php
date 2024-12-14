@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Auth;
-use Log;
 use DB;
 
 use App\ModifierType;
@@ -13,6 +11,7 @@ class ModifierTypesService extends BaseService
     public function show($id)
     {
         $this->ensureAuth(['gas.config' => 'gas']);
+
         return ModifierType::findOrFail($id);
     }
 
@@ -47,6 +46,7 @@ class ModifierTypesService extends BaseService
         $mt = DB::transaction(function () use ($id) {
             $mt = $this->show($id);
             $mt->delete();
+
             return $mt;
         });
 

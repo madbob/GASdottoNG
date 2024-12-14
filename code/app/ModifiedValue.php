@@ -5,12 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 /**
     @property-read BookedProduct|Booking|null $target
-*/
+ */
 class ModifiedValue extends Model
 {
     public function modifier(): BelongsTo
@@ -29,13 +28,13 @@ class ModifiedValue extends Model
             return false;
         }
         else {
-            return ($this->modifier->value == 'absolute' && $this->modifier->applies_target == 'order');
+            return $this->modifier->value == 'absolute' && $this->modifier->applies_target == 'order';
         }
     }
 
     public function getEffectiveAmountAttribute()
     {
-        switch($this->modifier->arithmetic) {
+        switch ($this->modifier->arithmetic) {
             case 'sum':
             case 'passive':
                 return $this->amount;
@@ -63,10 +62,10 @@ class ModifiedValue extends Model
 
     public static function aggregateByType($collection)
     {
-        return $collection->reduce(function($carry, $value) {
+        return $collection->reduce(function ($carry, $value) {
             $id = $value->modifier->modifierType->id;
 
-            if (!isset($carry[$id])) {
+            if (! isset($carry[$id])) {
                 /*
                     Qui divido tra il valore che impatta sul totale della
                     prenotazione, il valore passivo che non deve essere sommato,
@@ -91,6 +90,7 @@ class ModifiedValue extends Model
             }
 
             $carry[$id]->total_amount += $effective;
+
             return $carry;
         }, []);
     }
@@ -107,7 +107,7 @@ class ModifiedValue extends Model
 
     public static function sumAmounts($values, $starting_value = 0)
     {
-        return $values->reduce(function($carry, $item) {
+        return $values->reduce(function ($carry, $item) {
             return $item->sumAmount($carry);
         }, $starting_value);
     }
@@ -116,7 +116,7 @@ class ModifiedValue extends Model
     {
         $rel = $this->target->getModifiedRelations();
 
-        switch($class_type) {
+        switch ($class_type) {
             case 'App\Gas':
                 return $rel->user->gas;
 
@@ -186,22 +186,22 @@ class ModifiedValue extends Model
     */
     public static function organizeForProducts(&$products_modifiers, $target_modifiers, $key): void
     {
-        foreach($target_modifiers as $pmod) {
+        foreach ($target_modifiers as $pmod) {
             if ($pmod->target_type == BookedProduct::class) {
                 $mod_id = $pmod->modifier->modifier_type_id;
                 $product_id = $pmod->target->product_id;
 
-                if (!isset($products_modifiers[$mod_id])) {
+                if (! isset($products_modifiers[$mod_id])) {
                     $products_modifiers[$mod_id] = (object) [
                         'label' => sprintf('%s (%s)', $pmod->modifier->modifierType->name, ($key == 'pending' ? _i('Prenotato') : _i('Consegnato'))),
                     ];
                 }
 
-                if (!isset($products_modifiers[$mod_id]->$key)) {
+                if (! isset($products_modifiers[$mod_id]->$key)) {
                     $products_modifiers[$mod_id]->$key = [];
                 }
 
-                if (!isset($products_modifiers[$mod_id]->$key[$product_id])) {
+                if (! isset($products_modifiers[$mod_id]->$key[$product_id])) {
                     $products_modifiers[$mod_id]->$key[$product_id] = 0;
                 }
 

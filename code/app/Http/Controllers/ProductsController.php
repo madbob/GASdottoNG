@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\BackedController;
 
 use DB;
 use Auth;
@@ -22,7 +21,7 @@ class ProductsController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Product',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
@@ -41,7 +40,7 @@ class ProductsController extends BackedController
                 return view('product.show', ['product' => $product]);
             }
         }
-        else if ($format == 'modal') {
+        elseif ($format == 'modal') {
             if ($user->can('supplier.modify', $product->supplier)) {
                 return view('product.editmodal', ['product' => $product]);
             }
@@ -53,10 +52,12 @@ class ProductsController extends BackedController
             $ret = $product->toJson();
             $ret = json_decode($ret);
             $ret->printableMeasure = $product->printableMeasure();
+
             return json_encode($ret);
         }
         elseif ($format == 'bookable') {
             $order = Order::find($request->input('order_id'));
+
             return view('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => false, 'while_shipping' => true]);
         }
         else {
@@ -67,32 +68,35 @@ class ProductsController extends BackedController
     public function show_ro(Request $request, $id)
     {
         $product = $this->service->show($id);
+
         return view('product.show', ['product' => $product]);
     }
 
     public function duplicate(Request $request, $id)
     {
         $product = $this->service->show($id);
+
         return view('product.duplicate', ['product' => $product]);
     }
 
     public function store(Request $request)
     {
-        return $this->easyExecute(function() use ($request) {
+        return $this->easyExecute(function () use ($request) {
             $product = $this->service->store($request->all());
+
             return $this->commonSuccessResponse($product);
         });
     }
 
     public function massiveUpdate(Request $request)
     {
-        return $this->easyExecute(function() use ($request) {
+        return $this->easyExecute(function () use ($request) {
             DB::beginTransaction();
 
             $product_ids = $request->input('id', []);
             $product_ids_remove = $request->input('remove', []);
 
-            foreach($product_ids as $index => $id) {
+            foreach ($product_ids as $index => $id) {
                 if (in_array($id, $product_ids_remove)) {
                     continue;
                 }
@@ -108,7 +112,7 @@ class ProductsController extends BackedController
                 $this->service->update($id, $data);
             }
 
-            foreach($product_ids_remove as $remove) {
+            foreach ($product_ids_remove as $remove) {
                 $this->service->destroy($remove);
             }
 
@@ -118,7 +122,7 @@ class ProductsController extends BackedController
 
     public function picture($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             return $this->service->picture($id);
         });
     }
@@ -159,7 +163,7 @@ class ProductsController extends BackedController
         $to_change = [];
         $orders = $product->supplier->active_orders;
 
-        foreach($orders as $order) {
+        foreach ($orders as $order) {
             $existing_product = $order->products()->where('product_id', $product->id)->first();
 
             if ($existing_product) {
@@ -201,7 +205,7 @@ class ProductsController extends BackedController
         $product = Product::findOrFail($id);
         $orders = $request->input('orders', []);
 
-        foreach($orders as $order) {
+        foreach ($orders as $order) {
             $order = Order::find($order);
             $order->attachProduct($product);
         }
@@ -211,10 +215,11 @@ class ProductsController extends BackedController
 
     public function search(Request $request)
     {
-        return $this->easyExecute(function() use ($request) {
+        return $this->easyExecute(function () use ($request) {
             $supplier = $request->input('supplier');
             $term = $request->input('term');
             $products = $this->service->search($supplier, $term);
+
             return response()->json($products);
         });
     }
@@ -222,6 +227,7 @@ class ProductsController extends BackedController
     public function askDelete(Request $request, $id)
     {
         $product = $this->service->show($id);
+
         return view('product.deleteconfirm', ['product' => $product]);
     }
 }

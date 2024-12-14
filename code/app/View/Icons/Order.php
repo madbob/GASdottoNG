@@ -11,14 +11,15 @@ class Order extends IconsMap
         $ret = [
             'plus-circle' => (object) [
                 'test' => function ($obj) {
-                    return ($obj->keep_open_packages != 'no' && $obj->status == 'closed' && $obj->pendingPackages()->isEmpty() == false);
+                    return $obj->keep_open_packages != 'no' && $obj->status == 'closed' && $obj->pendingPackages()->isEmpty() == false;
                 },
                 'text' => _i('Confezioni Da Completare'),
                 'group' => 'status',
-            ]
+            ],
         ];
 
         $ret = self::unrollStatuses($ret, Status::orders());
+
         return $ret;
     }
 }

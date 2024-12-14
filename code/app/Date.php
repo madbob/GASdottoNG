@@ -49,16 +49,16 @@ class Date extends Model implements Datable
     {
         $user = Auth::user();
 
-        $query->where(function($query) use ($user) {
+        $query->where(function ($query) use ($user) {
             $query->where('target_type', 'App\GAS')->where('target_id', $user->gas->id);
-        })->orWhere(function($query) {
+        })->orWhere(function ($query) {
             $query->where('target_type', 'App\Supplier')->whereIn('target_id', Supplier::get('id')->toArray());
         });
     }
 
     public function getCalendarStringAttribute()
     {
-        if($this->type == 'internal') {
+        if ($this->type == 'internal') {
             return $this->description;
         }
         else {
@@ -92,7 +92,7 @@ class Date extends Model implements Datable
                 $offset = $this->first_offset;
                 $shifted = [];
 
-                foreach($dates as $date) {
+                foreach ($dates as $date) {
                     $shifted[] = Carbon::parse($date)->subDays($offset)->format('Y-m-d');
                 }
 
@@ -116,11 +116,11 @@ class Date extends Model implements Datable
         $offset1 = $this->first_offset;
         $offset2 = $this->second_offset;
 
-        foreach($dates as $date) {
+        foreach ($dates as $date) {
             $d = Carbon::parse($date);
             $node = null;
 
-            switch($action) {
+            switch ($action) {
                 case 'open':
                     $node = (object) [
                         'start' => $d->format('Y-m-d'),
@@ -176,6 +176,7 @@ class Date extends Model implements Datable
         }
 
         $attributes = json_decode($this->description);
+
         return $attributes->$name ?? '';
     }
 
@@ -208,17 +209,19 @@ class Date extends Model implements Datable
     {
         $dates = $this->all_dates;
 
-        foreach($dates as $read_date) {
+        foreach ($dates as $read_date) {
             if ($read_date > $last_date) {
                 $data = json_decode($this->recurring);
                 $data->from = $read_date;
                 $this->recurring = json_encode($data);
                 $this->save();
+
                 return true;
             }
         }
 
         $this->delete();
+
         return false;
     }
 

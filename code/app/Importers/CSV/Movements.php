@@ -18,7 +18,7 @@ class Movements extends CSVImporter
         $ret = [
             'date' => (object) [
                 'label' => _i('Data'),
-                'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')])
+                'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')]),
             ],
             'amount' => (object) [
                 'label' => _i('Valore'),
@@ -31,11 +31,11 @@ class Movements extends CSVImporter
             ],
             'user' => (object) [
                 'label' => _i('Utente'),
-                'explain' => _i('Username o indirizzo e-mail')
+                'explain' => _i('Username o indirizzo e-mail'),
             ],
             'supplier' => (object) [
                 'label' => _i('Fornitore'),
-                'explain' => _i('Nome o partita IVA')
+                'explain' => _i('Nome o partita IVA'),
             ],
         ];
 
@@ -53,6 +53,7 @@ class Movements extends CSVImporter
     public function testAccess($request)
     {
         $user = $request->user();
+
         return $user->can('movements.admin', $user->gas);
     }
 
@@ -62,7 +63,7 @@ class Movements extends CSVImporter
             'type' => 'movements',
             'next_step' => 'select',
             'extra_description' => [
-                _i('Gli utenti sono identificati per username o indirizzo mail (che deve essere univoco!).')
+                _i('Gli utenti sono identificati per username o indirizzo mail (che deve essere univoco!).'),
             ],
             'sorting_fields' => $this->fields(),
         ]);
@@ -70,7 +71,7 @@ class Movements extends CSVImporter
 
     public function select($request)
     {
-        list($reader, $columns) = $this->initRead($request);
+        [$reader, $columns] = $this->initRead($request);
         $target_separator = ',';
 
         $movements = [];
@@ -80,7 +81,7 @@ class Movements extends CSVImporter
         $default_currency = defaultCurrency();
         $cached_currencies[$default_currency->symbol] = $default_currency;
 
-        foreach($reader->getRecords() as $line) {
+        foreach ($reader->getRecords() as $line) {
             try {
                 /*
                     In questa fase, genero dei Movement
@@ -108,13 +109,14 @@ class Movements extends CSVImporter
                             $user = User::where('username', $name)->first();
 
                             if (is_null($user)) {
-                                $user = User::whereHas('contacts', function($query) use ($name) {
+                                $user = User::whereHas('contacts', function ($query) use ($name) {
                                     $query->where('value', $name);
                                 })->first();
 
                                 if (is_null($user)) {
                                     $save_me = false;
                                     $errors[] = implode($target_separator, $line) . '<br/>' . _i('Utente non trovato: %s', $name);
+
                                     continue;
                                 }
                             }
@@ -138,6 +140,7 @@ class Movements extends CSVImporter
                                 if (is_null($supplier)) {
                                     $save_me = false;
                                     $errors[] = implode($target_separator, $line) . '<br/>' . _i('Fornitore non trovato: %s', $name);
+
                                     continue;
                                 }
                             }
@@ -152,7 +155,7 @@ class Movements extends CSVImporter
                         $field = 'currency_id';
                         $value = $line[$index];
 
-                        if (!isset($cached_currencies[$value])) {
+                        if (! isset($cached_currencies[$value])) {
                             $cached_currencies[$value] = Currency::where('symbol', $value)->where('enabled', true)->first();
                         }
 
@@ -162,6 +165,7 @@ class Movements extends CSVImporter
                         else {
                             $save_me = false;
                             $errors[] = implode($target_separator, $line) . '<br/>' . _i('Valuta non trovata: %s', $value);
+
                             continue;
                         }
                     }
@@ -197,11 +201,11 @@ class Movements extends CSVImporter
     {
         $t = MovementType::find($m->type);
 
-        foreach(['sender', 'target'] as $f) {
+        foreach (['sender', 'target'] as $f) {
             $id_field = $f . '_id';
             $type_field = $f . '_type';
 
-            switch($t->$type_field) {
+            switch ($t->$type_field) {
                 case 'App\User':
                     if ($senders[$index] !== '0') {
                         $m->$id_field = $senders[$index];
@@ -245,7 +249,7 @@ class Movements extends CSVImporter
 
         DB::beginTransaction();
 
-        foreach($imports as $index) {
+        foreach ($imports as $index) {
             App::make('LogHarvester')->reset();
 
             try {
@@ -283,7 +287,7 @@ class Movements extends CSVImporter
         return [
             'title' => _i('Movimenti importati'),
             'objects' => $movements,
-            'errors' => $errors
+            'errors' => $errors,
         ];
     }
 

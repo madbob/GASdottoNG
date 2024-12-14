@@ -15,7 +15,7 @@ class NotificationFactory extends Factory
         return [
             'content' => $this->faker->word(),
             'start_date' => date('Y-m-d'),
-			'end_date' => date('Y-m-d', strtotime('+10 days')),
+            'end_date' => date('Y-m-d', strtotime('+10 days')),
             'mailed' => false,
         ];
     }

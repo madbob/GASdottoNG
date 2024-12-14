@@ -14,7 +14,7 @@ trait MailReplyTo
         if ($contacts->isEmpty()) {
             $roles = Role::havingAction('supplier.orders');
 
-            foreach($roles as $role) {
+            foreach ($roles as $role) {
                 $contacts = $role->usersByTarget($order->supplier);
                 if ($contacts->isEmpty() == false) {
                     break;
@@ -26,7 +26,7 @@ trait MailReplyTo
             Posso mettere un solo Reply-To alle mail, dunque pesco un contatto a
             caso tra quelli validi
         */
-        foreach($contacts->shuffle() as $c) {
+        foreach ($contacts->shuffle() as $c) {
             if (filled($c->email)) {
                 return $c;
             }
@@ -41,14 +41,14 @@ trait MailReplyTo
             $reply = null;
 
             if (is_a($from, Aggregate::class)) {
-                foreach($from->orders->shuffle() as $order) {
+                foreach ($from->orders->shuffle() as $order) {
                     $reply = $this->guessByOrder($order);
                     if ($reply) {
                         break;
                     }
                 }
             }
-            else if (is_a($from, Order::class)) {
+            elseif (is_a($from, Order::class)) {
                 $reply = $this->guessByOrder($from);
             }
 
@@ -56,7 +56,7 @@ trait MailReplyTo
                 $message->replyTo($reply->email);
             }
         }
-        catch(\Exception $e) {
+        catch (\Exception $e) {
             \Log::error('Unable to assign reply-to to notification: ' . $e->getMessage());
         }
 

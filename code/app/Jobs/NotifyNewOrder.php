@@ -28,11 +28,13 @@ class NotifyNewOrder implements ShouldQueue
 
         if (is_null($order)) {
             \Log::warning('Richiesta notifica creazione ordine non esistente');
+
             return;
         }
 
         if (is_null($order->first_notify) == false) {
             \Log::warning('Richiesta notifica creazione ordine già inoltrata');
+
             return;
         }
 
@@ -40,15 +42,15 @@ class NotifyNewOrder implements ShouldQueue
         $order->save();
         $hub = app()->make('GlobalScopeHub');
 
-        foreach($order->aggregate->gas as $gas) {
+        foreach ($order->aggregate->gas as $gas) {
             $hub->setGas($gas->id);
             $users = $order->notifiableUsers($gas);
 
-            foreach($users as $user) {
+            foreach ($users as $user) {
                 try {
                     $user->notify(new NewOrderNotification($order));
                 }
-                catch(\Exception $e) {
+                catch (\Exception $e) {
                     \Log::error('Impossibile inoltrare mail di notifica apertura ordine: ' . $e->getMessage());
                 }
             }

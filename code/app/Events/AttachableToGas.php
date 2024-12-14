@@ -20,6 +20,7 @@ class AttachableToGas
     use SerializesModels;
 
     public $group;
+
     public $attachable;
 
     private function simplifyClassname($class)

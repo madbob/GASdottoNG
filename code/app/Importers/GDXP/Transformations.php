@@ -2,8 +2,6 @@
 
 namespace App\Importers\GDXP;
 
-use Illuminate\Support\Collection;
-
 use App\Modifier;
 use App\ModifierType;
 use App\Product;
@@ -48,7 +46,7 @@ class Transformations extends GDXPImporter
             $modifier->applies_type = $json->variable->theshold_type;
 
             $variables = $json->variable->thesholds ?? [];
-            foreach($variables as $index => $var) {
+            foreach ($variables as $index => $var) {
                 $amount = $var->amount;
 
                 if ($index == 0) {
@@ -77,7 +75,7 @@ class Transformations extends GDXPImporter
             Qui si assume che le tipologie delle trasformazioni GDXP
             corrispondano alle tipologie di modificatori di sistema
         */
-        $modifier = $target->modifiers()->whereHas('modifierType', function($query) use ($type) {
+        $modifier = $target->modifiers()->whereHas('modifierType', function ($query) use ($type) {
             $query->where('identifier', $type);
         })->first();
 
@@ -88,7 +86,7 @@ class Transformations extends GDXPImporter
             $modifier->target_type = get_class($target);
         }
 
-        switch($json->operation) {
+        switch ($json->operation) {
             case 'sum':
                 $modifier->arithmetic = 'sum';
                 break;

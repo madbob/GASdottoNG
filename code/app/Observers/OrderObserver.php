@@ -18,14 +18,14 @@ class OrderObserver
         Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '')->where('date', '<=', $last_date)->delete();
 
         $recurrings = Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '!=', '')->get();
-        foreach($recurrings as $d) {
+        foreach ($recurrings as $d) {
             $d->updateRecurringToDate($last_date);
         }
     }
 
     private function attachModifiers($order)
     {
-        foreach($order->supplier->modifiers as $mod) {
+        foreach ($order->supplier->modifiers as $mod) {
             if ($mod->active || $mod->always_on == true) {
                 $new_mod = $mod->replicate();
                 $new_mod->target_id = $order->id;
@@ -49,7 +49,7 @@ class OrderObserver
             try {
                 NotifyNewOrder::dispatch($order->id);
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 Log::error('Unable to trigger NotifyNewOrder job: ' . $e->getMessage());
             }
         }
@@ -83,12 +83,13 @@ class OrderObserver
 
     public function deleting(Order $order)
     {
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $booking->deleteMovements();
         }
 
         $order->deleteMovements();
         $order->modifiers()->delete();
+
         return true;
     }
 

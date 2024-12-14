@@ -24,7 +24,7 @@ class Controller extends BaseController
 
     protected function errorResponse($message, $target = '')
     {
-        $ret = (object)[
+        $ret = (object) [
             'status' => 'error',
             'target' => $target,
             'message' => $message,
@@ -39,7 +39,8 @@ class Controller extends BaseController
     {
         $data['status'] = 'success';
         DB::commit();
-        return json_encode((object)$data);
+
+        return json_encode((object) $data);
     }
 
     protected function commonSuccessResponse($obj)
@@ -49,7 +50,7 @@ class Controller extends BaseController
                 'id' => $obj->id,
                 'name' => $obj->printableName(),
                 'header' => $obj->printableHeader(),
-                'url' => $obj->exists ? $obj->getShowURL() : ''
+                'url' => $obj->exists ? $obj->getShowURL() : '',
             ];
         }
         else {
@@ -69,11 +70,11 @@ class Controller extends BaseController
                 return response()->json([
                     'id' => $subject->id,
                     'header' => $subject->printableHeader(),
-                    'url' => $subject->getShowURL()
+                    'url' => $subject->getShowURL(),
                 ]);
             }
         }
-        catch(\Exception $e) {
+        catch (\Exception $e) {
             Log::error('Unable to generate object header: ' . $this->reference_class . ' / ' . $id);
         }
 

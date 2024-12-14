@@ -8,8 +8,9 @@ class BookingModel
 {
     public function handle(BookingDeleting $event)
     {
-        if ($event->booking->status == 'shipped')
+        if ($event->booking->status == 'shipped') {
             return false;
+        }
 
         $event->booking->deleteMovements();
     }

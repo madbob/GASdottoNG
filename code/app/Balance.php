@@ -8,14 +8,14 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 /**
     @property-read Booking|Gas|Invoice|Order|Supplier|null $target
-*/
+ */
 class Balance extends Model
 {
-	use Cachable;
+    use Cachable;
 
-	public function target(): MorphTo
+    public function target(): MorphTo
     {
-		// @phpstan-ignore-next-line
+        // @phpstan-ignore-next-line
         return $this->morphTo()->withTrashed();
     }
 }

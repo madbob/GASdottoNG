@@ -18,6 +18,7 @@ class Discount extends ModifierType
         $type->system = true;
         $type->identifier = 'discount';
         $type->classes = [Product::class, Supplier::class];
+
         return $type;
     }
 }

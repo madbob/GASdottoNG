@@ -134,8 +134,8 @@ class MenuServiceProvider extends ServiceProvider
         $view->with('end_menu', [
             '<i class="bi-megaphone-fill"></i>' => ['attributes' => [
                 'id' => 'menu_help',
-                'data-bs-toggle' => "modal",
-                'data-bs-target' => "#feedback-modal",
+                'data-bs-toggle' => 'modal',
+                'data-bs-target' => '#feedback-modal',
             ]],
 
             '<i class="bi-power"></i>' => ['url' => route('logout'), 'attributes' => [

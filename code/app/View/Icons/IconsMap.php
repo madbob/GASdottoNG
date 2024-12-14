@@ -14,7 +14,7 @@ abstract class IconsMap
 
     protected static function unrollStatuses($array, $statuses)
     {
-        foreach($statuses as $identifier => $meta) {
+        foreach ($statuses as $identifier => $meta) {
             $array[$meta->icon] = (object) [
                 'test' => function ($obj) use ($identifier) {
                     return $obj->status == $identifier;
@@ -34,5 +34,5 @@ abstract class IconsMap
         Per avere il filtro ma non l'icona aggiungere il prefisso
         "hidden-" al nome.
     */
-    public static abstract function commons($user);
+    abstract public static function commons($user);
 }

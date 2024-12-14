@@ -2,13 +2,10 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 use App\Gas;
 use App\User;
-use App\Supplier;
 use App\Role;
 
 class MultiGasService extends BaseService
@@ -18,11 +15,11 @@ class MultiGasService extends BaseService
         $user = $this->ensureAuth(['gas.multi' => 'gas']);
         $groups = [];
 
-        $roles = $user->roles->filter(function($role) {
+        $roles = $user->roles->filter(function ($role) {
             return $role->enabledAction('gas.multi');
         });
 
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             foreach ($role->applications(false, false, Gas::class) as $obj) {
                 $groups[] = $obj;
             }
@@ -35,6 +32,7 @@ class MultiGasService extends BaseService
     {
         $gas = Gas::findOrFail($id);
         $this->ensureAuth(['gas.multi' => $gas]);
+
         return $gas;
     }
 
@@ -54,7 +52,7 @@ class MultiGasService extends BaseService
             $roles = Role::havingAction('gas.permissions');
         }
 
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             $admin->addRole($role, $gas);
         }
     }
@@ -75,7 +73,7 @@ class MultiGasService extends BaseService
         /*
             Copio le configurazioni del GAS attuale su quello nuovo
         */
-        foreach($user->gas->configs as $config) {
+        foreach ($user->gas->configs as $config) {
             $new = $config->replicate();
             $new->gas_id = $gas->id;
             $new->save();
@@ -86,7 +84,7 @@ class MultiGasService extends BaseService
             manipolare
         */
         $roles = Role::havingAction('gas.multi');
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             $user->addRole($role, $gas);
         }
 
@@ -109,6 +107,7 @@ class MultiGasService extends BaseService
         $gas = $this->show($id);
         $this->setIfSet($gas, $request, 'name');
         $gas->save();
+
         return $gas;
     }
 
@@ -121,11 +120,11 @@ class MultiGasService extends BaseService
             del GAS locale, ma qui serve fare esattamente il contrario (ovvero:
             manipolare solo gli utenti del GAS selezionato)
         */
-        foreach($gas->users()->withoutGlobalScopes()->withTrashed()->get() as $u) {
+        foreach ($gas->users()->withoutGlobalScopes()->withTrashed()->get() as $u) {
             $u->forceDelete();
         }
 
-        foreach($gas->configs as $c) {
+        foreach ($gas->configs as $c) {
             $c->delete();
         }
 
@@ -148,7 +147,7 @@ class MultiGasService extends BaseService
         $target_id = $request['target_id'];
         $target_type = $request['target_type'];
 
-        switch($target_type) {
+        switch ($target_type) {
             case 'supplier':
                 $gas->suppliers()->$function($target_id);
                 break;

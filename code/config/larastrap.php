@@ -101,8 +101,8 @@ return [
                     'autocorrect' => 'off',
                     'autocapitalize' => 'none',
                     'spellcheck' => 'false',
-                ]
-            ]
+                ],
+            ],
         ],
         'price' => [
             'extends' => 'text',
@@ -113,7 +113,7 @@ return [
                     'data-trim-digits' => 2,
                 ],
                 'reviewCallback' => 'formatPriceToComponent',
-            ]
+            ],
         ],
         'decimal' => [
             'extends' => 'text',
@@ -123,7 +123,7 @@ return [
                 ],
                 'classes' => ['number', 'trim-ddigits'],
                 'reviewCallback' => 'formatDecimalToComponent',
-            ]
+            ],
         ],
         'integer' => [
             'extends' => 'text',
@@ -132,7 +132,7 @@ return [
                 'attributes' => [
                     'data-enforce-integer' => '1',
                 ],
-            ]
+            ],
         ],
         'selectobj' => [
             'extends' => 'select',
@@ -176,7 +176,7 @@ return [
                 'node' => 'div',
                 'classes' => ['alert', 'alert-info', 'mb-2'],
                 'attributes' => [
-                    'role' => 'alert'
+                    'role' => 'alert',
                 ],
             ],
         ],
@@ -210,8 +210,8 @@ return [
                         'color' => 'success',
                         'label' => 'Avanti',
                         'attributes' => ['type' => 'submit'],
-                    ]
-                ]
+                    ],
+                ],
             ],
         ],
         'updater' => [
@@ -220,7 +220,7 @@ return [
                 'node' => 'small',
                 'name' => 'printable_updater',
                 'classes' => ['me-3', 'text-body-secondary', 'float-start', 'text-start', 'pt-2'],
-            ]
+            ],
         ],
         'scheck' => [
             'extends' => 'check',
@@ -228,26 +228,26 @@ return [
                 'switch' => true,
                 'label' => '',
                 'squeeze' => true,
-            ]
+            ],
         ],
         'structchecks' => [
             'extends' => 'checks',
             'params' => [
                 'classes' => ['wrapped-flex'],
-                'reviewCallback' => 'formatChecksComponentValues'
-            ]
+                'reviewCallback' => 'formatChecksComponentValues',
+            ],
         ],
         'remoteaccordion' => [
             'extends' => 'accordionitem',
             'params' => [
                 'classes' => ['async-accordion'],
-            ]
+            ],
         ],
         'remotetabpane' => [
             'extends' => 'tabpane',
             'params' => [
                 'button_classes' => ['async-tab'],
-            ]
-        ]
+            ],
+        ],
     ],
 ];

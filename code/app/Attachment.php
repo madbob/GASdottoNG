@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Auth;
 
 /**
     @property-read Gas|Invoice|Notification|Order|Supplier|null $attached
-*/
+ */
 class Attachment extends Model
 {
-    use GASModel, Cachable;
+    use Cachable, GASModel;
 
     public function attached(): MorphTo
     {
@@ -55,7 +55,7 @@ class Attachment extends Model
             $user = Auth::user();
         }
 
-        return ($this->users()->where('users.id', $user->id)->count() != 0);
+        return $this->users()->where('users.id', $user->id)->count() != 0;
     }
 
     public function getPathAttribute()
@@ -92,7 +92,7 @@ class Attachment extends Model
 
             Log::error('Richiesta dimensione per allegato non immagine');
         }
-        catch(\Exception $e) {
+        catch (\Exception $e) {
             Log::error('Impossibile recuperare dimensione allegato ' . $this->id);
         }
 
@@ -103,7 +103,8 @@ class Attachment extends Model
     {
         if (empty($this->url) == false) {
             return $this->url;
-        } else {
+        }
+        else {
             return url('attachments/download/'.$this->id);
         }
     }

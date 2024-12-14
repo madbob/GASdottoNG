@@ -11,7 +11,7 @@ class CreateVariantCombosTable extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
 
-			$table->boolean('active')->default(true);
+            $table->boolean('active')->default(true);
             $table->string('code')->default('');
             $table->decimal('max_available', 7, 3)->default(0);
             $table->double('price_offset', 8, 3)->default(0);

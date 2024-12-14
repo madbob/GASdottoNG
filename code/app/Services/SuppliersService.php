@@ -4,15 +4,12 @@ namespace App\Services;
 
 use App\Exceptions\AuthException;
 
-use Auth;
 use Log;
 use DB;
 use PDF;
 
 use App\Formatters\Product as ProductFormatter;
-use App\User;
 use App\Supplier;
-use App\Product;
 
 class SuppliersService extends BaseService
 {
@@ -20,15 +17,15 @@ class SuppliersService extends BaseService
     {
         $suppliers_id = [];
 
-        foreach($user->targetsByAction('supplier.modify', false) as $supplier) {
+        foreach ($user->targetsByAction('supplier.modify', false) as $supplier) {
             $suppliers_id[] = $supplier->id;
         }
 
-        foreach($user->targetsByAction('supplier.orders', false) as $supplier) {
+        foreach ($user->targetsByAction('supplier.orders', false) as $supplier) {
             $suppliers_id[] = $supplier->id;
         }
 
-        foreach($user->targetsByAction('supplier.shippings', false) as $supplier) {
+        foreach ($user->targetsByAction('supplier.shippings', false) as $supplier) {
             $suppliers_id[] = $supplier->id;
         }
 
@@ -41,7 +38,7 @@ class SuppliersService extends BaseService
 
         $query = Supplier::orderBy('name', 'asc');
 
-        if (!empty($term)) {
+        if (! empty($term)) {
             $query->where(function ($query) use ($term) {
                 $query->where('name', 'LIKE', "%$term%");
             });
@@ -52,10 +49,12 @@ class SuppliersService extends BaseService
             $query->whereIn('id', $suppliers_id);
         }
 
-        if ($all)
+        if ($all) {
             $query->filterEnabled();
+        }
 
         $suppliers = $query->get();
+
         return $suppliers;
     }
 
@@ -96,13 +95,13 @@ class SuppliersService extends BaseService
     {
         $this->ensureAuth(['supplier.add' => 'gas']);
 
-        if (!isset($request['payment_method']) || is_null($request['payment_method'])) {
+        if (! isset($request['payment_method']) || is_null($request['payment_method'])) {
             $request['payment_method'] = '';
-		}
+        }
 
-        if (!isset($request['order_method']) || is_null($request['order_method'])) {
+        if (! isset($request['order_method']) || is_null($request['order_method'])) {
             $request['order_method'] = '';
-		}
+        }
 
         $supplier = new Supplier();
         $this->setCommonAttributes($supplier, $request);
@@ -121,10 +120,11 @@ class SuppliersService extends BaseService
                 $this->setCommonAttributes($supplier, $request);
                 $supplier->save();
                 $supplier->updateContacts($request);
+
                 return $supplier;
             });
         }
-        catch(\Exception $e) {
+        catch (\Exception $e) {
             Log::error('Errore aggiornamento fornitore: ' . $e->getMessage() . ' - ' . print_r($request, true));
             $supplier = null;
         }
@@ -158,6 +158,7 @@ class SuppliersService extends BaseService
 
         if ($format == 'pdf') {
             $pdf = PDF::loadView('documents.cataloguepdf', ['supplier' => $supplier, 'headers' => $headers, 'data' => $data]);
+
             return $pdf->download($filename);
         }
         elseif ($format == 'csv') {
@@ -173,7 +174,7 @@ class SuppliersService extends BaseService
             if ($supplier->trashed()) {
                 $this->ensureAuth(['supplier.add' => 'gas']);
 
-                foreach($supplier->products()->withTrashed()->get() as $product) {
+                foreach ($supplier->products()->withTrashed()->get() as $product) {
                     $product->forceDelete();
                 }
 

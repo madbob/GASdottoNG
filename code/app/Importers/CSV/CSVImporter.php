@@ -23,7 +23,8 @@ abstract class CSVImporter
     public static function getImporter($type)
     {
         $classname = 'App\\Importers\\CSV\\' . ucwords($type);
-        $ret = new $classname;
+        $ret = new $classname();
+
         return $ret;
     }
 
@@ -37,7 +38,7 @@ abstract class CSVImporter
         $separators = [',', ';', "\t"];
         $lenghts = [0, 0, 0];
 
-        foreach($separators as $sep_index => $sep) {
+        foreach ($separators as $sep_index => $sep) {
             $row = fgetcsv($contents, 0, $sep);
             $lenghts[$sep_index] = count($row);
             rewind($contents);
@@ -68,7 +69,7 @@ abstract class CSVImporter
             $sorted = $parameters['sorted_fields'];
             $fields = $this->fields();
 
-            foreach($parameters['columns'] as $index => $c) {
+            foreach ($parameters['columns'] as $index => $c) {
                 if (isset($sorted[$index]) && isset($fields[$sorted[$index]])) {
                     $selected[] = (object) [
                         'label' => $fields[$sorted[$index]]->label,
@@ -84,7 +85,7 @@ abstract class CSVImporter
             }
         }
         else {
-            foreach($parameters['columns'] as $c) {
+            foreach ($parameters['columns'] as $c) {
                 $selected[] = (object) [
                     'label' => _i('[Ignora]'),
                     'name' => 'none',
@@ -116,13 +117,14 @@ abstract class CSVImporter
 
             $sample_line = '';
 
-            foreach($reader->getRecords() as $line) {
+            foreach ($reader->getRecords() as $line) {
                 $sample_line = $line;
                 break;
             }
 
             $parameters['columns'] = $sample_line;
             $parameters['selected'] = $this->retrievePreSelectedFields($parameters);
+
             return $parameters;
         }
         catch (\Exception $e) {
@@ -135,7 +137,7 @@ abstract class CSVImporter
     {
         $ret = [];
 
-        foreach($search as $s) {
+        foreach ($search as $s) {
             $index = array_search($s, $columns);
 
             if ($index === false) {
@@ -153,7 +155,7 @@ abstract class CSVImporter
     {
         $ret = [];
 
-        foreach($this->fields() as $key => $meta) {
+        foreach ($this->fields() as $key => $meta) {
             $mandatory = $meta->mandatory ?? false;
             if ($mandatory) {
                 $ret[] = $key;
@@ -171,7 +173,7 @@ abstract class CSVImporter
         $testable = $this->mandatoryFields();
         $tested = $this->getColumnsIndex($columns, $testable);
 
-        foreach($tested as $t) {
+        foreach ($tested as $t) {
             if ($t == -1) {
                 throw new MissingFieldException(1);
             }
@@ -209,10 +211,15 @@ abstract class CSVImporter
         return 'import.csvimportfinal';
     }
 
-    public abstract function fields();
-    public abstract function testAccess($request);
-    public abstract function guess($request);
-    public abstract function select($request);
-    public abstract function formatSelect($parameters);
-    public abstract function run($request);
+    abstract public function fields();
+
+    abstract public function testAccess($request);
+
+    abstract public function guess($request);
+
+    abstract public function select($request);
+
+    abstract public function formatSelect($parameters);
+
+    abstract public function run($request);
 }

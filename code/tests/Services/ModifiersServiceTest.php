@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Collection;
 
 use App\Booking;
 use App\Exceptions\AuthException;
@@ -14,7 +13,7 @@ class ModifiersServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
     }
@@ -28,7 +27,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Creazione Modificatore con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
 
@@ -52,10 +51,10 @@ class ModifiersServiceTest extends TestCase
         $missing_quantity = $total_quantity;
         $order = app()->make('OrdersService')->show($this->order->id);
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $data = ['action' => 'booked'];
 
-            foreach($booking->products as $booked_product) {
+            foreach ($booking->products as $booked_product) {
                 if ($booked_product->product_id != $product_id) {
                     $data[$booked_product->product_id] = $booked_product->quantity;
                 }
@@ -78,7 +77,7 @@ class ModifiersServiceTest extends TestCase
             $booking = $order->bookings()->first();
             $found = false;
 
-            foreach($booking->products as $booked_product) {
+            foreach ($booking->products as $booked_product) {
                 if ($booked_product->product_id != $product_id) {
                     $data[$booked_product->product_id] = $booked_product->quantity;
                 }
@@ -103,7 +102,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Modificatore applicato su Prodotto, con soglie sul valore
     */
-    public function testThresholdUnitPrice()
+    public function test_threshold_unit_price()
     {
         $this->localInitOrder();
         $this->actingAs($this->userReferrer);
@@ -138,7 +137,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->assertNotNull($mod);
 
-        foreach([21, 15, 3] as $threshold_index => $total_quantity) {
+        foreach ([21, 15, 3] as $threshold_index => $total_quantity) {
             $this->nextRound();
             $this->enforceBookingsTotalQuantity($product->id, $total_quantity);
             $this->nextRound();
@@ -151,7 +150,7 @@ class ModifiersServiceTest extends TestCase
             $without_discount = $product->price * $total_quantity;
             $total = $threshold_prices[$threshold_index] * $total_quantity;
 
-            foreach($aggregated_modifiers as $ag) {
+            foreach ($aggregated_modifiers as $ag) {
                 $amount_check = round($ag->amount * -1, 3);
                 $total_check = round($without_discount - $total, 3);
                 $this->assertEquals($amount_check, $total_check);
@@ -162,7 +161,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Modificatore applicato su Prodotto con pezzatura, con soglie sul valore
     */
-    public function testThresholdUnitPricePortions()
+    public function test_threshold_unit_price_portions()
     {
         $this->localInitOrder();
         $this->actingAs($this->userReferrer);
@@ -225,7 +224,7 @@ class ModifiersServiceTest extends TestCase
         $without_discount = $product->price * $total_quantity;
         $total = $threshold_prices[2] * $total_quantity;
 
-        foreach($mods as $m) {
+        foreach ($mods as $m) {
             $effective_check = round($m->effective_amount * -1, 3);
             $total_check = round($without_discount - $total, 3);
             $this->assertEquals($effective_check, $total_check);
@@ -248,7 +247,7 @@ class ModifiersServiceTest extends TestCase
         $without_discount = $product->price * $total_quantity;
         $total = $threshold_prices[1] * $total_quantity;
 
-        foreach($mods as $m) {
+        foreach ($mods as $m) {
             $this->assertEquals(round($m->effective_amount * -1, 2), round($without_discount - $total, 2));
         }
 
@@ -274,7 +273,7 @@ class ModifiersServiceTest extends TestCase
         $without_discount = $product->price * $total_quantity;
         $total = $threshold_prices[1] * $total_quantity;
 
-        foreach($mods as $m) {
+        foreach ($mods as $m) {
             $this->assertEquals(round($m->effective_amount * -1, 2), round($without_discount - $total, 2));
         }
 
@@ -291,7 +290,7 @@ class ModifiersServiceTest extends TestCase
         $booking = $booking->fresh();
         $found = false;
 
-        foreach($booking->products as $prod) {
+        foreach ($booking->products as $prod) {
             if ($prod->product_id == $product->id) {
                 $found = true;
                 $this->assertEquals(4, $prod->delivered);
@@ -308,7 +307,7 @@ class ModifiersServiceTest extends TestCase
         $without_discount = $product->price * $total_quantity;
         $total = $threshold_prices[2] * $total_quantity;
 
-        foreach($mods as $m) {
+        foreach ($mods as $m) {
             $this->assertEquals(round($m->effective_amount * -1, 2), round($without_discount - $total, 2));
         }
     }
@@ -316,11 +315,11 @@ class ModifiersServiceTest extends TestCase
     /*
         Modificatore applicato su Prodotto, con soglie sulle quantità
     */
-    public function testThresholdQuantity()
+    public function test_threshold_quantity()
     {
         $this->localInitOrder();
         $this->actingAs($this->userReferrer);
-        $booked_product = $this->order->bookings->random()->products->filter(fn($p) => $p->quantity != 0)->random();
+        $booked_product = $this->order->bookings->random()->products->filter(fn ($p) => $p->quantity != 0)->random();
         $booked_product->quantity = 7;
         $booked_product->save();
         $product = $booked_product->product;
@@ -360,7 +359,7 @@ class ModifiersServiceTest extends TestCase
         $this->assertNotEquals($redux->price, 0);
         $exists = false;
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $mods = $booking->applyModifiersWithFriends($redux, true);
             $booked_product = $booking->products()->where('product_id', $product->id)->first();
 
@@ -393,7 +392,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Modificatore sul Prodotto, con soglia sull'Ordine
     */
-    public function testOrderPrice()
+    public function test_order_price()
     {
         $this->localInitOrder();
         $this->actingAs($this->userReferrer);
@@ -402,7 +401,7 @@ class ModifiersServiceTest extends TestCase
         $redux = $order->aggregate->reduxData();
         $current_total = $redux->price;
 
-        $booked_product = $order->bookings->random()->products->filter(fn($p) => $p->quantity != 0)->random();
+        $booked_product = $order->bookings->random()->products->filter(fn ($p) => $p->quantity != 0)->random();
         $product = $booked_product->product;
 
         $modifiers = $product->applicableModificationTypes();
@@ -435,8 +434,9 @@ class ModifiersServiceTest extends TestCase
         $this->assertEquals(0, $modifiers->count());
 
         do {
-            $other_booked_product = $order->bookings->random()->products->filter(fn($p) => $p->quantity != 0)->random();
-        } while($other_booked_product->product_id != $booked_product->product_id);
+            $other_booked_product = $order->bookings->random()->products->filter(fn ($p) => $p->quantity != 0)->random();
+        }
+        while ($other_booked_product->product_id != $booked_product->product_id);
 
         $other_booked_product->quantity += 20;
         $other_booked_product->save();
@@ -450,7 +450,7 @@ class ModifiersServiceTest extends TestCase
         $this->assertEquals(1, count($aggregated_modifiers));
         $exists = false;
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $mods = $booking->applyModifiersWithFriends($redux, true);
             $booked_product = $booking->products()->where('product_id', $product->id)->first();
 
@@ -476,7 +476,7 @@ class ModifiersServiceTest extends TestCase
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->relative_price, 0.0);
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             if ($booking->status == 'pending') {
                 $booked_value = $booking->getValue('booked', true);
             }
@@ -487,7 +487,7 @@ class ModifiersServiceTest extends TestCase
             $mods = $booking->applyModifiers($redux, true);
             $this->assertEquals($mods->count(), 1);
 
-            foreach($mods as $m) {
+            foreach ($mods as $m) {
                 $this->assertEquals(round(($booked_value * $test_shipping_value) / $redux->relative_price, 4), $m->effective_amount);
             }
         }
@@ -548,10 +548,10 @@ class ModifiersServiceTest extends TestCase
         $this->actingAs($this->userWithShippingPerms);
         $order = app()->make('OrdersService')->show($this->order->id);
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $data = [];
 
-            foreach($booking->products as $product) {
+            foreach ($booking->products as $product) {
                 if ($random) {
                     $data[$product->product_id] = max($product->quantity + rand(-5, 5), 0);
                 }
@@ -570,7 +570,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Modificatore applicato sull'ordine in base al valore
     */
-    public function testOnOrder()
+    public function test_on_order()
     {
         $this->localInitOrder();
         $this->actingAs($this->userReferrer);
@@ -602,12 +602,12 @@ class ModifiersServiceTest extends TestCase
     /*
         Modificatore con movimento contabile applicato sull'ordine in base al valore
     */
-    public function testOnOrderWithMovement()
+    public function test_on_order_with_movement()
     {
         $movements = \App\Movement::all();
         $this->assertEquals(0, $movements->count());
 
-        list($user, $data, $total) = $this->initModifierWithMovement();
+        [$user, $data, $total] = $this->initModifierWithMovement();
         $this->assertEquals($this->order->supplier->currentBalanceAmount(), 0);
         $this->assertEquals($this->gas->currentBalanceAmount(), 0);
 
@@ -644,22 +644,22 @@ class ModifiersServiceTest extends TestCase
         $order = app()->make('OrdersService')->show($this->order->id);
         $this->assertEquals(1, $this->order->bookings->count());
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $total = $booking->getValue('delivered', true);
             $total = round($total, 2);
             $total_donation = round($total * 0.1, 2);
 
-            foreach($movements as $mov) {
+            foreach ($movements as $mov) {
                 if ($mov->type == 'booking-payment') {
                     $this->assertEquals(round($mov->amount, 2), $total);
                     $booking_payment_found = true;
                 }
-                else if ($mov->type == 'donation-to-gas') {
+                elseif ($mov->type == 'donation-to-gas') {
                     $this->assertEquals(round($mov->amount, 2), $total_donation);
                     $donation_found = true;
                 }
                 else {
-                    throw new \Exception("Tipo di movimento invalido", 1);
+                    throw new \Exception('Tipo di movimento invalido', 1);
                 }
             }
         }
@@ -689,13 +689,13 @@ class ModifiersServiceTest extends TestCase
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->relative_price, 0.0);
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $mods = $booking->applyModifiers($redux, true);
             $this->assertEquals(1, $mods->count());
 
             $booked_value = $booking->getValue('weight', true);
 
-            foreach($mods as $m) {
+            foreach ($mods as $m) {
                 $this->assertEquals(round(($booked_value * $test_shipping_value) / $redux->relative_weight, 4), $m->effective_amount);
             }
         }
@@ -704,12 +704,12 @@ class ModifiersServiceTest extends TestCase
     /*
         Modificatore applicato sull'ordine in base al peso
     */
-    public function testDistributeOnWeight()
+    public function test_distribute_on_weight()
     {
         $this->localInitOrder();
         $this->actingAs($this->userReferrer);
 
-        foreach($this->order->products as $product) {
+        foreach ($this->order->products as $product) {
             $product->weight = rand(0.1, 1.5);
             $product->save();
         }
@@ -720,7 +720,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Modificatore passivo applicato sulla prenotazione
     */
-    public function testOnBooking()
+    public function test_on_booking()
     {
         $this->localInitOrder();
         $this->actingAs($this->userReferrer);
@@ -748,7 +748,7 @@ class ModifiersServiceTest extends TestCase
 
         $this->assertNotNull($mod);
 
-        foreach($this->order->bookings as $booking) {
+        foreach ($this->order->bookings as $booking) {
             $modifiers = $booking->applyModifiers(null, true);
             $this->assertEquals($modifiers->count(), 1);
 
@@ -769,7 +769,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Modificatore applicato su Luogo di Consegna
     */
-    public function testOnShippingPlace()
+    public function test_on_shipping_place()
     {
         $this->localInitOrder();
         $this->actingAs($this->userAdmin);
@@ -784,7 +784,7 @@ class ModifiersServiceTest extends TestCase
 
         $delivery = [$delivery_1, $delivery_2];
 
-        foreach($this->users as $user) {
+        foreach ($this->users as $user) {
             $user->preferred_delivery_id = $delivery[rand(0, 1)]->id;
             $user->save();
         }
@@ -799,7 +799,7 @@ class ModifiersServiceTest extends TestCase
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->price, 0.0);
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $mods = $booking->applyModifiers($redux, true);
 
             if ($booking->user->preferred_delivery_id == $delivery_1->id) {
@@ -808,7 +808,7 @@ class ModifiersServiceTest extends TestCase
             else {
                 $this->assertEquals($mods->count(), 1);
 
-                foreach($mods as $m) {
+                foreach ($mods as $m) {
                     $this->assertEquals($m->effective_amount, $test_shipping_value);
                     $this->assertEquals($m->modifier_id, $mod->id);
                 }
@@ -831,12 +831,12 @@ class ModifiersServiceTest extends TestCase
         $user->addRole($friends_role->id, $this->gas);
 
         $this->actingAs($user);
-        $friend = app()->make('UsersService')->storeFriend(array(
+        $friend = app()->make('UsersService')->storeFriend([
             'username' => 'test friend user',
             'firstname' => 'gianni',
             'lastname' => 'giallo',
-            'password' => 'password'
-        ));
+            'password' => 'password',
+        ]);
 
         $friend->addRole($this->booking_role->id, $this->gas);
 
@@ -847,18 +847,19 @@ class ModifiersServiceTest extends TestCase
             $added = false;
 
             do {
-                foreach($booking->products as $p) {
+                foreach ($booking->products as $p) {
                     $q = rand(0, 3);
                     if ($q) {
                         $data[$p->product_id] = $q;
                         $added = true;
                     }
                 }
-            } while($added == false);
+            }
+            while ($added == false);
         }
         else {
             if ($booking) {
-                $booked = $booking->products->map(fn($p) => $p->product_id)->toArray();
+                $booked = $booking->products->map(fn ($p) => $p->product_id)->toArray();
             }
             else {
                 $booked = [];
@@ -866,7 +867,7 @@ class ModifiersServiceTest extends TestCase
 
             $added = false;
 
-            foreach($this->order->products as $p) {
+            foreach ($this->order->products as $p) {
                 if (in_array($p->id, $booked)) {
                     continue;
                 }
@@ -896,7 +897,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Modificatore su un prodotto
     */
-    public function testOnProduct()
+    public function test_on_product()
     {
         $this->localInitOrder();
 
@@ -910,15 +911,15 @@ class ModifiersServiceTest extends TestCase
 
         $order = app()->make('OrdersService')->show($this->order->id);
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $mods = $booking->applyModifiers(null, true);
             $found = false;
 
-            foreach($booking->products as $booked_product) {
+            foreach ($booking->products as $booked_product) {
                 if ($booked_product->product_id == $product->id) {
                     $this->assertEquals($mods->count(), 1);
 
-                    foreach($mods as $mod) {
+                    foreach ($mods as $mod) {
                         $this->assertEquals($mod->effective_amount, $booked_product->quantity * $test_shipping_value);
                     }
 
@@ -935,7 +936,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Prenotazione di un amico insieme alla prenotazione dell'utente padre
     */
-    private function testWithFriend($overlap)
+    private function test_with_friend($overlap)
     {
         $this->localInitOrder();
 
@@ -945,7 +946,7 @@ class ModifiersServiceTest extends TestCase
 
         $booking = $this->order->bookings->random();
         $initial_amount = $booking->getValue('effective', true);
-        list($friend, $friend_booking) = $this->pushFriend($booking, $overlap);
+        [$friend, $friend_booking] = $this->pushFriend($booking, $overlap);
 
         /*
             Creo una prenotazione per l'utente
@@ -998,13 +999,13 @@ class ModifiersServiceTest extends TestCase
         $printer = new OrderPrinter();
         $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', false, 'all_by_name', 1);
 
-        foreach($formatted->contents as $d) {
+        foreach ($formatted->contents as $d) {
             if ($d->user_id == $booking->user_id) {
                 $booking_found = true;
                 $mods = $booking->applyModifiersWithFriends(null, false);
                 $actual_mods = [];
 
-                foreach($mods as $mod) {
+                foreach ($mods as $mod) {
                     if (isset($actual_mods[$mod->modifier->modifierType->name]) == false) {
                         $actual_mods[$mod->modifier->modifierType->name] = 0;
                     }
@@ -1012,7 +1013,7 @@ class ModifiersServiceTest extends TestCase
                     $actual_mods[$mod->modifier->modifierType->name] += $mod->effective_amount;
                 }
 
-                foreach($d->totals as $key => $value) {
+                foreach ($d->totals as $key => $value) {
                     $value = (float) $value;
 
                     if ($key == 'total') {
@@ -1033,12 +1034,12 @@ class ModifiersServiceTest extends TestCase
         $this->assertEquals($shipping_cost_found, true);
     }
 
-    public function testWithFriendOverlap()
+    public function test_with_friend_overlap()
     {
         $this->testWithFriend(true);
     }
 
-    public function testWithFriendNoOverlap()
+    public function test_with_friend_no_overlap()
     {
         $this->testWithFriend(false);
     }
@@ -1046,7 +1047,7 @@ class ModifiersServiceTest extends TestCase
     /*
         Prenotazione di un amico, senza prenotazione dell'utente padre
     */
-    public function testWithOnlyFriend()
+    public function test_with_only_friend()
     {
         $this->localInitOrder();
 
@@ -1056,15 +1057,15 @@ class ModifiersServiceTest extends TestCase
 
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'users.admin');
         $this->actingAs($this->userWithAdminPerm);
-        $newUser = app()->make('UsersService')->store(array(
+        $newUser = app()->make('UsersService')->store([
             'username' => 'test user',
             'firstname' => 'luigi',
             'lastname' => 'verdi',
-            'password' => 'password'
-        ));
+            'password' => 'password',
+        ]);
 
         $newUser->addRole($this->booking_role->id, $this->gas);
-        list($friend, $booking) = $this->pushFriend($newUser, false);
+        [$friend, $booking] = $this->pushFriend($newUser, false);
 
         $this->nextRound();
 
@@ -1075,13 +1076,13 @@ class ModifiersServiceTest extends TestCase
         $printer = new OrderPrinter();
         $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', false, 'all_by_name', 1);
 
-        foreach($formatted->contents as $d) {
+        foreach ($formatted->contents as $d) {
             if ($d->user_id == $newUser->id) {
                 $booking_found = true;
                 $mods = $booking->applyModifiersWithFriends(null, false);
                 $actual_mods = [];
 
-                foreach($mods as $mod) {
+                foreach ($mods as $mod) {
                     if (isset($actual_mods[$mod->modifier->modifierType->name]) == false) {
                         $actual_mods[$mod->modifier->modifierType->name] = 0;
                     }
@@ -1089,7 +1090,7 @@ class ModifiersServiceTest extends TestCase
                     $actual_mods[$mod->modifier->modifierType->name] += $mod->effective_amount;
                 }
 
-                foreach($d->totals as $key => $value) {
+                foreach ($d->totals as $key => $value) {
                     $value = (float) $value;
 
                     if ($key == 'total') {
@@ -1145,7 +1146,7 @@ class ModifiersServiceTest extends TestCase
         $user->addRole($booking_role, $this->gas);
 
         $this->actingAs($user);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->order->products);
         $data['action'] = 'booked';
         app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $user, false);
 
@@ -1155,9 +1156,9 @@ class ModifiersServiceTest extends TestCase
     /*
         Consegna prenotazione con modificatore che genera movimento contabile
     */
-    public function testModifierWithMovement()
+    public function test_modifier_with_movement()
     {
-        list($user, $data, $total) = $this->initModifierWithMovement();
+        [$user, $data, $total] = $this->initModifierWithMovement();
 
         $this->nextRound();
 
@@ -1188,17 +1189,17 @@ class ModifiersServiceTest extends TestCase
         $this->assertEquals($movements->count(), 2);
         $booking_payment_found = $donation_found = false;
 
-        foreach($movements as $mov) {
+        foreach ($movements as $mov) {
             if ($mov->type == 'booking-payment') {
                 $this->assertEquals(round($mov->amount, 2), round($total, 2));
                 $booking_payment_found = true;
             }
-            else if ($mov->type == 'donation-to-gas') {
+            elseif ($mov->type == 'donation-to-gas') {
                 $this->assertEquals(round($mov->amount, 2), round($total * 0.1, 2));
                 $donation_found = true;
             }
             else {
-                throw new \Exception("Tipo di movimento invalido", 1);
+                throw new \Exception('Tipo di movimento invalido', 1);
             }
         }
 
@@ -1209,9 +1210,9 @@ class ModifiersServiceTest extends TestCase
         Consegna prenotazione senza quantità con modificatore che genera
         movimento contabile
     */
-    public function testManualShippingModifierWithMovement()
+    public function test_manual_shipping_modifier_with_movement()
     {
-        list($user, $data, $total) = $this->initModifierWithMovement();
+        [$user, $data, $total] = $this->initModifierWithMovement();
 
         $this->nextRound();
 
@@ -1230,15 +1231,15 @@ class ModifiersServiceTest extends TestCase
         $movements = \App\Movement::all();
         $this->assertEquals($movements->count(), 2);
 
-        foreach($movements as $mov) {
+        foreach ($movements as $mov) {
             if ($mov->type == 'booking-payment') {
                 $this->assertEquals(round($mov->amount, 2), 90);
             }
-            else if ($mov->type == 'donation-to-gas') {
+            elseif ($mov->type == 'donation-to-gas') {
                 $this->assertEquals(round($mov->amount, 2), 10);
             }
             else {
-                throw new \Exception("Tipo di movimento invalido", 1);
+                throw new \Exception('Tipo di movimento invalido', 1);
             }
         }
     }

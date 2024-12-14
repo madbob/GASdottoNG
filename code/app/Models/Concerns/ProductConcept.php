@@ -10,5 +10,5 @@ namespace App\Models\Concerns;
 
 trait ProductConcept
 {
-    public abstract function getConceptID();
+    abstract public function getConceptID();
 }

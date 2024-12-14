@@ -2,7 +2,6 @@
 
 namespace App\Parameters\MovementType;
 
-use App\MovementType as MovementTypeModel;
 use App\Movement;
 
 class DepositPay extends MovementType
@@ -48,9 +47,9 @@ class DepositPay extends MovementType
             'post' => function (Movement $movement) {
                 $movement->attachToSender('deposit_id');
             },
-            'delete' => function(Movement $movement) {
+            'delete' => function (Movement $movement) {
                 $movement->detachFromSender('deposit_id');
-            }
+            },
         ];
 
         return $mov;

@@ -15,7 +15,6 @@ use App\User;
 use App\Role;
 use App\VatRate;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -54,7 +53,7 @@ class DatabaseSeeder extends Seeder
             'cash' => 0,
             'suppliers' => 0,
             'deposits' => 0,
-            'date' => date('Y-m-d', time())
+            'date' => date('Y-m-d', time()),
         ]);
     }
 
@@ -62,7 +61,7 @@ class DatabaseSeeder extends Seeder
     {
         $queue = systemParameters('Roles');
 
-        while(true) {
+        while (true) {
             $next_queue = [];
 
             foreach ($queue as $identifier => $instance) {
@@ -70,7 +69,7 @@ class DatabaseSeeder extends Seeder
                     try {
                         $instance->create();
                     }
-                    catch(\Exception $e) {
+                    catch (\Exception $e) {
                         $next_queue[$identifier] = $instance;
                     }
                 }
@@ -119,7 +118,7 @@ class DatabaseSeeder extends Seeder
     private function measureInit()
     {
         $measures = ['Non Specificato' => true, 'Chili' => false, 'Litri' => false, 'Pezzi' => true];
-        foreach($measures as $name => $discrete) {
+        foreach ($measures as $name => $discrete) {
             Measure::create([
                 'id' => Str::slug($name),
                 'name' => $name,

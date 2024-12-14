@@ -30,6 +30,7 @@ class MovementObserver
         else {
             if ($metadata->$type != $movement->$type) {
                 Log::error('Movimento ' . $movement->id . ': ' . $type . ' non coerente');
+
                 return false;
             }
         }
@@ -43,29 +44,33 @@ class MovementObserver
 
         if (is_null($metadata)) {
             Log::error('Impossibile recuperare informazioni su movimento tipo ' . $movement->type);
+
             return false;
         }
 
         if ($movement->archived == true) {
             Log::error(_i('Movimento: tentata modifica di movimento già storicizzato in bilancio passato'));
+
             return false;
         }
 
-        foreach(['sender', 'target'] as $peer) {
+        foreach (['sender', 'target'] as $peer) {
             if ($this->testPeer($movement, $metadata, $peer) == false) {
                 return false;
             }
         }
 
         $operations = json_decode($metadata->function);
-        $valid = count(array_filter($operations, fn($op) => $movement->method == $op->method)) > 0;
+        $valid = count(array_filter($operations, fn ($op) => $movement->method == $op->method)) > 0;
         if ($valid == false) {
             Log::error(_i('Movimento %d: metodo "%s" non permesso su tipo "%s"', [$movement->id, $movement->printablePayment(), $movement->printableType()]));
+
             return false;
         }
 
         if ($metadata->allow_negative == false && $movement->amount < 0) {
             Log::error(_i('Movimento: ammontare negativo non permesso'));
+
             return false;
         }
 
@@ -104,10 +109,12 @@ class MovementObserver
             $pre = $metadata->callbacks['pre']($movement);
             if ($pre == 0) {
                 Log::error(_i('Movimento: salvataggio negato da pre-callback'));
+
                 return false;
             }
-            else if ($pre == 2) {
+            elseif ($pre == 2) {
                 $movement->saved = true;
+
                 return false;
             }
         }
@@ -204,7 +211,7 @@ class MovementObserver
         $movement->amount = $movement->amount * -1;
         $movement->apply();
 
-        foreach($movement->related as $rel) {
+        foreach ($movement->related as $rel) {
             $rel->delete();
         }
     }

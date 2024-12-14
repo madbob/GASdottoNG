@@ -20,14 +20,14 @@ class AppServiceProvider extends ServiceProvider
     */
     private function initMailing()
     {
-		Mail::extend('sendinblue', function () {
-            return (new SendinblueTransportFactory)->create(
+        Mail::extend('sendinblue', function () {
+            return (new SendinblueTransportFactory())->create(
                 new Dsn('sendinblue+api', 'default', config('services.sendinblue.key'))
             );
         });
 
-		Mail::extend('scaleway', function () {
-            return (new ScalewayTransportFactory)->create(
+        Mail::extend('scaleway', function () {
+            return (new ScalewayTransportFactory())->create(
                 new Dsn('scaleway+api', 'default', config('mail.mailers.scaleway.username'), config('mail.mailers.scaleway.password'))
             );
         });
@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
             $found = false;
 
             if ($bookedvariant->product->product->canAggregateQuantities()) {
-                foreach($collection as $variant) {
+                foreach ($collection as $variant) {
                     $combo = $variant->variantsCombo();
 
                     if ($combo->id == $target_combo->id) {
@@ -75,6 +75,7 @@ class AppServiceProvider extends ServiceProvider
             /** @var Collection $this */
             $categories = $this->pluck('category_id')->toArray();
             $categories = array_unique($categories);
+
             return Category::whereIn('id', $categories)->orderBy('name', 'asc')->get();
         });
 
@@ -84,7 +85,7 @@ class AppServiceProvider extends ServiceProvider
         */
         Collection::macro('sortByUserName', function () {
             /** @var Collection $this */
-            return $this->sortBy(fn($b) => $b->user->printableName());
+            return $this->sortBy(fn ($b) => $b->user->printableName());
         });
 
         /*
@@ -95,8 +96,9 @@ class AppServiceProvider extends ServiceProvider
             $value = preg_replace('/[^a-zA-Z0-9]*/', '', mb_strtolower(trim($value)));
 
             /** @var Collection $this */
-            return $this->first(function($o, $k) use ($attr, $value) {
+            return $this->first(function ($o, $k) use ($attr, $value) {
                 $test = preg_replace('/[^a-zA-Z0-9]*/', '', mb_strtolower(trim($o->$attr)));
+
                 return $test == $value;
             });
         });
@@ -111,7 +113,5 @@ class AppServiceProvider extends ServiceProvider
         $this->initCollectionMacros();
     }
 
-    public function register()
-    {
-    }
+    public function register() {}
 }

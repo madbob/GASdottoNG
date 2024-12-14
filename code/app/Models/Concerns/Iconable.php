@@ -15,7 +15,7 @@ trait Iconable
     {
         $ret = '';
 
-        if (!empty($icons)) {
+        if (! empty($icons)) {
             $ret .= '<div class="float-end">';
 
             foreach ($icons as $i) {
@@ -34,6 +34,7 @@ trait Iconable
     protected function headerIcons()
     {
         $icons = $this->icons();
+
         return $this->formatIcons($icons);
     }
 
@@ -60,17 +61,19 @@ trait Iconable
             $user = Auth::user();
             $obj = $this;
 
-            $ret = array_keys(array_filter($box->commons($user), function($condition, $icon) use ($obj, $group) {
+            $ret = array_keys(array_filter($box->commons($user), function ($condition, $icon) use ($obj, $group) {
                 if (is_null($group) == false && (isset($condition->group) == false || $condition->group != $group)) {
                     return false;
                 }
 
                 $t = $condition->test;
+
                 return $t($obj);
             }, ARRAY_FILTER_USE_BOTH));
 
-            $ret = array_reduce($box->selective(), function($ret, $condition) use ($obj) {
+            $ret = array_reduce($box->selective(), function ($ret, $condition) use ($obj) {
                 $assign = $condition->assign;
+
                 return array_merge($ret, $assign($obj));
             }, $ret);
         }
@@ -86,7 +89,7 @@ trait Iconable
         if (is_null($box) == false) {
             $user = Auth::user();
 
-            $ret = array_map(function($condition) {
+            $ret = array_map(function ($condition) {
                 return $condition->text;
             }, $box->commons($user));
 
@@ -94,10 +97,10 @@ trait Iconable
                 foreach ($box->selective() as $icon => $condition) {
                     $options = $condition->options;
                     $options = $options($contents);
-                    if (!empty($options)) {
+                    if (! empty($options)) {
                         $description = (object) [
                             'label' => $condition->text,
-                            'items' => $options
+                            'items' => $options,
                         ];
                         $ret[$icon] = $description;
                     }

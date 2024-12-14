@@ -18,7 +18,7 @@ class MovementsServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +39,7 @@ class MovementsServiceTest extends TestCase
     /*
         Accesso Movimenti
     */
-    public function testList()
+    public function test_list()
     {
         $this->actingAs($this->userWithAdminPerm);
         app()->make('MovementsService')->list([]);
@@ -55,19 +55,19 @@ class MovementsServiceTest extends TestCase
     /*
         Creazione Movimento
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userWithAdminPerm);
         $currency = defaultCurrency();
 
-        app()->make('MovementsService')->store(array(
+        app()->make('MovementsService')->store([
             'type' => 'donation-from-gas',
             'method' => 'bank',
             'sender_id' => $this->gas->id,
             'sender_type' => 'App\Gas',
             'currency_id' => $currency->id,
-            'amount' => 100
-        ));
+            'amount' => 100,
+        ]);
 
         $amount = 100 + $this->sample_movement->amount;
 
@@ -77,7 +77,7 @@ class MovementsServiceTest extends TestCase
     /*
         Ricalcolo saldi
     */
-    public function testRecalculate()
+    public function test_recalculate()
     {
         $this->testStore();
 
@@ -96,7 +96,7 @@ class MovementsServiceTest extends TestCase
     /*
         Archivio saldi
     */
-    public function testCloseBalance()
+    public function test_close_balance()
     {
         $this->testStore();
 
@@ -116,7 +116,7 @@ class MovementsServiceTest extends TestCase
     /*
         Modifica Movimento con permessi sbagliati
     */
-    public function testFailsToUpdate()
+    public function test_fails_to_update()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithReferrerPerms);
@@ -126,22 +126,22 @@ class MovementsServiceTest extends TestCase
     /*
         Modifica Movimento con ID non esistente
     */
-    public function testFailsToUpdateBecauseNoMovementWithID()
+    public function test_fails_to_update_because_no_movement_with_id()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-        app()->make('MovementsService')->update('id', array());
+        app()->make('MovementsService')->update('id', []);
     }
 
     /*
         Modifica Movimento
     */
-    public function testUpdate()
+    public function test_update()
     {
         $this->actingAs($this->userWithAdminPerm);
 
         app()->make('MovementsService')->update($this->sample_movement->id, [
-            'amount' => 50
+            'amount' => 50,
         ]);
 
         $this->nextRound();
@@ -153,7 +153,7 @@ class MovementsServiceTest extends TestCase
     /*
         Accesso Movimento con ID non esistente
     */
-    public function testFailsToShowInexistent()
+    public function test_fails_to_show_inexistent()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithReferrerPerms);
@@ -164,7 +164,7 @@ class MovementsServiceTest extends TestCase
     /*
         Accesso Movimento
     */
-    public function testShow()
+    public function test_show()
     {
         $this->actingAs($this->userWithReferrerPerms);
 
@@ -177,25 +177,25 @@ class MovementsServiceTest extends TestCase
     /*
         Creazione Movimento con metodo sbagliato
     */
-    public function testWrongMethod()
+    public function test_wrong_method()
     {
         $this->expectException(IllegalArgumentException::class);
         $this->actingAs($this->userWithAdminPerm);
 
-        app()->make('MovementsService')->store(array(
+        app()->make('MovementsService')->store([
             'type' => 'donation-from-gas',
             'method' => 'credit',
             'sender_id' => $this->gas->id,
             'sender_type' => 'App\Gas',
             'registerer_id' => $this->userWithAdminPerm->id,
             'currency_id' => defaultCurrency()->id,
-        ));
+        ]);
     }
 
     /*
         Cancellazione Movimento con permessi sbagliati
     */
-    public function testFailsToDestroy()
+    public function test_fails_to_destroy()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -206,7 +206,7 @@ class MovementsServiceTest extends TestCase
     /*
         Cancellazione Movimento
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $this->actingAs($this->userWithAdminPerm);
         app()->make('MovementsService')->destroy($this->sample_movement->id);
@@ -215,7 +215,8 @@ class MovementsServiceTest extends TestCase
         try {
             app()->make('MovementsService')->show($this->sample_movement->id);
             $this->fail('should never run');
-        } catch (ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e) {
             //good boy
         }
     }
@@ -223,13 +224,13 @@ class MovementsServiceTest extends TestCase
     /*
         Versamento, assegnazione e scadenza quote di iscrizione
     */
-    public function testUserFees()
+    public function test_user_fees()
     {
         $this->actingAs($this->userWithAdminPerm);
 
         $this->userWithNoPerms->gas->setConfig('annual_fee_amount', 5);
 
-        app()->make('MovementsService')->store(array(
+        app()->make('MovementsService')->store([
             'type' => 'annual-fee',
             'method' => 'bank',
             'target_id' => $this->userWithNoPerms->gas->id,
@@ -237,7 +238,7 @@ class MovementsServiceTest extends TestCase
             'sender_id' => $this->userWithNoPerms->id,
             'sender_type' => 'App\User',
             'amount' => $this->userWithNoPerms->gas->getConfig('annual_fee_amount'),
-        ));
+        ]);
 
         $reloaded = User::find($this->userWithNoPerms->id);
         $this->assertNotEquals($reloaded->fee_id, 0);
@@ -259,13 +260,13 @@ class MovementsServiceTest extends TestCase
     /*
         Cancellazione manuale quota
     */
-    public function testRemoveUserFees()
+    public function test_remove_user_fees()
     {
         $this->actingAs($this->userWithAdminPerm);
 
         $this->userWithNoPerms->gas->setConfig('annual_fee_amount', 5);
 
-        app()->make('MovementsService')->store(array(
+        app()->make('MovementsService')->store([
             'type' => 'annual-fee',
             'method' => 'bank',
             'target_id' => $this->userWithNoPerms->gas->id,
@@ -273,7 +274,7 @@ class MovementsServiceTest extends TestCase
             'sender_id' => $this->userWithNoPerms->id,
             'sender_type' => 'App\User',
             'amount' => $this->userWithNoPerms->gas->getConfig('annual_fee_amount'),
-        ));
+        ]);
 
         $this->nextRound();
 
@@ -293,7 +294,7 @@ class MovementsServiceTest extends TestCase
     /*
         Salvataggio e modifica movimento con IntegralCES attivo
     */
-    public function testWithIntegralces()
+    public function test_with_integralces()
     {
         $this->actingAs($this->userWithAdminPerm);
 
@@ -306,22 +307,22 @@ class MovementsServiceTest extends TestCase
         $currency_default = defaultCurrency();
         $currency_integralces = Currency::where('context', 'integralces')->first();
 
-        app()->make('MovementsService')->store(array(
+        app()->make('MovementsService')->store([
             'type' => 'donation-from-gas',
             'method' => 'bank',
             'sender_id' => $this->gas->id,
             'sender_type' => 'App\Gas',
             'currency_id' => $currency_integralces->id,
-            'amount' => 100
-        ));
+            'amount' => 100,
+        ]);
 
         $this->assertEquals($this->sample_movement->amount * -1, $this->gas->currentBalanceAmount($currency_default));
         $this->assertEquals(-100, $this->gas->currentBalanceAmount($currency_integralces));
 
         $integralces_movement = Movement::where('currency_id', $currency_integralces->id)->first();
-        app()->make('MovementsService')->update($integralces_movement->id, array(
+        app()->make('MovementsService')->update($integralces_movement->id, [
             'currency_id' => $currency_default->id,
-        ));
+        ]);
 
         $this->assertEquals(($this->sample_movement->amount + 100) * -1, $this->gas->currentBalanceAmount($currency_default));
         $this->assertEquals(0, $this->gas->currentBalanceAmount($currency_integralces));

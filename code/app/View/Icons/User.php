@@ -2,8 +2,6 @@
 
 namespace App\View\Icons;
 
-use Auth;
-
 use App\Role;
 
 class User extends IconsMap
@@ -69,27 +67,29 @@ class User extends IconsMap
                 'text' => _i('Ruolo'),
                 'assign' => function ($obj) {
                     $ret = [];
-                    foreach($obj->roles as $r) {
+                    foreach ($obj->roles as $r) {
                         $ret[] = 'hidden-person-circle-' . $r->id;
                     }
+
                     return $ret;
                 },
-                'options' => function($objs) {
-					$skip_roles = [];
+                'options' => function ($objs) {
+                    $skip_roles = [];
 
-					foreach(['user', 'friend'] as $r) {
-						$srole = roleByFunction($r);
-						if ($srole) {
-							$skip_roles[] = $srole->id;
-						}
-					}
+                    foreach (['user', 'friend'] as $r) {
+                        $srole = roleByFunction($r);
+                        if ($srole) {
+                            $skip_roles[] = $srole->id;
+                        }
+                    }
 
-                    return Role::whereNotIn('id', $skip_roles)->get()->reduce(function($carry, $item) {
+                    return Role::whereNotIn('id', $skip_roles)->get()->reduce(function ($carry, $item) {
                         $carry['hidden-person-circle-' . $item->id] = $item->name;
+
                         return $carry;
                     }, []);
-                }
-            ]
+                },
+            ],
         ];
     }
 }

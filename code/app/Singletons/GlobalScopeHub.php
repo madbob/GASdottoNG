@@ -7,8 +7,11 @@ use App\Gas;
 class GlobalScopeHub
 {
     private $has_many_gas = false;
+
     private $enabled_global_scopes = true;
+
     private $gas_id = null;
+
     private $gas = null;
 
     public function __construct()

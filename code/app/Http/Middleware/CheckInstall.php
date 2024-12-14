@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App;
-use Log;
 use Closure;
 use Artisan;
 

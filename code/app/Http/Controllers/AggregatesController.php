@@ -11,14 +11,13 @@ use App\Jobs\AggregateSummaries;
 use App\Printers\Aggregate as Printer;
 use App\Aggregate;
 use App\Order;
-use App\Booking;
 
 class AggregatesController extends Controller
 {
     public function __construct()
     {
         $this->commonInit([
-            'reference_class' => 'App\\Aggregate'
+            'reference_class' => 'App\\Aggregate',
         ]);
     }
 
@@ -30,6 +29,7 @@ class AggregatesController extends Controller
     public function create(Request $request)
     {
         $orders = defaultOrders(false);
+
         return view('order.aggregable', ['orders' => $orders]);
     }
 
@@ -65,7 +65,7 @@ class AggregatesController extends Controller
             }
         }
 
-        foreach(Aggregate::doesnthave('orders')->get() as $ea) {
+        foreach (Aggregate::doesnthave('orders')->get() as $ea) {
             $ea->delete();
         }
 
@@ -75,6 +75,7 @@ class AggregatesController extends Controller
     public function show(Request $request, $id)
     {
         $a = Aggregate::findOrFail($id);
+
         return view('order.aggregate', ['aggregate' => $a]);
     }
 
@@ -92,7 +93,7 @@ class AggregatesController extends Controller
         }
 
         $deliveries = array_filter($request->input('deliveries', []));
-        foreach($a->orders as $o) {
+        foreach ($a->orders as $o) {
             $o->deliveries()->sync($deliveries);
         }
 
@@ -118,18 +119,19 @@ class AggregatesController extends Controller
         try {
             AggregateSummaries::dispatch($id, $message);
         }
-        catch(\Exception $e) {
+        catch (\Exception $e) {
             Log::error('Unable to trigger AggregateSummaries job on aggregate notification: ' . $e->getMessage());
         }
 
         return response()->json((object) [
-            'last-notification-date-' . $id => printableDate(date('Y-m-d'))
+            'last-notification-date-' . $id => printableDate(date('Y-m-d')),
         ]);
     }
 
     public function exportModal(Request $request, $id, $type)
     {
         $aggregate = Aggregate::findOrFail($id);
+
         return view('aggregate.export' . $type, ['aggregate' => $aggregate]);
     }
 
@@ -154,10 +156,10 @@ class AggregatesController extends Controller
             quella reale, si attiva la funzione di revisione dei modificatori
         */
         if ($aggregate->isActive() == false) {
-            foreach($aggregate->orders as $order) {
+            foreach ($aggregate->orders as $order) {
                 $modifiers = $order->involvedModifiers(true);
 
-                foreach($modifiers as $modifier) {
+                foreach ($modifiers as $modifier) {
                     if ($modifier->isTrasversal()) {
                         if (is_null($master_summary)) {
                             $master_summary = $aggregate->reduxData();
@@ -165,7 +167,7 @@ class AggregatesController extends Controller
 
                         $broken = $order->unalignedModifiers($master_summary);
 
-                        if (!empty($broken)) {
+                        if (! empty($broken)) {
                             $ret[] = route('orders.fixmodifiers', $order->id);
                             break;
                         }
@@ -191,6 +193,7 @@ class AggregatesController extends Controller
     {
         $printer = new Printer();
         $aggregate = Aggregate::findOrFail($id);
+
         return $printer->document($aggregate, $type, $request->all());
     }
 }

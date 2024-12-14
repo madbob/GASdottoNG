@@ -3,13 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use Auth;
-use URL;
 use Log;
 
 use App\Helpers\Status;
@@ -20,10 +18,10 @@ use App\Events\AttachableToGas;
 
 class Aggregate extends Model
 {
-    use HasFactory, GASModel, ModifiableTrait, ReducibleTrait, WithinGas;
+    use GASModel, HasFactory, ModifiableTrait, ReducibleTrait, WithinGas;
 
     protected $dispatchesEvents = [
-        'created' => AttachableToGas::class
+        'created' => AttachableToGas::class,
     ];
 
     public function orders(): HasMany
@@ -41,7 +39,7 @@ class Aggregate extends Model
     public function getStatusAttribute()
     {
         $priority = [];
-        foreach(Status::orders() as $identifier => $meta) {
+        foreach (Status::orders() as $identifier => $meta) {
             $priority[$meta->aggregate_priority] = $identifier;
         }
 
@@ -72,8 +70,8 @@ class Aggregate extends Model
 
     public function hasPendingPackages()
     {
-        return $this->innerCache('pending_packages', function($obj) {
-            foreach($obj->orders as $o) {
+        return $this->innerCache('pending_packages', function ($obj) {
+            foreach ($obj->orders as $o) {
                 if ($o->keep_open_packages != 'no' && $o->status == 'closed' && $o->pendingPackages()->isEmpty() == false) {
                     return true;
                 }
@@ -101,12 +99,12 @@ class Aggregate extends Model
                 $this_start = strtotime($order->start);
                 if ($this_start < $start_date) {
                     $start_date = $this_start;
-				}
+                }
 
                 $this_end = strtotime($order->end);
                 if ($this_end > $end_date) {
                     $end_date = $this_end;
-				}
+                }
 
                 if ($order->shipping != null && $order->shipping != '0000-00-00') {
                     $this_shipping = strtotime($order->shipping);
@@ -116,14 +114,14 @@ class Aggregate extends Model
                 }
             }
 
-            if (!empty($this->comment)) {
+            if (! empty($this->comment)) {
                 $names = [];
             }
 
             $date_string = sprintf('da %s a %s', printableDate($start_date), printableDate($end_date));
             if ($shipping_date != PHP_INT_MAX) {
                 $date_string .= sprintf(', in consegna %s', printableDate($shipping_date));
-			}
+            }
 
             $dates[] = $date_string;
         }
@@ -141,28 +139,30 @@ class Aggregate extends Model
     {
         $all_contents = [];
 
-        if (!empty($this->comment)) {
+        if (! empty($this->comment)) {
             $all_contents[] = $this->comment;
         }
 
-        $names = $this->innerCache('names', function($obj) {
-            list($name, $date) = $obj->computeStrings();
+        $names = $this->innerCache('names', function ($obj) {
+            [$name, $date] = $obj->computeStrings();
             $obj->setInnerCache('dates', $date);
+
             return $name;
         });
 
-        if (!empty($names)) {
+        if (! empty($names)) {
             $all_contents[] = $names;
         }
 
-        return join(': ', $all_contents);
+        return implode(': ', $all_contents);
     }
 
     public function printableDates()
     {
-        return $this->innerCache('dates', function($obj) {
-            list($name, $date) = $obj->computeStrings();
+        return $this->innerCache('dates', function ($obj) {
+            [$name, $date] = $obj->computeStrings();
             $obj->setInnerCache('names', $name);
+
             return $date;
         });
     }
@@ -180,27 +180,30 @@ class Aggregate extends Model
         $tot = 0;
         $friends_tot = 0;
 
-        foreach($this->orders as $o) {
+        foreach ($this->orders as $o) {
             $o->setRelation('aggregate', $this);
             $b = $o->userBooking($user);
             $tot += $b->getValue('effective', false);
             $friends_tot += $b->total_friends_value;
         }
 
-        if($tot == 0 && $friends_tot == 0) {
+        if ($tot == 0 && $friends_tot == 0) {
             $message = _i("Non hai partecipato a quest'ordine");
             $extra_class = 'text-more-muted';
         }
         else {
-            if ($friends_tot == 0)
+            if ($friends_tot == 0) {
                 $message = _i('Hai ordinato %s', printablePriceCurrency($tot));
-            else
+            }
+            else {
                 $message = _i('Hai ordinato %s + %s', [printablePriceCurrency($tot), printablePriceCurrency($friends_tot)]);
+            }
 
             $extra_class = '';
         }
 
         $ret .= '<span class="appended-loadable-message d-block text-end ' . $extra_class . '">' . $message . '</span>';
+
         return $ret;
     }
 
@@ -231,43 +234,43 @@ class Aggregate extends Model
         return false;
     }
 
-	public function hasChangedProdcts()
-	{
-		$has_changed_products = false;
+    public function hasChangedProdcts()
+    {
+        $has_changed_products = false;
 
-		if ($this->isActive()) {
-			$shipped = array_filter($this->bookings, function($b) {
-				return $b->status == 'shipped';
-			});
+        if ($this->isActive()) {
+            $shipped = array_filter($this->bookings, function ($b) {
+                return $b->status == 'shipped';
+            });
 
-			$dates = [];
+            $dates = [];
 
-			foreach($shipped as $s) {
-				foreach($s->bookings as $b) {
-					if ($b->delivery) {
-						$dates[$b->delivery] = true;
-					}
-				}
-			}
+            foreach ($shipped as $s) {
+                foreach ($s->bookings as $b) {
+                    if ($b->delivery) {
+                        $dates[$b->delivery] = true;
+                    }
+                }
+            }
 
-			$dates = array_keys($dates);
+            $dates = array_keys($dates);
 
-			if (empty($dates) == false) {
-				sort($dates);
-				$date = $dates[0];
+            if (empty($dates) == false) {
+                sort($dates);
+                $date = $dates[0];
 
-				foreach($this->orders as $order) {
-					$newer = $order->products()->where('updated_at', '>=', $date)->count();
-					if ($newer > 0) {
-						$has_changed_products = true;
-						break;
-					}
-				}
-			}
-		}
+                foreach ($this->orders as $order) {
+                    $newer = $order->products()->where('updated_at', '>=', $date)->count();
+                    if ($newer > 0) {
+                        $has_changed_products = true;
+                        break;
+                    }
+                }
+            }
+        }
 
-		return $has_changed_products;
-	}
+        return $has_changed_products;
+    }
 
     public function canShip()
     {
@@ -284,10 +287,10 @@ class Aggregate extends Model
 
     private function sortByStatus($ret)
     {
-        uasort($ret, function($a, $b) {
+        uasort($ret, function ($a, $b) {
             $a_status = $a->status;
             $b_status = $b->status;
-			$comp = -1;
+            $comp = -1;
 
             if ($a_status == $b_status) {
                 $comp = strcmp($a->user->printableName(), $b->user->printableName());
@@ -296,18 +299,18 @@ class Aggregate extends Model
                 if ($a_status == 'pending') {
                     $comp = -1;
                 }
-                else if ($b_status == 'pending') {
+                elseif ($b_status == 'pending') {
                     $comp = 1;
                 }
-                else if ($a_status == 'saved') {
+                elseif ($a_status == 'saved') {
                     $comp = -1;
                 }
-                else if ($b_status == 'saved') {
+                elseif ($b_status == 'saved') {
                     $comp = 1;
                 }
             }
 
-			return $comp;
+            return $comp;
         });
 
         return $ret;
@@ -321,39 +324,39 @@ class Aggregate extends Model
             foreach ($order->topLevelBookings() as $booking) {
                 $user_id = $booking->user->id;
 
-                if (!isset($ret[$user_id])) {
+                if (! isset($ret[$user_id])) {
                     $ret[$user_id] = new AggregateBooking($user_id, $this);
                 }
 
                 $ret[$user_id]->add($booking);
             }
-		}
+        }
 
-		/*
-			Dopo aver raccolto le prenotazioni degli utenti principali, ripesco
-			anche quelle degli utenti "amici" il cui utente principale non ha
-			effettuato prenotazioni.
-			In tal caso creo una prenotazione anche per l'utente principale,
-			lasciandola vuota, in modo che sia comunque possibile accedere
-			successivamente alle sotto-prenotazioni ed assegnare il movimento di
-			pagamento
-		*/
-		$collected_users = array_keys($ret);
-		$recovered_master_users = [];
+        /*
+            Dopo aver raccolto le prenotazioni degli utenti principali, ripesco
+            anche quelle degli utenti "amici" il cui utente principale non ha
+            effettuato prenotazioni.
+            In tal caso creo una prenotazione anche per l'utente principale,
+            lasciandola vuota, in modo che sia comunque possibile accedere
+            successivamente alle sotto-prenotazioni ed assegnare il movimento di
+            pagamento
+        */
+        $collected_users = array_keys($ret);
+        $recovered_master_users = [];
 
-		foreach ($this->orders as $order) {
-            $bookings_by_friends = $order->bookings()->whereHas('user', function($query) use ($collected_users) {
+        foreach ($this->orders as $order) {
+            $bookings_by_friends = $order->bookings()->whereHas('user', function ($query) use ($collected_users) {
                 $query->whereNotNull('parent_id')->whereNotIn('parent_id', $collected_users);
             })->get();
 
-            foreach($bookings_by_friends as $booking) {
+            foreach ($bookings_by_friends as $booking) {
                 $user_id = $booking->user->parent_id;
 
                 if (isset($recovered_master_users[$user_id])) {
                     continue;
                 }
 
-                if (!isset($ret[$user_id])) {
+                if (! isset($ret[$user_id])) {
                     $ret[$user_id] = new AggregateBooking($user_id, $this);
                 }
 
@@ -370,12 +373,13 @@ class Aggregate extends Model
 
     public function getLastNotifyAttribute()
     {
-        return $this->innerCache('last_notify', function($obj) {
+        return $this->innerCache('last_notify', function ($obj) {
             if ($obj->orders->count() != 0) {
                 return $obj->orders->first()->last_notify;
             }
             else {
                 Log::error('Aggregato senza ordini inclusi: ' . $this->id);
+
                 return null;
             }
         });
@@ -383,12 +387,13 @@ class Aggregate extends Model
 
     public function getSupplierNameAttribute()
     {
-        return $this->innerCache('supplier_name', function($obj) {
+        return $this->innerCache('supplier_name', function ($obj) {
             if ($obj->orders->count() != 0) {
                 return $obj->orders->first()->supplier->name;
             }
             else {
                 Log::error('Aggregato senza ordini inclusi: ' . $this->id);
+
                 return '';
             }
         });
@@ -396,7 +401,7 @@ class Aggregate extends Model
 
     private function getDateReference($name, $operator)
     {
-        return $this->innerCache($name, function($obj) use ($name, $operator) {
+        return $this->innerCache($name, function ($obj) use ($name, $operator) {
             if ($operator == 'min') {
                 $test = '3000-12-31';
             }
@@ -404,14 +409,14 @@ class Aggregate extends Model
                 $test = '1000-01-01';
             }
 
-            foreach($obj->orders as $order) {
+            foreach ($obj->orders as $order) {
                 if ($operator == 'min') {
-                    if ($order->$name < $test) {
+                    if ($test > $order->$name) {
                         $test = $order->$name;
                     }
                 }
                 else {
-                    if ($order->$name > $test) {
+                    if ($test < $order->$name) {
                         $test = $order->$name;
                     }
                 }
@@ -452,8 +457,9 @@ class Aggregate extends Model
     {
         $suppliers = [];
 
-        foreach($this->orders as $order)
+        foreach ($this->orders as $order) {
             $suppliers[] = $order->supplier;
+        }
 
         return $suppliers;
     }
@@ -464,7 +470,7 @@ class Aggregate extends Model
     {
         $ret = $this->emptyReduxBehaviour();
 
-        $ret->children = function($item, $filters) {
+        $ret->children = function ($item, $filters) {
             if (isset($filters['orders'])) {
                 return $filters['orders'];
             }
@@ -472,12 +478,14 @@ class Aggregate extends Model
             return $item->orders;
         };
 
-        $ret->optimize = function($item, $child) {
+        $ret->optimize = function ($item, $child) {
             $child->setRelation('aggregate', $item);
+
             return $child;
         };
 
         $ret->collected = 'orders';
+
         return $ret;
     }
 
@@ -491,13 +499,13 @@ class Aggregate extends Model
     /************************************************************** WithinGas */
 
     public function guessGas()
-	{
+    {
         $candidates = [];
         $valid = [];
         $threshold = $this->orders->count();
 
-		foreach($this->orders as $order) {
-            foreach($order->supplier->gas as $gas) {
+        foreach ($this->orders as $order) {
+            foreach ($order->supplier->gas as $gas) {
                 if (isset($candidates[$gas->id]) == false) {
                     $candidates[$gas->id] = 0;
                 }
@@ -506,12 +514,12 @@ class Aggregate extends Model
             }
         }
 
-        foreach($candidates as $id => $count) {
+        foreach ($candidates as $id => $count) {
             if ($count == $threshold) {
                 $valid[] = $id;
             }
         }
 
         return Gas::whereIn('id', $valid)->get();
-	}
+    }
 }

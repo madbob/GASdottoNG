@@ -2,15 +2,13 @@
 
 namespace App\Observers;
 
-use Illuminate\Support\Str;
-
 use App\Contact;
 
 class ContactObserver
 {
     public function saving(Contact $contact)
     {
-        switch($contact->type) {
+        switch ($contact->type) {
             case 'address':
                 $items = $contact->asAddress();
                 $contact->value = normalizeAddress($items[0], $items[1], $items[2]);

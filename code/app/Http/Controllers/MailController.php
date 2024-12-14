@@ -3,15 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
 
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 use Aws\Sns\Exception\InvalidSnsMessageException;
 
-use App\Contact;
 use App\InnerLog;
 
 class MailController extends Controller
@@ -21,7 +18,7 @@ class MailController extends Controller
         $instances = get_instances();
         $now = date('Y-m-d G:i:s');
 
-        foreach($instances as $i) {
+        foreach ($instances as $i) {
             try {
                 $db = get_instance_db($i);
                 $db_emails = $db->select("SELECT COUNT(*) as count FROM contacts WHERE type = 'email' and value = '$email'");
@@ -37,7 +34,7 @@ class MailController extends Controller
                     }
                 }
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 // dummy
             }
         }
@@ -56,35 +53,35 @@ class MailController extends Controller
         }
     }
 
-	public function postStatusSendinblue(Request $request)
-	{
-		if (env('MAIL_MAILER') == 'sendinblue') {
-			/*
-				Nota bene: qui arrivano tutte le segnalazioni webhook generate
-				da SendInBlue, incluse quelle non generate da GASdotto.
-				Il tag "gasdotto" viene aggiunto dal listener CustomMailTag
-			*/
-			$tags = $request->input('tags');
-			if (is_null($tags) || empty($tags)) {
-				return;
-			}
+    public function postStatusSendinblue(Request $request)
+    {
+        if (env('MAIL_MAILER') == 'sendinblue') {
+            /*
+                Nota bene: qui arrivano tutte le segnalazioni webhook generate
+                da SendInBlue, incluse quelle non generate da GASdotto.
+                Il tag "gasdotto" viene aggiunto dal listener CustomMailTag
+            */
+            $tags = $request->input('tags');
+            if (is_null($tags) || empty($tags)) {
+                return;
+            }
 
-			if (in_array('gasdotto', $tags)) {
+            if (in_array('gasdotto', $tags)) {
                 $event = $request->input('event', '');
 
-				if (in_array($event, ['hard_bounce', 'soft_bounce', 'complaint', 'blocked', 'error'])) {
-					try {
-						$email = $request->input('email');
-			            $message = $request->input('reason', '???');
-		                $this->registerBounce($event, $email, $message);
-					}
-					catch(\Exception $e) {
-						Log::error('Notifica SendInBlue illeggibile: ' . $e->getMessage() . ' - ' . print_r($request->all(), true));
-					}
-				}
-			}
-		}
-	}
+                if (in_array($event, ['hard_bounce', 'soft_bounce', 'complaint', 'blocked', 'error'])) {
+                    try {
+                        $email = $request->input('email');
+                        $message = $request->input('reason', '???');
+                        $this->registerBounce($event, $email, $message);
+                    }
+                    catch (\Exception $e) {
+                        Log::error('Notifica SendInBlue illeggibile: ' . $e->getMessage() . ' - ' . print_r($request->all(), true));
+                    }
+                }
+            }
+        }
+    }
 
     public function postStatusScaleway(Request $request)
     {
@@ -112,6 +109,7 @@ class MailController extends Controller
                     */
                     if (isset($body->SubscribeURL)) {
                         @file_get_contents($body->SubscribeURL);
+
                         return;
                     }
                     else {
@@ -123,9 +121,9 @@ class MailController extends Controller
                     }
                 }
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 Log::error('Notifica Scaleway illeggibile: ' . $e->getMessage() . ' - ' . print_r($request->all(), true));
             }
-		}
+        }
     }
 }

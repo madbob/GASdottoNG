@@ -10,6 +10,7 @@ class ClosedOrdersNotification extends ManyMailNotification
     use MailFormatter;
 
     private $orders;
+
     private $files;
 
     public function __construct($orders, $files)
@@ -30,7 +31,7 @@ class ClosedOrdersNotification extends ManyMailNotification
         $message = $this->initMailMessage($notifiable);
         $message->subject(_i('Ordini chiusi automaticamente'))->view('emails.closedorder', ['orders' => $this->orders]);
 
-        foreach($this->files as $file) {
+        foreach ($this->files as $file) {
             $message->attach($file);
         }
 

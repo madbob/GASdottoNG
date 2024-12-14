@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 use DB;
-use Log;
 use Auth;
 
 use App\Category;
@@ -17,7 +15,7 @@ class CategoriesController extends Controller
     public function __construct()
     {
         $this->commonInit([
-            'reference_class' => 'App\\Category'
+            'reference_class' => 'App\\Category',
         ]);
     }
 
@@ -48,7 +46,8 @@ class CategoriesController extends Controller
         $parent = $request->input('parent_id');
         if ($parent != 'null') {
             $category->parent_id = $parent;
-        } else {
+        }
+        else {
             $category->parent_id = null;
         }
 
@@ -104,13 +103,13 @@ class CategoriesController extends Controller
 
         $data = $request->input('serialized');
         $accumulator = [
-            Category::defaultValue()
+            Category::defaultValue(),
         ];
 
         $this->updateRecursive($data, null, $accumulator);
 
         $orphaned_products = Product::withoutGlobalScopes()->whereNotIn('category_id', $accumulator)->get();
-        foreach($orphaned_products as $op) {
+        foreach ($orphaned_products as $op) {
             $op->category_id = Category::defaultValue();
             $op->save();
         }

@@ -2,12 +2,13 @@
 
 function localFilePath($obj, $field)
 {
-    if (!empty($obj->$field)) {
+    if (! empty($obj->$field)) {
         $path = gas_storage_path($obj->$field);
         if (file_exists($path)) {
             return $path;
         }
     }
+
     return null;
 }
 
@@ -37,7 +38,7 @@ function handleFileUpload($request, $obj, $field)
 
 function downloadFile($obj, $field)
 {
-    if (!empty($obj->$field)) {
+    if (! empty($obj->$field)) {
         $path = gas_storage_path($obj->$field);
         if (file_exists($path)) {
             return response()->download($path);
@@ -56,7 +57,7 @@ function zipAll($path, $files)
 {
     $archive = \ezcArchive::open($path, \ezcArchive::ZIP);
 
-    foreach($files as $f) {
+    foreach ($files as $f) {
         $archive->append([$f], '');
         unlink($f);
     }
@@ -65,7 +66,7 @@ function zipAll($path, $files)
 function humanSizeToBytes($size)
 {
     $suffix = strtoupper(substr($size, -1));
-    if (!in_array($suffix, array('P', 'T', 'G', 'M', 'K'))) {
+    if (! in_array($suffix, ['P', 'T', 'G', 'M', 'K'])) {
         return (int) $size;
     }
 
@@ -85,7 +86,7 @@ function humanSizeToBytes($size)
             break;
     }
 
-    return (int)$val;
+    return (int) $val;
 }
 
 function serverMaxUpload()

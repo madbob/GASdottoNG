@@ -10,6 +10,7 @@ use App\User;
 class GenerateAutologin extends Command
 {
     protected $signature = 'generate:autologin {user}';
+
     protected $description = "Controlla la scadenza delle quote di iscrizione alla chiusura dell'anno sociale";
 
     public function handle()

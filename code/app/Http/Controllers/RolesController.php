@@ -3,11 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
-use Auth;
-use DB;
-use Log;
 
 use App\User;
 use App\Supplier;
@@ -23,13 +18,14 @@ class RolesController extends BackedController
 
         $this->commonInit([
             'reference_class' => Role::class,
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function index()
     {
         $user = $this->ensureAuth(['gas.permissions' => 'gas']);
+
         return view('permissions.gas-management', ['gas' => $user->gas]);
     }
 
@@ -37,6 +33,7 @@ class RolesController extends BackedController
     {
         $this->ensureAuth(['gas.permissions' => 'gas']);
         $r = Role::findOrFail($id);
+
         return view('permissions.edit', ['role' => $r]);
     }
 
@@ -44,6 +41,7 @@ class RolesController extends BackedController
     {
         $this->ensureAuth(['gas.permissions' => 'gas', 'users.admin' => 'gas']);
         $user = User::withTrashed()->find($user_id);
+
         return view('permissions.user-edit', ['user' => $user]);
     }
 
@@ -51,6 +49,7 @@ class RolesController extends BackedController
     {
         $supplier = Supplier::findOrFail($supplier_id);
         $this->ensureAuth(['gas.permissions' => 'gas', 'supplier.modify' => $supplier]);
+
         return view('permissions.supplier-edit', ['supplier' => $supplier]);
     }
 
@@ -58,6 +57,7 @@ class RolesController extends BackedController
     {
         $this->ensureAuth(['gas.permissions' => 'gas', 'users.admin' => 'gas']);
         $user = User::withTrashed()->find($user_id);
+
         return view('commons.permissionsviewer', ['object' => $user, 'editable' => true]);
     }
 
@@ -65,6 +65,7 @@ class RolesController extends BackedController
     {
         $supplier = Supplier::findOrFail($supplier_id);
         $this->ensureAuth(['gas.permissions' => 'gas', 'supplier.modify' => $supplier]);
+
         return view('commons.permissionseditor', ['object' => $supplier, 'editable' => true]);
     }
 
@@ -74,29 +75,29 @@ class RolesController extends BackedController
         $target_class = $request->input('target_class');
 
         if ($target_id) {
-			if ($target_id == '*') {
-				$target = $target_class;
-			}
-			else {
-				$target = $target_class::tFind($target_id, true);
-			}
-		}
-		else {
-			$target = null;
-		}
+            if ($target_id == '*') {
+                $target = $target_class;
+            }
+            else {
+                $target = $target_class::tFind($target_id, true);
+            }
+        }
+        else {
+            $target = null;
+        }
 
         return $target;
     }
 
     public function attach(Request $request)
     {
-        return $this->easyExecute(function() use ($request) {
+        return $this->easyExecute(function () use ($request) {
             $role_id = $request->input('role');
             $user_id = $request->input('user');
 
             if ($user_id) {
                 $target = $this->getTargetApplication($request);
-                list($user, $role) = $this->service->attachUser($user_id, $role_id, $target);
+                [$user, $role] = $this->service->attachUser($user_id, $role_id, $target);
 
                 if (is_null($target)) {
                     /*
@@ -119,12 +120,13 @@ class RolesController extends BackedController
 
     public function detach(Request $request)
     {
-        return $this->easyExecute(function() use ($request) {
+        return $this->easyExecute(function () use ($request) {
             $role_id = $request->input('role');
             $user_id = $request->input('user');
 
             if ($user_id) {
                 $target = $this->getTargetApplication($request);
+
                 return $this->service->detachUser($user_id, $role_id, $target);
             }
             else {

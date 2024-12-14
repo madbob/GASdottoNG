@@ -51,7 +51,7 @@ function allPermissions()
             }
         }
     }
-    catch(\Exception $e) {
+    catch (\Exception $e) {
         // dummy
     }
 
@@ -60,7 +60,7 @@ function allPermissions()
 
 function allRoles()
 {
-    return App\Role::orderBy('name', 'asc')->get()->filter(function($r) {
+    return App\Role::orderBy('name', 'asc')->get()->filter(function ($r) {
         return $r->isEnabled();
     });
 }
@@ -69,7 +69,7 @@ function someoneCan($permission, $subject = null)
 {
     $basic_roles = App\Role::havingAction($permission);
 
-    foreach($basic_roles as $br) {
+    foreach ($basic_roles as $br) {
         if (is_null($subject)) {
             $users = $br->users;
         }
@@ -77,9 +77,9 @@ function someoneCan($permission, $subject = null)
             $users = $br->usersByTarget($subject);
         }
 
-		if ($users->isEmpty() == false) {
-			return true;
-		}
+        if ($users->isEmpty() == false) {
+            return true;
+        }
     }
 
     return false;
@@ -90,7 +90,7 @@ function everybodyCan($permission, $subject = null)
     $ret = new Illuminate\Support\Collection();
 
     $basic_roles = App\Role::havingAction($permission);
-    foreach($basic_roles as $br) {
+    foreach ($basic_roles as $br) {
         $users = $br->users;
 
         if ($subject != null) {
@@ -120,7 +120,7 @@ function rolesByClass($asked_class)
 {
     $roles = [];
     $all_permissions = allPermissions();
-	$rules = $all_permissions[$asked_class] ?? [];
+    $rules = $all_permissions[$asked_class] ?? [];
 
     foreach (allRoles() as $role) {
         foreach (array_keys($rules) as $identifier) {
@@ -140,45 +140,46 @@ function roleByIdentifier($identifier)
 }
 
 /*
-	Questa funzione esiste sostanzialmente allo scopo di intercettare e
-	aggiustare problemi con le configurazioni dei ruoli essenziali di sistema,
-	che possono essere compromessi in molti modi (intervento inopportuno
-	dell'utente, bug, inizializzazione incompleta o altro)
+    Questa funzione esiste sostanzialmente allo scopo di intercettare e
+    aggiustare problemi con le configurazioni dei ruoli essenziali di sistema,
+    che possono essere compromessi in molti modi (intervento inopportuno
+    dell'utente, bug, inizializzazione incompleta o altro)
 */
 function roleByFunction($identifier)
 {
     $gas = currentAbsoluteGas();
-	$role_id = $gas->roles[$identifier] ?? null;
+    $role_id = $gas->roles[$identifier] ?? null;
     $ret = App\Role::find($role_id);
 
-	if (is_null($ret)) {
-		switch($identifier) {
-			case 'multigas':
-				$ridentifier = 'secondary_admin';
-				break;
-			default:
-				$ridentifier = $identifier;
-				break;
-		}
+    if (is_null($ret)) {
+        switch ($identifier) {
+            case 'multigas':
+                $ridentifier = 'secondary_admin';
+                break;
+            default:
+                $ridentifier = $identifier;
+                break;
+        }
 
-		$ret = roleByIdentifier($ridentifier);
-		if (is_null($ret)) {
-			$role_definition = systemParameters('Roles')[$ridentifier] ?? null;
-			if ($role_definition) {
-				\Log::info('Inizializzo ruolo di sistema non ancora inizializzato: ' . $identifier);
-				$role_definition->create();
-				return roleByFunction($identifier);
-			}
-			else {
-				throw new \Exception("Impossibile ricostruire il ruolo " . $identifier, 1);
-			}
-		}
+        $ret = roleByIdentifier($ridentifier);
+        if (is_null($ret)) {
+            $role_definition = systemParameters('Roles')[$ridentifier] ?? null;
+            if ($role_definition) {
+                \Log::info('Inizializzo ruolo di sistema non ancora inizializzato: ' . $identifier);
+                $role_definition->create();
 
-		\Log::info('Aggiusto configurazione per i ruoli: ' . $identifier);
-		$conf = (object) $gas->roles;
-		$conf->$identifier = $ret->id;
-		$gas->setConfig('roles', $conf);
-	}
+                return roleByFunction($identifier);
+            }
+            else {
+                throw new \Exception('Impossibile ricostruire il ruolo ' . $identifier, 1);
+            }
+        }
+
+        \Log::info('Aggiusto configurazione per i ruoli: ' . $identifier);
+        $conf = (object) $gas->roles;
+        $conf->$identifier = $ret->id;
+        $gas->setConfig('roles', $conf);
+    }
 
     return $ret;
 }

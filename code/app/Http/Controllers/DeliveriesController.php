@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
 
 use Auth;
 use DB;
 
-use App\User;
 use App\Delivery;
 
 class DeliveriesController extends Controller
@@ -19,7 +17,7 @@ class DeliveriesController extends Controller
         $this->middleware('auth');
 
         $this->commonInit([
-            'reference_class' => 'App\\Delivery'
+            'reference_class' => 'App\\Delivery',
         ]);
     }
 
@@ -54,6 +52,7 @@ class DeliveriesController extends Controller
         }
 
         $d = Delivery::findOrFail($id);
+
         return view('deliveries.edit', ['delivery' => $d]);
     }
 
@@ -104,7 +103,7 @@ class DeliveriesController extends Controller
             $fallback_id = $fallback->id;
         }
 
-        foreach($d->users as $u) {
+        foreach ($d->users as $u) {
             $u->preferred_delivery_id = $fallback_id;
             $u->save();
         }

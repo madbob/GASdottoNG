@@ -38,7 +38,7 @@ class Satispay extends Config
                         'key' => $authentication->keyId,
                     ];
                 }
-                catch(\Exception $e) {
+                catch (\Exception $e) {
                     \Log::error('Impossibile completare procedura di verifica su Satispay: ' . $e->getMessage());
                 }
             }

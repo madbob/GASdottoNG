@@ -8,7 +8,8 @@ class InvoiceObserver
 {
     public function deleting(Invoice $invoice)
     {
-		$invoice->deleteMovements();
-		return true;
+        $invoice->deleteMovements();
+
+        return true;
     }
 }

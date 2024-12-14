@@ -13,16 +13,17 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use DB;
 use Auth;
-use URL;
 use Log;
 
 class Role extends Model
 {
-    use HasFactory, GASModel, Cachable;
+    use Cachable, GASModel, HasFactory;
 
     private $real_targets = null;
-	private $applies_cache = null;
-	private $applies_only_cache = null;
+
+    private $applies_cache = null;
+
+    private $applies_only_cache = null;
 
     public function users(): BelongsToMany
     {
@@ -42,7 +43,7 @@ class Role extends Model
     public function isEnabled()
     {
         if ($this->system) {
-            foreach(systemParameters('Roles') as $ref) {
+            foreach (systemParameters('Roles') as $ref) {
                 if ($this->identifier == $ref->identifier()) {
                     return $ref->enabled();
                 }
@@ -54,7 +55,7 @@ class Role extends Model
 
     private static function recursiveSortedByHierarchy($roles, &$collection, &$ids)
     {
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             if ($role->isEnabled() && in_array($role->id, $ids) == false) {
                 $collection->push($role);
                 $ids[] = $role->id;
@@ -72,7 +73,7 @@ class Role extends Model
             $user = Auth::user();
             $roles = $user->roles;
 
-            foreach($roles as $role) {
+            foreach ($roles as $role) {
                 self::recursiveSortedByHierarchy($role->children, $ret, $ids);
             }
         }
@@ -119,10 +120,10 @@ class Role extends Model
     {
         $role = $this;
 
-        $user_ids = DB::table('users')->join('role_user', function($join) use ($role) {
+        $user_ids = DB::table('users')->join('role_user', function ($join) use ($role) {
             $join->on('user_id', '=', 'users.id');
             $join->where('role_id', '=', $role->id);
-        })->join('attached_role_user', function($join) use ($target) {
+        })->join('attached_role_user', function ($join) use ($target) {
             $join->on('role_user_id', '=', 'role_user.id');
             $join->where('target_type', '=', get_class($target))->where('target_id', '=', $target->id);
         })->pluck('users.id');
@@ -136,7 +137,7 @@ class Role extends Model
         $permissions = allPermissions();
 
         foreach ($permissions as $class => $types) {
-            foreach(array_keys($types) as $t) {
+            foreach (array_keys($types) as $t) {
                 if ($this->enabledAction($t)) {
                     $ret[] = $class;
                     break;
@@ -153,7 +154,7 @@ class Role extends Model
             $this->real_targets = new Collection();
 
             $classes = $this->getAllClasses();
-            foreach($classes as $class) {
+            foreach ($classes as $class) {
                 $this->real_targets = $this->real_targets->merge($class::tAll());
             }
         }
@@ -168,7 +169,7 @@ class Role extends Model
             $applies_only_cache = [];
 
             $rules = DB::table('attached_role_user')->where('role_user_id', $this->pivot->id)->get();
-            foreach($rules as $r) {
+            foreach ($rules as $r) {
                 $class = $r->target_type;
                 if (isset($applies_cache[$class]) == false) {
                     $applies_cache[$class] = [];
@@ -176,7 +177,7 @@ class Role extends Model
 
                 if ($r->target_id == '*') {
                     $objects = $class::tAll();
-                    foreach($objects as $o) {
+                    foreach ($objects as $o) {
                         $applies_cache[$class][] = $o->id;
                     }
                 }
@@ -202,20 +203,21 @@ class Role extends Model
         $this->appliesCache();
 
         $class = get_class($obj);
-        if (!isset($this->$cache_type[$class])) {
+        if (! isset($this->$cache_type[$class])) {
             $proxies = $obj->getPermissionsProxies();
             if ($proxies != null) {
-                foreach($proxies as $proxy) {
+                foreach ($proxies as $proxy) {
                     $test = $this->applies($proxy);
-                    if ($test)
+                    if ($test) {
                         return true;
+                    }
                 }
             }
 
             return false;
         }
         else {
-            return (isset($this->$cache_type[$class]) && array_search($obj->id, $this->$cache_type[$class]) !== false);
+            return isset($this->$cache_type[$class]) && array_search($obj->id, $this->$cache_type[$class]) !== false;
         }
     }
 
@@ -242,10 +244,10 @@ class Role extends Model
     /*
         Questa funzione va chiamata solo sugli oggetti Role restituiti da
         User::roles(), in quanto si applica solo sull'istanza del ruolo
-		assegnata ad uno specifico utente.
-		Verifica se il ruolo si applica a tutti i soggetti della classe
-		specificata (o più in generale a tutti i soggetti di tutte le classi
-		disponibili)
+        assegnata ad uno specifico utente.
+        Verifica se il ruolo si applica a tutti i soggetti della classe
+        specificata (o più in generale a tutti i soggetti di tutte le classi
+        disponibili)
     */
     public function appliesAll($class = null)
     {
@@ -253,7 +255,7 @@ class Role extends Model
             $ret = true;
 
             $classes = $this->getAllClasses();
-            foreach($classes as $class) {
+            foreach ($classes as $class) {
                 $ret = $ret && $this->appliesAll($class);
             }
 
@@ -271,8 +273,8 @@ class Role extends Model
     /*
         Questa funzione va chiamata solo sugli oggetti Role restituiti da
         User::roles(), in quanto si applica solo sull'istanza del ruolo
-		assegnata ad uno specifico utente.
-		Restituisce l'elenco dei soggetti cui il ruolo si applica
+        assegnata ad uno specifico utente.
+        Restituisce l'elenco dei soggetti cui il ruolo si applica
     */
     public function applications($all = false, $exclude_trashed = false, $target_class = null)
     {
@@ -287,7 +289,7 @@ class Role extends Model
 
         $ret = new Collection();
 
-        foreach($this->$cache_type as $class => $ids) {
+        foreach ($this->$cache_type as $class => $ids) {
             if ($target_class && $target_class != $class) {
                 continue;
             }
@@ -319,8 +321,9 @@ class Role extends Model
         $now = date('Y-m-d G:i:s');
 
         if (is_string($obj)) {
-            if ($this->appliesAll($obj))
+            if ($this->appliesAll($obj)) {
                 return;
+            }
 
             $obj_class = $obj;
             $obj_id = '*';
@@ -339,7 +342,7 @@ class Role extends Model
             'target_id' => $obj_id,
             'target_type' => $obj_class,
             'created_at' => $now,
-            'updated_at' => $now
+            'updated_at' => $now,
         ]);
 
         $this->invalidateAppliesCache();
@@ -365,8 +368,9 @@ class Role extends Model
                 ->delete();
         }
         else {
-            if (is_null($obj) || $this->appliesOnly($obj) == false)
+            if (is_null($obj) || $this->appliesOnly($obj) == false) {
                 return;
+            }
 
             DB::table('attached_role_user')
                 ->where('role_user_id', $this->pivot->id)
@@ -381,7 +385,8 @@ class Role extends Model
     public function enabledAction($action)
     {
         $actions = explode(',', $this->actions);
-        return (in_array($action, $actions));
+
+        return in_array($action, $actions);
     }
 
     public function mandatoryAction($action)

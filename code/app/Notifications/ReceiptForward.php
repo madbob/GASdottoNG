@@ -21,6 +21,7 @@ class ReceiptForward extends ManyMailNotification
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
+
         return $this->formatMail($message, $notifiable, 'receipt')->attach($this->temp_file);
     }
 }

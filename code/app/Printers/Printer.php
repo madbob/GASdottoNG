@@ -4,5 +4,5 @@ namespace App\Printers;
 
 abstract class Printer
 {
-    public abstract function document($obj, $type, $request);
+    abstract public function document($obj, $type, $request);
 }

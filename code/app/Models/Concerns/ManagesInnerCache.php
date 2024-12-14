@@ -16,7 +16,9 @@ namespace App\Models\Concerns;
 trait ManagesInnerCache
 {
     private $inner_runtime_cache;
+
     private $uses_global_cache = false;
+
     private $global_store = null;
 
     protected function enableGlobalCache()
@@ -31,6 +33,7 @@ trait ManagesInnerCache
             $hub = app()->make('GlobalScopeHub');
             if ($hub->hubRequired() && $hub->enabled()) {
                 $gas_id = $hub->getGas();
+
                 return sprintf('%s_%s_%s', $gas_id, $this->id, $name);
             }
         }
@@ -42,6 +45,7 @@ trait ManagesInnerCache
     {
         if ($this->uses_global_cache) {
             $name = $this->globalKey($name);
+
             return $this->global_store->has($name);
         }
         else {
@@ -64,7 +68,7 @@ trait ManagesInnerCache
             }
         }
         else {
-            if (!isset($this->inner_runtime_cache[$name])) {
+            if (! isset($this->inner_runtime_cache[$name])) {
                 $this->inner_runtime_cache[$name] = $function($this);
             }
 

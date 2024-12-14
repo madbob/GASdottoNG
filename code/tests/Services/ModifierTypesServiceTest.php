@@ -5,7 +5,6 @@ namespace Tests\Services;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use Artisan;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
@@ -14,7 +13,7 @@ class ModifierTypesServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -22,27 +21,27 @@ class ModifierTypesServiceTest extends TestCase
         $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
         $this->sample_type = \App\ModifierType::factory()->create([
-			'classes' => ['App\Booking', 'App\Product'],
+            'classes' => ['App\Booking', 'App\Product'],
         ]);
     }
 
     /*
         Creazione Tipo di Movimento
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $type = app()->make('ModifierTypesService')->store(array(
+        $type = app()->make('ModifierTypesService')->store([
             'name' => 'Donazione',
             'classes' => ['App\Booking'],
-        ));
+        ]);
 
         $this->assertTrue($type->exists);
 
         $found = false;
         $types = \App\ModifierType::byClass(\App\Booking::class);
-        foreach($types as $t) {
+        foreach ($types as $t) {
             if ($t->id == $type->id) {
                 $found = true;
                 break;
@@ -55,23 +54,23 @@ class ModifierTypesServiceTest extends TestCase
     /*
         Modifica Tipo di Movimento con permessi sbagliati
     */
-    public function testFailsToUpdate()
+    public function test_fails_to_update()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('ModifierTypesService')->update($this->sample_type->id, array());
+        app()->make('ModifierTypesService')->update($this->sample_type->id, []);
     }
 
     /*
         Modifica Tipo di Movimento
     */
-    public function testUpdate()
+    public function test_update()
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        app()->make('ModifierTypesService')->update($this->sample_type->id, array(
+        app()->make('ModifierTypesService')->update($this->sample_type->id, [
             'name' => 'Donazioni',
-        ));
+        ]);
 
         $type = app()->make('ModifierTypesService')->show($this->sample_type->id);
         $this->assertEquals('Donazioni', $type->name);
@@ -80,7 +79,7 @@ class ModifierTypesServiceTest extends TestCase
     /*
         Accesso Tipo di Movimento con ID non esistente
     */
-    public function testFailsToShowInexistent()
+    public function test_fails_to_show_inexistent()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
@@ -90,7 +89,7 @@ class ModifierTypesServiceTest extends TestCase
     /*
         Accesso Tipo di Movimento
     */
-    public function testShow()
+    public function test_show()
     {
         $this->actingAs($this->userWithAdminPerm);
 
@@ -103,7 +102,7 @@ class ModifierTypesServiceTest extends TestCase
     /*
         Cancellazione Tipo di Movimento con permessi sbagliati
     */
-    public function testFailsToDestroy()
+    public function test_fails_to_destroy()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -113,7 +112,7 @@ class ModifierTypesServiceTest extends TestCase
     /*
         Cancellazione Tipo di Movimento
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $this->actingAs($this->userWithAdminPerm);
         app()->make('ModifierTypesService')->destroy($this->sample_type->id);
@@ -122,7 +121,8 @@ class ModifierTypesServiceTest extends TestCase
         try {
             app()->make('ModifierTypesService')->show($this->sample_type->id);
             $this->fail('should never run');
-        } catch (ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e) {
             //good boy
         }
     }

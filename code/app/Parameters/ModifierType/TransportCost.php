@@ -19,6 +19,7 @@ class TransportCost extends ModifierType
         $type->system = true;
         $type->identifier = 'shipping';
         $type->classes = [Product::class, Supplier::class, Delivery::class];
+
         return $type;
     }
 }

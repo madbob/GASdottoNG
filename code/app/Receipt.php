@@ -17,10 +17,11 @@ class Receipt extends Model implements Datable
     use GASModel, SluggableID;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class
+        'creating' => SluggableCreating::class,
     ];
 
     public function bookings(): BelongsToMany
@@ -36,10 +37,12 @@ class Receipt extends Model implements Datable
     public function getUserAttribute()
     {
         $first = $this->bookings->first();
-        if ($first)
+        if ($first) {
             return $first->user;
-        else
+        }
+        else {
             return null;
+        }
     }
 
     public function getNameAttribute()
@@ -57,19 +60,19 @@ class Receipt extends Model implements Datable
 
     private function calculateTotal()
     {
-        return $this->innerCache('totals', function($obj) {
+        return $this->innerCache('totals', function ($obj) {
             $data = [
                 'total' => 0,
                 'total_tax' => 0,
                 'others' => 0,
             ];
 
-            foreach($obj->bookings as $booking) {
+            foreach ($obj->bookings as $booking) {
                 $book = $booking->delivered_taxed;
                 $data['total'] += $book[0];
                 $data['total_tax'] += $book[1];
 
-                foreach($booking->aggregatedModifiers() as $am) {
+                foreach ($booking->aggregatedModifiers() as $am) {
                     $data['others'] += $am->amount;
                 }
             }
@@ -85,13 +88,14 @@ class Receipt extends Model implements Datable
     {
         $bookings_ids = [];
 
-        foreach($aggregate->orders as $order) {
+        foreach ($aggregate->orders as $order) {
             $booking = $order->userBooking($user);
-            if ($booking->exists)
+            if ($booking->exists) {
                 $bookings_ids[] = $booking->id;
+            }
         }
 
-        return Receipt::whereHas('bookings', function($query) use ($bookings_ids) {
+        return Receipt::whereHas('bookings', function ($query) use ($bookings_ids) {
             $query->whereIn('booking_id', $bookings_ids);
         })->get();
     }
@@ -99,18 +103,21 @@ class Receipt extends Model implements Datable
     public function getTotalAttribute()
     {
         $data = $this->calculateTotal();
+
         return $data['total'];
     }
 
     public function getTotalTaxAttribute()
     {
         $data = $this->calculateTotal();
+
         return $data['total_tax'];
     }
 
     public function getTotalOtherAttribute()
     {
         $data = $this->calculateTotal();
+
         return $data['others'];
     }
 

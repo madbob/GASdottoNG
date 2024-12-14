@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 use DB;
 use Log;
@@ -17,7 +16,7 @@ class AttachmentsController extends Controller
         $this->middleware('auth');
 
         $this->commonInit([
-            'reference_class' => 'App\\Attachment'
+            'reference_class' => 'App\\Attachment',
         ]);
     }
 
@@ -63,7 +62,7 @@ class AttachmentsController extends Controller
             'id' => $a->id,
             'name' => $a->name,
             'header' => $a->printableHeader(),
-            'url' => route('attachments.show', $a->id)
+            'url' => route('attachments.show', $a->id),
         ]);
     }
 
@@ -73,7 +72,8 @@ class AttachmentsController extends Controller
 
         if ($a->attached->attachmentPermissionGranted()) {
             return view('attachment.edit', ['attachment' => $a]);
-        } else {
+        }
+        else {
             return view('attachment.show', ['attachment' => $a]);
         }
     }
@@ -82,7 +82,7 @@ class AttachmentsController extends Controller
     {
         $a = Attachment::findOrFail($id);
 
-        if (!empty($a->url)) {
+        if (! empty($a->url)) {
             return redirect($a->url);
         }
         else {
@@ -91,6 +91,7 @@ class AttachmentsController extends Controller
             }
             else {
                 Log::error('File non trovato: ' . $a->path);
+
                 return '';
             }
         }

@@ -12,7 +12,7 @@ class ProductsServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,7 +23,7 @@ class ProductsServiceTest extends TestCase
         $this->product = \App\Product::factory()->create([
             'supplier_id' => $this->supplier->id,
             'category_id' => $this->category->id,
-            'measure_id' => $this->measure->id
+            'measure_id' => $this->measure->id,
         ]);
 
         $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'supplier.add');
@@ -34,21 +34,21 @@ class ProductsServiceTest extends TestCase
     /*
         Creazione Prodotto con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
 
         $this->actingAs($this->userWithNoPerms);
-        app()->make('ProductsService')->store(array(
+        app()->make('ProductsService')->store([
             'supplier_id' => $this->supplier->id,
-            'name' => 'Test Product'
-        ));
+            'name' => 'Test Product',
+        ]);
     }
 
     /*
         Creazione Prodotto
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userWithReferrerPerms);
 
@@ -59,7 +59,7 @@ class ProductsServiceTest extends TestCase
             'price' => rand(),
             'supplier_id' => $this->supplier->id,
             'category_id' => $this->category->id,
-            'measure_id' => $this->measure->id
+            'measure_id' => $this->measure->id,
         ]);
 
         $product = app()->make('ProductsService')->show($product->id);
@@ -74,7 +74,7 @@ class ProductsServiceTest extends TestCase
     /*
         Creazione Prodotto con unità di misura non discreta
     */
-    public function testStoreEnforceWeight()
+    public function test_store_enforce_weight()
     {
         $this->actingAs($this->userWithReferrerPerms);
 
@@ -86,7 +86,7 @@ class ProductsServiceTest extends TestCase
             'price' => rand(),
             'supplier_id' => $this->supplier->id,
             'category_id' => $this->category->id,
-            'measure_id' => $this->measure->id
+            'measure_id' => $this->measure->id,
         ]);
 
         $product = app()->make('ProductsService')->show($product->id);
@@ -96,17 +96,17 @@ class ProductsServiceTest extends TestCase
     /*
         Duplicazione Prodotto
     */
-    public function testDuplicate()
+    public function test_duplicate()
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $product = app()->make('ProductsService')->store(array(
+        $product = app()->make('ProductsService')->store([
             'name' => 'Test Product',
             'price' => rand(),
             'supplier_id' => $this->supplier->id,
             'category_id' => $this->category->id,
-            'measure_id' => $this->measure->id
-        ));
+            'measure_id' => $this->measure->id,
+        ]);
 
         app()->make('VariantsService')->store([
             'product_id' => $product->id,
@@ -124,14 +124,14 @@ class ProductsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $duplicate = app()->make('ProductsService')->store(array(
+        $duplicate = app()->make('ProductsService')->store([
             'duplicating_from' => $product->id,
             'name' => 'Test Product',
             'price' => rand(),
             'supplier_id' => $this->supplier->id,
             'category_id' => $this->category->id,
-            'measure_id' => $this->measure->id
-        ));
+            'measure_id' => $this->measure->id,
+        ]);
 
         $this->assertEquals(2, $duplicate->variants()->count());
     }
@@ -139,44 +139,44 @@ class ProductsServiceTest extends TestCase
     /*
         Modifica Prodotto con permessi sbagliati
     */
-    public function testFailsToUpdate()
+    public function test_fails_to_update()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('ProductsService')->update($this->product->id, array());
+        app()->make('ProductsService')->update($this->product->id, []);
     }
 
     /*
         Modifica Prodotto con permessi sbagliati
     */
-    public function testFailsToUpdateByAdmin()
+    public function test_fails_to_update_by_admin()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithAdminPerm);
-        app()->make('ProductsService')->update($this->product->id, array());
+        app()->make('ProductsService')->update($this->product->id, []);
     }
 
     /*
         Modifica Prodotto con ID non esistente
     */
-    public function testFailsToUpdateBecauseNoUserWithID()
+    public function test_fails_to_update_because_no_user_with_id()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithReferrerPerms);
-        app()->make('ProductsService')->update('broken', array());
+        app()->make('ProductsService')->update('broken', []);
     }
 
     /*
         Modifica Prodotto
     */
-    public function testUpdate()
+    public function test_update()
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        app()->make('ProductsService')->update($this->product->id, array(
+        app()->make('ProductsService')->update($this->product->id, [
             'name' => 'Another Product',
             'price' => 10,
-        ));
+        ]);
 
         $product = app()->make('ProductsService')->show($this->product->id);
 
@@ -188,7 +188,7 @@ class ProductsServiceTest extends TestCase
     /*
         Accesso Prodotto con ID non esistente
     */
-    public function testFailsToShowInexistent()
+    public function test_fails_to_show_inexistent()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -198,7 +198,7 @@ class ProductsServiceTest extends TestCase
     /*
         Accesso Prodotto
     */
-    public function testShow()
+    public function test_show()
     {
         $this->actingAs($this->userWithNoPerms);
         $product = app()->make('ProductsService')->show($this->product->id);
@@ -210,7 +210,7 @@ class ProductsServiceTest extends TestCase
     /*
         Cancellazione Prodotto con permessi sbagliati
     */
-    public function testFailsToDestroy()
+    public function test_fails_to_destroy()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -220,7 +220,7 @@ class ProductsServiceTest extends TestCase
     /*
         Cancellazione Prodotto
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $this->actingAs($this->userWithReferrerPerms);
 
@@ -229,15 +229,15 @@ class ProductsServiceTest extends TestCase
         $this->assertNotNull($product->deleted_at);
     }
 
-	/*
-		Recupero prodotto a partire dal nome
-	*/
-	public function testStringReading()
-	{
-		$string = $this->product->printableName();
-		$p = productByString($string);
-		$this->assertNotNull($p);
-		$this->assertNull($p[1]);
-		$this->assertEquals($p[0]->id, $this->product->id);
-	}
+    /*
+        Recupero prodotto a partire dal nome
+    */
+    public function test_string_reading()
+    {
+        $string = $this->product->printableName();
+        $p = productByString($string);
+        $this->assertNotNull($p);
+        $this->assertNull($p[1]);
+        $this->assertEquals($p[0]->id, $this->product->id);
+    }
 }

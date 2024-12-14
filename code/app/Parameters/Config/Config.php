@@ -10,7 +10,7 @@ abstract class Config extends Parameter
     {
         $value = $gas->getConfig($this->identifier());
 
-        switch($this->type()) {
+        switch ($this->type()) {
             case 'object':
             case 'array':
                 return (array) json_decode($value);
@@ -59,7 +59,9 @@ abstract class Config extends Parameter
         $gas->setConfig($id, $value);
     }
 
-    public abstract function identifier();
-    public abstract function type();
-    public abstract function default();
+    abstract public function identifier();
+
+    abstract public function type();
+
+    abstract public function default();
 }

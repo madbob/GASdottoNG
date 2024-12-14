@@ -7,19 +7,19 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 use App\Gas;
-use App\User;
 use App\Movement;
 
 class CheckFees extends Command
 {
     protected $signature = 'check:fees';
+
     protected $description = "Controlla la scadenza delle quote di iscrizione alla chiusura dell'anno sociale";
 
     private function iterateUsers($users, $gas, $amount)
     {
         $auto_fee = $gas->getConfig('auto_fee');
 
-        foreach($users as $user) {
+        foreach ($users as $user) {
             try {
                 $user->fee_id = 0;
                 $user->save();
@@ -31,7 +31,7 @@ class CheckFees extends Command
                     $new->save();
                 }
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 Log::error('Impossibile aggiornare stato quota: ' . $e->getMessage());
             }
         }
@@ -41,7 +41,7 @@ class CheckFees extends Command
     {
         $today = date('Y-m-d');
 
-        foreach(Gas::all() as $gas) {
+        foreach (Gas::all() as $gas) {
             $amount = $gas->getConfig('annual_fee_amount');
             if ($amount == 0) {
                 continue;
@@ -54,7 +54,7 @@ class CheckFees extends Command
 
                 DB::beginTransaction();
 
-                $users = $gas->users()->withTrashed()->whereHas('fee', function($query) use ($date_close) {
+                $users = $gas->users()->withTrashed()->whereHas('fee', function ($query) use ($date_close) {
                     $query->where('date', '<', $date_close);
                 })->get();
 

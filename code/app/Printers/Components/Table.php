@@ -5,6 +5,7 @@ namespace App\Printers\Components;
 class Table implements Component
 {
     private $headers;
+
     private $contents;
 
     public function __construct($headers, $contents)
@@ -45,6 +46,7 @@ class Table implements Component
         }
 
         $ret .= '</tbody></table>';
+
         return $ret;
     }
 

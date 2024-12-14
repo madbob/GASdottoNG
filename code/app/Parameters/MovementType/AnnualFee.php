@@ -33,7 +33,7 @@ class AnnualFee extends MovementType
                 'method' => 'credit',
                 'sender' => $this->format(['bank' => 'decrement']),
                 'target' => $this->format(['gas' => 'increment']),
-            ]
+            ],
         ]));
 
         return $type;
@@ -47,9 +47,9 @@ class AnnualFee extends MovementType
             'post' => function (Movement $movement) {
                 $movement->attachToSender('fee_id');
             },
-            'delete' => function(Movement $movement) {
+            'delete' => function (Movement $movement) {
                 $movement->detachFromSender('fee_id');
-            }
+            },
         ];
 
         return $mov;

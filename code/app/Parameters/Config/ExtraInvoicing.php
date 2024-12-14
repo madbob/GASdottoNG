@@ -37,7 +37,7 @@ class ExtraInvoicing extends Config
             $invoicing_info['invoices_counter_year'] = date('Y');
 
             $reset_counter = $request->input('extra_invoicing->invoices_counter');
-            if (!empty($reset_counter)) {
+            if (! empty($reset_counter)) {
                 $invoicing_info['invoices_counter'] = $reset_counter;
             }
         }

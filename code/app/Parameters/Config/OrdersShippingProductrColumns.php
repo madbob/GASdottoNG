@@ -18,7 +18,8 @@ class OrdersShippingProductrColumns extends Config
 
     public function default()
     {
-		list($options, $values) = flaxComplexOptions(Order::formattableColumns('shipping'));
+        [$options, $values] = flaxComplexOptions(Order::formattableColumns('shipping'));
+
         return $values;
     }
 }

@@ -16,9 +16,9 @@ class Bank extends PaymentType
             'identifier' => true,
             'icon' => 'bank',
             'active_for' => null,
-            'valid_config' => function($target) {
+            'valid_config' => function ($target) {
                 return true;
-            }
+            },
         ];
     }
 }

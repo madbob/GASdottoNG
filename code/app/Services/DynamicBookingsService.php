@@ -2,13 +2,10 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
 
 use App\Services\Concerns\TranslatesBookings;
-use App\User;
-use App\Aggregate;
 
 class DynamicBookingsService extends BookingsService
 {
@@ -65,7 +62,7 @@ class DynamicBookingsService extends BookingsService
                 $orders = $aggregate->orders()->with(['products', 'products.measure', 'bookings', 'modifiers'])->get();
                 $user = $this->testAccess($target_user, $orders, $delivering);
 
-                foreach($orders as $order) {
+                foreach ($orders as $order) {
                     $order->setRelation('aggregate', $aggregate);
                     $booking = $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
                     if ($booking) {
@@ -82,11 +79,12 @@ class DynamicBookingsService extends BookingsService
 
                 return $ret;
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 DB::rollback();
 
                 if ($i == 3) {
                     \Log::warning('Errore in lettura dinamici della prenotazione: ' . $e->getMessage());
+
                     return (object) [
                         'target' => '',
                         'status' => 'error',

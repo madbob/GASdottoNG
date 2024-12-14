@@ -7,7 +7,6 @@
 
 namespace App\Models\Concerns;
 
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 use App\Contact;
@@ -41,7 +40,7 @@ trait ContactableTrait
 
         $contacts = [];
 
-        foreach($ids as $index => $id) {
+        foreach ($ids as $index => $id) {
             if (empty($values[$index])) {
                 continue;
             }
@@ -50,8 +49,9 @@ trait ContactableTrait
                 $contact = new Contact();
 
                 $test_existing = $this->contacts()->where('type', $types[$index])->where('value', $values[$index])->first();
-                if (!empty($test_existing)) {
+                if (! empty($test_existing)) {
                     $contacts[] = $test_existing->id;
+
                     continue;
                 }
             }
@@ -92,7 +92,7 @@ trait ContactableTrait
     {
         $master_mail = $this->email;
 
-        foreach($this->contacts as $contact) {
+        foreach ($this->contacts as $contact) {
             if ($contact->type == 'email' && $contact->value != $master_mail) {
                 $message->cc($contact->value);
             }
@@ -106,12 +106,14 @@ trait ContactableTrait
     public function getEmailAttribute()
     {
         $contacts = $this->getContactsByType('email');
+
         return $contacts[0] ?? '';
     }
 
     public function getMobileAttribute()
     {
         $contacts = $this->getContactsByType('mobile');
+
         return $contacts[0] ?? '';
     }
 
@@ -134,9 +136,9 @@ trait ContactableTrait
             $type = [$type];
         }
 
-        foreach($type as $t) {
+        foreach ($type as $t) {
             $contacts = $this->contacts()->where('type', $t)->get();
-            foreach($contacts as $contact) {
+            foreach ($contacts as $contact) {
                 $ret[] = $contact->value;
             }
         }

@@ -9,15 +9,18 @@ class Receipt extends MailType
         return 'receipt';
     }
 
-    public function description() {
+    public function description()
+    {
         return _i('Mail di accompagnamento per le ricevute.');
     }
 
-    public function params() {
+    public function params()
+    {
         return [];
     }
 
-    public function enabled($gas) {
+    public function enabled($gas)
+    {
         return $gas->hasFeature('extra_invoicing');
     }
 }

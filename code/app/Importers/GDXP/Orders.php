@@ -10,8 +10,8 @@ class Orders extends GDXPImporter
     {
         $order = new Order();
 
-        foreach($xml->children() as $p) {
-            switch($p->getName()) {
+        foreach ($xml->children() as $p) {
+            switch ($p->getName()) {
                 case 'openDate':
                     $order->start = self::xmlDateFormat((string) $p);
                     break;
@@ -33,6 +33,7 @@ class Orders extends GDXPImporter
         $order->start = $json->openDate;
         $order->end = $json->closeDate;
         $order->shipping = $json->deliveryDate ?? null;
+
         return $order;
     }
 }

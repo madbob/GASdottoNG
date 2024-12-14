@@ -10,9 +10,9 @@ use App\Role;
 
 trait RoleableTrait
 {
-	/**
-	 * @phpstan-return BelongsToMany<Role>
-	 */
+    /**
+     * @phpstan-return BelongsToMany<Role>
+     */
     public function roles($target = null): BelongsToMany
     {
         return $this->belongsToMany(Role::class)->orderBy('name', 'asc')->withPivot('id');
@@ -20,33 +20,34 @@ trait RoleableTrait
 
     public function getManagedRolesAttribute()
     {
-		/*
-			Se l'utente ha il permesso di gestire tutti i permessi, gli si
-			concede di manipolare tutti i ruoli indipendentemente dalla
-			gerarchia
-		*/
-		$all_roles = $this->can('gas.permissions', $this->gas);
+        /*
+            Se l'utente ha il permesso di gestire tutti i permessi, gli si
+            concede di manipolare tutti i ruoli indipendentemente dalla
+            gerarchia
+        */
+        $all_roles = $this->can('gas.permissions', $this->gas);
+
         return Role::sortedByHierarchy($all_roles == false);
     }
 
-	public function checkRoleTargets($role)
-	{
-		$test = $this->roles()->where('roles.id', $role->id)->first();
-		if ($test) {
-			$classes = $role->getAllClasses();
-			foreach($classes as $class) {
-				$targets = $test->applications(true, false, $class);
-				if ($targets->isEmpty()) {
-					return false;
-				}
-			}
+    public function checkRoleTargets($role)
+    {
+        $test = $this->roles()->where('roles.id', $role->id)->first();
+        if ($test) {
+            $classes = $role->getAllClasses();
+            foreach ($classes as $class) {
+                $targets = $test->applications(true, false, $class);
+                if ($targets->isEmpty()) {
+                    return false;
+                }
+            }
 
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     public function addRole($role, $assigned)
     {
@@ -95,22 +96,22 @@ trait RoleableTrait
         $actions = explode(',', $actions);
         $targets = [];
 
-        foreach($actions as $action) {
+        foreach ($actions as $action) {
             $action = trim($action);
             $class = classByRule($action);
 
-            $roles = $this->roles->filter(function($role) use ($action) {
+            $roles = $this->roles->filter(function ($role) use ($action) {
                 return $role->enabledAction($action);
             });
 
             foreach ($roles as $role) {
-                foreach($role->applications(true, $exclude_trashed, $class) as $app) {
+                foreach ($role->applications(true, $exclude_trashed, $class) as $app) {
                     $targets[$app->id] = $app;
                 }
             }
         }
 
-        uasort($targets, function($a, $b) {
+        uasort($targets, function ($a, $b) {
             return $a->name <=> $b->name;
         });
 

@@ -9,19 +9,22 @@ class ManualWelcome extends MailType
         return 'manual_welcome';
     }
 
-    public function description() {
+    public function description()
+    {
         return _i('Messaggio inviato ai nuovi utenti creati sulla piattaforma.');
     }
 
-    public function params() {
+    public function params()
+    {
         return [
-            'username' => _i("Username assegnato al nuovo utente"),
-            'gas_access_link' => _i("Link per accedere la prima volta"),
-            'gas_login_link' => _i("Link della pagina di login"),
+            'username' => _i('Username assegnato al nuovo utente'),
+            'gas_access_link' => _i('Link per accedere la prima volta'),
+            'gas_login_link' => _i('Link della pagina di login'),
         ];
     }
 
-    public function enabled($gas) {
+    public function enabled($gas)
+    {
         return true;
     }
 }

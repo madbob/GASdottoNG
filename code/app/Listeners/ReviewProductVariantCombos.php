@@ -21,10 +21,10 @@ class ReviewProductVariantCombos
         $values = [];
         $all_values = [];
 
-        foreach($product->variants as $variant) {
+        foreach ($product->variants as $variant) {
             $variant_values = [];
 
-            foreach($variant->values as $value) {
+            foreach ($variant->values as $value) {
                 $variant_values[] = $value->id;
                 $all_values[] = $value->id;
             }
@@ -48,7 +48,7 @@ class ReviewProductVariantCombos
 
         $valid_ids = [];
 
-        foreach($combos as $combo) {
+        foreach ($combos as $combo) {
             $vc = VariantCombo::byValues($combo);
             if (is_null($vc)) {
                 $vc = new VariantCombo();
@@ -59,7 +59,7 @@ class ReviewProductVariantCombos
             $valid_ids[] = $vc->id;
         }
 
-        VariantCombo::whereHas('values', function($query) use ($all_values) {
+        VariantCombo::whereHas('values', function ($query) use ($all_values) {
             $query->whereIn('variant_value_id', $all_values);
         })->whereNotIn('id', $valid_ids)->delete();
     }

@@ -15,8 +15,8 @@ class Products extends GDXPImporter
     {
         $product = new Product();
 
-        foreach($xml->children() as $p) {
-            switch($p->getName()) {
+        foreach ($xml->children() as $p) {
+            switch ($p->getName()) {
                 case 'name':
                     $product->name = html_entity_decode((string) $p);
                     break;
@@ -36,8 +36,8 @@ class Products extends GDXPImporter
             $product = Product::findOrFail($replace);
         }
 
-        foreach($xml->children() as $p) {
-            switch($p->getName()) {
+        foreach ($xml->children() as $p) {
+            switch ($p->getName()) {
                 case 'sku':
                     $product->supplier_code = html_entity_decode((string) $p);
                     break;
@@ -74,7 +74,7 @@ class Products extends GDXPImporter
                         'maxQty' => 'max_quantity',
                     ];
 
-                    foreach($p->children() as $e) {
+                    foreach ($p->children() as $e) {
                         /*
                             TODO: agganciare un modificatore che rappresenti il
                             costo di trasporto statico, valorizzato
@@ -91,10 +91,10 @@ class Products extends GDXPImporter
                 case 'variants':
                     $product->save();
 
-                    foreach($p->children() as $e) {
+                    foreach ($p->children() as $e) {
                         $variant = new Variant();
 
-                        foreach($e->attributes() as $attr_name => $attr_value) {
+                        foreach ($e->attributes() as $attr_name => $attr_value) {
                             if ($attr_name == 'name') {
                                 $variant->name = (string) $attr_value;
                             }
@@ -103,7 +103,7 @@ class Products extends GDXPImporter
                         $variant->product_id = $product->id;
                         $variant->save();
 
-                        foreach($e->children() as $i) {
+                        foreach ($e->children() as $i) {
                             $vv = new VariantValue();
                             $vv->variant_id = $variant->id;
                             $vv->value = html_entity_decode((string) $i);
@@ -120,6 +120,7 @@ class Products extends GDXPImporter
     {
         $product = new Product();
         $product->name = $json->name;
+
         return $product;
     }
 
@@ -150,7 +151,7 @@ class Products extends GDXPImporter
         $product->max_available = (float) ($json->orderInfo->availableQty ?? 0);
 
         $name = $json->category ?? '';
-        if (!empty($name)) {
+        if (! empty($name)) {
             $category = Category::firstOrCreate(['name' => $name]);
             $product->category_id = $category->id;
         }
@@ -159,7 +160,7 @@ class Products extends GDXPImporter
         }
 
         $name = $json->um ?? '';
-        if (!empty($name)) {
+        if (! empty($name)) {
             $measure = Measure::firstOrCreate(['name' => $name]);
             $product->measure_id = $measure->id;
         }
@@ -168,7 +169,7 @@ class Products extends GDXPImporter
         }
 
         $name = $json->orderInfo->vatRate ?? null;
-        if (!is_null($name)) {
+        if (! is_null($name)) {
             $name = (float) $name;
             $vat_rate = VatRate::firstOrCreate(['percentage' => $name], ['name' => sprintf('%s%%', $name)]);
             $product->vat_rate_id = $vat_rate->id;

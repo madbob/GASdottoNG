@@ -27,12 +27,12 @@ class RemindOrderNotification extends ManyMailNotification
 
         $contacts = [];
 
-        foreach($order->enforcedContacts() as $user) {
+        foreach ($order->enforcedContacts() as $user) {
             $contacts[] = $user->email;
         }
 
         if (empty($contacts) == false) {
-            $row .= _i('Per informazioni: %s', [join(', ', array_filter($contacts))]) . "\n";
+            $row .= _i('Per informazioni: %s', [implode(', ', array_filter($contacts))]) . "\n";
         }
 
         $row .= $order->getBookingURL() . "\n";
@@ -46,7 +46,7 @@ class RemindOrderNotification extends ManyMailNotification
 
         $orders_list = '';
 
-        foreach($this->orders as $order) {
+        foreach ($this->orders as $order) {
             $row = $this->formatOrder($order);
             $orders_list .= $row . "\n";
         }

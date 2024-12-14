@@ -15,8 +15,8 @@ class AdvancedRoles extends Migration
             $table->boolean('system')->default(false);
         });
 
-        foreach(Role::all() as $role) {
-            switch($role->name) {
+        foreach (Role::all() as $role) {
+            switch ($role->name) {
                 case 'Utente':
                     $role->identifier = 'user';
                     $role->system = true;
