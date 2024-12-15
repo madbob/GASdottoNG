@@ -28,7 +28,8 @@
                 'template' => 'permissions.base-edit',
                 'typename' => 'role',
                 'typename_readable' => _i('Ruolo'),
-                'targeturl' => 'roles'
+                'targeturl' => 'roles',
+                'autoread' => true,
             ])
 
             <x-larastrap::downloading :label="_i('Esporta Permessi ')" :href="route('roles.export')" />

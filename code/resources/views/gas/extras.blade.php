@@ -57,7 +57,8 @@
                     'template' => 'vatrates.base-edit',
                     'typename' => 'vatrate',
                     'typename_readable' => _i('Aliquota IVA'),
-                    'targeturl' => 'vatrates'
+                    'targeturl' => 'vatrates',
+                    'autoread' => true,
                 ])
             </div>
         </div>
@@ -80,7 +81,8 @@
                     'template' => 'modifiertype.base-edit',
                     'typename' => 'modtype',
                     'typename_readable' => _i('Modificatore'),
-                    'targeturl' => 'modtypes'
+                    'targeturl' => 'modtypes',
+                    'autoread' => true,
                 ])
             </div>
         </div>

@@ -9,13 +9,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use MadBob\Larastrap\Integrations\AutoReadsFields;
+use MadBob\Larastrap\Integrations\AutoReadOperation;
 
-use DB;
-use Auth;
-use Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
-class Role extends Model
+class Role extends Model implements AutoReadsFields
 {
     use Cachable, GASModel, HasFactory;
 
@@ -409,5 +412,18 @@ class Role extends Model
     public function enabledClass($class)
     {
         return in_array($class, $this->getAllClasses());
+    }
+
+    /******************************************************** AutoReadsFields */
+
+    public function autoreadField($name, $request): AutoReadOperation
+    {
+        switch($name) {
+            case 'actions':
+                $this->actions = implode(',', $request->input('actions') ?? []);
+                return AutoReadOperation::Managed;
+        }
+
+        return AutoReadOperation::Auto;
     }
 }

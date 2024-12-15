@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-use DB;
+use Illuminate\Support\Facades\DB;
+
+use MadBob\Larastrap\Integrations\LarastrapStack;
 
 use App\ModifierType;
 
@@ -18,22 +20,7 @@ class ModifierTypesService extends BaseService
     public function store(array $request)
     {
         $this->ensureAuth(['gas.config' => 'gas']);
-
-        $mt = new ModifierType();
-        $this->setIfSet($mt, $request, 'name');
-        $this->setIfSet($mt, $request, 'classes', []);
-        $mt->save();
-
-        return $mt;
-    }
-
-    public function update($id, array $request)
-    {
-        $this->ensureAuth(['gas.config' => 'gas']);
-
-        $mt = ModifierType::findOrFail($id);
-        $this->setIfSet($mt, $request, 'name');
-        $this->setIfSet($mt, $request, 'classes', []);
+        $mt = LarastrapStack::autoreadSave($request, ModifierType::class);
         $mt->save();
 
         return $mt;

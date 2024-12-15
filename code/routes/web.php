@@ -123,6 +123,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('orders/document/{id}/{type}', 'OrdersController@document')->name('orders.document');
 
         Route::get('modtype/search', 'ModifierTypesController@search')->name('modtype.search');
+        Route::get('modtypes/{id}/header', 'ModifierTypesController@objhead')->name('modtype.objhead');
 
         Route::get('modifiers/strings/{target}', 'ModifiersController@strings')->name('modifiers.string');
         Route::get('modifiers/{id}/post_feedback', 'ModifiersController@postFeedback')->name('modifiers.feedback');

@@ -1,5 +1,5 @@
 <div>
-    <x-larastrap::mform :obj="$role" classes="role-editor" method="PUT" :action="route('roles.update', $role->id)" :nodelete="$role->users()->count() != 0 || $role->system == true">
+    <x-larastrap::mform :obj="$role" classes="role-editor" method="PUT" :action="route('roles.update', $role->id)" :nodelete="$role->users()->count() != 0 || $role->system == true" autoread>
         <div class="row">
             <div class="col-md-6">
                 <x-larastrap::text name="name" :label="_i('Nome')" required />
