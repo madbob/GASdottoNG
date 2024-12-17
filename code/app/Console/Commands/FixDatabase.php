@@ -11,8 +11,11 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Schema\Blueprint;
 
+use App\User;
+use App\Order;
 use App\Gas;
 use App\ModifierType;
 use App\Date;
