@@ -2,12 +2,13 @@
 
 namespace Tests\Services;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-
-use App\Exceptions\AuthException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+use MadBob\Larastrap\Integrations\LarastrapStack;
+
+use Tests\TestCase;
+use App\Exceptions\AuthException;
 use App\Role;
 use App\User;
 use App\Supplier;
@@ -28,30 +29,27 @@ class RolesServiceTest extends TestCase
     }
 
     /*
-        Salvataggio Ruolo con permessi sbagliati
-    */
-    public function test_fails_to_store()
-    {
-        $this->expectException(AuthException::class);
-        $this->actingAs($this->userWithNoPerms);
-
-        app()->make('RolesService')->store([
-            'name' => 'Pippo',
-            'parent_id' => 0,
-        ]);
-    }
-
-    /*
         Salvataggio Ruolo
     */
     public function test_store()
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $role = app()->make('RolesService')->store([
+        $request = LarastrapStack::autoreadRender('commons.addingbutton', [
+            'template' => 'permissions.base-edit',
+            'typename' => 'role',
+            'typename_readable' => _i('Ruolo'),
+            'targeturl' => 'roles',
+            'autoread' => true,
+        ]);
+
+        $request = array_merge($request, [
             'name' => 'Pippo',
+            'parent_id' => 0,
             'actions' => ['supplier.view', 'users.view'],
         ]);
+
+        $role = app()->make('RolesService')->store($request);
 
         $this->assertEquals('Pippo', $role->name);
         $this->assertEquals(0, $role->parent_id);
@@ -99,17 +97,7 @@ class RolesServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('RolesService')->update(0, []);
-    }
-
-    /*
-        Modifica Ruolo con ID non esistente
-    */
-    public function test_fails_to_update_no_id()
-    {
-        $this->expectException(ModelNotFoundException::class);
-        $this->actingAs($this->userWithAdminPerm);
-        app()->make('RolesService')->update('id', []);
+        app()->make('RolesService')->store([]);
     }
 
     /*
@@ -122,9 +110,12 @@ class RolesServiceTest extends TestCase
         $role = Role::inRandomOrder()->first();
         $this->assertNotEquals('Mario', $role->name);
 
-        $role = app()->make('RolesService')->update($role->id, [
+        $request = LarastrapStack::autoreadRender('permissions.edit', ['role' => $role]);
+        $request = array_merge($request, [
             'name' => 'Mario',
         ]);
+
+        $role = app()->make('RolesService')->store($request);
 
         $this->assertEquals('Mario', $role->name);
     }

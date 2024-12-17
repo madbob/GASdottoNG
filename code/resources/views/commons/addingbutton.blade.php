@@ -29,10 +29,7 @@ $identifier = sprintf('create%s-%s', ucfirst($typename), Illuminate\Support\Str:
             <input type="hidden" name="update-list" value="{{ $target_update }}">
 
             @include('commons.extrafields')
-
-            <div class="modal-body">
-                @include($template, [$typename => null])
-            </div>
+            @include($template, [$typename => null])
         </x-larastrap::iform>
     </x-larastrap::modal>
 @endif
