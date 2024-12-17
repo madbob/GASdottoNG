@@ -244,7 +244,6 @@ trait ReducibleTrait
 
         foreach ($modifiers as $mod) {
             $target_level = $mod->getCheckTargetLevel();
-            \Log::debug('target_level = ' . $target_level);
 
             foreach ($priority as $priority_index => $items) {
                 if (in_array($target_level, $items) && $priority_index > $target_priority) {
@@ -259,8 +258,6 @@ trait ReducibleTrait
         }
 
         $redux_filters = [];
-
-        \Log::debug('target_priority = ' . $target_priority);
 
         if ($target_priority <= 2 && $order) {
             if ($target_priority <= 1 && $faster && $booking) {
