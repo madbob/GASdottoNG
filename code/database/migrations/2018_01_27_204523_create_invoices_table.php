@@ -11,7 +11,7 @@ class CreateInvoicesTable extends Migration
             $table->string('id')->primary();
             $table->timestamps();
 
-			$table->string('gas_id');
+            $table->string('gas_id');
             $table->string('supplier_id');
             $table->string('number')->default('');
             $table->date('date');

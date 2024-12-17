@@ -13,14 +13,14 @@ class NotificationsServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->userNotificationAdmin = $this->createRoleAndUser($this->gas, 'gas.config,movements.admin,notifications.admin');
-		$this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
 
-		$this->notification = \App\Notification::factory()->create([
+        $this->notification = \App\Notification::factory()->create([
             'creator_id' => $this->userNotificationAdmin->id,
         ]);
     }
@@ -28,140 +28,140 @@ class NotificationsServiceTest extends TestCase
     /*
         Salvataggio Notifica con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('NotificationsService')->store(array());
+        app()->make('NotificationsService')->store([]);
     }
 
     /*
         Salvataggio Notifica con permessi corretti
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userNotificationAdmin);
 
-		$start = date('Y-m-d');
+        $start = date('Y-m-d');
         $end = date('Y-m-d', strtotime('+20 days'));
 
-        $notification = app()->make('NotificationsService')->store(array(
+        $notification = app()->make('NotificationsService')->store([
             'type' => 'notification',
             'content' => 'Test',
             'start_date' => printableDate($start),
-			'end_date' => printableDate($end),
-        ));
+            'end_date' => printableDate($end),
+        ]);
 
         $this->assertEquals('Test', $notification->content);
         $this->assertEquals($this->userNotificationAdmin->id, $notification->creator->id);
         $this->assertEquals($start, $notification->start_date);
-		$this->assertEquals($end, $notification->end_date);
+        $this->assertEquals($end, $notification->end_date);
     }
 
     /*
         Modifica Notifica
     */
-    public function testUpdate()
+    public function test_update()
     {
         $this->actingAs($this->userNotificationAdmin);
 
-		$end = date('Y-m-d', strtotime('+20 days'));
+        $end = date('Y-m-d', strtotime('+20 days'));
 
-        $notification = app()->make('NotificationsService')->update($this->notification->id, array(
+        $notification = app()->make('NotificationsService')->update($this->notification->id, [
             'content' => 'Test Modifica',
             'end_date' => printableDate($end),
-        ));
+        ]);
 
         $this->assertEquals('Test Modifica', $notification->content);
         $this->assertEquals($end, $notification->end_date);
     }
 
-	/*
-		Lettura Notifica
-	*/
-	public function testRead()
-	{
-		$this->actingAs($this->userNotificationAdmin);
+    /*
+        Lettura Notifica
+    */
+    public function test_read()
+    {
+        $this->actingAs($this->userNotificationAdmin);
 
-		$start = date('Y-m-d');
+        $start = date('Y-m-d');
         $end = date('Y-m-d', strtotime('+20 days'));
 
-		$notification = app()->make('NotificationsService')->store([
-			'users' => [$this->userWithNoPerms->id],
+        $notification = app()->make('NotificationsService')->store([
+            'users' => [$this->userWithNoPerms->id],
             'type' => 'notification',
             'content' => 'Altro Test',
             'start_date' => printableDate($start),
-			'end_date' => printableDate($end),
+            'end_date' => printableDate($end),
         ]);
 
-		$initial_count = $this->userWithNoPerms->notifications()->count();
-		$this->assertTrue($initial_count > 0);
-		$this->assertTrue($notification->hasUser($this->userWithNoPerms));
+        $initial_count = $this->userWithNoPerms->notifications()->count();
+        $this->assertTrue($initial_count > 0);
+        $this->assertTrue($notification->hasUser($this->userWithNoPerms));
         $this->assertFalse($notification->hasUser($this->userNotificationAdmin));
         $this->assertEquals($this->userWithNoPerms->printableName(), $notification->printableName());
 
-		$this->actingAs($this->userWithNoPerms);
-		app()->make('NotificationsService')->markread($notification->id);
+        $this->actingAs($this->userWithNoPerms);
+        app()->make('NotificationsService')->markread($notification->id);
 
-		$this->nextRound();
+        $this->nextRound();
 
-		$next_count = $this->userWithNoPerms->notifications()->count();
-		$this->assertTrue($initial_count > $next_count);
-	}
+        $next_count = $this->userWithNoPerms->notifications()->count();
+        $this->assertTrue($initial_count > $next_count);
+    }
 
     /*
         Invio mail
     */
-    public function testMail()
-	{
+    public function test_mail()
+    {
         Notification::fake();
 
-		$this->actingAs($this->userNotificationAdmin);
+        $this->actingAs($this->userNotificationAdmin);
 
-		$start = date('Y-m-d');
+        $start = date('Y-m-d');
         $end = date('Y-m-d', strtotime('+20 days'));
 
-		$notification = app()->make('NotificationsService')->store([
-			'users' => [$this->userWithNoPerms->id, $this->userNotificationAdmin->id],
+        $notification = app()->make('NotificationsService')->store([
+            'users' => [$this->userWithNoPerms->id, $this->userNotificationAdmin->id],
             'type' => 'notification',
             'mailed' => true,
             'content' => 'Altro Test',
             'start_date' => printableDate($start),
-			'end_date' => printableDate($end),
+            'end_date' => printableDate($end),
         ]);
 
         Notification::assertSentTo([$this->userWithNoPerms, $this->userNotificationAdmin], GenericNotificationWrapper::class);
         Notification::assertCount(2);
 
         $this->assertEquals('2 utenti', $notification->printableName());
-	}
+    }
 
-	/*
-		Selezione speciale utenti
-	*/
-	public function testUnroll()
-	{
-		$this->assertTrue($this->userNotificationAdmin->roles->isEmpty() == false);
+    /*
+        Selezione speciale utenti
+    */
+    public function test_unroll()
+    {
+        $this->assertTrue($this->userNotificationAdmin->roles->isEmpty() == false);
 
-		foreach($this->userNotificationAdmin->roles as $role) {
-			$selected = unrollSpecialSelectors(['special::role::' . $role->id]);
-			$this->assertEquals(count($selected), $role->users()->count());
-			$this->assertTrue(in_array($this->userNotificationAdmin->id, $selected));
-		}
+        foreach ($this->userNotificationAdmin->roles as $role) {
+            $selected = unrollSpecialSelectors(['special::role::' . $role->id]);
+            $this->assertEquals(count($selected), $role->users()->count());
+            $this->assertTrue(in_array($this->userNotificationAdmin->id, $selected));
+        }
 
         $this->assertTrue($this->userAdmin->roles->isEmpty() == false);
 
-		foreach($this->userAdmin->roles as $role) {
-			$selected = unrollSpecialSelectors(['special::role::' . $role->id]);
-			$this->assertEquals(count($selected), $role->users()->count());
-			$this->assertTrue(in_array($this->userAdmin->id, $selected));
-		}
-	}
+        foreach ($this->userAdmin->roles as $role) {
+            $selected = unrollSpecialSelectors(['special::role::' . $role->id]);
+            $this->assertEquals(count($selected), $role->users()->count());
+            $this->assertTrue(in_array($this->userAdmin->id, $selected));
+        }
+    }
 
     /*
         Cancellazione Fornitore
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $this->actingAs($this->userNotificationAdmin);
 

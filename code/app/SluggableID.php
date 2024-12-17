@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
 trait SluggableID
@@ -13,10 +12,10 @@ trait SluggableID
         $index = 1;
         $classname = get_class($this);
 
-        while(true) {
+        while (true) {
             $slug = Str::slug($this->name) . $append;
 
-			// @phpstan-ignore-next-line
+            // @phpstan-ignore-next-line
             if ($classname::withoutGlobalScope('gas')->where('id', $slug)->first() != null) {
                 $append = '_' . $index;
                 $index++;

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 
-Use Log;
+use Log;
 use Session;
 
 use App\User;
@@ -32,7 +32,7 @@ class ForgotPasswordController extends Controller
     {
         $identifier = $request->input('username');
 
-        $user = User::where('username', $identifier)->orWhereHas('contacts', function($query) use ($identifier) {
+        $user = User::where('username', $identifier)->orWhereHas('contacts', function ($query) use ($identifier) {
             $query->where('type', 'email')->where('value', $identifier);
         })->first();
 
@@ -40,6 +40,7 @@ class ForgotPasswordController extends Controller
             Log::info('Utente non trovato per reset password: ' . $identifier);
             Session::flash('message_type', 'danger');
             Session::flash('message', _i('Username o indirizzo e-mail non trovato'));
+
             return redirect(url('password/reset'));
         }
 
@@ -49,6 +50,7 @@ class ForgotPasswordController extends Controller
             Log::info('Utente senza email per reset password: ' . $identifier);
             Session::flash('message_type', 'danger');
             Session::flash('message', _i("L'utente indicato non ha un indirizzo mail valido"));
+
             return redirect(url('password/reset'));
         }
 
@@ -56,6 +58,7 @@ class ForgotPasswordController extends Controller
         $this->realSendResetLinkEmail($request);
 
         Session::flash('message', _i("Ti è stata inviata una mail col link per procedere all'aggiornamento della password"));
+
         return redirect(url('password/reset'));
     }
 

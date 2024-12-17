@@ -4,7 +4,7 @@ namespace Tests;
 
 class FormattersTest extends TestCase
 {
-    public function testPrintablePrice()
+    public function test_printable_price()
     {
         $this->assertEquals('10.00', printablePrice(10));
         $this->assertEquals('10.00', printablePrice('10'));
@@ -12,13 +12,13 @@ class FormattersTest extends TestCase
         $this->assertEquals('10.12', printablePrice(10.123));
     }
 
-    public function testFormatPercentage()
+    public function test_format_percentage()
     {
-        $this->assertEquals("10", formatPercentage(10, false));
-        $this->assertEquals("12.3%", formatPercentage(12.3, true));
+        $this->assertEquals('10', formatPercentage(10, false));
+        $this->assertEquals('12.3%', formatPercentage(12.3, true));
     }
 
-    public function testEnforceNumber()
+    public function test_enforce_number()
     {
         $this->assertEquals(42, enforceNumber(42));
         $this->assertEquals(-10, enforceNumber(-10));
@@ -26,18 +26,18 @@ class FormattersTest extends TestCase
         $this->assertEquals(0, enforceNumber('broken'));
     }
 
-    public function testNormalizeUrl()
+    public function test_normalize_url()
     {
         $this->assertEquals('http://example.com', normalizeUrl('example.com'));
     }
 
-    public function testDecodeDate()
+    public function test_decode_date()
     {
         $this->assertEquals('', decodeDate(''));
         $this->assertEquals('2016-12-29', decodeDate('Giovedì 29 Dicembre 2016'));
     }
 
-    public function testOutputCsv()
+    public function test_output_csv()
     {
         $path = sys_get_temp_dir() . '/test.csv';
         $path = output_csv('test', ['head 1', 'head 2', 'head 3'], [
@@ -53,10 +53,10 @@ class FormattersTest extends TestCase
         $this->assertEquals('2,"second row","seconda riga"' . "\n", $wrote_contents[2]);
     }
 
-    public function testIbanSplit()
+    public function test_iban_split()
     {
         $ibans = ['IT02L1234512345123456789012', 'IT 02 L 1234512345 123456789012'];
-        foreach($ibans as $iban) {
+        foreach ($ibans as $iban) {
             $this->assertEquals('IT', iban_split($iban, 'country'));
             $this->assertEquals('02', iban_split($iban, 'check'));
             $this->assertEquals('L', iban_split($iban, 'cin'));
@@ -66,14 +66,14 @@ class FormattersTest extends TestCase
         }
     }
 
-    public function testHumanSizeToBytes()
+    public function test_human_size_to_bytes()
     {
         $this->assertEquals(1024, humanSizeToBytes('1k'));
         $this->assertEquals(2202009, humanSizeToBytes('2.1M'));
         $this->assertEquals(1073741824, humanSizeToBytes('1G'));
     }
 
-    public function testUnrollPeriodicWeekly()
+    public function test_unroll_periodic_weekly()
     {
         $test = (object) [
             'from' => '2021-08-01',
@@ -102,12 +102,12 @@ class FormattersTest extends TestCase
 
         $this->assertEquals(count($dates), count($valid_dates));
 
-        foreach($dates as $index => $date) {
+        foreach ($dates as $index => $date) {
             $this->assertEquals($date, $valid_dates[$index]);
         }
     }
 
-    private function testUnrollPeriodicMonth($type, $valid_dates)
+    private function test_unroll_periodic_month($type, $valid_dates)
     {
         $test = (object) [
             'from' => '2021-08-01',
@@ -121,57 +121,57 @@ class FormattersTest extends TestCase
         $dates = unrollPeriodic($test);
         $this->assertEquals(count($dates), count($valid_dates));
 
-        foreach($dates as $index => $date) {
+        foreach ($dates as $index => $date) {
             $this->assertEquals($date, $valid_dates[$index]);
         }
     }
 
-    public function testUnrollPeriodicMonthFirst()
+    public function test_unroll_periodic_month_first()
     {
-        $this->testUnrollPeriodicMonth('month_first', [
+        $this->test_unroll_periodic_month('month_first', [
             '2021-08-04',
             '2021-09-01',
             '2021-10-06',
         ]);
     }
 
-    public function testUnrollPeriodicMonthSecond()
+    public function test_unroll_periodic_month_second()
     {
-        $this->testUnrollPeriodicMonth('month_second', [
+        $this->test_unroll_periodic_month('month_second', [
             '2021-08-11',
             '2021-09-08',
             '2021-10-13',
         ]);
     }
 
-    public function testUnrollPeriodicMonthThird()
+    public function test_unroll_periodic_month_third()
     {
-        $this->testUnrollPeriodicMonth('month_third', [
+        $this->test_unroll_periodic_month('month_third', [
             '2021-08-18',
             '2021-09-15',
             '2021-10-20',
         ]);
     }
 
-    public function testUnrollPeriodicMonthFourth()
+    public function test_unroll_periodic_month_fourth()
     {
-        $this->testUnrollPeriodicMonth('month_fourth', [
+        $this->test_unroll_periodic_month('month_fourth', [
             '2021-08-25',
             '2021-09-22',
             '2021-10-27',
         ]);
     }
 
-    public function testUnrollPeriodicMonthLast()
+    public function test_unroll_periodic_month_last()
     {
-        $this->testUnrollPeriodicMonth('month_last', [
+        $this->test_unroll_periodic_month('month_last', [
             '2021-08-25',
             '2021-09-29',
             '2021-10-27',
         ]);
     }
 
-    public function testUnrollPeriodicBiWeekly()
+    public function test_unroll_periodic_bi_weekly()
     {
         /*
             Qui eseguo due volte lo stesso test, ma prima partendo da una data
@@ -199,7 +199,7 @@ class FormattersTest extends TestCase
         $dates = unrollPeriodic($test);
         $this->assertEquals(count($dates), count($valid_dates));
 
-        foreach($dates as $index => $date) {
+        foreach ($dates as $index => $date) {
             $this->assertEquals($date, $valid_dates[$index]);
         }
 
@@ -213,12 +213,12 @@ class FormattersTest extends TestCase
         $dates = unrollPeriodic($test);
         $this->assertEquals(count($dates), count($valid_dates));
 
-        foreach($dates as $index => $date) {
+        foreach ($dates as $index => $date) {
             $this->assertEquals($date, $valid_dates[$index]);
         }
     }
 
-    public function testGuessDecimal()
+    public function test_guess_decimal()
     {
         $this->assertEquals(1000.00, (float) guessDecimal('1000'));
         $this->assertEquals(1.00, (float) guessDecimal('1.000'));
@@ -227,7 +227,7 @@ class FormattersTest extends TestCase
         $this->assertEquals(1000.00, (float) guessDecimal('1,000.00'));
     }
 
-    public function testClosestNumber()
+    public function test_closest_number()
     {
         $this->assertEquals(10, closestNumber([10, 20], 10));
         $this->assertEquals(10, closestNumber([10, 20], 9));

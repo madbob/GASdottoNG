@@ -52,12 +52,12 @@ return [
         'reader' => [
             'enabled' => false,
             'from' => 'CP1250',
-            'to' => 'UTF-8'
+            'to' => 'UTF-8',
         ],
         'writer' => [
             'enabled' => false,
             'from' => 'UTF-8',
-            'to' => 'CP1250'
-        ]
-    ]
+            'to' => 'CP1250',
+        ],
+    ],
 ];

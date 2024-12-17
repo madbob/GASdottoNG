@@ -15,14 +15,15 @@ class ModifierTypesController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\ModifierType',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function show($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $mt = $this->service->show($id);
+
             return view('modifiertype.edit', ['modtype' => $mt]);
         });
     }
@@ -36,7 +37,7 @@ class ModifierTypesController extends BackedController
         return view('modifiertype.valuestable', [
             'startdate' => $startdate,
             'enddate' => $enddate,
-            'modifiers' => $modtype->modifiers->pluck('id')
+            'modifiers' => $modtype->modifiers->pluck('id'),
         ]);
     }
 }

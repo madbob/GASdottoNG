@@ -6,7 +6,6 @@ use App\Exceptions\AuthException;
 use Illuminate\Support\Str;
 
 use Auth;
-use Log;
 use DB;
 use Hash;
 
@@ -14,24 +13,23 @@ use App\Exceptions\IllegalArgumentException;
 use App\Notifications\ApprovedMessage;
 use App\Notifications\DeclinedMessage;
 use App\User;
-use App\Role;
 
 class UsersService extends BaseService
 {
     public function list($term = '', $all = false)
     {
-		/*
-			Esiste il caso di un utente che non può vedere l'elenco degli utenti
-			ma può effettuare le consegne, e pertanto - per definizione - fare
-			prenotazioni anche per conto terzi. Questa autorizzazione serve per
-			permettere la ricerca nel pannello "Prenotazioni per Altri Utenti"
-		*/
+        /*
+            Esiste il caso di un utente che non può vedere l'elenco degli utenti
+            ma può effettuare le consegne, e pertanto - per definizione - fare
+            prenotazioni anche per conto terzi. Questa autorizzazione serve per
+            permettere la ricerca nel pannello "Prenotazioni per Altri Utenti"
+        */
         $user = $this->ensureAuth(['users.admin' => 'gas', 'users.movements' => 'gas', 'users.view' => 'gas', 'supplier.shippings' => null]);
 
         $gas_id = $user->gas['id'];
         $query = User::with('roles')->topLevel()->where('gas_id', '=', $gas_id);
 
-        if (!empty($term)) {
+        if (! empty($term)) {
             $query->where(function ($query) use ($term) {
                 $query->where('firstname', 'LIKE', "%$term%")->orWhere('lastname', 'LIKE', "%$term%");
             });
@@ -39,9 +37,10 @@ class UsersService extends BaseService
 
         if ($all) {
             $query->filterEnabled();
-		}
+        }
 
         $users = $query->sorted()->get();
+
         return $users;
     }
 
@@ -101,6 +100,7 @@ class UsersService extends BaseService
         }
 
         DB::commit();
+
         return $user;
     }
 
@@ -120,6 +120,7 @@ class UsersService extends BaseService
         $user->member_since = date('Y-m-d', time());
         $this->updatePassword($user, $request);
         DB::commit();
+
         return $user;
     }
 
@@ -133,7 +134,7 @@ class UsersService extends BaseService
         if ($user->can('users.admin', $user->gas)) {
             $type = 1;
         }
-        else if ($user->id == $id) {
+        elseif ($user->id == $id) {
             if ($user->can('users.self', $user->gas) == false) {
                 /*
                     Anche laddove non sia concesso agli utenti il permesso di
@@ -142,16 +143,18 @@ class UsersService extends BaseService
                     nuova password viene salvata e la funzione ritorna
                     correttamente, altrimenti si testa il suddetto permesso
                 */
-                if (isset($request['password']) && !empty($request['password'])) {
+                if (isset($request['password']) && ! empty($request['password'])) {
                     $user = $this->show($id);
 
                     $this->transformAndSetIfSet($user, $request, 'password', function ($password) use ($user) {
                         \Log::debug('Cambio password utente ' . $user->username);
+
                         return Hash::make($password);
                     });
 
                     $user->enforce_password_change = false;
                     $user->save();
+
                     return $user;
                 }
 
@@ -160,7 +163,7 @@ class UsersService extends BaseService
 
             $type = 2;
         }
-        else if ($user->can('users.subusers', $user->gas)) {
+        elseif ($user->can('users.subusers', $user->gas)) {
             $test = $this->show($id);
             if ($test->parent_id == $user->id) {
                 $type = 2;
@@ -216,7 +219,7 @@ class UsersService extends BaseService
 
         $this->setCommonAttributes($user, $request);
         $this->setIfSet($user, $request, 'birthplace');
-        $this->transformAndSetIfSet($user, $request, 'birthday', "decodeDate");
+        $this->transformAndSetIfSet($user, $request, 'birthday', 'decodeDate');
         $this->setIfSet($user, $request, 'taxcode');
         $this->transformAndSetIfSet($user, $request, 'family_members', 'enforceNumber');
         $this->setIfSet($user, $request, 'payment_method_id');
@@ -228,16 +231,17 @@ class UsersService extends BaseService
                 $user->setStatus($request['status'], $request['deleted_at'], $request['suspended_at']);
             }
 
-            $this->transformAndSetIfSet($user, $request, 'member_since', "decodeDate");
+            $this->transformAndSetIfSet($user, $request, 'member_since', 'decodeDate');
             $this->setIfSet($user, $request, 'card_number');
         }
         else {
             $user->enforce_password_change = false;
         }
 
-        if (isset($request['password']) && !empty($request['password'])) {
+        if (isset($request['password']) && ! empty($request['password'])) {
             $this->transformAndSetIfSet($user, $request, 'password', function ($password) use ($user) {
                 \Log::debug('Cambio password utente ' . $user->username);
+
                 return Hash::make($password);
             });
         }
@@ -251,6 +255,7 @@ class UsersService extends BaseService
         $user->updateContacts($request);
 
         DB::commit();
+
         return $user;
     }
 
@@ -267,7 +272,7 @@ class UsersService extends BaseService
             try {
                 $user->notify(new ApprovedMessage());
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 \Log::error('Impossibile notificare approvazione utente');
             }
         }
@@ -275,7 +280,7 @@ class UsersService extends BaseService
             try {
                 $user->notify(new DeclinedMessage());
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 \Log::error('Impossibile notificare non approvazione utente');
             }
 
@@ -318,7 +323,7 @@ class UsersService extends BaseService
 
         $parent = $this->show($parent_id);
         if ($parent->can('users.subusers') == false) {
-            throw new IllegalArgumentException(_i("Il nuovo utente assegnatario non può gestire amici"), 1);
+            throw new IllegalArgumentException(_i('Il nuovo utente assegnatario non può gestire amici'), 1);
         }
 
         $user = $this->show($user_id);
@@ -335,6 +340,7 @@ class UsersService extends BaseService
     public function picture($id)
     {
         $user = $this->show($id);
+
         return downloadFile($user, 'picture');
     }
 
@@ -367,6 +373,7 @@ class UsersService extends BaseService
         }
 
         DB::commit();
+
         return $user;
     }
 }

@@ -30,7 +30,7 @@ class DeliverNotification implements ShouldQueue
             try {
                 $user->notify(new GenericNotificationWrapper($notification));
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 \Log::error('Impossibile inoltrare mail di notifica a utente ' . $user->id . ': ' . $e->getMessage());
             }
         }

@@ -23,7 +23,7 @@ class VerifyCsrfToken extends BaseVerifier
         }
 
         if ($request->ajax()) {
-            $ret = (object)[
+            $ret = (object) [
                 'status' => 'error',
                 'target' => '',
                 'message' => 'Sessione scaduta',

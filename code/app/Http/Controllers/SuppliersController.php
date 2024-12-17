@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use Auth;
 
 use App\Services\SuppliersService;
 
@@ -16,35 +15,39 @@ class SuppliersController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Supplier',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function index()
     {
-        return $this->easyExecute(function() {
+        return $this->easyExecute(function () {
             $suppliers = $this->service->list('', true);
+
             return view('pages.suppliers', ['suppliers' => $suppliers]);
         });
     }
 
     public function show(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($request, $id) {
+        return $this->easyExecute(function () use ($request, $id) {
             $supplier = $this->service->show($id);
             $user = $request->user();
 
-            if ($user->can('supplier.modify', $supplier) || ($supplier->trashed() && $user->can('supplier.add', $user->gas)))
+            if ($user->can('supplier.modify', $supplier) || ($supplier->trashed() && $user->can('supplier.add', $user->gas))) {
                 return view('supplier.edit', ['supplier' => $supplier]);
-            else
+            }
+            else {
                 return view('supplier.show', ['supplier' => $supplier]);
+            }
         });
     }
 
     public function show_ro($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $supplier = $this->service->show($id);
+
             return view('supplier.base_show', ['supplier' => $supplier, 'editable' => false]);
         });
     }
@@ -73,15 +76,16 @@ class SuppliersController extends BackedController
 
     public function catalogue(Request $request, $id, $format = null)
     {
-        return $this->easyExecute(function() use ($request, $id, $format) {
+        return $this->easyExecute(function () use ($request, $id, $format) {
             return $this->service->catalogue($id, $format, $request->all());
         });
     }
 
     public function invoiceData($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $supplier = $this->service->show($id);
+
             return view('supplier.invoicedata', ['supplier' => $supplier]);
         });
     }

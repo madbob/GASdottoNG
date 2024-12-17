@@ -9,17 +9,18 @@ class Friend extends Role
         return 'friend';
     }
 
-	public function initNew($type)
+    public function initNew($type)
     {
         $type->name = _i('Amico');
         $type->system = true;
-		$type->actions = 'users.self,supplier.view,supplier.book';
-		$type->parent_id = $this->getID('user');
+        $type->actions = 'users.self,supplier.view,supplier.book';
+        $type->parent_id = $this->getID('user');
+
         return $type;
     }
 
-	public function enabled()
-	{
-		return someoneCan('users.subusers');
-	}
+    public function enabled()
+    {
+        return someoneCan('users.subusers');
+    }
 }

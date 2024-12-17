@@ -4,8 +4,6 @@ namespace App\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-use Log;
-
 trait BookerTrait
 {
     /*
@@ -13,7 +11,7 @@ trait BookerTrait
         questi trait in User, altrimenti non funzionano alcuni controlli (e.g.
         la visualizzazione del credito utente nel modale di pagamento consegna)
     */
-    use FriendTrait, CreditableTrait {
+    use CreditableTrait, FriendTrait {
         scopeCreditable as overriddenScopeCreditable;
     }
 
@@ -24,7 +22,7 @@ trait BookerTrait
 
     public function getLastBookingAttribute()
     {
-        return $this->innerCache('last_booking_date', function($obj) {
+        return $this->innerCache('last_booking_date', function ($obj) {
             $last = $obj->bookings()->first();
 
             if ($last == null) {
@@ -58,13 +56,13 @@ trait BookerTrait
     */
     public function getPendingBalanceAttribute()
     {
-        $bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function($query) {
+        $bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function ($query) {
             $query->whereIn('status', ['open', 'closed']);
         })->angryload()->get();
 
         $value = 0;
 
-        foreach($bookings as $b) {
+        foreach ($bookings as $b) {
             $value += $b->getValue('effective', false);
         }
 
@@ -83,7 +81,7 @@ trait BookerTrait
             $current_balance = $this->currentBalanceAmount();
             $to_pay = $this->pending_balance;
 
-            foreach($this->friends as $friend) {
+            foreach ($this->friends as $friend) {
                 $tpf = $friend->pending_balance;
                 $to_pay += $tpf;
             }

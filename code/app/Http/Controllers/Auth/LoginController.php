@@ -13,7 +13,6 @@ use Log;
 use LaravelGettext;
 
 use App\User;
-use App\Gas;
 
 class LoginController extends Controller
 {
@@ -36,6 +35,7 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         $gas = currentAbsoluteGas();
+
         return view('auth.login', ['gas' => $gas]);
     }
 
@@ -68,7 +68,7 @@ class LoginController extends Controller
                 in base all'indirizzo email, premesso che è un metodo fallace
                 (diversi utenti possono avere uno stesso indirizzo)
             */
-            $user = User::whereHas('contacts', function($query) use ($username) {
+            $user = User::whereHas('contacts', function ($query) use ($username) {
                 $query->where('type', 'email')->where('value', $username);
             })->first();
 
@@ -76,6 +76,7 @@ class LoginController extends Controller
                 Session::flash('message', _i('Username non valido'));
                 Session::flash('message_type', 'danger');
                 Log::debug('Username non trovato: ' . $username);
+
                 return redirect(url('login'));
             }
             else {
@@ -87,6 +88,7 @@ class LoginController extends Controller
 
         $ret = $this->realLogin($request);
         $this->postLogin($request, $user);
+
         return $ret;
     }
 
@@ -101,6 +103,7 @@ class LoginController extends Controller
         $user->save();
 
         Auth::loginUsingId($user->id);
+
         return redirect()->route('dashboard');
     }
 }

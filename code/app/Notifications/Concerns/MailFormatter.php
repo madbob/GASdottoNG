@@ -10,7 +10,7 @@ trait MailFormatter
 {
     public function formatMail($message, $user, $config_name, $params = [])
     {
-		$type = systemParameters('MailTypes')[$config_name];
+        $type = systemParameters('MailTypes')[$config_name];
 
         /*
             In alcune circostanze il destinatario della mail non è uno User ma,
@@ -25,14 +25,15 @@ trait MailFormatter
 
         $config = json_decode($gas->getConfig('mail_' . $config_name));
 
-		if (isset($params['user']) == false) {
-			$params['user'] = $user;
-		}
+        if (isset($params['user']) == false) {
+            $params['user'] = $user;
+        }
 
         $subject = $type->formatText($config->subject, $gas, $params);
         $body = $type->formatText($config->body, $gas, $params);
 
         $message->subject($subject)->view('emails.empty', ['content' => $body]);
+
         return $message;
     }
 }

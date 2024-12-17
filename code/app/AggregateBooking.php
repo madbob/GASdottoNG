@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 use App\Models\Concerns\TracksUpdater;
-use App\GASModel;
-use App\Aggregate;
-use App\User;
 
 /*
     Modello fittizio: non rappresenta nessun dato sul database, ma serve ad
@@ -21,8 +18,11 @@ class AggregateBooking extends Model
     use GASModel, TracksUpdater;
 
     public $id;
+
     public $user;
+
     public $aggregate;
+
     public $bookings;
 
     public function __construct($user_id, $aggregate)
@@ -76,13 +76,13 @@ class AggregateBooking extends Model
             (quelle virtuali non lo sono mai, per definizione), comunque tutto
             l'aggregato deve risultare consegnato
         */
-        $target = $this->bookings->filter(fn($b) => $b->exists && $b->status != 'shipped')->first();
+        $target = $this->bookings->filter(fn ($b) => $b->exists && $b->status != 'shipped')->first();
         if ($target) {
             return $target->status;
         }
 
         foreach ($this->bookings as $booking) {
-            $target = $booking->friends_bookings->filter(fn($b) => $b->exists && $b->status != 'shipped')->first();
+            $target = $booking->friends_bookings->filter(fn ($b) => $b->exists && $b->status != 'shipped')->first();
             if ($target) {
                 return $target->status;
             }
@@ -91,16 +91,16 @@ class AggregateBooking extends Model
         return 'shipped';
     }
 
-	public function getOrderBooking($order)
-	{
-		foreach($this->bookings as $booking) {
-			if ($booking->order_id == $order->id) {
-				return $booking;
-			}
-		}
+    public function getOrderBooking($order)
+    {
+        foreach ($this->bookings as $booking) {
+            if ($booking->order_id == $order->id) {
+                return $booking;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
     public function getValue($type, $with_friends, $force_recalculate = false)
     {
@@ -157,22 +157,23 @@ class AggregateBooking extends Model
         }
 
         return [
-            'suppliers' => join(', ', $suppliers),
-            'shipping' => $shipping_date == PHP_INT_MAX ? _i('indefinita') : printableDate($shipping_date)
+            'suppliers' => implode(', ', $suppliers),
+            'shipping' => $shipping_date == PHP_INT_MAX ? _i('indefinita') : printableDate($shipping_date),
         ];
     }
 
     public function generateReceipt()
     {
         if ($this->user->gas->hasFeature('extra_invoicing')) {
-            $ids = $this->bookings->filter(fn($b) => $b->exists)->pluck('id')->all();
+            $ids = $this->bookings->filter(fn ($b) => $b->exists)->pluck('id')->all();
 
             if (empty($ids)) {
                 \Log::error('Tentativo di creare fattura non assegnata a nessuna prenotazione');
+
                 return;
             }
 
-            $receipt = Receipt::whereHas('bookings', function($query) use ($ids) {
+            $receipt = Receipt::whereHas('bookings', function ($query) use ($ids) {
                 $query->whereIn('bookings.id', $ids);
             })->first();
 
@@ -199,7 +200,7 @@ class AggregateBooking extends Model
         $last_update = null;
         $last_updater = null;
 
-        foreach($this->bookings->filter(fn($b) => $b->updater) as $booking) {
+        foreach ($this->bookings->filter(fn ($b) => $b->updater) as $booking) {
             if (is_null($last_update) || $booking->updated_at->greaterThan($last_update)) {
                 $last_update = $booking->updated_at;
                 $last_updater = $booking->updater;

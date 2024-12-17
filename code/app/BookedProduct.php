@@ -18,10 +18,12 @@ use App\Events\SluggableCreating;
 
 class BookedProduct extends Model
 {
-    use HasFactory, GASModel, SluggableID, TracksUpdater, ModifiedTrait, LeafReducibleTrait, Cachable;
+    use Cachable, GASModel, HasFactory, LeafReducibleTrait, ModifiedTrait, SluggableID, TracksUpdater;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     protected $touches = ['booking'];
 
     protected $dispatchesEvents = [
@@ -90,7 +92,7 @@ class BookedProduct extends Model
             non abbiano mai una quantità a 0
         */
         if ($this->variants->isEmpty() == false) {
-            return $this->variants->reduce(function($carry, $item) use ($rectify, $attribute) {
+            return $this->variants->reduce(function ($carry, $item) use ($rectify, $attribute) {
                 return $carry + ($item->unitPrice($rectify) * $item->$attribute);
             }, 0);
         }
@@ -107,8 +109,8 @@ class BookedProduct extends Model
     public function testConstraints($quantity, $variant = null, $only_mandatory = false)
     {
         $sorted_contraints = Constraint::sortedContraints($only_mandatory);
-        foreach($sorted_contraints as $constraints) {
-            foreach($constraints as $constraint) {
+        foreach ($sorted_contraints as $constraints) {
+            foreach ($constraints as $constraint) {
                 $constraint->test($this, $quantity);
             }
         }
@@ -158,15 +160,15 @@ class BookedProduct extends Model
     {
         $query = $this->variants();
 
-        foreach($combo->values as $val) {
-            $query->whereHas('components', function($query) use ($val) {
+        foreach ($combo->values as $val) {
+            $query->whereHas('components', function ($query) use ($val) {
                 $query->where('value_id', $val->id);
             });
         }
 
         $ret = $query->get();
 
-        foreach($ret as $r) {
+        foreach ($ret as $r) {
             $r->setRelation('product', $this);
         }
 
@@ -196,7 +198,7 @@ class BookedProduct extends Model
         if ($this->variants->isEmpty() == false) {
             $true_variants = [];
 
-            foreach($this->variants as $variant) {
+            foreach ($this->variants as $variant) {
                 $true_variants[] = $variant->reduxData();
             }
 
@@ -230,13 +232,14 @@ class BookedProduct extends Model
     public function basicWeight($attribute)
     {
         $attribute = 'true_' . $attribute;
+
         return $this->product->weight * $this->$attribute;
     }
 
     private function fixWeight($attribute)
     {
         if ($this->variants->isEmpty() == false) {
-            $ret = $this->variants->reduce(function($carry, $item) use ($attribute) {
+            $ret = $this->variants->reduce(function ($carry, $item) use ($attribute) {
                 return $carry + $item->fixWeight($attribute);
             }, 0);
         }
@@ -255,19 +258,19 @@ class BookedProduct extends Model
             $values = $this->modifiedValues;
         }
         else {
-            $values = $this->modifiedValues->filter(function($i) use ($id) {
+            $values = $this->modifiedValues->filter(function ($i) use ($id) {
                 return $i->id == $id;
             });
         }
 
-        return $values->reduce(function($carry, $item) {
+        return $values->reduce(function ($carry, $item) {
             return $carry + $item->effective_amount;
         }, 0);
     }
 
     private function getPendingValue($type)
     {
-        switch($type) {
+        switch ($type) {
             case 'delivered':
                 return $this->fixQuantity('delivered', false);
 
@@ -283,7 +286,7 @@ class BookedProduct extends Model
 
     private function getShippedValue($type)
     {
-        switch($type) {
+        switch ($type) {
             case 'delivered':
                 return $this->final_price;
 
@@ -309,7 +312,7 @@ class BookedProduct extends Model
                 $ret = $this->fixQuantity('quantity', true);
             }
             else {
-                switch($this->booking->status) {
+                switch ($this->booking->status) {
                     case 'pending':
                         $ret = $this->getPendingValue($type);
                         break;
@@ -351,16 +354,18 @@ class BookedProduct extends Model
     {
         $ret = $this->emptyReduxBehaviour();
 
-        $ret->children = function($item, $filters) {
+        $ret->children = function ($item, $filters) {
             return $item->variants;
         };
 
-        $ret->optimize = function($item, $child) {
+        $ret->optimize = function ($item, $child) {
             $child->setRelation('product', $item);
+
             return $child;
         };
 
         $ret->collected = 'variants';
+
         return $ret;
     }
 

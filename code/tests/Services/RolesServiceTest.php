@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Exceptions\AuthException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Artisan;
 
 use App\Role;
 use App\User;
@@ -17,48 +16,48 @@ class RolesServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->supplier1 = Supplier::factory()->create();
         $this->supplier2 = Supplier::factory()->create();
 
-		$this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'gas.permissions,users.admin');
+        $this->userWithAdminPerm = $this->createRoleAndUser($this->gas, 'gas.permissions,users.admin');
         $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
     }
 
-	/*
+    /*
         Salvataggio Ruolo con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
-        app()->make('RolesService')->store(array(
+        app()->make('RolesService')->store([
             'name' => 'Pippo',
             'parent_id' => 0,
-        ));
+        ]);
     }
 
     /*
         Salvataggio Ruolo
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $role = app()->make('RolesService')->store(array(
+        $role = app()->make('RolesService')->store([
             'name' => 'Pippo',
-			'actions' => ['supplier.view', 'users.view'],
-        ));
+            'actions' => ['supplier.view', 'users.view'],
+        ]);
 
         $this->assertEquals('Pippo', $role->name);
         $this->assertEquals(0, $role->parent_id);
-		$this->assertTrue($role->enabledAction('supplier.view'));
-		$this->assertTrue($role->enabledAction('users.view'));
-		$this->assertFalse($role->enabledAction('supplier.modify'));
+        $this->assertTrue($role->enabledAction('supplier.view'));
+        $this->assertTrue($role->enabledAction('users.view'));
+        $this->assertFalse($role->enabledAction('supplier.modify'));
 
         $this->nextRound();
 
@@ -96,36 +95,36 @@ class RolesServiceTest extends TestCase
     /*
         Modifica Ruolo con permessi sbagliati
     */
-    public function testFailsToUpdate()
+    public function test_fails_to_update()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('RolesService')->update(0, array());
+        app()->make('RolesService')->update(0, []);
     }
 
     /*
         Modifica Ruolo con ID non esistente
     */
-    public function testFailsToUpdateNoID()
+    public function test_fails_to_update_no_id()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
-        app()->make('RolesService')->update('id', array());
+        app()->make('RolesService')->update('id', []);
     }
 
     /*
         Modifica Ruolo
     */
-    public function testUpdate()
+    public function test_update()
     {
         $this->actingAs($this->userWithAdminPerm);
 
-		$role = Role::inRandomOrder()->first();
-		$this->assertNotEquals('Mario', $role->name);
+        $role = Role::inRandomOrder()->first();
+        $this->assertNotEquals('Mario', $role->name);
 
-        $role = app()->make('RolesService')->update($role->id, array(
+        $role = app()->make('RolesService')->update($role->id, [
             'name' => 'Mario',
-        ));
+        ]);
 
         $this->assertEquals('Mario', $role->name);
     }
@@ -133,21 +132,21 @@ class RolesServiceTest extends TestCase
     /*
         Cancellazione Ruolo con permessi sbagliati
     */
-    public function testFailsToDestroy()
+    public function test_fails_to_destroy()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-		$role = Role::inRandomOrder()->first();
+        $role = Role::inRandomOrder()->first();
         app()->make('RolesService')->destroy($role->id);
     }
 
     /*
         Cancellazione Ruolo
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $this->actingAs($this->userWithAdminPerm);
-		$role = Role::inRandomOrder()->first();
+        $role = Role::inRandomOrder()->first();
         app()->make('RolesService')->destroy($role->id);
 
         $this->nextRound();

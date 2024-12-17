@@ -27,13 +27,15 @@ trait Configurable
         }
 
         $defined = $this->availableConfigs();
-        if (!isset($defined[$name])) {
+        if (! isset($defined[$name])) {
             \Log::error(_i('Configurazione GAS non prevista'));
+
             return '';
         }
         else {
             $this->setConfig($name, $defined[$name]->default());
             $this->load('configs');
+
             return $this->getConfig($name);
         }
     }
@@ -48,6 +50,7 @@ trait Configurable
             if ($conf->name == $name) {
                 $conf->value = $value;
                 $conf->save();
+
                 return;
             }
         }
@@ -63,7 +66,7 @@ trait Configurable
     {
         $configs = $this->availableConfigs();
 
-        foreach($params as $param) {
+        foreach ($params as $param) {
             $c = $configs[$param];
             $c->handleSave($this, $request);
         }

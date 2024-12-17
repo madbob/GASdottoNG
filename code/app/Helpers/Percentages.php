@@ -2,7 +2,7 @@
 
 function isPercentage($value)
 {
-    return (strpos($value, '%') !== false);
+    return strpos($value, '%') !== false;
 }
 
 function formatPercentage($value, $percentage)

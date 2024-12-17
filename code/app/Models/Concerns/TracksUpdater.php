@@ -51,7 +51,7 @@ trait TracksUpdater
     */
     protected static function initTrackingEvents(): void
     {
-        static::creating(fn($model) => self::updateUser($model));
-        static::updating(fn($model) => self::updateUser($model));
+        static::creating(fn ($model) => self::updateUser($model));
+        static::updating(fn ($model) => self::updateUser($model));
     }
 }

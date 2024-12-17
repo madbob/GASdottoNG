@@ -16,6 +16,7 @@ class InvoicePayment extends OrderPayment
         $type = parent::initNew($type);
         $type->name = _i('Pagamento fattura a fornitore');
         $type->target_type = 'App\Invoice';
+
         return $type;
     }
 
@@ -26,7 +27,7 @@ class InvoicePayment extends OrderPayment
                 $movement->attachToTarget('payment_id');
                 $invoice = $movement->target;
 
-                foreach($invoice->orders as $order) {
+                foreach ($invoice->orders as $order) {
                     $order->payment_id = $movement->id;
                     $order->status = 'archived';
                     $order->save();
@@ -35,18 +36,18 @@ class InvoicePayment extends OrderPayment
                 $invoice->status = 'payed';
                 $invoice->save();
             },
-            'delete' => function(Movement $movement) {
-				$invoice = $movement->target;
+            'delete' => function (Movement $movement) {
+                $invoice = $movement->target;
 
-                foreach($invoice->orders as $order) {
+                foreach ($invoice->orders as $order) {
                     $order->payment_id = null;
                     $order->status = 'shipped';
                     $order->save();
                 }
 
-				$invoice->status = 'verified';
+                $invoice->status = 'verified';
                 $movement->detachFromTarget('payment_id');
-            }
+            },
         ];
 
         return $mov;

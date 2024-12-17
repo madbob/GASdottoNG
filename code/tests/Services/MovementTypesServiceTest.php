@@ -5,7 +5,6 @@ namespace Tests\Services;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use Artisan;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
@@ -14,7 +13,7 @@ class MovementTypesServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -32,15 +31,15 @@ class MovementTypesServiceTest extends TestCase
     /*
         Creazione Tipo di Movimento
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $type = app()->make('MovementTypesService')->store(array(
+        $type = app()->make('MovementTypesService')->store([
             'name' => 'Donazione al GAS',
             'sender_type' => 'App\Gas',
             'target_type' => 'App\User',
-        ));
+        ]);
 
         $this->assertEquals($type->exists, true);
     }
@@ -48,28 +47,28 @@ class MovementTypesServiceTest extends TestCase
     /*
         Modifica Tipo di Movimento con permessi sbagliati
     */
-    public function testFailsToUpdate()
+    public function test_fails_to_update()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('MovementTypesService')->update($this->sample_type->id, array());
+        app()->make('MovementTypesService')->update($this->sample_type->id, []);
     }
 
     /*
         Modifica Tipo di Movimento
     */
-    public function testUpdate()
+    public function test_update()
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        app()->make('MovementTypesService')->update($this->sample_type->id, array(
+        app()->make('MovementTypesService')->update($this->sample_type->id, [
             'default_notes' => 'Test nota',
             'sender_type' => 'App\Gas',
             'target_type' => 'App\Supplier',
             'cash' => true,
             'App\Gas-bank-cash' => 'decrement',
             'App\Supplier-bank-cash' => 'increment',
-        ));
+        ]);
 
         $type = app()->make('MovementTypesService')->show($this->sample_type->id);
         $this->assertEquals($type->hasPayment('bank'), false);
@@ -79,7 +78,7 @@ class MovementTypesServiceTest extends TestCase
     /*
         Accesso Tipo di Movimento con ID non esistente
     */
-    public function testFailsToShowInexistent()
+    public function test_fails_to_show_inexistent()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
@@ -89,7 +88,7 @@ class MovementTypesServiceTest extends TestCase
     /*
         Accesso Tipo di Movimento
     */
-    public function testShow()
+    public function test_show()
     {
         $this->actingAs($this->userWithAdminPerm);
 
@@ -103,7 +102,7 @@ class MovementTypesServiceTest extends TestCase
     /*
         Cancellazione Tipo di Movimento con permessi sbagliati
     */
-    public function testFailsToDestroy()
+    public function test_fails_to_destroy()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -113,7 +112,7 @@ class MovementTypesServiceTest extends TestCase
     /*
         Cancellazione Tipo di Movimento
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $this->actingAs($this->userWithAdminPerm);
         app()->make('MovementTypesService')->destroy($this->sample_type->id);
@@ -122,7 +121,8 @@ class MovementTypesServiceTest extends TestCase
         try {
             app()->make('MovementTypesService')->show($this->sample_type->id);
             $this->fail('should never run');
-        } catch (ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e) {
             //good boy
         }
     }

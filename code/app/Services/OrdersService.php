@@ -31,6 +31,7 @@ class OrdersService extends BaseService
         $this->transformAndSetIfSet($order, $request, 'end', 'decodeDate');
         $this->transformAndSetIfSet($order, $request, 'shipping', 'decodeDate');
         $this->setIfSet($order, $request, 'keep_open_packages');
+
         return $order;
     }
 
@@ -51,7 +52,7 @@ class OrdersService extends BaseService
         $circles = array_filter($request['circles'] ?? []);
         $request['keep_open_packages'] = $request['keep_open_packages'] ?? 'no';
 
-        foreach($suppliers as $index => $supplier_id) {
+        foreach ($suppliers as $index => $supplier_id) {
             $supplier = Supplier::findOrFail($supplier_id);
             $this->ensureAuth(['supplier.orders' => $supplier]);
 
@@ -99,7 +100,7 @@ class OrdersService extends BaseService
         $enabled = $request['enabled'] ?? [];
 
         $removed_products = $order->products()->whereNotIn('id', $enabled)->get();
-        foreach($removed_products as $rp) {
+        foreach ($removed_products as $rp) {
             $order->detachProduct($rp);
         }
 
@@ -111,6 +112,7 @@ class OrdersService extends BaseService
         */
         $products = $order->supplier->products()->withTrashed()->whereIn('id', $enabled)->get();
         $order->syncProducts($products, false);
+
         return $order->aggregate;
     }
 
@@ -119,12 +121,13 @@ class OrdersService extends BaseService
         DB::beginTransaction();
         $order = $this->show($id, true);
         $order->delete();
+
         return $order;
     }
 
     public function fixModifiers($id, $action)
     {
-        switch($action) {
+        switch ($action) {
             case 'none':
                 break;
 
@@ -134,12 +137,12 @@ class OrdersService extends BaseService
                 $hub = App::make('GlobalScopeHub');
                 $initial_gas = $hub->getGas();
 
-                foreach($aggregate->gas as $gas) {
+                foreach ($aggregate->gas as $gas) {
                     $hub->setGas($gas->id);
                     $redux = $aggregate->reduxData();
 
-                    foreach($aggregate->orders as $order) {
-                        foreach($order->bookings as $booking) {
+                    foreach ($aggregate->orders as $order) {
+                        foreach ($order->bookings as $booking) {
                             $booking->saveModifiers($redux);
                             $booking->fixPayment();
                         }

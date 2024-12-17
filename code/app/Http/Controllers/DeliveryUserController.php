@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use URL;
 
 use App\Services\BookingsService;
 
@@ -13,7 +12,7 @@ use App\Aggregate;
 
 class DeliveryUserController extends Controller
 {
-	private $service;
+    private $service;
 
     public function __construct(BookingsService $service)
     {
@@ -75,14 +74,15 @@ class DeliveryUserController extends Controller
 
         $users = [];
         $selected = $request->input('bookings', []);
-        foreach($selected as $user_id) {
+        foreach ($selected as $user_id) {
             $users[$user_id] = [
                 'date' => decodeDate($request->input('date-' . $user_id)),
-                'method' => $request->input('method-' . $user_id)
+                'method' => $request->input('method-' . $user_id),
             ];
         }
 
         app()->make('FastBookingsService')->fastShipping($deliverer, $aggregate, $users);
+
         return $this->successResponse();
     }
 

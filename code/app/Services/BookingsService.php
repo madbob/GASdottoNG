@@ -30,7 +30,7 @@ class BookingsService extends BaseService
             serve a non avere grattacapi in caso di ordini aggregati i cui
             permessi non sono accurati
         */
-        foreach($orders as $order) {
+        foreach ($orders as $order) {
             if ($user->can('supplier.shippings', $order->supplier)) {
                 $valid = true;
                 break;
@@ -103,8 +103,8 @@ class BookingsService extends BaseService
     {
         $real_values = [];
 
-        foreach($values as $variant_id => $vals) {
-            if (isset($vals[$i]) && !empty($vals[$i])) {
+        foreach ($values as $variant_id => $vals) {
+            if (isset($vals[$i]) && ! empty($vals[$i])) {
                 $real_values[$variant_id] = $vals[$i];
             }
         }
@@ -112,7 +112,8 @@ class BookingsService extends BaseService
         return $real_values;
     }
 
-    private function handlingParam($delivering) {
+    private function handlingParam($delivering)
+    {
         if ($delivering == false) {
             return 'quantity';
         }
@@ -128,7 +129,7 @@ class BookingsService extends BaseService
         $saved_variants = [];
         $param = $this->handlingParam($delivering);
 
-        for ($i = 0; $i < count($quantities); ++$i) {
+        for ($i = 0; $i < count($quantities); $i++) {
             $q = (float) $quantities[$i];
 
             $real_values = $this->adjustVariantValues($values, $i);
@@ -147,10 +148,11 @@ class BookingsService extends BaseService
             else {
                 if ($q == 0 && $delivering == false) {
                     $bpv->delete();
+
                     continue;
                 }
 
-                if ($bpv->$param != $q) {
+                if ($q != $bpv->$param) {
                     $bpv->$param = $q;
                     $bpv->save();
                 }
@@ -243,7 +245,7 @@ class BookingsService extends BaseService
 
             $booked = $booking->getBooked($product, true);
 
-            if ($quantity != 0 || !empty($quantities)) {
+            if ($quantity != 0 || ! empty($quantities)) {
                 $booked->save();
 
                 if ($product->variants->isEmpty() == false) {
@@ -254,7 +256,7 @@ class BookingsService extends BaseService
                         }
                     }
 
-                    list($booked, $quantity) = $this->readVariants($product, $booked, $values, $quantities, $delivering);
+                    [$booked, $quantity] = $this->readVariants($product, $booked, $values, $quantities, $delivering);
                 }
             }
 
@@ -281,10 +283,12 @@ class BookingsService extends BaseService
         */
         if (($delivering == false || $existed_before == false) && $booked_products->count() == 0) {
             $booking->delete();
+
             return null;
         }
         else {
             $booking->setRelation('products', $booked_products);
+
             return $booking;
         }
     }
@@ -308,21 +312,21 @@ class BookingsService extends BaseService
             $booking->enforceTotal($manual_total);
         }
 
-        foreach(array_keys($request) as $key) {
+        foreach (array_keys($request) as $key) {
             /*
                 Qui faccio il controllo sui prezzi applicati solo se
                 effettivamente se ne trovano nella richiesta, altrimenti finisco
                 col tirare su tutte le varianti combo presenti nell'ordine
             */
             if (str_starts_with($key, 'apply_price_')) {
-                foreach($booking->order->products as $prod) {
+                foreach ($booking->order->products as $prod) {
                     $key = sprintf('apply_price_%s', $prod->id);
                     if (isset($request[$key])) {
                         $prod->setPrice($request[$key]);
                     }
 
                     $combos = $prod->variant_combos;
-                    foreach($combos as $combo) {
+                    foreach ($combos as $combo) {
                         $key = sprintf('apply_price_%s_%s', $prod->id, $combo->id);
                         if (isset($request[$key])) {
                             $combo->setPrice($request[$key]);
@@ -348,7 +352,7 @@ class BookingsService extends BaseService
                 $modifier = $booking->order->attachEmptyModifier($manual_adjust_modifier);
             }
 
-            $booking->modifiedValues()->whereHas('modifier', function($query) use ($manual_adjust_modifier) {
+            $booking->modifiedValues()->whereHas('modifier', function ($query) use ($manual_adjust_modifier) {
                 $query->where('modifier_type_id', $manual_adjust_modifier->id);
             })->delete();
 
@@ -437,7 +441,7 @@ class BookingsService extends BaseService
         $orders = $aggregate->orders()->with(['products', 'bookings', 'modifiers'])->get();
         $user = $this->testAccess($target_user, $orders, $delivering);
 
-        foreach($orders as $order) {
+        foreach ($orders as $order) {
             $booking = $this->handleBookingUpdate($request, $user, $order, $target_user, $delivering);
             if ($booking) {
                 $this->translateBooking($booking, $delivering, false);

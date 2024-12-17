@@ -23,6 +23,7 @@ trait ModifiableTrait
             $mod->target_id = (string) $this->id;
             $mod->definition = '[]';
             $mod->save();
+
             return $mod;
         }
     }
@@ -31,7 +32,7 @@ trait ModifiableTrait
     {
         $ret = $inherit->applicableModificationTypes();
 
-        foreach($ret as $modtype) {
+        foreach ($ret as $modtype) {
             if ($this->modifiers()->where('modifier_type_id', $modtype->id)->count() == 0) {
                 $replica = $inherit->modifiers()->where('modifier_type_id', $modtype->id)->first()->replicate();
                 $replica->target_id = $this->id;
@@ -47,24 +48,24 @@ trait ModifiableTrait
     {
         $inherit = $this->inheritModificationTypes();
 
-        if (!is_null($inherit)) {
+        if (! is_null($inherit)) {
             $ret = $this->duplicateModifiers($inherit);
         }
         else {
             $ret = [];
             $same = $this->sameModificationTypes();
 
-            if (!is_null($same)) {
+            if (! is_null($same)) {
                 $modifiers = $same->applicableModificationTypes();
             }
             else {
                 $current_class = get_class($this);
-                $modifiers = ModifierType::orderBy('name', 'asc')->get()->filter(function($modtype, $key) use ($current_class) {
+                $modifiers = ModifierType::orderBy('name', 'asc')->get()->filter(function ($modtype, $key) use ($current_class) {
                     return in_array($current_class, accessAttr($modtype, 'classes'));
                 });
             }
 
-            foreach($modifiers as $modtype) {
+            foreach ($modifiers as $modtype) {
                 $ret[] = $modtype;
                 $this->attachEmptyModifier($modtype);
             }

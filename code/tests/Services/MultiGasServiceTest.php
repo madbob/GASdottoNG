@@ -5,7 +5,6 @@ namespace Tests\Services;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use App;
 
 use App\Exceptions\AuthException;
 
@@ -16,7 +15,7 @@ class MultiGasServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -38,11 +37,11 @@ class MultiGasServiceTest extends TestCase
     /*
         Salvataggio nuovo GAS con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('MultiGasService')->store(array());
+        app()->make('MultiGasService')->store([]);
     }
 
     private function initSubgasAdminRole()
@@ -76,7 +75,7 @@ class MultiGasServiceTest extends TestCase
     /*
         Salvataggio nuovo GAS con permessi corretti
     */
-    public function testStore()
+    public function test_store()
     {
         $role = $this->initSubgasAdminRole();
         $this->nextRound();
@@ -95,7 +94,7 @@ class MultiGasServiceTest extends TestCase
     /*
         Aggiornamento GAS
     */
-    public function testUpdate()
+    public function test_update()
     {
         $role = $this->initSubgasAdminRole();
         $this->nextRound();
@@ -114,7 +113,7 @@ class MultiGasServiceTest extends TestCase
         $this->assertCount(2, $list);
 
         $found = 0;
-        foreach($list as $g) {
+        foreach ($list as $g) {
             if ($g->name == 'Cambio nome') {
                 $found++;
             }
@@ -126,7 +125,7 @@ class MultiGasServiceTest extends TestCase
     /*
         Assegnazione fornitore a due GAS
     */
-    public function testAttach()
+    public function test_attach()
     {
         $this->initSubgasAdminRole();
         $this->nextRound();
@@ -135,10 +134,10 @@ class MultiGasServiceTest extends TestCase
         $admin = $this->createRoleAndUser($this->gas, 'supplier.add');
         $this->actingAs($admin);
 
-        $supplier = app()->make('SuppliersService')->store(array(
+        $supplier = app()->make('SuppliersService')->store([
             'name' => 'Test Supplier',
-            'business_name' => 'Test Supplier SRL'
-        ));
+            'business_name' => 'Test Supplier SRL',
+        ]);
 
         $this->assertEquals($supplier->gas->count(), 1);
 

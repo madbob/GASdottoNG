@@ -29,7 +29,7 @@ return [
         ],
     ],
 
-	'sendinblue' => [
+    'sendinblue' => [
         'key' => env('SENDINBLUE_KEY'),
     ],
 

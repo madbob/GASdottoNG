@@ -9,7 +9,8 @@ class Welcome extends MailType
         return 'welcome';
     }
 
-    public function description() {
+    public function description()
+    {
         $gas = currentAbsoluteGas();
         $manual = $gas->hasFeature('public_registrations') && $gas->public_registrations['manual'] == true;
 
@@ -21,14 +22,16 @@ class Welcome extends MailType
         }
     }
 
-    public function params() {
+    public function params()
+    {
         return [
-            'username' => _i("Username assegnato al nuovo utente"),
-            'gas_login_link' => _i("Link della pagina di login"),
+            'username' => _i('Username assegnato al nuovo utente'),
+            'gas_login_link' => _i('Link della pagina di login'),
         ];
     }
 
-    public function enabled($gas) {
+    public function enabled($gas)
+    {
         return $gas->hasFeature('public_registrations');
     }
 }

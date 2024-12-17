@@ -9,25 +9,25 @@ use App\Product;
 
 class ModifierEngine
 {
-	private function applicationOffsets($booking)
-	{
-		if ($booking->status == 'pending') {
+    private function applicationOffsets($booking)
+    {
+        if ($booking->status == 'pending') {
             $quantity_attribute = 'quantity';
             $price_attribute = 'price';
-			$weight_attribute = 'weight';
+            $weight_attribute = 'weight';
         }
         else {
             $quantity_attribute = 'delivered';
             $price_attribute = 'price_delivered';
-			$weight_attribute = 'weight_delivered';
+            $weight_attribute = 'weight_delivered';
         }
 
-		return [$quantity_attribute, $price_attribute, $weight_attribute];
-	}
+        return [$quantity_attribute, $price_attribute, $weight_attribute];
+    }
 
     private function applyDefinition($booking, $modifier, $amount, $definition, $target)
     {
-		list($quantity_attribute, $price_attribute, $weight_attribute) = $this->applicationOffsets($booking);
+        [$quantity_attribute, $price_attribute, $weight_attribute] = $this->applicationOffsets($booking);
         $reference_quantity = 1;
 
         if ($modifier->applies_target == 'product') {
@@ -35,18 +35,18 @@ class ModifierEngine
         }
 
         if ($modifier->value == 'percentage') {
-			$amount = round($amount * ($definition->amount / 100), 4);
+            $amount = round($amount * ($definition->amount / 100), 4);
         }
-        else if ($modifier->value == 'absolute') {
+        elseif ($modifier->value == 'absolute') {
             $amount = $reference_quantity * $definition->amount;
         }
-		else if ($modifier->value == 'mass') {
-			/*
-				Per i calcoli "a peso" si applicano sempre valori assoluti, mai
-				percentuali
-			*/
-			$amount = ($reference_quantity * $definition->amount) * $target->$weight_attribute;
-		}
+        elseif ($modifier->value == 'mass') {
+            /*
+                Per i calcoli "a peso" si applicano sempre valori assoluti, mai
+                percentuali
+            */
+            $amount = ($reference_quantity * $definition->amount) * $target->$weight_attribute;
+        }
         else {
             /*
                 Per i modificatori che incidono sul prezzo del prodotti
@@ -73,20 +73,21 @@ class ModifierEngine
         }
 
         $modifier_value->setRelation('modifier', $modifier);
+
         return $modifier_value;
     }
 
     private function targetDefinition($modifier, $value)
     {
         if ($modifier->scale == 'minor') {
-            foreach($modifier->definitions as $def) {
+            foreach ($modifier->definitions as $def) {
                 if ($value < $def->threshold) {
                     return $def;
                 }
             }
         }
-        else if ($modifier->scale == 'major') {
-            foreach($modifier->definitions as $def) {
+        elseif ($modifier->scale == 'major') {
+            foreach ($modifier->definitions as $def) {
                 if ($value > $def->threshold) {
                     return $def;
                 }
@@ -98,18 +99,18 @@ class ModifierEngine
 
     private function handlingAttributes($booking, $modifier, $attribute)
     {
-		/*
-			Se l'ordine è chiuso (ma non consegnato e archiviato) attingo dai
-			valori relativi, che includono sia il consegnato che il prenotato ma
-			non ancora consegnato. Questo si applica in particolare in fase di
-			consegna
-		*/
+        /*
+            Se l'ordine è chiuso (ma non consegnato e archiviato) attingo dai
+            valori relativi, che includono sia il consegnato che il prenotato ma
+            non ancora consegnato. Questo si applica in particolare in fase di
+            consegna
+        */
         if ($modifier->applies_target == 'order' || $booking->order->status == 'closed' || $modifier->applies_type == 'order_price') {
-			switch($modifier->$attribute) {
+            switch ($modifier->$attribute) {
                 case 'quantity':
                     $attribute = 'relative_quantity';
                     break;
-				case 'none':
+                case 'none':
                 case 'price':
                 case 'order_price':
                     $attribute = 'relative_price';
@@ -122,27 +123,27 @@ class ModifierEngine
                     break;
             }
 
-			$mod_attribute = 'relative_price';
-		}
+            $mod_attribute = 'relative_price';
+        }
 
-		/*
-			Se sono qui, è perché sono in fase di prenotazione dunque mi baso
-			sui valori del prenotato
-		*/
-        else if ($booking->status == 'pending') {
-			$attribute = $modifier->$attribute;
+        /*
+            Se sono qui, è perché sono in fase di prenotazione dunque mi baso
+            sui valori del prenotato
+        */
+        elseif ($booking->status == 'pending') {
+            $attribute = $modifier->$attribute;
             if ($attribute == 'none') {
                 $attribute = 'price';
             }
 
             $mod_attribute = 'price';
-		}
+        }
 
-		/*
-			In tutti gli altri casi, opero sui valori del consegnato
-		*/
-		else {
-            switch($modifier->$attribute) {
+        /*
+            In tutti gli altri casi, opero sui valori del consegnato
+        */
+        else {
+            switch ($modifier->$attribute) {
                 case 'none':
                 case 'quantity':
                     $attribute = 'delivered';
@@ -203,55 +204,58 @@ class ModifierEngine
         return $modifier_value;
     }
 
-	/*
-		Questo è per normalizzare l'array di riduzione in ingresso: quasi sempre
-		ne arriva uno applicato ad un aggregato, talvolta ne arriva uno
-		applicato ad un singolo ordine
-	*/
-	private function normalizeAggregateData($aggregate_data, $booking)
-	{
-		if (isset($aggregate_data->orders[$booking->order_id]) == false) {
-			if (isset($aggregate_data->bookings[$booking->id]) == false) {
-	            return null;
-			}
-			else {
-				$aggregate_data = (object) [
-					'orders' => [
-						$booking->order_id => $aggregate_data,
-					]
-				];
-			}
+    /*
+        Questo è per normalizzare l'array di riduzione in ingresso: quasi sempre
+        ne arriva uno applicato ad un aggregato, talvolta ne arriva uno
+        applicato ad un singolo ordine
+    */
+    private function normalizeAggregateData($aggregate_data, $booking)
+    {
+        if (isset($aggregate_data->orders[$booking->order_id]) == false) {
+            if (isset($aggregate_data->bookings[$booking->id]) == false) {
+                return null;
+            }
+            else {
+                $aggregate_data = (object) [
+                    'orders' => [
+                        $booking->order_id => $aggregate_data,
+                    ],
+                ];
+            }
         }
 
-		return $aggregate_data;
-	}
+        return $aggregate_data;
+    }
 
     public function apply($modifier, $booking, $aggregate_data)
     {
         if ($modifier->active == false) {
-			Log::debug('Modificatore non attivo, ignoro applicazione');
+            Log::debug('Modificatore non attivo, ignoro applicazione');
+
             return null;
         }
 
-		if (is_null($modifier->target)) {
-			Log::debug('Modificatore senza oggetto di riferimento: ' . $modifier->id);
+        if (is_null($modifier->target)) {
+            Log::debug('Modificatore senza oggetto di riferimento: ' . $modifier->id);
+
             return null;
         }
 
         $order_id = $booking->order_id;
 
-		$aggregate_data = $this->normalizeAggregateData($aggregate_data, $booking);
-		if (is_null($aggregate_data)) {
-			Log::debug('Applicazione modificatore: mancano dati ordine ' . $order_id);
-			return null;
-		}
+        $aggregate_data = $this->normalizeAggregateData($aggregate_data, $booking);
+        if (is_null($aggregate_data)) {
+            Log::debug('Applicazione modificatore: mancano dati ordine ' . $order_id);
+
+            return null;
+        }
 
         /*
             $check_target è l'elemento su cui valutare l'applicabilità del
             modificatore
         */
         $target_level = $modifier->getCheckTargetLevel();
-        switch($target_level) {
+        switch ($target_level) {
             case 'order':
                 $check_target = $aggregate_data->orders[$order_id] ?? null;
                 break;
@@ -270,13 +274,14 @@ class ModifierEngine
 
             default:
                 Log::error('Tipo di soggetto non riconosciuto per modificatore: ' . $target_level);
+
                 return null;
         }
 
         /*
             $mod_target è l'elemento su cui si applica il modificatore
         */
-        switch($modifier->applies_target) {
+        switch ($modifier->applies_target) {
             case 'order':
                 $mod_target = $aggregate_data->orders[$order_id] ?? null;
                 $obj_mod_target = $booking;
@@ -293,11 +298,12 @@ class ModifierEngine
                 break;
 
             default:
-				Log::error('applies_target non riconosciuto per modificatore: ' . $modifier->applies_target);
+                Log::error('applies_target non riconosciuto per modificatore: ' . $modifier->applies_target);
+
                 return null;
         }
 
-        list($attribute, $mod_attribute) = $this->handlingAttributes($booking, $modifier, 'applies_type');
+        [$attribute, $mod_attribute] = $this->handlingAttributes($booking, $modifier, 'applies_type');
         $check_value = $check_target->$attribute ?? 0;
         $target_definition = null;
         $altered_amount = null;
@@ -316,7 +322,7 @@ class ModifierEngine
                     singola prenotazione il suo valore relativo e proporzionale.
                 */
                 if ($modifier->applies_target == 'order') {
-					list($distribution_attribute, $useless) = $this->handlingAttributes($booking, $modifier, 'distribution_type');
+                    [$distribution_attribute, $useless] = $this->handlingAttributes($booking, $modifier, 'distribution_type');
 
                     if ($modifier->target_type == Product::class) {
                         $booking_mod_target = $aggregate_data->orders[$order_id]->bookings[$booking->id]->products[$modifier->target->id] ?? null;

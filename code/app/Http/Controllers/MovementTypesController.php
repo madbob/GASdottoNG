@@ -12,42 +12,43 @@ class MovementTypesController extends BackedController
     {
         $this->commonInit([
             'reference_class' => 'App\\MovementType',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function show($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $type = $this->service->show($id);
+
             return view('movementtypes.edit', ['type' => $type]);
         });
     }
 
-	public function brokenModifier(Request $request, $id)
-	{
-		return view('movementtypes.modal_broken_modifier', [
-			'id' => $id,
-		]);
-	}
+    public function brokenModifier(Request $request, $id)
+    {
+        return view('movementtypes.modal_broken_modifier', [
+            'id' => $id,
+        ]);
+    }
 
-	public function postFeedback(Request $request, $id)
+    public function postFeedback(Request $request, $id)
     {
         $ret = [];
 
-		if ($id == 'booking-payment') {
-			foreach(movementTypes() as $type) {
-				if ($type->hasBrokenModifier()) {
-					$ret[] = route('movtypes.notifybrokenmodifier', ['id' => 'booking-payment']);
-					break;
-				}
-			}
-		}
-		else {
-			$type = $this->service->show($id);
-			if ($type->hasBrokenModifier()) {
-				$ret[] = route('movtypes.notifybrokenmodifier', ['id' => $type]);
-			}
+        if ($id == 'booking-payment') {
+            foreach (movementTypes() as $type) {
+                if ($type->hasBrokenModifier()) {
+                    $ret[] = route('movtypes.notifybrokenmodifier', ['id' => 'booking-payment']);
+                    break;
+                }
+            }
+        }
+        else {
+            $type = $this->service->show($id);
+            if ($type->hasBrokenModifier()) {
+                $ret[] = route('movtypes.notifybrokenmodifier', ['id' => $type]);
+            }
         }
 
         return response()->json($ret);

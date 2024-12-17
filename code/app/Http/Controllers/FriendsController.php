@@ -14,14 +14,15 @@ class FriendsController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\User',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function store(Request $request)
     {
-        return $this->easyExecute(function() use ($request) {
+        return $this->easyExecute(function () use ($request) {
             $subject = $this->service->storeFriend($request->all());
+
             return $this->commonSuccessResponse($subject);
         });
     }

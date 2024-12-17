@@ -22,11 +22,11 @@ class NewOrderNotification extends ManyMailNotification
         $message = $this->initMailMessage($notifiable);
 
         $contacts = [];
-        foreach($this->order->enforcedContacts() as $user) {
+        foreach ($this->order->enforcedContacts() as $user) {
             $contacts[] = $user->email;
         }
 
-        $contacts = join(', ', array_filter($contacts));
+        $contacts = implode(', ', array_filter($contacts));
 
         $message = $this->formatMail($message, $notifiable, 'new_order', [
             'supplier_name' => $this->order->supplier->name,

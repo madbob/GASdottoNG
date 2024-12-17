@@ -11,5 +11,5 @@ abstract class PaymentType extends Parameter
         return true;
     }
 
-    public abstract function definition();
+    abstract public function definition();
 }

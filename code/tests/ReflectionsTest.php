@@ -7,7 +7,7 @@ use App\Models\Concerns\CreditableTrait;
 
 class ReflectionsTest extends TestCase
 {
-    public function testTraitsDetection()
+    public function test_traits_detection()
     {
         $user = User::inRandomOrder()->first();
         $this->assertTrue(hasTrait($user, CreditableTrait::class));
@@ -16,14 +16,14 @@ class ReflectionsTest extends TestCase
         $this->assertTrue(isset($creditables['App\User']));
     }
 
-    public function testNormalize()
+    public function test_normalize()
     {
         $user = User::inRandomOrder()->first();
         $this->assertEquals($user->id, normalizeId($user));
         $this->assertEquals($user->id, normalizeId($user->id));
     }
 
-    function testInliningModel()
+    public function test_inlining_model()
     {
         $user = User::inRandomOrder()->first();
         $inline = inlineId($user);

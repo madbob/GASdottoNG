@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 
 use App\User;
 use App\Order;
@@ -27,11 +26,11 @@ class StatisticsController extends Controller
 
     private function sortData(&$data, &$categories)
     {
-        usort($data, function($a, $b) {
+        usort($data, function ($a, $b) {
             return ($a->name <=> $b->name) * -1;
         });
 
-        usort($categories, function($a, $b) {
+        usort($categories, function ($a, $b) {
             return ($a->name <=> $b->name) * -1;
         });
     }
@@ -120,7 +119,7 @@ class StatisticsController extends Controller
         $bookings = $this->createBookingQuery(Booking::query(), 'all', $start, $end, $target, null)->angryload()->get();
 
         $orders = [];
-        foreach($bookings as $booking) {
+        foreach ($bookings as $booking) {
             if (isset($orders[$booking->order_id]) == false) {
                 $orders[$booking->order_id] = [];
             }
@@ -128,7 +127,7 @@ class StatisticsController extends Controller
             $orders[$booking->order_id][] = $booking;
         }
 
-        foreach($orders as $id => $bookings) {
+        foreach ($orders as $id => $bookings) {
             $order = Order::find($id);
             $summary = $order->reduxData(['bookings' => $bookings]);
 
@@ -151,11 +150,11 @@ class StatisticsController extends Controller
     {
         $data = [];
 
-        $data_for_suppliers = BookedProduct::selectRaw('orders.supplier_id, SUM(final_price) as price')->whereHas('booking', function($query) use ($type, $start, $end, $target) {
+        $data_for_suppliers = BookedProduct::selectRaw('orders.supplier_id, SUM(final_price) as price')->whereHas('booking', function ($query) use ($type, $start, $end, $target) {
             $this->createBookingQuery($query, $type, $start, $end, $target, null);
         })->join('bookings', 'booked_products.booking_id', '=', 'bookings.id')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('orders.supplier_id')->get();
 
-        foreach($data_for_suppliers as $dfs) {
+        foreach ($data_for_suppliers as $dfs) {
             $name = $dfs->supplier_id;
             if (isset($data[$name]) == false) {
                 $data[$name] = (object) [
@@ -180,7 +179,7 @@ class StatisticsController extends Controller
             $data = $this->basicSummaryForShipped($start, $end, $type, $target);
         }
 
-        $data_for_user = $this->createBookingQuery(Booking::query(), $type, $start, $end, $target, null)->whereHas('user', function($query) {
+        $data_for_user = $this->createBookingQuery(Booking::query(), $type, $start, $end, $target, null)->whereHas('user', function ($query) {
             $query->whereNull('parent_id');
         })->selectRaw('supplier_id, COUNT(DISTINCT(bookings.user_id)) as total')->join('orders', 'bookings.order_id', '=', 'orders.id')->groupBy('supplier_id')->get();
 
@@ -200,16 +199,16 @@ class StatisticsController extends Controller
             $price_column = 'final_price';
         }
 
-        $data_for_categories = BookedProduct::selectRaw('product_id, SUM(' . $price_column . ') as price, category_id')->whereHas('booking', function($query) use ($type, $start, $end, $target) {
+        $data_for_categories = BookedProduct::selectRaw('product_id, SUM(' . $price_column . ') as price, category_id')->whereHas('booking', function ($query) use ($type, $start, $end, $target) {
             $this->createBookingQuery($query, $type, $start, $end, $target, null);
         })->join('products', 'booked_products.product_id', '=', 'products.id')->groupBy('product_id', 'category_id')->get();
 
         $all_categories = Category::all();
 
-        foreach($data_for_categories as $dfc) {
+        foreach ($data_for_categories as $dfc) {
             $category_id = $dfc->category_id;
 
-            if (!isset($categories[$category_id])) {
+            if (! isset($categories[$category_id])) {
                 $category = $all_categories->find($category_id);
                 $categories[$category_id] = (object) [
                     'value' => 0,
@@ -242,7 +241,7 @@ class StatisticsController extends Controller
                     ];
                 }
 
-                if (!isset($categories[$product->product->category_id])) {
+                if (! isset($categories[$product->product->category_id])) {
                     $categories[$product->product->category_id] = (object) [
                         'value' => 0,
                         'name' => $product->product->category->printableName(),
@@ -263,7 +262,7 @@ class StatisticsController extends Controller
             }
         }
 
-        foreach($data as $product => $meta) {
+        foreach ($data as $product => $meta) {
             $data[$product]->users = count($meta->users);
         }
 
@@ -280,13 +279,13 @@ class StatisticsController extends Controller
 
         switch ($id) {
             case 'summary':
-                list($data, $categories) = $this->getSummary($start, $end, $type, $target);
+                [$data, $categories] = $this->getSummary($start, $end, $type, $target);
                 $csv_headers = [_i('Fornitore'), _i('Valore Ordini'), _i('Utenti Coinvolti')];
                 break;
 
             case 'supplier':
                 $supplier = $request->input('supplier');
-                list($data, $categories) = $this->getSupplier($start, $end, $type, $target, $supplier);
+                [$data, $categories] = $this->getSupplier($start, $end, $type, $target, $supplier);
                 $csv_headers = [_i('Prodotto'), _i('Valore Ordini'), _i('Utenti Coinvolti')];
                 break;
         }
@@ -296,10 +295,12 @@ class StatisticsController extends Controller
         $format = $request->input('format', 'csv');
         if ($format == 'json') {
             $data = $this->formatJSON($data, $categories);
+
             return json_encode($data);
         }
         else {
             $data = $this->formatCSV($data);
+
             return output_csv(_i('Statistiche %s.csv', [date('Y-m-d')]), $csv_headers, $data, null);
         }
     }

@@ -13,5 +13,5 @@ trait ModifiedTrait
         return $this->morphMany(ModifiedValue::class, 'target')->with(['modifier', 'modifier.modifierType']);
     }
 
-    public abstract function getModifiedRelations();
+    abstract public function getModifiedRelations();
 }

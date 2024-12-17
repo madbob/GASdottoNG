@@ -59,7 +59,7 @@ trait Summary
             $row = $this->formatProduct($fields, $formattable, $summary->products[$product->id] ?? null, $product, $internal_offsets);
             if (empty($row) == false) {
                 if (is_null($price_offset) == false) {
-                    $total = array_reduce($row, fn($carry, $r) => $carry + guessDecimal($r[$price_offset]), $total);
+                    $total = array_reduce($row, fn ($carry, $r) => $carry + guessDecimal($r[$price_offset]), $total);
                 }
 
                 $rows = array_merge($rows, $row);
@@ -67,7 +67,7 @@ trait Summary
         }
 
         if (empty($rows) == false) {
-            $headers = array_map(fn($f) => $formattable[$f]->name, $fields);
+            $headers = array_map(fn ($f) => $formattable[$f]->name, $fields);
 
             if (is_null($price_offset) == false) {
                 $last_row = array_fill(0, count($fields), '');
@@ -89,7 +89,7 @@ trait Summary
     protected function formatSummary($order, $document, $fields, $status, $circles, $extra_modifiers)
     {
         if ($circles->getMode() == 'all_by_place') {
-            foreach($circles->combinations() as $combo) {
+            foreach ($circles->combinations() as $combo) {
                 $table = $this->formatSummaryShipping($order, $fields, $status, $combo, $extra_modifiers);
                 if ($table) {
                     $document->append(new Header($combo->printableName()));

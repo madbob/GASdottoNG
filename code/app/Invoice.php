@@ -17,13 +17,14 @@ use App\Events\SluggableCreating;
 
 class Invoice extends Model implements Datable
 {
-    use GASModel, SluggableID, TracksUpdater, PayableTrait, CreditableTrait, HierarcableTrait, AttachableTrait;
+    use AttachableTrait, CreditableTrait, GASModel, HierarcableTrait, PayableTrait, SluggableID, TracksUpdater;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class
+        'creating' => SluggableCreating::class,
     ];
 
     protected static function boot()
@@ -71,9 +72,9 @@ class Invoice extends Model implements Datable
 
     public function ordersCandidates()
     {
-        return $this->supplier->orders()->whereIn('status', ['shipped', 'archived'])->whereNull('payment_id')->whereDoesntHave('invoice', function($query) {
+        return $this->supplier->orders()->whereIn('status', ['shipped', 'archived'])->whereNull('payment_id')->whereDoesntHave('invoice', function ($query) {
             $query->whereIn('invoices.status', ['verified', 'payed']);
-        })->whereHas('bookings', function($query) {
+        })->whereHas('bookings', function ($query) {
             $query->where('status', 'shipped');
         })->get();
     }
@@ -85,14 +86,14 @@ class Invoice extends Model implements Datable
 
     public static function doSort($invoices)
     {
-        return $invoices->sort(function($a, $b) {
+        return $invoices->sort(function ($a, $b) {
             if ($a->status == 'payed' && $a->payment && $b->status == 'payed' && $b->payment) {
                 return $a->payment->date <=> $b->payment->date;
             }
-            else if ($a->status == 'payed') {
+            elseif ($a->status == 'payed') {
                 return -1;
             }
-            else if ($b->status == 'payed') {
+            elseif ($b->status == 'payed') {
                 return 1;
             }
             else {
@@ -106,7 +107,7 @@ class Invoice extends Model implements Datable
         $orders_total_taxable = 0;
         $orders_total_tax = 0;
 
-        foreach($this->orders as $order) {
+        foreach ($this->orders as $order) {
             $summary = $order->calculateInvoicingSummary();
             $orders_total_taxable += $summary->total_taxable;
             $orders_total_tax += $summary->total_tax;
@@ -152,11 +153,11 @@ class Invoice extends Model implements Datable
 
     public function deleteMovements()
     {
-        foreach($this->movements as $mov) {
+        foreach ($this->movements as $mov) {
             $mov->delete();
         }
 
-        foreach($this->otherMovements as $mov) {
+        foreach ($this->otherMovements as $mov) {
             $mov->delete();
         }
     }

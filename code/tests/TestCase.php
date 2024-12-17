@@ -2,9 +2,7 @@
 
 namespace Tests;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Str;
 
 use Illuminate\Support\Facades\Artisan;
 
@@ -17,7 +15,7 @@ abstract class TestCase extends BaseTestCase
 
     protected $baseUrl = 'http://localhost';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -57,7 +55,7 @@ abstract class TestCase extends BaseTestCase
         \DB::getEventDispatcher()->forget('illuminate.query');
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $this->disableQueryDump();
         parent::tearDown();
@@ -71,7 +69,7 @@ abstract class TestCase extends BaseTestCase
         $role = \App\Role::where('actions', $permissions)->first();
         if (is_null($role)) {
             $role = \App\Role::factory()->create([
-                'actions' => $permissions
+                'actions' => $permissions,
             ]);
         }
 
@@ -92,12 +90,12 @@ abstract class TestCase extends BaseTestCase
         }
 
         $this->actingAs($master);
-        $friend = app()->make('UsersService')->storeFriend(array(
+        $friend = app()->make('UsersService')->storeFriend([
             'username' => 'test friend user',
             'firstname' => 'mario',
             'lastname' => 'rossi',
-            'password' => 'password'
-        ));
+            'password' => 'password',
+        ]);
 
         $booking_role = roleByIdentifier('friend');
         if (is_null($booking_role)) {
@@ -129,9 +127,9 @@ abstract class TestCase extends BaseTestCase
     {
         $this->actingAs($this->userAdmin);
 
-        $group = app()->make('GroupsService')->store(array(
+        $group = app()->make('GroupsService')->store([
             'name' => 'Luoghi di Consegna',
-        ));
+        ]);
 
         $this->nextRound();
         $group = Group::find($group->id);
@@ -178,7 +176,7 @@ abstract class TestCase extends BaseTestCase
         $products = \App\Product::factory()->count(10)->create([
             'supplier_id' => $supplier->id,
             'category_id' => $category->id,
-            'measure_id' => $measure->id
+            'measure_id' => $measure->id,
         ]);
 
         $this->actingAs($this->userReferrer);
@@ -199,13 +197,13 @@ abstract class TestCase extends BaseTestCase
         $this->booking_role = \App\Role::factory()->create(['actions' => 'supplier.book']);
 
         $this->users = \App\User::factory()->count(5)->create(['gas_id' => $this->gas->id]);
-        foreach($this->users as $user) {
+        foreach ($this->users as $user) {
             $user->addRole($this->booking_role->id, $this->gas);
         }
 
-        foreach($this->users as $user) {
+        foreach ($this->users as $user) {
             $this->actingAs($user);
-            list($data, $booked_count, $total) = $this->randomQuantities($order->products);
+            [$data, $booked_count, $total] = $this->randomQuantities($order->products);
             $data['action'] = 'booked';
             app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $user, false);
         }
@@ -218,7 +216,7 @@ abstract class TestCase extends BaseTestCase
         $total = 0;
         $available = $products->count();
 
-        foreach($products as $product) {
+        foreach ($products as $product) {
             $q = rand(0, 3);
 
             if ($q != 0) {
@@ -247,7 +245,7 @@ abstract class TestCase extends BaseTestCase
     {
         $data = [];
 
-        foreach($master as $product => $quantity) {
+        foreach ($master as $product => $quantity) {
             if (is_numeric($quantity) == false) {
                 continue;
             }
@@ -259,7 +257,7 @@ abstract class TestCase extends BaseTestCase
             $data[$product] = $quantity;
         }
 
-        foreach($friend as $product => $quantity) {
+        foreach ($friend as $product => $quantity) {
             if (isset($data[$product]) == false) {
                 $data[$product] = $quantity;
             }
@@ -268,10 +266,11 @@ abstract class TestCase extends BaseTestCase
         return $data;
     }
 
-	protected function updateAndFetch($data, $order, $user, $deliver)
+    protected function updateAndFetch($data, $order, $user, $deliver)
     {
         app()->make('BookingsService')->bookingUpdate($data, $order->aggregate, $user, $deliver);
         $this->nextRound();
+
         return \App\Booking::where('user_id', $user->id)->where('order_id', $order->id)->first();
     }
 

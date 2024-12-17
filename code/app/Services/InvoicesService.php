@@ -2,15 +2,11 @@
 
 namespace App\Services;
 
-use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
 use App\Gas;
 use App\Supplier;
 use App\Invoice;
-use App\Receipt;
-use App\Order;
 use App\Movement;
-use App\MovementType;
 
 class InvoicesService extends BaseService
 {
@@ -42,6 +38,7 @@ class InvoicesService extends BaseService
         }
 
         $elements = $query->get();
+
         return Invoice::doSort($elements);
     }
 
@@ -49,6 +46,7 @@ class InvoicesService extends BaseService
     {
         $ret = Invoice::findOrFail($id);
         $this->testAccess($ret->supplier);
+
         return $ret;
     }
 
@@ -64,7 +62,7 @@ class InvoicesService extends BaseService
         if ($user->can('supplier.invoices', $supplier)) {
             $invoice->supplier_id = $supplier->id;
             $this->setIfSet($invoice, $request, 'number');
-            $this->transformAndSetIfSet($invoice, $request, 'date', "decodeDate");
+            $this->transformAndSetIfSet($invoice, $request, 'date', 'decodeDate');
             $this->transformAndSetIfSet($invoice, $request, 'total', 'enforceNumber');
             $this->transformAndSetIfSet($invoice, $request, 'total_vat', 'enforceNumber');
         }
@@ -77,6 +75,7 @@ class InvoicesService extends BaseService
 
         $invoice->save();
         $invoice->attachByRequest($request);
+
         return $invoice;
     }
 
@@ -92,6 +91,7 @@ class InvoicesService extends BaseService
 
         $invoice = new Invoice();
         $invoice->gas_id = $user->gas_id;
+
         return $this->setCommonAttributes($invoice, $request, $user);
     }
 
@@ -100,6 +100,7 @@ class InvoicesService extends BaseService
         $invoice = Invoice::findOrFail($id);
         $user = $this->testAccess($invoice->supplier);
         $invoice->gas_id = $user->gas_id;
+
         return $this->setCommonAttributes($invoice, $request, $user);
     }
 
@@ -112,15 +113,15 @@ class InvoicesService extends BaseService
             'total_tax' => 0,
         ];
 
-        foreach($invoice->orders as $order) {
-            foreach($order->products as $product) {
+        foreach ($invoice->orders as $order) {
+            foreach ($order->products as $product) {
                 $global_summary->products[$product->id] = [
                     'name' => $product->printableName(),
                     'vat_rate' => $product->vat_rate ? $product->vat_rate->printableName() : '',
                     'total' => 0,
                     'total_vat' => 0,
                     'delivered' => 0,
-                    'measure' => $product->measure
+                    'measure' => $product->measure,
                 ];
             }
         }
@@ -135,11 +136,11 @@ class InvoicesService extends BaseService
         $summaries = [];
         $global_summary = $this->initGlobalSummeries($invoice);
 
-        foreach($invoice->orders as $order) {
+        foreach ($invoice->orders as $order) {
             $summary = $order->calculateInvoicingSummary();
             $summaries[$order->id] = $summary;
 
-            foreach($order->products as $product) {
+            foreach ($order->products as $product) {
                 $global_summary->products[$product->id]['total'] += $summary->products[$product->id]['total'];
                 $global_summary->products[$product->id]['total_vat'] += $summary->products[$product->id]['total_vat'];
                 $global_summary->products[$product->id]['delivered'] += $summary->products[$product->id]['delivered'];
@@ -153,24 +154,24 @@ class InvoicesService extends BaseService
         return [
             'invoice' => $invoice,
             'summaries' => $summaries,
-            'global_summary' => $global_summary
+            'global_summary' => $global_summary,
         ];
     }
 
-	public function wire($id, $step, $request)
-	{
-		$invoice = $this->show($id);
+    public function wire($id, $step, $request)
+    {
+        $invoice = $this->show($id);
         $this->ensureAuth(['supplier.invoices' => $invoice->supplier]);
 
-		switch($step) {
-			case 'review':
-				$order_ids = $request['order_id'] ?? [];
-				$invoice->orders()->sync($order_ids);
-				$invoice->status = 'to_verify';
-				$invoice->save();
-				break;
-		}
-	}
+        switch ($step) {
+            case 'review':
+                $order_ids = $request['order_id'] ?? [];
+                $invoice->orders()->sync($order_ids);
+                $invoice->status = 'to_verify';
+                $invoice->save();
+                break;
+        }
+    }
 
     private function guessPeer($invoice, $mov_target_type, $user)
     {
@@ -179,10 +180,10 @@ class InvoicesService extends BaseService
         if ($mov_target_type == Invoice::class) {
             $peer = $invoice;
         }
-        else if ($mov_target_type == Supplier::class) {
+        elseif ($mov_target_type == Supplier::class) {
             $peer = $invoice->supplier;
         }
-        else if ($mov_target_type == Gas::class) {
+        elseif ($mov_target_type == Gas::class) {
             $peer = $user->gas;
         }
 
@@ -194,6 +195,7 @@ class InvoicesService extends BaseService
         $metadata = movementTypes($type);
         $target = $this->guessPeer($invoice, $metadata->target_type, $user);
         $sender = $this->guessPeer($invoice, $metadata->sender_type, $user);
+
         return [$sender, $target];
     }
 
@@ -212,10 +214,10 @@ class InvoicesService extends BaseService
         $movement_methods = $request['method'] ?? [];
         $movement_notes = $request['notes'] ?? [];
 
-        for($i = 0; $i < count($movement_types); $i++) {
+        for ($i = 0; $i < count($movement_types); $i++) {
             $type = $movement_types[$i];
 
-            list($sender, $target) = $this->movementAttach($type, $user, $invoice);
+            [$sender, $target] = $this->movementAttach($type, $user, $invoice);
             $amount = $movement_amounts[$i];
             $mov = Movement::generate($type, $sender, $target, $amount);
             $mov->notes = $movement_notes[$i];
@@ -250,6 +252,7 @@ class InvoicesService extends BaseService
         }
 
         $invoice->delete();
+
         return $invoice;
     }
 }

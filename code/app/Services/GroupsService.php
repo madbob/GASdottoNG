@@ -11,6 +11,7 @@ class GroupsService extends BaseService
     public function show($id)
     {
         $this->ensureAuth(['gas.config' => 'gas']);
+
         return Group::findOrFail($id);
     }
 
@@ -33,7 +34,7 @@ class GroupsService extends BaseService
         $this->setIfSet($g, $request, 'name');
         $this->setIfSet($g, $request, 'context', 'user');
 
-        switch($g->context) {
+        switch ($g->context) {
             case 'user':
                 $this->setIfSet($g, $request, 'cardinality');
                 $this->boolIfSet($g, $request, 'filters_orders');

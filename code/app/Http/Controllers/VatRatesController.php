@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Services\VatRatesService;
 
 class VatRatesController extends BackedController
@@ -14,14 +12,15 @@ class VatRatesController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\VatRate',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function show($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $vr = $this->service->show($id);
+
             return view('vatrates.edit', ['vatrate' => $vr]);
         });
     }

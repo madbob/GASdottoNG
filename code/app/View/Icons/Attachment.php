@@ -15,7 +15,7 @@ class Attachment extends IconsMap
             ],
             'shield-x' => (object) [
                 'test' => function ($obj) {
-                    return ($obj->users()->count() != 0);
+                    return $obj->users()->count() != 0;
                 },
                 'text' => _i('Accesso limitato'),
             ],

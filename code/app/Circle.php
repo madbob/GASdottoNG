@@ -11,13 +11,14 @@ use App\Events\SluggableCreating;
 
 class Circle extends Model
 {
-    use GASModel, SluggableID, TracksUpdater, ModifiableTrait;
+    use GASModel, ModifiableTrait, SluggableID, TracksUpdater;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class
+        'creating' => SluggableCreating::class,
     ];
 
     protected static function boot()

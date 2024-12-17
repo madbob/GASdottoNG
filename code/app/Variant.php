@@ -12,9 +12,10 @@ use App\Events\SluggableCreating;
 
 class Variant extends Model
 {
-    use GASModel, SluggableID, Cachable;
+    use Cachable, GASModel, SluggableID;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $dispatchesEvents = [

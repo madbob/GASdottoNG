@@ -20,7 +20,7 @@ class MaxAvailable extends Constraint
             return 0;
         }
 
-        $quantity = App::make('GlobalScopeHub')->executedForAll($order->keep_open_packages != 'each', function() use ($product, $order) {
+        $quantity = App::make('GlobalScopeHub')->executedForAll($order->keep_open_packages != 'each', function () use ($product, $order) {
             return BookedProduct::where('product_id', '=', $product->id)->whereHas('booking', function ($query) use ($order) {
                 $query->where('order_id', '=', $order->id);
             })->sum('quantity');
@@ -47,7 +47,7 @@ class MaxAvailable extends Constraint
             if ($product->is_pending_package ?? false) {
                 return _i('%s Disponibile: %.02f', [
                     sprintf('<span class="badge rounded-pill bg-primary" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="%s" data-bs-original-title="" title="">?</span>', _i('Mancano %s %s per completare la confezione per questo ordine', [$still_available, $product->printableMeasure(true)])),
-                    $still_available
+                    $still_available,
                 ]);
             }
             else {

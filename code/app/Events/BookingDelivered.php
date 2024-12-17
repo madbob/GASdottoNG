@@ -20,7 +20,9 @@ class BookingDelivered
     use Dispatchable, SerializesModels;
 
     public $booking;
+
     public $status;
+
     public $user;
 
     public function __construct(Booking $booking, $status, User $user)

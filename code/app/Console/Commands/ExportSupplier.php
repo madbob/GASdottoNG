@@ -4,13 +4,13 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use ezcArchive;
 
 use App\Supplier;
 
 class ExportSupplier extends Command
 {
     protected $signature = 'gdxp:write:supplier {supplier_id} {format}';
+
     protected $description = 'Genera il file GDXP per un dato fornitore';
 
     public function handle()
@@ -36,6 +36,6 @@ class ExportSupplier extends Command
             file_put_contents($archivepath, $json);
         }
 
-        $this->info("File creato in " . $archivepath);
+        $this->info('File creato in ' . $archivepath);
     }
 }

@@ -22,8 +22,8 @@ class CreateSuppliersTable extends Migration
             $table->text('order_method');
             $table->text('payment_method');
             $table->date('remote_lastimport')->nullable()->default(null);
-			$table->boolean('fast_shipping_enabled')->default(false);
-			$table->boolean('unmanaged_shipping_enabled')->default(false);
+            $table->boolean('fast_shipping_enabled')->default(false);
+            $table->boolean('unmanaged_shipping_enabled')->default(false);
 
             $table->string('taxcode')->nullable();
             $table->string('vat')->nullable();

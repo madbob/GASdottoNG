@@ -13,9 +13,9 @@ class SupplierObserver
     {
         $actions = ['supplier.modify', 'supplier.orders', 'supplier.shippings'];
 
-        foreach($actions as $action) {
+        foreach ($actions as $action) {
             $roles = Role::havingAction($action);
-            foreach($roles as $r) {
+            foreach ($roles as $r) {
                 $user->addRole($r, $supplier);
             }
         }
@@ -32,9 +32,9 @@ class SupplierObserver
     public function deleted(Supplier $supplier)
     {
         $roles = rolesByClass('App\Supplier');
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             $users = $role->usersByTarget($supplier);
-            foreach($users as $u) {
+            foreach ($users as $u) {
                 $u->removeRole($role, $supplier);
             }
         }

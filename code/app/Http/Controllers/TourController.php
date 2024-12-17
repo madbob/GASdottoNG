@@ -20,12 +20,12 @@ class TourController extends Controller
 
         $steps[] = (object) [
             'title' => _i('Benvenuto in GASdotto!'),
-            'content' => _i("Qui ti diamo qualche suggerimento per iniziare ad utilizzare questa nuova piattaforma..."),
+            'content' => _i('Qui ti diamo qualche suggerimento per iniziare ad utilizzare questa nuova piattaforma...'),
         ];
 
         $steps[] = (object) [
             'title' => _i('I tuoi dati'),
-            'content' => _i("Cliccando qui accedi al pannello dei tuoi dati personali, da cui poi cambiare il tuo indirizzo email, la tua password di accesso e molto altro."),
+            'content' => _i('Cliccando qui accedi al pannello dei tuoi dati personali, da cui poi cambiare il tuo indirizzo email, la tua password di accesso e molto altro.'),
             'target' => '#menu_profile',
         ];
 
@@ -64,7 +64,7 @@ class TourController extends Controller
         if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas)) {
             $steps[] = (object) [
                 'title' => _i('La contabilità'),
-                'content' => _i("In questa pagina trovi tutti i movimenti contabili ed i relativi strumenti di amministrazione."),
+                'content' => _i('In questa pagina trovi tutti i movimenti contabili ed i relativi strumenti di amministrazione.'),
                 'target' => '#menu_accouting',
             ];
         }
@@ -72,21 +72,21 @@ class TourController extends Controller
         if ($user->can('gas.config', $gas)) {
             $steps[] = (object) [
                 'title' => _i('Tutte le configurazioni'),
-                'content' => _i("Cliccando qui trovi una moltitudine di parametri per personalizare il comportamento di questa istanza GASdotto."),
+                'content' => _i('Cliccando qui trovi una moltitudine di parametri per personalizare il comportamento di questa istanza GASdotto.'),
                 'target' => '#menu_config',
             ];
         }
 
         $steps[] = (object) [
             'title' => _i('Help in linea'),
-            'content' => _i("Aprendo i diversi pannelli di GASdotto, accanto a molti parametri trovi una icona blu: passandoci sopra il cursore del mouse, o pigiandoci sopra con il dito usando lo smartphone, ti viene mostrato un breve testo descrittivo che te ne illustra i dettagli.") . '<br><img class="img-fluid p-2 mt-2 bg-dark" src="' . asset('images/inline_help.gif') . '">',
+            'content' => _i('Aprendo i diversi pannelli di GASdotto, accanto a molti parametri trovi una icona blu: passandoci sopra il cursore del mouse, o pigiandoci sopra con il dito usando lo smartphone, ti viene mostrato un breve testo descrittivo che te ne illustra i dettagli.') . '<br><img class="img-fluid p-2 mt-2 bg-dark" src="' . asset('images/inline_help.gif') . '">',
         ];
 
         if ($user->can('users.admin', $gas)) {
             $steps[] = (object) [
                 'title' => _i('Dubbi?'),
                 'content' => _i("Se hai un dubbio sull'utilizzo di GASdotto, o una segnalazione, o una richiesta, cliccando qui trovi i nostri contatti."),
-                'target' => '#menu_help'
+                'target' => '#menu_help',
             ];
         }
 
@@ -104,6 +104,7 @@ class TourController extends Controller
         $user = $request->user();
         $user->tour = true;
         $user->save();
+
         return $this->successResponse();
     }
 }

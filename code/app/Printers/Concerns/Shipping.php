@@ -4,21 +4,26 @@ namespace App\Printers\Concerns;
 
 use App\Formatters\User as UserFormatter;
 use App\Formatters\Order as OrderFormatter;
-use App\Group;
 use App\ModifiedValue;
 
 trait Shipping
 {
-    private function collectModifiersTotal($booking, $aggregate_data, $extra_modifiers)
+    private function collectModifiersTotal($booking, $aggregate_data, $isolate_friends, $extra_modifiers)
     {
         $total_modifiers = 0;
         $labels = [];
 
-        $modifiers = $booking->applyModifiersWithFriends($aggregate_data, false);
+        if ($isolate_friends) {
+            $modifiers = $booking->applyModifiers($aggregate_data, false);
+        }
+        else {
+            $modifiers = $booking->applyModifiersWithFriends($aggregate_data, false);
+        }
+
         $modifiers = $this->filterExtraModifiers($modifiers, $extra_modifiers);
 
         $aggregated_modifiers = ModifiedValue::aggregateByType($modifiers);
-        foreach($aggregated_modifiers as $am) {
+        foreach ($aggregated_modifiers as $am) {
             $labels[$am->name] = printablePrice($am->total_amount);
             $total_modifiers += $am->amount;
         }
@@ -31,7 +36,7 @@ trait Shipping
         prenotazione per far tornare i conti in fase di valutazione dei
         modificatori
     */
-    private function fakeBookingStatus($status, $booking)
+    private function fakeBookingStatus($status, $isolate_friends, $booking)
     {
         $original_booking_status = null;
 
@@ -40,8 +45,10 @@ trait Shipping
                 $original_booking_status = $booking->status;
                 $booking->status = $status;
 
-                foreach($booking->friends_bookings as $friend) {
-                    $friend->status = $status;
+                if ($isolate_friends == false) {
+                    foreach ($booking->friends_bookings as $friend) {
+                        $friend->status = $status;
+                    }
                 }
             }
         }
@@ -49,18 +56,20 @@ trait Shipping
         return $original_booking_status;
     }
 
-    private function restoreBookingStatus($original_booking_status, $booking)
+    private function restoreBookingStatus($original_booking_status, $isolate_friends, $booking)
     {
         if ($original_booking_status != null) {
             $booking->status = $original_booking_status;
 
-            foreach($booking->friends_bookings as $friend) {
-                $friend->status = $original_booking_status;
+            if ($isolate_friends == false) {
+                foreach ($booking->friends_bookings as $friend) {
+                    $friend->status = $original_booking_status;
+                }
             }
         }
     }
 
-    public function formatShipping($order, $fields, $status, $circles, $extra_modifiers)
+    public function formatShipping($order, $fields, $status, $isolate_friends, $circles, $extra_modifiers)
     {
         $ret = (object) [
             'headers' => $fields->headers,
@@ -70,7 +79,15 @@ trait Shipping
         $formattable_product = OrderFormatter::formattableColumns('shipping');
         $internal_offsets = $this->offsetsByStatus($status);
 
-        $bookings = $order->topLevelBookings(null);
+        if ($isolate_friends == false) {
+            $bookings = $order->topLevelBookings(null);
+            $products_source = 'products_with_friends';
+        }
+        else {
+            $bookings = $order->bookings;
+            $products_source = 'products';
+        }
+
         $bookings = $circles->sortBookings($bookings);
         $listed_products = [];
 
@@ -93,10 +110,10 @@ trait Shipping
                 'user' => UserFormatter::format($booking->user, $fields->user_columns, $order->aggregate),
                 'products' => [],
                 'totals' => [],
-                'notes' => !empty($booking->notes) ? [$booking->notes] : [],
+                'notes' => ! empty($booking->notes) ? [$booking->notes] : [],
             ];
 
-            foreach($booking->products_with_friends as $booked) {
+            foreach ($booking->$products_source as $booked) {
                 if (isset($listed_products[$booked->product_id])) {
                     $product = $listed_products[$booked->product_id];
                     $booked->setRelation('product', $product);
@@ -109,7 +126,7 @@ trait Shipping
                 $summary = $booked->as_summary;
 
                 $row = $this->formatProduct($fields->product_columns, $formattable_product, $summary->products[$booked->product->id], $product, $internal_offsets);
-                if (!empty($row)) {
+                if (! empty($row)) {
                     $obj->products = array_merge($obj->products, $row);
                 }
             }
@@ -118,13 +135,13 @@ trait Shipping
                 continue;
             }
 
-            $original_booking_status = $this->fakeBookingStatus($status, $booking);
+            $original_booking_status = $this->fakeBookingStatus($status, $isolate_friends, $booking);
 
-            list($labels_modifiers, $total_modifiers) = $this->collectModifiersTotal($booking, $aggregate_data, $extra_modifiers);
+            [$labels_modifiers, $total_modifiers] = $this->collectModifiersTotal($booking, $aggregate_data, $isolate_friends, $extra_modifiers);
             $obj->totals = array_merge($obj->totals, $labels_modifiers);
-            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, true) + $total_modifiers;
+            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, $isolate_friends == false) + $total_modifiers;
 
-            $this->restoreBookingStatus($original_booking_status, $booking);
+            $this->restoreBookingStatus($original_booking_status, $isolate_friends, $booking);
 
             $ret->contents[] = $obj;
         }

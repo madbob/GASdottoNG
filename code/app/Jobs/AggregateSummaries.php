@@ -16,6 +16,7 @@ class AggregateSummaries implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $aggregate_id;
+
     public $message;
 
     public function __construct($aggregate_id, $message = '')
@@ -26,17 +27,17 @@ class AggregateSummaries implements ShouldQueue
 
     private function handleBookings($aggregate, $status)
     {
-        $bookings = array_filter($aggregate->bookings, function($booking) use ($status) {
+        $bookings = array_filter($aggregate->bookings, function ($booking) use ($status) {
             return in_array($booking->status, $status);
         });
 
         $redux = $aggregate->reduxData();
 
-        foreach($bookings as $booking) {
+        foreach ($bookings as $booking) {
             try {
                 $booking->user->notify(new BookingNotification($this->aggregate_id, $redux, $booking->user->id, $this->message));
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 \Log::error('Impossibile inviare notifica mail prenotazione di ' . $booking->user->id . ': ' . $e->getMessage());
             }
         }
@@ -50,7 +51,7 @@ class AggregateSummaries implements ShouldQueue
         $hub->enable(false);
 
         $date = date('Y-m-d');
-        foreach($aggregate->orders as $order) {
+        foreach ($aggregate->orders as $order) {
             $order->last_notify = $date;
             $order->save();
         }

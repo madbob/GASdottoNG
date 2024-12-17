@@ -12,7 +12,7 @@ class SuppliersServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -27,27 +27,27 @@ class SuppliersServiceTest extends TestCase
     /*
         Salvataggio Fornitore con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
 
-        app()->make('SuppliersService')->store(array(
+        app()->make('SuppliersService')->store([
             'name' => 'Test Supplier',
-            'business_name' => 'Test Supplier SRL'
-        ));
+            'business_name' => 'Test Supplier SRL',
+        ]);
     }
 
     /*
         Salvataggio Fornitore
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userWithAdminPerm);
 
         $supplier = app()->make('SuppliersService')->store([
             'name' => 'Test Supplier',
-            'business_name' => 'Test Supplier SRL'
+            'business_name' => 'Test Supplier SRL',
         ]);
 
         $this->assertEquals('Test Supplier', $supplier->name);
@@ -64,13 +64,13 @@ class SuppliersServiceTest extends TestCase
         $has_pdf = false;
         $has_csv = false;
 
-        foreach($attachments as $attach) {
+        foreach ($attachments as $attach) {
             $this->assertEquals(1, $attach->internal);
 
             if (str_ends_with($attach->url, 'pdf')) {
                 $has_pdf = true;
             }
-            else if (str_ends_with($attach->url, 'csv')) {
+            elseif (str_ends_with($attach->url, 'csv')) {
                 $has_csv = true;
             }
         }
@@ -82,17 +82,17 @@ class SuppliersServiceTest extends TestCase
     /*
         Salvataggio Fornitore con lo stesso nome
     */
-    public function testStoreSameName()
+    public function test_store_same_name()
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $supplier = app()->make('SuppliersService')->store(array(
+        $supplier = app()->make('SuppliersService')->store([
             'name' => 'Test',
-        ));
+        ]);
 
-        $other_supplier = app()->make('SuppliersService')->store(array(
+        $other_supplier = app()->make('SuppliersService')->store([
             'name' => 'Test',
-        ));
+        ]);
 
         $this->assertNotEquals($supplier->id, $other_supplier->id);
     }
@@ -100,7 +100,7 @@ class SuppliersServiceTest extends TestCase
     /*
         Permessi sbagliati su elenco Fornitori
     */
-    public function testNoList()
+    public function test_no_list()
     {
         $this->actingAs($this->userWithNoPerms);
 
@@ -111,7 +111,7 @@ class SuppliersServiceTest extends TestCase
     /*
         Elenco Fornitori corretto
     */
-    public function testList()
+    public function test_list()
     {
         $this->actingAs($this->userWithNormalPerms);
 
@@ -122,44 +122,44 @@ class SuppliersServiceTest extends TestCase
     /*
         Modifica Fornitore con permessi sbagliati
     */
-    public function testFailsToUpdate()
+    public function test_fails_to_update()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('SuppliersService')->update($this->supplier->id, array());
+        app()->make('SuppliersService')->update($this->supplier->id, []);
     }
 
     /*
         Modifica Fornitore con permessi sbagliati
     */
-    public function testFailsToUpdateByAdmin()
+    public function test_fails_to_update_by_admin()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithAdminPerm);
-        app()->make('SuppliersService')->update($this->supplier->id, array());
+        app()->make('SuppliersService')->update($this->supplier->id, []);
     }
 
     /*
         Modifica Fornitore con ID non esistente
     */
-    public function testFailsToUpdateBecauseNoUserWithID()
+    public function test_fails_to_update_because_no_user_with_id()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNormalPerms);
-        app()->make('SuppliersService')->update('id', array());
+        app()->make('SuppliersService')->update('id', []);
     }
 
     /*
         Modifica Fornitore
     */
-    public function testUpdate()
+    public function test_update()
     {
         $this->actingAs($this->userWithReferrerPerms);
 
-        $supplier = app()->make('SuppliersService')->update($this->supplier->id, array(
+        $supplier = app()->make('SuppliersService')->update($this->supplier->id, [
             'taxcode' => '12345',
             'vat' => '09876',
-        ));
+        ]);
 
         $this->assertNotEquals($supplier->taxcode, $this->supplier->taxcode);
         $this->assertEquals(0, $supplier->currentBalanceAmount());
@@ -168,7 +168,7 @@ class SuppliersServiceTest extends TestCase
     /*
         Accesso Fornitore con ID non esistente
     */
-    public function testFailsToShowInexistent()
+    public function test_fails_to_show_inexistent()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithNormalPerms);
@@ -178,7 +178,7 @@ class SuppliersServiceTest extends TestCase
     /*
         Accesso Fornitore
     */
-    public function testShow()
+    public function test_show()
     {
         $this->actingAs($this->userWithNormalPerms);
 
@@ -192,7 +192,7 @@ class SuppliersServiceTest extends TestCase
     /*
         Funzioni varie di integrazione tra ordine e fornitore
     */
-    public function testOrderRelations()
+    public function test_order_relations()
     {
         $order = $this->initOrder(null, $this->supplier);
         $this->populateOrder($order);
@@ -217,7 +217,7 @@ class SuppliersServiceTest extends TestCase
     /*
         Esportazione Fornitore
     */
-    public function testExport()
+    public function test_export()
     {
         $order = $this->initOrder(null);
         $this->assertNotNull($order->supplier->exportJSON());
@@ -226,7 +226,7 @@ class SuppliersServiceTest extends TestCase
     /*
         Cancellazione Fornitore con permessi sbagliati
     */
-    public function testFailsToDestroy()
+    public function test_fails_to_destroy()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -236,7 +236,7 @@ class SuppliersServiceTest extends TestCase
     /*
         Cancellazione Fornitore
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $this->actingAs($this->userWithReferrerPerms);
         $supplier = app()->make('SuppliersService')->destroy($this->supplier->id);

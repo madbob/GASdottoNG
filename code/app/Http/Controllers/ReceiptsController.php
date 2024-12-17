@@ -18,7 +18,7 @@ class ReceiptsController extends BackedController
 
         $this->commonInit([
             'reference_class' => Receipt::class,
-			'service' => $service,
+            'service' => $service,
         ]);
     }
 
@@ -27,18 +27,18 @@ class ReceiptsController extends BackedController
         return $request->input('user_id', '0');
     }
 
-	public function index(Request $request)
-	{
-		$past = date('Y-m-d', strtotime('-1 months'));
-		$future = date('Y-m-d', strtotime('+10 years'));
+    public function index(Request $request)
+    {
+        $past = date('Y-m-d', strtotime('-1 months'));
+        $future = date('Y-m-d', strtotime('+10 years'));
         $user_id = $this->filterByUser($request);
-		$receipts = $this->service->list($past, $future, 0, $user_id);
+        $receipts = $this->service->list($past, $future, 0, $user_id);
 
-		return view('receipt.index', [
-			'receipts' => $receipts,
+        return view('receipt.index', [
+            'receipts' => $receipts,
             'user_id' => $user_id,
-		]);
-	}
+        ]);
+    }
 
     public function show(Request $request, $id)
     {
@@ -48,7 +48,7 @@ class ReceiptsController extends BackedController
         if ($user->can('movements.admin', $user->gas)) {
             return view('receipt.edit', ['receipt' => $receipt]);
         }
-        else if ($user->can('movements.view', $user->gas) || $receipt->user->id == $user->id) {
+        elseif ($user->can('movements.view', $user->gas) || $receipt->user->id == $user->id) {
             return view('receipt.show', ['receipt' => $receipt]);
         }
         else {
@@ -72,27 +72,29 @@ class ReceiptsController extends BackedController
         $user = $request->user();
 
         $this->testAccess($user, $receipt);
+
         return view('receipt.handle', ['receipt' => $receipt]);
     }
 
-	private function initPdf($receipt)
-	{
-		$pdf = PDF::loadView('documents.receipt', ['receipt' => $receipt]);
+    private function initPdf($receipt)
+    {
+        $pdf = PDF::loadView('documents.receipt', ['receipt' => $receipt]);
         $title = _i('Fattura %s', [$receipt->number]);
         $filename = sanitizeFilename($title . '.pdf');
-		return [$pdf, $filename];
-	}
 
-	private function sendByMail($receipt)
-	{
-		list($pdf, $filename) = $this->initPdf($receipt);
-		$temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
-		$pdf->save($temp_file_path);
+        return [$pdf, $filename];
+    }
 
-		$receipt->user->notify(new ReceiptForward($temp_file_path));
-		$receipt->mailed = true;
-		$receipt->save();
-	}
+    private function sendByMail($receipt)
+    {
+        [$pdf, $filename] = $this->initPdf($receipt);
+        $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+        $pdf->save($temp_file_path);
+
+        $receipt->user->notify(new ReceiptForward($temp_file_path));
+        $receipt->mailed = true;
+        $receipt->save();
+    }
 
     public function download(Request $request, $id)
     {
@@ -105,72 +107,74 @@ class ReceiptsController extends BackedController
             $this->sendByMail($receipt);
         }
         else {
-			list($pdf, $filename) = $this->initPdf($receipt);
+            [$pdf, $filename] = $this->initPdf($receipt);
+
             return $pdf->download($filename);
         }
     }
 
-	private function outputCSV($elements)
+    private function outputCSV($elements)
     {
         $filename = _i('Esportazione ricevute GAS %s.csv', date('d/m/Y'));
         $headers = [_i('Utente'), _i('Data'), _i('Numero'), _i('Imponibile'), _i('IVA')];
 
-        return output_csv($filename, $headers, $elements, function($receipt) {
+        return output_csv($filename, $headers, $elements, function ($receipt) {
             return [
-				$receipt->user ? $receipt->user->printableName() : '',
-				$receipt->date,
-				$receipt->number,
-				$receipt->total,
-				$receipt->total_vat,
-			];
+                $receipt->user ? $receipt->user->printableName() : '',
+                $receipt->date,
+                $receipt->number,
+                $receipt->total,
+                $receipt->total_vat,
+            ];
         });
     }
 
     private function send($elements): void
     {
-        $to_send = $elements->filter(fn($r) => $r->mailed == false);
+        $to_send = $elements->filter(fn ($r) => $r->mailed == false);
 
-        foreach($to_send as $receipt) {
+        foreach ($to_send as $receipt) {
             try {
                 $this->sendByMail($receipt);
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 \Log::error('Errore in inoltro ricevuta: ' . $e->getMessage());
             }
         }
     }
 
-	public function search(Request $request)
-	{
-		$start = decodeDate($request->input('startdate'));
-		$end = decodeDate($request->input('enddate'));
-		$supplier_id = $request->input('supplier_id', '0');
+    public function search(Request $request)
+    {
+        $start = decodeDate($request->input('startdate'));
+        $end = decodeDate($request->input('enddate'));
+        $supplier_id = $request->input('supplier_id', '0');
         $user_id = $this->filterByUser($request);
-		$elements = $this->service->list($start, $end, $supplier_id, $user_id);
+        $elements = $this->service->list($start, $end, $supplier_id, $user_id);
 
-		$format = $request->input('format', 'none');
+        $format = $request->input('format', 'none');
 
-		switch($format) {
-			case 'send':
-				$this->send($elements);
+        switch ($format) {
+            case 'send':
+                $this->send($elements);
                 $elements = $this->service->list($start, $end, $supplier_id);
 
-				/*
-					Qui il break manca di proposito
-				*/
+                /*
+                    Qui il break manca di proposito
+                */
 
-			case 'none':
-				$list_identifier = $request->input('list_identifier', 'receipts-list');
-				return view('commons.loadablelist', [
-					'identifier' => $list_identifier,
-					'items' => $elements,
-					'legend' => (object)[
-						'class' => Receipt::class,
-					],
-				]);
+            case 'none':
+                $list_identifier = $request->input('list_identifier', 'receipts-list');
 
-			case 'csv':
-				return $this->outputCSV($elements);
-		}
-	}
+                return view('commons.loadablelist', [
+                    'identifier' => $list_identifier,
+                    'items' => $elements,
+                    'legend' => (object) [
+                        'class' => Receipt::class,
+                    ],
+                ]);
+
+            case 'csv':
+                return $this->outputCSV($elements);
+        }
+    }
 }

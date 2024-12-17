@@ -12,10 +12,12 @@ use App\Events\SluggableCreating;
 
 class Category extends Model implements HasChildren
 {
-    use HasFactory, GASModel, SluggableID, Cachable;
+    use Cachable, GASModel, HasFactory, SluggableID;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     protected $fillable = ['name'];
 
     protected $dispatchesEvents = [

@@ -26,7 +26,7 @@ class UserDecredit extends MovementType
                 'sender' => $this->format(['bank' => 'decrement']),
                 'master' => $this->format(['bank' => 'decrement']),
                 'is_default' => true,
-            ]
+            ],
         ]));
 
         return $type;

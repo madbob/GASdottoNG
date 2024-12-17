@@ -9,10 +9,10 @@ class CustomMailTag
 {
     public function handle(MessageSending $event)
     {
-		if (env('MAIL_MAILER') == 'sendinblue') {
-			$event->message->getHeaders()->add(new TagHeader('gasdotto'));
-		}
+        if (env('MAIL_MAILER') == 'sendinblue') {
+            $event->message->getHeaders()->add(new TagHeader('gasdotto'));
+        }
 
-		return true;
+        return true;
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App\View\Icons;
 
-use App\Group;
-
 class AggregateBooking extends IconsMap
 {
     public static function commons($user)

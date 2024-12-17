@@ -15,7 +15,9 @@ use App\Circle;
 class CirclesFilter
 {
     private $mode;
+
     private $circles;
+
     private $groups;
 
     public function __construct($aggregate, $request)
@@ -28,7 +30,7 @@ class CirclesFilter
             if (empty($all) == false) {
                 $selected = null;
 
-                foreach($all as $group_id => $circles) {
+                foreach ($all as $group_id => $circles) {
                     $this->groups[$group_id] = [];
 
                     $key = sprintf('circles_%s', $group_id);
@@ -63,7 +65,7 @@ class CirclesFilter
 
     public function printableName()
     {
-        return join(' - ', array_map(fn($c) => $c->name, $this->circles));
+        return implode(' - ', array_map(fn ($c) => $c->name, $this->circles));
     }
 
     public function combinations()
@@ -71,11 +73,11 @@ class CirclesFilter
         if ($this->mode == 'all_by_place') {
             $result = [[]];
 
-            foreach($this->groups as $key => $circles) {
+            foreach ($this->groups as $key => $circles) {
                 $append = [];
 
-                foreach($result as $group) {
-                    foreach($circles as $circle) {
+                foreach ($result as $group) {
+                    foreach ($circles as $circle) {
                         $group[$key] = $circle;
                         $append[] = $group;
                     }
@@ -86,29 +88,29 @@ class CirclesFilter
 
             $ret = [];
 
-            foreach($result as $res) {
+            foreach ($result as $res) {
                 $c = new CirclesFilter(null, null);
                 $c->mode = $this->mode;
                 $c->groups = $res;
-                $c->circles = array_reduce($res, fn($carry, $circles) => array_merge($carry, $circles), []);
+                $c->circles = array_reduce($res, fn ($carry, $circles) => array_merge($carry, $circles), []);
                 $ret[] = $c;
             }
 
             return $ret;
         }
         else {
-            throw new \Exception("La combinazione di gruppi non dovrebbe essere usata se non quando si ordina per cerchie", 1);
+            throw new \Exception('La combinazione di gruppi non dovrebbe essere usata se non quando si ordina per cerchie', 1);
         }
     }
 
     private function sortByUserName($bookings)
     {
-        return $bookings->sortBy(fn($b) => $b->user->printableName());
+        return $bookings->sortBy(fn ($b) => $b->user->printableName());
     }
 
     private function sortByCircle($bookings)
     {
-        return $bookings->sortBy(fn($b) => $b->circles_sorting);
+        return $bookings->sortBy(fn ($b) => $b->circles_sorting);
     }
 
     public function sortBookings($bookings)
@@ -116,13 +118,13 @@ class CirclesFilter
         $tmp_bookings = new Collection();
         $filter_circles = (empty($this->circles) == false);
 
-        foreach($bookings as $booking) {
+        foreach ($bookings as $booking) {
             $valid = true;
 
             if ($filter_circles) {
                 $mycircles = $booking->involvedCircles();
 
-                foreach($this->circles as $required_circle) {
+                foreach ($this->circles as $required_circle) {
                     if (is_null($mycircles->firstWhere('id', $required_circle->id))) {
                         $valid = false;
                         break;

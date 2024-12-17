@@ -52,7 +52,7 @@ abstract class Constraint extends Parameter
             1 => [],
         ];
 
-        foreach($constraints as $constraint) {
+        foreach ($constraints as $constraint) {
             if ($only_mandatory == true && $constraint->mandatoryContraint() == false) {
                 continue;
             }
@@ -68,6 +68,7 @@ abstract class Constraint extends Parameter
         return $sorted_contraints;
     }
 
-    public abstract function printable($product, $order);
-    public abstract function test($booked, $quantity);
+    abstract public function printable($product, $order);
+
+    abstract public function test($booked, $quantity);
 }

@@ -33,7 +33,7 @@ trait Table
     protected function formatBookingInTable($order, $booking, $status, &$all_products)
     {
         $row = [];
-        list($get_total, $get_function) = $this->bookingsRules($status);
+        [$get_total, $get_function] = $this->bookingsRules($status);
 
         foreach ($order->product_concepts as $product) {
             $quantity = 0;
@@ -64,6 +64,7 @@ trait Table
         }
 
         $row[] = printablePrice($total_price);
+
         return $row;
     }
 
@@ -76,7 +77,7 @@ trait Table
         $compressed = [];
 
         $user_columns_count = count($user_columns);
-        foreach($data as $index => $row) {
+        foreach ($data as $index => $row) {
             $compressed[] = array_slice($row, 0, $user_columns_count);
         }
 
@@ -90,7 +91,7 @@ trait Table
 
         for ($i = count($user_columns); $i < $len; $i++) {
             if (translateNumberFormat($reference_row[$i]) != 0) {
-                foreach($data as $index => $row) {
+                foreach ($data as $index => $row) {
                     $compressed[$index][] = $row[$i];
                 }
             }

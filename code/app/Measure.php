@@ -11,10 +11,12 @@ use App\Events\SluggableCreating;
 
 class Measure extends Model
 {
-    use HasFactory, GASModel, SluggableID, Cachable;
+    use Cachable, GASModel, HasFactory, SluggableID;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     protected $fillable = ['name'];
 
     protected $dispatchesEvents = [

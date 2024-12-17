@@ -14,7 +14,7 @@ use App\Exceptions\IllegalArgumentException;
 
 class MultiGasController extends Controller
 {
-	private $service;
+    private $service;
 
     public function __construct(MultiGasService $service)
     {
@@ -22,7 +22,7 @@ class MultiGasController extends Controller
 
         $this->commonInit([
             'reference_class' => 'App\\Gas',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
@@ -40,7 +40,7 @@ class MultiGasController extends Controller
                 'id' => $gas->id,
                 'name' => $gas->printableName(),
                 'header' => $gas->printableHeader(),
-                'url' => route('multigas.show', $gas->id)
+                'url' => route('multigas.show', $gas->id),
             ]);
         }
         catch (AuthException $e) {
@@ -55,6 +55,7 @@ class MultiGasController extends Controller
     {
         try {
             $gas = $this->service->show($id);
+
             return view('multigas.edit', ['gas' => $gas]);
         }
         catch (AuthException $e) {
@@ -66,6 +67,7 @@ class MultiGasController extends Controller
     {
         try {
             $gas = $this->service->update($id, $request->all());
+
             return $this->commonSuccessResponse($gas);
         }
         catch (AuthException $e) {
@@ -76,18 +78,21 @@ class MultiGasController extends Controller
     public function destroy($id)
     {
         $this->service->destroy($id);
+
         return $this->successResponse();
     }
 
     public function attach(Request $request)
     {
         $this->service->attach($request->all());
+
         return $this->successResponse();
     }
 
     public function detach(Request $request)
     {
         $this->service->detach($request->all());
+
         return $this->successResponse();
     }
 
@@ -102,6 +107,7 @@ class MultiGasController extends Controller
 
         $user->gas_id = $id;
         $user->save();
+
         return redirect('/');
     }
 }

@@ -38,7 +38,7 @@ class AggregationsTest extends TestCase
         return $group;
     }
 
-    public function testCreate()
+    public function test_create()
     {
         $group = $this->createBasicGroup([
             'context' => 'user',
@@ -87,10 +87,11 @@ class AggregationsTest extends TestCase
         $this->assertNotNull($modifier);
 
         $this->nextRound();
+
         return $modifier;
     }
 
-    public function testUserModifiers()
+    public function test_user_modifiers()
     {
         $group = $this->createBasicGroup([
             'context' => 'user',
@@ -117,7 +118,7 @@ class AggregationsTest extends TestCase
         $this->assertNotEquals($redux->price, 0.0);
         $checked = false;
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $mods = $booking->applyModifiers($redux, true);
 
             if ($booking->user->id != $target_user->id) {
@@ -126,7 +127,7 @@ class AggregationsTest extends TestCase
             else {
                 $this->assertEquals($mods->count(), 1);
 
-                foreach($mods as $m) {
+                foreach ($mods as $m) {
                     $this->assertEquals($m->effective_amount, $test_shipping_value);
                     $this->assertEquals($m->modifier_id, $mod->id);
                 }
@@ -138,7 +139,7 @@ class AggregationsTest extends TestCase
         $this->assertTrue($checked);
     }
 
-    public function testBookingModifiers()
+    public function test_booking_modifiers()
     {
         $group = $this->createBasicGroup([
             'context' => 'booking',
@@ -157,7 +158,7 @@ class AggregationsTest extends TestCase
         do {
             $target_bookings = [];
 
-            foreach($order->bookings as $booking) {
+            foreach ($order->bookings as $booking) {
                 if (rand() % 2 == 0) {
                     $booking->circles()->sync([$right_circle->id]);
                     $target_bookings[] = $booking->id;
@@ -166,7 +167,8 @@ class AggregationsTest extends TestCase
                     $booking->circles()->sync([$wrong_circle->id]);
                 }
             }
-        } while(empty($target_bookings) && count($target_bookings) != $order->bookings->count());
+        }
+        while (empty($target_bookings) && count($target_bookings) != $order->bookings->count());
 
         $test_shipping_value = 10;
         $mod = $this->attachModifier($right_circle, $test_shipping_value);
@@ -176,7 +178,7 @@ class AggregationsTest extends TestCase
         $this->assertNotEquals($redux->price, 0.0);
         $checked = false;
 
-        foreach($order->bookings as $booking) {
+        foreach ($order->bookings as $booking) {
             $mods = $booking->applyModifiers($redux, true);
 
             if (in_array($booking->id, $target_bookings) == false) {
@@ -185,7 +187,7 @@ class AggregationsTest extends TestCase
             else {
                 $this->assertEquals($mods->count(), 1);
 
-                foreach($mods as $m) {
+                foreach ($mods as $m) {
                     $this->assertEquals($m->effective_amount, $test_shipping_value);
                     $this->assertEquals($m->modifier_id, $mod->id);
                 }
@@ -197,7 +199,7 @@ class AggregationsTest extends TestCase
         $this->assertTrue($checked);
     }
 
-    public function testAssociateOrder()
+    public function test_associate_order()
     {
         $group = $this->createBasicGroup([
             'context' => 'user',

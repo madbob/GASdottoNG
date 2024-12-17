@@ -11,7 +11,7 @@ class Satispay extends PaymentType
 
     public function enabled()
     {
-        return (currentAbsoluteGas()->hasFeature('satispay'));
+        return currentAbsoluteGas()->hasFeature('satispay');
     }
 
     public function definition()
@@ -21,9 +21,9 @@ class Satispay extends PaymentType
             'identifier' => true,
             'icon' => 'cloud-plus',
             'active_for' => 'App\User',
-            'valid_config' => function($target) {
+            'valid_config' => function ($target) {
                 return true;
-            }
+            },
         ];
     }
 }

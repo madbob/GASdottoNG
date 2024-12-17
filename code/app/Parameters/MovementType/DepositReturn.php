@@ -27,7 +27,7 @@ class DepositReturn extends MovementType
             (object) [
                 'method' => 'bank',
                 'sender' => $this->format(['bank' => 'decrement', 'deposits' => 'decrement']),
-            ]
+            ],
         ]));
 
         return $type;
@@ -41,7 +41,7 @@ class DepositReturn extends MovementType
             'post' => function (Movement $movement) {
                 $movement->detachFromTarget('deposit_id');
             },
-            'delete' => function(Movement $movement) {
+            'delete' => function (Movement $movement) {
                 $sender = $movement->sender;
 
                 if ($sender->deposit_id == 0) {
@@ -51,7 +51,7 @@ class DepositReturn extends MovementType
                         $sender->save();
                     }
                 }
-            }
+            },
         ];
 
         return $mov;

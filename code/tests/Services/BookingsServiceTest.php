@@ -4,7 +4,6 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Collection;
 
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
@@ -15,7 +14,7 @@ class BookingsServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -26,10 +25,10 @@ class BookingsServiceTest extends TestCase
     /*
         Lettura dati prenotazione
     */
-    public function testReadBooking()
+    public function test_read_booking()
     {
         $this->actingAs($this->userWithBasePerms);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $data['notes_' . $this->sample_order->id] = 'Nota di test';
         $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
         $this->assertNotNull($booking);
@@ -42,14 +41,14 @@ class BookingsServiceTest extends TestCase
 
         $booking = Booking::find($booking->id);
         $this->assertEquals($booking->updater->id, $this->userWithBasePerms->id);
-        foreach($booking->products as $prod) {
+        foreach ($booking->products as $prod) {
             $this->assertEquals($prod->updater->id, $this->userWithBasePerms->id);
         }
 
         $this->nextRound();
 
         $this->actingAs($this->userWithShippingPerms);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $data['notes_' . $this->sample_order->id] = '';
         $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
         /*
@@ -68,10 +67,10 @@ class BookingsServiceTest extends TestCase
     /*
         Consegna prenotazione
     */
-    public function testShipping()
+    public function test_shipping()
     {
         $this->actingAs($this->userWithBasePerms);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
 
         $data['action'] = 'booked';
         $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
@@ -105,7 +104,7 @@ class BookingsServiceTest extends TestCase
         Il risultato di questo test dipende in larga parte dal comportamento
         della funzione Product::canAggregateQuantities()
     */
-    public function testUnaggregatedFriend()
+    public function test_unaggregated_friend()
     {
         $category = \App\Category::factory()->create();
         $measure = \App\Measure::factory()->create();
@@ -114,13 +113,13 @@ class BookingsServiceTest extends TestCase
 
         $this->nextRound();
 
-        $product = app()->make('ProductsService')->store(array(
+        $product = app()->make('ProductsService')->store([
             'name' => 'Test Product',
             'price' => rand(),
             'supplier_id' => $this->sample_order->supplier->id,
             'category_id' => $category->id,
             'measure_id' => $measure->id,
-        ));
+        ]);
 
         $variant = $this->createVariant($product);
 
@@ -159,7 +158,7 @@ class BookingsServiceTest extends TestCase
         $products = $booking->products_with_friends;
         $this->assertEquals(2, $products->count());
 
-        foreach($products as $prod) {
+        foreach ($products as $prod) {
             $this->assertEquals($product->id, $prod->product_id);
         }
     }
@@ -167,22 +166,22 @@ class BookingsServiceTest extends TestCase
     /*
         Consegna prenotazione con amici
     */
-    public function testShippingWithFriend()
+    public function test_shipping_with_friend()
     {
         $friend = $this->createFriend($this->userWithBasePerms);
 
         $this->actingAs($friend);
-        list($friend_data, $friend_booked_count, $friend_total) = $this->randomQuantities($this->sample_order->products);
+        [$friend_data, $friend_booked_count, $friend_total] = $this->randomQuantities($this->sample_order->products);
         $friend_data['action'] = 'booked';
         app()->make('BookingsService')->bookingUpdate($friend_data, $this->sample_order->aggregate, $friend, false);
 
         $this->actingAs($this->userWithBasePerms);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $data['action'] = 'booked';
         $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
 
         $merged_data = [];
-        foreach($this->sample_order->products as $prod) {
+        foreach ($this->sample_order->products as $prod) {
             $merged_data[$prod->id] = ($data[$prod->id] ?? 0) + ($friend_data[$prod->id] ?? 0);
         }
 
@@ -213,12 +212,12 @@ class BookingsServiceTest extends TestCase
     /*
         Consegna prenotazione solo con amici
     */
-    public function testShippingWithOnlyFriend()
+    public function test_shipping_with_only_friend()
     {
         $friend = $this->createFriend($this->userWithBasePerms);
 
         $this->actingAs($friend);
-        list($friend_data, $friend_booked_count, $friend_total) = $this->randomQuantities($this->sample_order->products);
+        [$friend_data, $friend_booked_count, $friend_total] = $this->randomQuantities($this->sample_order->products);
         $friend_data['action'] = 'booked';
         app()->make('BookingsService')->bookingUpdate($friend_data, $this->sample_order->aggregate, $friend, false);
 
@@ -236,24 +235,24 @@ class BookingsServiceTest extends TestCase
     /*
         Permessi sbagliati su lettura prenotazione
     */
-    public function testPermissionsOnRead()
+    public function test_permissions_on_read()
     {
         $this->expectException(AuthException::class);
 
         $this->actingAs($this->userWithBasePerms);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $this->updateAndFetch($data, $this->sample_order, $this->userWithShippingPerms, false);
     }
 
     /*
         Permessi sbagliati su consegna
     */
-    public function testPermissionsOnShipping()
+    public function test_permissions_on_shipping()
     {
         $this->expectException(AuthException::class);
 
         $this->actingAs($this->userWithBasePerms);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
 
         $data['action'] = 'shipped';
@@ -263,13 +262,13 @@ class BookingsServiceTest extends TestCase
     /*
         Salvataggio prenotazione su ordine aggregato
     */
-    public function testMultipleRead()
+    public function test_multiple_read()
     {
         $order2 = $this->initOrder($this->sample_order);
 
         $this->actingAs($this->userWithBasePerms);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
-        list($data2, $booked_count2, $total2) = $this->randomQuantities($order2->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
+        [$data2, $booked_count2, $total2] = $this->randomQuantities($order2->products);
         $complete_data = array_merge($data, $data2);
 
         $complete_data['action'] = 'booked';
@@ -306,12 +305,12 @@ class BookingsServiceTest extends TestCase
     /*
         Salvataggio prenotazione su ordine aggregato, con una prenotazione vuota
     */
-    public function testMultipleWithSecondEmpty()
+    public function test_multiple_with_second_empty()
     {
         $order2 = $this->initOrder($this->sample_order);
 
         $this->actingAs($this->userWithBasePerms);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
 
         $complete_booking = $this->sample_order->aggregate->bookingBy($this->userWithBasePerms->id);
@@ -341,10 +340,10 @@ class BookingsServiceTest extends TestCase
     /*
         Mantenimento stato prenotazioni alla consegna
     */
-    public function testKeepBookedQuantities()
+    public function test_keep_booked_quantities()
     {
         $this->actingAs($this->userWithBasePerms);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $data['action'] = 'booked';
         $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
 
@@ -353,14 +352,14 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->status, 'pending');
         $this->assertEquals($booking->products()->count(), $booked_count);
 
-        foreach($booking->products as $product) {
+        foreach ($booking->products as $product) {
             $this->assertEquals($product->delivered, 0);
             $this->assertEquals($product->quantity, $data[$product->product->id]);
         }
 
         $this->actingAs($this->userWithShippingPerms);
         $shipped_data = [];
-        foreach($data as $index => $d) {
+        foreach ($data as $index => $d) {
             $shipped_data[$d] = 0;
         }
         $shipped_data['action'] = 'shipped';
@@ -371,12 +370,12 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->status, 'saved');
         $this->assertEquals($booking->products()->count(), $booked_count);
 
-        foreach($booking->products as $product) {
+        foreach ($booking->products as $product) {
             $this->assertEquals($product->delivered, 0);
             $this->assertEquals($product->quantity, $data[$product->product->id]);
         }
 
-        foreach($booking->products as $product) {
+        foreach ($booking->products as $product) {
             $this->assertEquals($product->quantity, $data[$product->product_id]);
             $this->assertEquals($product->delivered, 0);
         }
@@ -389,7 +388,7 @@ class BookingsServiceTest extends TestCase
         $this->sample_order->supplier->save();
 
         $this->actingAs($this->userWithBasePerms);
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $data['action'] = 'booked';
         $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
 
@@ -415,7 +414,7 @@ class BookingsServiceTest extends TestCase
     /*
         Consegna con totale manuale superiore al prenotato
     */
-    public function testManualShippingPlus()
+    public function test_manual_shipping_plus()
     {
         $this->handlingTotalManual(10);
     }
@@ -423,7 +422,7 @@ class BookingsServiceTest extends TestCase
     /*
         Consegna con totale manuale inferiore al prenotato
     */
-    public function testManualShippingMinus()
+    public function test_manual_shipping_minus()
     {
         $this->handlingTotalManual(-10);
     }
@@ -446,7 +445,7 @@ class BookingsServiceTest extends TestCase
     /*
         Prenotazione con limiti di credito abilitati
     */
-    public function testInsufficientCredit()
+    public function test_insufficient_credit()
     {
         $this->gas->setConfig('restrict_booking_to_credit', (object) [
             'enabled' => true,
@@ -455,7 +454,7 @@ class BookingsServiceTest extends TestCase
 
         $this->actingAs($this->userWithBasePerms);
 
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $this->userWithBasePerms = $this->enforceBalance($this->userWithBasePerms, $total + 10);
 
         $this->nextRound();
@@ -467,7 +466,7 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->products()->count(), $booked_count);
         $this->assertEquals($booking->getValue('booked', true), $total);
 
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $this->userWithBasePerms = $this->enforceBalance($this->userWithBasePerms, $total - 10);
 
         $this->nextRound();
@@ -478,7 +477,7 @@ class BookingsServiceTest extends TestCase
             $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
             $this->fail('should never run');
         }
-        catch(IllegalArgumentException $e) {
+        catch (IllegalArgumentException $e) {
             // good boy
         }
     }
@@ -486,7 +485,7 @@ class BookingsServiceTest extends TestCase
     /*
         Prenotazione con limiti di credito diversi da 0 abilitati
     */
-    public function testInsufficientCreditWithLimit()
+    public function test_insufficient_credit_with_limit()
     {
         $this->gas->setConfig('restrict_booking_to_credit', (object) [
             'enabled' => true,
@@ -495,7 +494,7 @@ class BookingsServiceTest extends TestCase
 
         $this->actingAs($this->userWithBasePerms);
 
-        list($data, $booked_count, $total) = $this->randomQuantities($this->sample_order->products);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
         $this->userWithBasePerms = $this->enforceBalance($this->userWithBasePerms, $total - 10);
 
         $data['action'] = 'booked';

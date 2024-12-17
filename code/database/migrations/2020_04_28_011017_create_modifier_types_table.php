@@ -15,7 +15,7 @@ class CreateModifierTypesTable extends Migration
             $table->boolean('system')->default(false);
             $table->boolean('active')->default(true);
             $table->text('classes');
-			$table->boolean('hidden')->default(false);
+            $table->boolean('hidden')->default(false);
         });
     }
 

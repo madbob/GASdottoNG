@@ -9,18 +9,21 @@ class PasswordReset extends MailType
         return 'password_reset';
     }
 
-    public function description() {
+    public function description()
+    {
         return _i('Messaggio per il ripristino della password.');
     }
 
-    public function params() {
+    public function params()
+    {
         return [
             'username' => _i("Username dell'utente"),
-            'gas_reset_link' => _i("Link per il reset della password"),
+            'gas_reset_link' => _i('Link per il reset della password'),
         ];
     }
 
-    public function enabled($gas) {
+    public function enabled($gas)
+    {
         return true;
     }
 }

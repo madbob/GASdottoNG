@@ -33,7 +33,7 @@ trait PayableTrait
 
     public function deleteMovements()
     {
-        foreach($this->movements as $mov) {
+        foreach ($this->movements as $mov) {
             $mov->delete();
         }
     }
@@ -53,25 +53,25 @@ trait PayableTrait
         $class = get_class($this);
         $query = $this->initQueryMovements($query);
 
-        switch($type) {
+        switch ($type) {
             case 'all':
-                $query->where(function($query) use ($id, $class) {
-                    $query->where(function($query) use ($id, $class) {
+                $query->where(function ($query) use ($id, $class) {
+                    $query->where(function ($query) use ($id, $class) {
                         $query->where('sender_type', $class)->where('sender_id', $id);
-                    })->orWhere(function($query) use ($id, $class) {
+                    })->orWhere(function ($query) use ($id, $class) {
                         $query->where('target_type', $class)->where('target_id', $id);
                     });
                 });
                 break;
 
             case 'sender':
-                $query->where(function($query) use ($id, $class) {
+                $query->where(function ($query) use ($id, $class) {
                     $query->where('sender_type', $class)->where('sender_id', $id);
                 });
                 break;
 
             case 'target':
-                $query->where(function($query) use ($id, $class) {
+                $query->where(function ($query) use ($id, $class) {
                     $query->where('target_type', $class)->where('target_id', $id);
                 });
                 break;

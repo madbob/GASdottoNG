@@ -13,10 +13,10 @@ use App\Models\Concerns\TracksUpdater;
 
 /**
     @property-read Aggregate|Order|Product|Supplier|null $target
-*/
+ */
 class Modifier extends Model
 {
-    use GASModel, TracksUpdater, Cachable;
+    use Cachable, GASModel, TracksUpdater;
 
     protected static function boot()
     {
@@ -48,12 +48,12 @@ class Modifier extends Model
             valutazione in Modifier::apply()
         */
         if ($this->scale == 'minor') {
-            usort($ret, function($a, $b) {
+            usort($ret, function ($a, $b) {
                 return $a->threshold <=> $b->threshold;
             });
         }
         else {
-            usort($ret, function($a, $b) {
+            usort($ret, function ($a, $b) {
                 return ($a->threshold <=> $b->threshold) * -1;
             });
         }
@@ -67,6 +67,7 @@ class Modifier extends Model
         if ($ret == 'supplier') {
             $ret = 'order';
         }
+
         return $ret;
     }
 
@@ -76,7 +77,7 @@ class Modifier extends Model
             return false;
         }
 
-        return ($this->value == 'absolute' && $this->applies_target == 'order');
+        return $this->value == 'absolute' && $this->applies_target == 'order';
     }
 
     public function getNameAttribute()
@@ -99,14 +100,14 @@ class Modifier extends Model
                 $amount = printablePrice($d->amount);
             }
 
-			if ($this->value == 'mass') {
-				$postfix = $postfix . ' ' . _i('al KG');
-			}
+            if ($this->value == 'mass') {
+                $postfix = $postfix . ' ' . _i('al KG');
+            }
 
             $ret[] = sprintf('%s %s', $amount, $postfix);
         }
 
-        return join(' / ', $ret);
+        return implode(' / ', $ret);
     }
 
     public function getROShowURL()
@@ -129,7 +130,7 @@ class Modifier extends Model
                 return 'order';
             }
             else {
-                switch($this->applies_target) {
+                switch ($this->applies_target) {
                     case 'order':
                         return 'global_product';
 
@@ -151,7 +152,7 @@ class Modifier extends Model
             return false;
         }
         else {
-            foreach($data as $d) {
+            foreach ($data as $d) {
                 if ($d->amount != 0) {
                     return true;
                 }

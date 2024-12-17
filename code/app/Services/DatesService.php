@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Auth;
 use Log;
 use Artisan;
 use DB;
@@ -25,7 +24,7 @@ class DatesService extends BaseService
             $query->where('target_type', 'App\Supplier')->whereIn('target_id', array_keys($suppliers));
         }
 
-        if (!empty($types)) {
+        if (! empty($types)) {
             $query->whereIn('type', $types);
         }
 
@@ -77,9 +76,10 @@ class DatesService extends BaseService
 
             $generic_types = array_keys(Date::types());
 
-            foreach($ids as $index => $id) {
+            foreach ($ids as $index => $id) {
                 if (in_array($targets[$index], $suppliers) == false) {
                     Log::debug('Non autorizzato ad aggiungere date a questo fornitore');
+
                     continue;
                 }
 
@@ -87,16 +87,17 @@ class DatesService extends BaseService
                 $date->target_id = $targets[$index];
                 $date->recurring = '';
 
-                if (!empty($dates[$index])) {
+                if (! empty($dates[$index])) {
                     $date->date = decodeDate($dates[$index]);
                 }
 
-                if (empty($date->date) && !empty($recurrings[$index])) {
+                if (empty($date->date) && ! empty($recurrings[$index])) {
                     $date->recurring = json_encode(decodePeriodic($recurrings[$index]));
                 }
 
                 if (empty($date->date) && empty($date->recurring)) {
                     Log::debug('Data vuota, viene ignorata');
+
                     continue;
                 }
 
@@ -110,6 +111,7 @@ class DatesService extends BaseService
             }
 
             Date::whereIn('type', $generic_types)->whereIn('target_id', $suppliers)->whereNotIn('id', $saved_ids)->delete();
+
             return null;
         }
         else {
@@ -118,6 +120,7 @@ class DatesService extends BaseService
             $date->date = decodeDate($request['date']);
             $date->description = $request['description'];
             $date->save();
+
             return $date;
         }
     }
@@ -142,9 +145,10 @@ class DatesService extends BaseService
             $comments = $request['comment'];
             $suspends = $request['suspend'] ?? [];
 
-            foreach($ids as $index => $id) {
+            foreach ($ids as $index => $id) {
                 if (in_array($targets[$index], $suppliers) == false || empty($recurrings[$index])) {
                     \Log::debug('Salvataggio ordine ricorrente fallito: permessi non validi');
+
                     continue;
                 }
 
@@ -185,6 +189,7 @@ class DatesService extends BaseService
         $this->ensureAuth(['notifications.admin' => 'gas']);
         $date->delete();
         DB::commit();
+
         return $date;
     }
 }

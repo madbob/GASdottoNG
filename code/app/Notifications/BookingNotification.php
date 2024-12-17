@@ -17,8 +17,11 @@ class BookingNotification extends ManyMailNotification
     use MailReplyTo;
 
     private $aggregate_id = null;
+
     private $redux = null;
+
     private $user_id = null;
+
     private $message = null;
 
     public function __construct($aggregate_id, $redux, $user_id, $message)
@@ -40,7 +43,7 @@ class BookingNotification extends ManyMailNotification
         $message->subject(_i('Riassunto prenotazione del GAS: %s - consegna %s', [$strings['suppliers'], $strings['shipping']]))->view('emails.booking', [
             'booking' => $booking,
             'redux' => $this->redux,
-            'txt_message' => $this->message
+            'txt_message' => $this->message,
         ]);
 
         $message = $this->guessReplyTo($message, $aggregate);

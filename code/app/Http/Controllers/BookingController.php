@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use App\Http\Controllers\Controller;
 
 use Auth;
-use URL;
 use DB;
 
 use App\Aggregate;
@@ -19,7 +17,7 @@ class BookingController extends Controller
         $this->middleware('auth');
 
         $this->commonInit([
-            'reference_class' => 'App\\Booking'
+            'reference_class' => 'App\\Booking',
         ]);
     }
 
@@ -43,7 +41,7 @@ class BookingController extends Controller
 
         $shipping = getOrdersByStatus($user, 'closed');
 
-        $orders = $opened->merge($shipping)->unique()->sort(function($a, $b) {
+        $orders = $opened->merge($shipping)->unique()->sort(function ($a, $b) {
             return strcmp($a->end, $b->end);
         });
 
@@ -54,6 +52,7 @@ class BookingController extends Controller
     {
         $aggregate = Aggregate::findOrFail($id);
         $user = Auth::user();
+
         return view('booking.editwrap', ['aggregate' => $aggregate, 'user' => $user, 'standalone' => false]);
     }
 

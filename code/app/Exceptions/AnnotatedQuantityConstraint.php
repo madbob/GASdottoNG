@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class AnnotatedQuantityConstraint extends \Exception
-{
-}
+class AnnotatedQuantityConstraint extends \Exception {}

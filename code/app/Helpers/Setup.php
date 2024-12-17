@@ -36,14 +36,14 @@ function read_instance_config_file($path)
     $config = file($path);
     $params = [];
 
-    foreach($config as $c) {
+    foreach ($config as $c) {
         $c = trim($c);
         if (empty($c) == false) {
             if (strpos($c, '=') === false) {
                 \Log::error('Configurazione ambigua in file ' . $path . ' - ' . $c);
             }
             else {
-                list($name, $value) = explode('=', $c);
+                [$name, $value] = explode('=', $c);
                 $params[$name] = $value;
             }
         }
@@ -59,7 +59,7 @@ function get_instances()
     $path = base_path('.env.*');
     $files = glob($path);
 
-    foreach($files as $file) {
+    foreach ($files as $file) {
         $params = read_instance_config_file($file);
         if (isset($params['DB_DATABASE'])) {
             $ret[] = $params['DB_DATABASE'];
@@ -87,5 +87,6 @@ function get_instance_db($name)
     ];
 
     $factory = App::make('db.factory');
+
     return $factory->make($db_config);
 }

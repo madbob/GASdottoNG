@@ -10,16 +10,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Database\Schema\Blueprint;
 
 use App\Gas;
-use App\User;
-use App\Supplier;
-use App\Order;
 use App\ModifierType;
-use App\Role;
 use App\Date;
 use App\Group;
 use App\Circle;
@@ -27,6 +22,7 @@ use App\Circle;
 class FixDatabase extends Command
 {
     protected $signature = 'fix:database';
+
     protected $description = 'Sistema le informazioni sul DB per completare il deploy';
 
     private function doAlways()
@@ -48,7 +44,7 @@ class FixDatabase extends Command
             Per revisionare le configurazioni relative ai limiti di credito per
             permettere le prenotazioni
         */
-        foreach(Gas::all() as $gas) {
+        foreach (Gas::all() as $gas) {
             $restriction_info = $gas->getConfig('restrict_booking_to_credit');
             $restriction_info = json_decode($restriction_info);
             if (is_object($restriction_info) == false) {
@@ -91,7 +87,7 @@ class FixDatabase extends Command
         */
 
         $dates = Date::where('type', 'order')->get();
-        foreach($dates as $d) {
+        foreach ($dates as $d) {
             $attributes = json_decode($d->description);
             if (isset($attributes->action) == false) {
                 $attributes->action = 'open';
@@ -113,7 +109,7 @@ class FixDatabase extends Command
             $group->filters_orders = true;
             $group->save();
 
-            foreach($old_deliveries as $old) {
+            foreach ($old_deliveries as $old) {
                 $circle = new Circle();
                 $circle->name = $old->name;
                 $circle->is_default = $old->default;
@@ -121,12 +117,12 @@ class FixDatabase extends Command
                 $circle->save();
 
                 $involved = User::where('preferred_delivery_id', $old->id)->get();
-                foreach($involved as $u) {
+                foreach ($involved as $u) {
                     $u->circles()->sync([$circle->id]);
                 }
 
                 $orders = DB::table('delivery_order')->where('delivery_id', $old->id)->get();
-                foreach($orders as $order) {
+                foreach ($orders as $order) {
                     $o = Order::find($order->order_id);
                     if ($o) {
                         $o->circles()->attach($circle->id);
@@ -141,7 +137,7 @@ class FixDatabase extends Command
         */
 
         $all_gas = Gas::all();
-        foreach($all_gas as $gas) {
+        foreach ($all_gas as $gas) {
             $gas->setConfig('multigas', $all_gas->count() > 1 ? '1' : '0');
         }
     }

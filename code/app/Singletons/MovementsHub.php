@@ -10,6 +10,7 @@ namespace App\Singletons;
 class MovementsHub
 {
     private $recalculating = false;
+
     private $suspended = false;
 
     /*

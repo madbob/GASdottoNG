@@ -2,8 +2,6 @@
 
 namespace App\Models\Concerns;
 
-use DB;
-
 trait ExportableTrait
 {
     public function exportableURL()
@@ -12,5 +10,6 @@ trait ExportableTrait
     }
 
     abstract public function exportXML();
+
     abstract public function exportJSON();
 }

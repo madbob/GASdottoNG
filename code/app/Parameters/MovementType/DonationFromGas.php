@@ -13,6 +13,7 @@ class DonationFromGas extends GasExpense
     {
         $type = parent::initNew($type);
         $type->name = _i('Donazione dal GAS');
+
         return $type;
     }
 }

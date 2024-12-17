@@ -18,7 +18,8 @@ class SlugModel
             }
 
             $id = $template . '-' . $index++;
-        } while(true);
+        }
+        while (true);
 
         return $id;
     }

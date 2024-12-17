@@ -20,7 +20,7 @@ function printableDate($value, $short = false)
             return ucwords(\Carbon\Carbon::createFromTimestamp($t)->isoFormat('DD/MM/YYYY'));
         }
         else {
-			return ucwords(\Carbon\Carbon::createFromTimestamp($t)->isoFormat('dddd D MMMM YYYY'));
+            return ucwords(\Carbon\Carbon::createFromTimestamp($t)->isoFormat('dddd D MMMM YYYY'));
         }
     }
 }
@@ -28,17 +28,19 @@ function printableDate($value, $short = false)
 function readDate($date)
 {
     if (preg_match('/\d{1,2}\/\d{1,2}\/\d{1,4}/', $date) == 1) {
-        list($day, $month, $year) = explode('/', $date);
-        if ($year < 1000)
-            $year = (int)$year + 2000;
+        [$day, $month, $year] = explode('/', $date);
+        if ($year < 1000) {
+            $year = (int) $year + 2000;
+        }
 
         return strtotime("$year-$month-$day");
     }
 
     if (preg_match('/\d{1,2}\.\d{1,2}\.\d{1,4}/', $date) == 1) {
-        list($day, $month, $year) = explode('.', $date);
-        if ($year < 1000)
-            $year = (int)$year + 2000;
+        [$day, $month, $year] = explode('.', $date);
+        if ($year < 1000) {
+            $year = (int) $year + 2000;
+        }
 
         return strtotime("$year-$month-$day");
     }
@@ -61,18 +63,20 @@ function periodicCycling()
 
 function printablePeriodic($value)
 {
-    if (empty($value))
+    if (empty($value)) {
         return '';
+    }
 
     $value_obj = json_decode($value);
     if (empty($value_obj)) {
         Log::error('Data periodica non riconosciuta: ' . $value);
+
         return '';
     }
 
     $day = '';
     $days = localeDays();
-    foreach($days as $locale => $english) {
+    foreach ($days as $locale => $english) {
         if ($value_obj->day == $english) {
             $day = ucwords($locale);
             break;
@@ -87,8 +91,9 @@ function printablePeriodic($value)
 
 function decodePeriodic($value)
 {
-    if (empty($value))
+    if (empty($value)) {
         return '';
+    }
 
     $values = explode(' - ', $value);
     if (count($values) < 4) {
@@ -99,7 +104,7 @@ function decodePeriodic($value)
         'day' => '',
         'cycle' => '',
         'from' => '',
-        'to' => ''
+        'to' => '',
     ];
 
     $day = strtolower($values[0]);
@@ -107,7 +112,7 @@ function decodePeriodic($value)
     $ret->day = $days[$day];
 
     $cycles = periodicCycling();
-    foreach($cycles as $identifier => $string) {
+    foreach ($cycles as $identifier => $string) {
         if ($values[1] == $string) {
             $ret->cycle = $identifier;
             break;
@@ -122,7 +127,7 @@ function decodePeriodic($value)
 
 function unrollPeriodic($value)
 {
-    if (!isset($value->from) || !isset($value->to)) {
+    if (! isset($value->from) || ! isset($value->to)) {
         return [];
     }
 
@@ -139,7 +144,7 @@ function unrollPeriodic($value)
         }
 
         $all_days = new \DatePeriod($start, new \DateInterval('P2W'), $end);
-        foreach($all_days as $d) {
+        foreach ($all_days as $d) {
             $days[] = $d->format('Y-m-d');
         }
     }
@@ -149,7 +154,7 @@ function unrollPeriodic($value)
         $validity_start = 1;
         $validity_end = 31;
 
-        switch($value->cycle) {
+        switch ($value->cycle) {
             case 'all':
                 break;
             case 'month_first':
@@ -177,7 +182,7 @@ function unrollPeriodic($value)
                 break;
         }
 
-        foreach($all_days as $d) {
+        foreach ($all_days as $d) {
             $d_day = $d->format('d');
             if ($d_day < $validity_start || $d_day > $validity_end) {
                 continue;
@@ -209,12 +214,14 @@ function decodeDate($date)
     $tokens = explode(' ', $date);
     if (count($tokens) != 4) {
         Log::error('Undecodable date: ' . $date);
+
         return null;
     }
 
-    list($weekday, $day, $month, $year) = $tokens;
+    [$weekday, $day, $month, $year] = $tokens;
     $month = $months[strtolower($month)];
     $en_date = sprintf('%s %s %s', $day, $month, $year);
+
     return date('Y-m-d', strtotime($en_date));
 }
 
@@ -225,8 +232,9 @@ function decodeDateMonth($date)
     }
 
     $months = localeMonths();
-    list($day, $month) = explode(' ', $date);
+    [$day, $month] = explode(' ', $date);
     $month = $months[strtolower($month)];
     $en_date = sprintf('%s %s %s', $day, $month, date('Y'));
+
     return date('Y-m-d', strtotime($en_date));
 }

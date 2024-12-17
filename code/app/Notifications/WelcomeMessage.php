@@ -10,11 +10,12 @@ use App\Notifications\Concerns\MailFormatter;
 
 class WelcomeMessage extends ManyMailNotification implements ShouldQueue
 {
-    use Queueable, MailFormatter;
+    use MailFormatter, Queueable;
 
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
+
         return $this->formatMail($message, $notifiable, 'welcome');
     }
 }

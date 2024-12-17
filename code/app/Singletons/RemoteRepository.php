@@ -16,13 +16,13 @@ class RemoteRepository
                 $response = $client->request('GET', sprintf('%s/api/list', env('HUB_URL')));
                 $response = json_decode($response->getBody());
 
-                usort($response->results, function($a, $b) {
+                usort($response->results, function ($a, $b) {
                     return $a->name <=> $b->name;
                 });
 
                 $this->list = $response->results;
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 Log::error('Unable to read remote repository: ' . $e->getMessage());
                 $this->list = [];
             }

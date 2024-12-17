@@ -17,8 +17,8 @@ class MailDeclined extends Config
     public function default()
     {
         return (object) [
-            'subject' => _i("Non sei stato approvato!"),
-            'body' => _i("Spiacente, ma il tuo account non è stato approvato da %[gas_name]."),
+            'subject' => _i('Non sei stato approvato!'),
+            'body' => _i('Spiacente, ma il tuo account non è stato approvato da %[gas_name].'),
         ];
     }
 }

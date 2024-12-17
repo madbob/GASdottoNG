@@ -52,6 +52,7 @@ class UserObserver
         }
 
         $user->circles()->sync([]);
+
         return $user;
     }
 
@@ -65,7 +66,7 @@ class UserObserver
 
         $groups = Group::where('context', 'user')->get();
         $circles = [];
-        foreach($groups as $group) {
+        foreach ($groups as $group) {
             $circle = $group->circles()->where('is_default', true)->first();
             if ($circle) {
                 $circles[] = $circle->id;
@@ -73,6 +74,7 @@ class UserObserver
         }
 
         $user->circles()->sync($circles);
+
         return $user;
     }
 

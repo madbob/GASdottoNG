@@ -13,5 +13,4 @@ class MissingFieldException extends \Exception
     {
         return $this->getCode();
     }
-
 }

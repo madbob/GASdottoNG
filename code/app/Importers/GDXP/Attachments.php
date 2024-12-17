@@ -2,7 +2,6 @@
 
 namespace App\Importers\GDXP;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 use App\Product;
@@ -49,6 +48,7 @@ class Attachments extends GDXPImporter
         }
         else {
             $existing = $target->attachments()->where('name', $json->name)->first();
+
             return $target->attachByContents($json->name, $contents, $existing ? $existing->id : null);
         }
     }

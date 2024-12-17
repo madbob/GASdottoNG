@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
 use Auth;
@@ -13,7 +12,6 @@ use PDF;
 
 use App\User;
 use App\Supplier;
-use App\Balance;
 use App\Currency;
 use App\Movement;
 use App\Group;
@@ -21,7 +19,6 @@ use App\Group;
 use App\Services\MovementsService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\AuthException;
-use App\Exceptions\IllegalArgumentException;
 
 class MovementsController extends BackedController
 {
@@ -31,26 +28,26 @@ class MovementsController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Movement',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
-	private function checkAuth()
-	{
-		$user = Auth::user();
+    private function checkAuth()
+    {
+        $user = Auth::user();
 
         if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false && $user->can('supplier.movements', null) == false && $user->can('supplier.invoices', null) == false) {
             abort(503);
         }
 
-		return $user;
-	}
+        return $user;
+    }
 
     public function index(Request $request)
     {
         try {
             $data['movements'] = $this->service->list($request->all());
-			$ret = null;
+            $ret = null;
 
             if ($request->has('startdate') == false) {
                 /*
@@ -79,25 +76,25 @@ class MovementsController extends BackedController
                     }
                 }
                 else {
-					$ret = $this->exportMain($format, $data['movements']);
+                    $ret = $this->exportMain($format, $data['movements']);
                 }
             }
 
-			return $ret;
+            return $ret;
         }
         catch (AuthException $e) {
             abort($e->status());
         }
     }
 
-	private function exportMain($format, $movements)
-	{
-		$filename = sanitizeFilename(_i('Esportazione movimenti GAS %s.%s', [date('d/m/Y'), $format]));
+    private function exportMain($format, $movements)
+    {
+        $filename = sanitizeFilename(_i('Esportazione movimenti GAS %s.%s', [date('d/m/Y'), $format]));
 
-		if ($format == 'csv') {
-			$headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Identificativo'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
+        if ($format == 'csv') {
+            $headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Identificativo'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
 
-			return output_csv($filename, $headers, $movements, function($mov) {
+            return output_csv($filename, $headers, $movements, function ($mov) {
                 $row = [];
                 $row[] = $mov->registration_date;
                 $row[] = $mov->date;
@@ -108,14 +105,16 @@ class MovementsController extends BackedController
                 $row[] = $mov->target ? $mov->target->printableName() : '';
                 $row[] = printablePrice($mov->amount);
                 $row[] = $mov->notes;
+
                 return $row;
-			});
-		}
-		else if ($format == 'pdf') {
-			$pdf = PDF::loadView('documents.movements_pdf', ['movements' => $movements]);
-			return $pdf->download($filename);
-		}
-	}
+            });
+        }
+        elseif ($format == 'pdf') {
+            $pdf = PDF::loadView('documents.movements_pdf', ['movements' => $movements]);
+
+            return $pdf->download($filename);
+        }
+    }
 
     public function create(Request $request)
     {
@@ -172,10 +171,11 @@ class MovementsController extends BackedController
         try {
             $user = Auth::user();
             $movement = $this->service->show($id);
+
             return view('movement.modal', [
                 'dom_id' => $dom_id,
                 'obj' => $movement,
-                'editable' => $user->can('movements.admin', $user->gas)
+                'editable' => $user->can('movements.admin', $user->gas),
             ]);
         }
         catch (AuthException $e) {
@@ -207,23 +207,25 @@ class MovementsController extends BackedController
 
     public function show_ro($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $movement = $this->service->show($id);
+
             return view('movement.show', ['obj' => $movement]);
         });
     }
 
     public function creditsTable($type)
     {
-		$this->checkAuth();
-    	return view('movement.' . $type);
+        $this->checkAuth();
+
+        return view('movement.' . $type);
     }
 
     private function exportIntegralCES($gas, $objects, $filename, $body)
     {
         $currency = Currency::where('context', 'integralces')->first();
 
-        return output_csv($filename, null, $objects, function($object) use ($gas, $currency, $body) {
+        return output_csv($filename, null, $objects, function ($object) use ($gas, $currency, $body) {
             $amount = $object->currentBalanceAmount($currency);
             if ($amount == 0) {
                 return null;
@@ -271,8 +273,8 @@ class MovementsController extends BackedController
                 */
                 'reload-portion' => ['.balance-summary', '.holding-movement-' . $id],
 
-                'post-saved-function' => ['closeAllModals', 'refreshFilter']
-            ]
+                'post-saved-function' => ['closeAllModals', 'refreshFilter'],
+            ],
         ]);
     }
 
@@ -285,8 +287,8 @@ class MovementsController extends BackedController
                 $users = User::sorted()->topLevel()->get();
 
                 $filtered_users = $this->collectedFilteredUsers($request);
-                if (!empty($filtered_users)) {
-                    $users = $users->filter(function($u) use ($filtered_users) {
+                if (! empty($filtered_users)) {
+                    $users = $users->filter(function ($u) use ($filtered_users) {
                         return in_array($u->id, $filtered_users);
                     });
                 }
@@ -304,7 +306,7 @@ class MovementsController extends BackedController
                     $headers = [_i('ID'), _i('Nome'), _i('E-Mail')];
 
                     $currencies = Currency::enabled();
-                    foreach($currencies as $curr) {
+                    foreach ($currencies as $curr) {
                         $headers[] = _i('Credito Residuo %s', $curr->symbol);
                     }
 
@@ -313,17 +315,17 @@ class MovementsController extends BackedController
                     }
 
                     $groups = Group::where('context', 'user')->get();
-                    foreach($groups as $group) {
+                    foreach ($groups as $group) {
                         $headers[] = $group->name;
                     }
 
-                    return output_csv($filename, $headers, $users, function($user) use ($currencies, $has_fee, $groups) {
+                    return output_csv($filename, $headers, $users, function ($user) use ($currencies, $has_fee, $groups) {
                         $row = [];
                         $row[] = $user->username;
                         $row[] = $user->printableName();
                         $row[] = $user->email;
 
-                        foreach($currencies as $curr) {
+                        foreach ($currencies as $curr) {
                             $row[] = printablePrice($user->currentBalanceAmount($curr));
                         }
 
@@ -331,14 +333,14 @@ class MovementsController extends BackedController
                             $row[] = $user->fee != null ? _i('SI') : _i('NO');
                         }
 
-                        foreach($groups as $group) {
-                            $row[] = join(' - ', $user->circlesByGroup($group)->circles);
+                        foreach ($groups as $group) {
+                            $row[] = implode(' - ', $user->circlesByGroup($group)->circles);
                         }
 
                         return $row;
                     });
                 }
-                else if ($subtype == 'rid') {
+                elseif ($subtype == 'rid') {
                     $date = decodeDate($request->input('date'));
                     $body = strtoupper($request->input('body'));
                     $filename = sanitizeFilename(_i('SEPA del %s.xml', date('d/m/Y', strtotime($date))));
@@ -348,10 +350,10 @@ class MovementsController extends BackedController
                         'Content-Disposition' => 'attachment; filename=' . $filename,
                         'Cache-Control' => 'no-cache, no-store, must-revalidate',
                         'Expires' => '0',
-                        'Pragma' => 'no-cache'
+                        'Pragma' => 'no-cache',
                     ];
 
-                    return Response::stream(function() use ($users, $date, $body) {
+                    return Response::stream(function () use ($users, $date, $body) {
                         $FH = fopen('php://output', 'w');
 
                         $contents = view('documents.credits_rid', [
@@ -364,9 +366,10 @@ class MovementsController extends BackedController
                         fclose($FH);
                     }, 200, $headers);
                 }
-                else if ($subtype == 'integralces') {
+                elseif ($subtype == 'integralces') {
                     $body = strtoupper($request->input('body'));
                     $filename = sanitizeFilename(_i('IntegralCES Utenti.csv'));
+
                     return $this->exportIntegralCES($user->gas, $users, $filename, $body);
                 }
 
@@ -380,25 +383,26 @@ class MovementsController extends BackedController
                     $headers = [_i('ID'), _i('Nome')];
 
                     $currencies = Currency::enabled();
-                    foreach($currencies as $curr) {
+                    foreach ($currencies as $curr) {
                         $headers[] = _i('Saldo %s', $curr->symbol);
                     }
 
-                    return output_csv($filename, $headers, $suppliers, function($supplier) use ($currencies) {
+                    return output_csv($filename, $headers, $suppliers, function ($supplier) use ($currencies) {
                         $row = [];
                         $row[] = $supplier->id;
                         $row[] = $supplier->printableName();
 
-                        foreach($currencies as $curr) {
+                        foreach ($currencies as $curr) {
                             $row[] = printablePrice($supplier->currentBalanceAmount($curr));
                         }
 
                         return $row;
                     });
                 }
-                else if ($subtype == 'integralces') {
+                elseif ($subtype == 'integralces') {
                     $body = strtoupper($request->input('body'));
                     $filename = sanitizeFilename(_i('IntegralCES Fornitori.csv'));
+
                     return $this->exportIntegralCES($user->gas, $suppliers, $filename, $body);
                 }
 
@@ -410,6 +414,7 @@ class MovementsController extends BackedController
     {
         $this->checkAuth();
         $obj = fromInlineId($targetid);
+
         return view('movement.summary', ['obj' => $obj]);
     }
 
@@ -417,48 +422,50 @@ class MovementsController extends BackedController
     {
         $this->checkAuth();
         $obj = fromInlineId($targetid);
+
         return view('movement.history', ['obj' => $obj]);
     }
 
-	public function getHistoryDetails(Request $request)
-	{
-		$this->checkAuth();
-		$date = $request->input('date');
+    public function getHistoryDetails(Request $request)
+    {
+        $this->checkAuth();
+        $date = $request->input('date');
 
-		$users = $this->service->creditHistory(User::class, $date);
-		$suppliers = $this->service->creditHistory(Supplier::class, $date);
+        $users = $this->service->creditHistory(User::class, $date);
+        $suppliers = $this->service->creditHistory(Supplier::class, $date);
 
-		$format = $request->input('format');
-		if ($format == 'csv') {
-			$target = $request->input('target');
-			if ($target == 'users') {
-				$target = $users;
-			}
-			else {
-				$target = $suppliers;
-			}
+        $format = $request->input('format');
+        if ($format == 'csv') {
+            $target = $request->input('target');
+            if ($target == 'users') {
+                $target = $users;
+            }
+            else {
+                $target = $suppliers;
+            }
 
-			$data = [];
+            $data = [];
 
-			foreach($target as $name => $row) {
-				$data[] = array_merge([$name], $row);
-			}
+            foreach ($target as $name => $row) {
+                $data[] = array_merge([$name], $row);
+            }
 
-			$filename = sanitizeFilename(_i('Storico Saldi al %s.csv', Carbon::parse()->format('d/m/Y')));
-			return output_csv($filename, null, $data, null);
-		}
-		else {
-			return view('movement.historydetails', [
-				'date' => $date,
-				'users' => $users,
-				'suppliers' => $suppliers,
-			]);
-		}
-	}
+            $filename = sanitizeFilename(_i('Storico Saldi al %s.csv', Carbon::parse()->format('d/m/Y')));
+
+            return output_csv($filename, null, $data, null);
+        }
+        else {
+            return view('movement.historydetails', [
+                'date' => $date,
+                'users' => $users,
+                'suppliers' => $suppliers,
+            ]);
+        }
+    }
 
     public function recalculate()
     {
-        return $this->easyExecute(function() {
+        return $this->easyExecute(function () {
             $diffs = $this->service->recalculate();
 
             if (is_null($diffs)) {
@@ -466,7 +473,7 @@ class MovementsController extends BackedController
             }
             else {
                 return $this->successResponse([
-                    'diffs' => $diffs
+                    'diffs' => $diffs,
                 ]);
             }
         });
@@ -474,22 +481,25 @@ class MovementsController extends BackedController
 
     public function closeBalance(Request $request)
     {
-        return $this->easyExecute(function() use ($request) {
+        return $this->easyExecute(function () use ($request) {
             $this->service->closeBalance($request->all());
+
             return $this->successResponse();
         });
     }
 
-	public function askDeleteBalance($id)
-	{
-		$this->checkAuth();
-		return view('movement.deletebalance', ['id' => $id]);
-	}
+    public function askDeleteBalance($id)
+    {
+        $this->checkAuth();
+
+        return view('movement.deletebalance', ['id' => $id]);
+    }
 
     public function deleteBalance($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $this->service->deleteBalance($id);
+
             return $this->successResponse();
         });
     }

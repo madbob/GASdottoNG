@@ -11,7 +11,6 @@ use Illuminate\Queue\SerializesModels;
 use App\Notifications\ClosedOrdersNotification;
 use App\Notifications\SupplierOrderShipping;
 use App\Printers\Order as OrderPrinter;
-use App\User;
 use App\Order;
 
 class NotifyClosedOrder implements ShouldQueue
@@ -38,8 +37,8 @@ class NotifyClosedOrder implements ShouldQueue
         }
 
         $files = [];
-        foreach($types as $type) {
-            foreach(['pdf', 'csv'] as $format) {
+        foreach ($types as $type) {
+            foreach (['pdf', 'csv'] as $format) {
                 $f = $printer->document($order, $type, ['format' => $format, 'status' => 'pending', 'extra_modifiers' => 0, 'action' => 'save']);
                 if ($f) {
                     $files[] = $f;
@@ -58,7 +57,7 @@ class NotifyClosedOrder implements ShouldQueue
             if ($supplier->notify_on_close_enabled != 'none') {
                 $hub = app()->make('GlobalScopeHub');
 
-                foreach($order->aggregate->gas as $gas) {
+                foreach ($order->aggregate->gas as $gas) {
                     try {
                         $hub->enable(false);
                         $files = $this->filesForSupplier($order);
@@ -72,7 +71,7 @@ class NotifyClosedOrder implements ShouldQueue
 
                         $hub->enable(true);
                     }
-                    catch(\Exception $e) {
+                    catch (\Exception $e) {
                         \Log::error('Errore in notifica chiusura ordine a fornitore: ' . $e->getMessage());
                     }
 
@@ -84,12 +83,12 @@ class NotifyClosedOrder implements ShouldQueue
 
     private function dispatchToReferents($notifiable_users)
     {
-        foreach($notifiable_users as $notifiable) {
+        foreach ($notifiable_users as $notifiable) {
             if ($notifiable->user->gas->auto_referent_order_summary) {
                 try {
                     $notifiable->user->notify(new ClosedOrdersNotification($notifiable->orders, $notifiable->files));
                 }
-                catch(\Exception $e) {
+                catch (\Exception $e) {
                     \Log::error('Errore in notifica chiusura ordine: ' . $e->getMessage());
                 }
             }
@@ -106,17 +105,18 @@ class NotifyClosedOrder implements ShouldQueue
         $hub = app()->make('GlobalScopeHub');
         $hub->enable(false);
 
-        foreach($this->orders as $order_id) {
+        foreach ($this->orders as $order_id) {
             $order = Order::find($order_id);
             if (is_null($order)) {
                 \Log::error('Non trovato ordine in fase di notifica chiusura: ' . $order_id . ' / ' . env('DB_DATABASE'));
+
                 continue;
             }
 
             $aggregate = $order->aggregate;
             $closed_aggregate = ($aggregate->last_notify == null && $aggregate->status == 'closed');
 
-            foreach($aggregate->gas as $gas) {
+            foreach ($aggregate->gas as $gas) {
                 $hub->enable(true);
                 $hub->setGas($gas->id);
 
@@ -127,7 +127,7 @@ class NotifyClosedOrder implements ShouldQueue
                 $all_files[] = $csv_file_path;
 
                 $referents = everybodyCan('supplier.orders', $order->supplier);
-                foreach($referents as $u) {
+                foreach ($referents as $u) {
                     if (isset($notifiable_users[$u->id]) == false) {
                         $notifiable_users[$u->id] = (object) [
                             'user' => $u,
@@ -149,7 +149,7 @@ class NotifyClosedOrder implements ShouldQueue
             $this->dispatchToSupplier($order);
         }
 
-        foreach($aggregates as $aggregate) {
+        foreach ($aggregates as $aggregate) {
             AggregateSummaries::dispatch($aggregate);
         }
 

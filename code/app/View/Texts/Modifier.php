@@ -31,7 +31,7 @@ class Modifier
             'aggregate,order' => _i("dell'ordine aggregato"),
             'circle,product' => '',
             'circle,booking' => _i('della prenotazione assegnata al cerchio'),
-            'circle,order' => _i("della porzione di ordine destinata al cerchio"),
+            'circle,order' => _i('della porzione di ordine destinata al cerchio'),
         ];
     }
 
@@ -72,39 +72,39 @@ class Modifier
         $currency = defaultCurrency()->symbol;
 
         return [
-            'sum,product,absolute' => [_i("somma al costo del prodotto"), $currency],
-            'sum,booking,absolute' => [_i("somma al costo della prenotazione"), $currency],
+            'sum,product,absolute' => [_i('somma al costo del prodotto'), $currency],
+            'sum,booking,absolute' => [_i('somma al costo della prenotazione'), $currency],
             'sum,order,absolute' => [_i("somma al costo dell'ordine"), $currency],
-            'sum,product,percentage' => [_i("somma al costo del prodotto"), '%'],
-            'sum,booking,percentage' => [_i("somma al costo della prenotazione"), '%'],
+            'sum,product,percentage' => [_i('somma al costo del prodotto'), '%'],
+            'sum,booking,percentage' => [_i('somma al costo della prenotazione'), '%'],
             'sum,order,percentage' => [_i("somma al costo dell'ordine"), '%'],
-			'sum,product,mass' => [_i("per ogni Kg di prodotto, somma"), $currency],
-            'sum,booking,mass' => [_i("per ogni Kg nella prenotazione, somma"), $currency],
+            'sum,product,mass' => [_i('per ogni Kg di prodotto, somma'), $currency],
+            'sum,booking,mass' => [_i('per ogni Kg nella prenotazione, somma'), $currency],
             'sum,order,mass' => [_i("per ogni Kg nell'ordine, somma"), $currency],
 
-            'sub,product,absolute' => [_i("sottrai al costo del prodotto"), $currency],
-            'sub,booking,absolute' => [_i("sottrai al costo della prenotazione"), $currency],
+            'sub,product,absolute' => [_i('sottrai al costo del prodotto'), $currency],
+            'sub,booking,absolute' => [_i('sottrai al costo della prenotazione'), $currency],
             'sub,order,absolute' => [_i("sottrai al costo dell'ordine"), $currency],
-            'sub,product,percentage' => [_i("sottrai al costo del prodotto"), '%'],
-            'sub,booking,percentage' => [_i("sottrai al costo della prenotazione"), '%'],
+            'sub,product,percentage' => [_i('sottrai al costo del prodotto'), '%'],
+            'sub,booking,percentage' => [_i('sottrai al costo della prenotazione'), '%'],
             'sub,order,percentage' => [_i("sottrai al costo dell'ordine"), '%'],
-			'sub,product,mass' => [_i("per ogni Kg di prodotto, sottrai"), $currency],
-            'sub,booking,mass' => [_i("per ogni Kg nella prenotazione, sottrai"), $currency],
+            'sub,product,mass' => [_i('per ogni Kg di prodotto, sottrai'), $currency],
+            'sub,booking,mass' => [_i('per ogni Kg nella prenotazione, sottrai'), $currency],
             'sub,order,mass' => [_i("per ogni Kg nell'ordine, sottrai"), $currency],
 
-            'passive,product,absolute' => [_i("rispetto al costo del prodotto, calcola"), $currency],
-            'passive,booking,absolute' => [_i("rispetto al costo della prenotazione, calcola"), $currency],
+            'passive,product,absolute' => [_i('rispetto al costo del prodotto, calcola'), $currency],
+            'passive,booking,absolute' => [_i('rispetto al costo della prenotazione, calcola'), $currency],
             'passive,order,absolute' => [_i("rispetto al costo dell'ordine, calcola"), $currency],
-            'passive,product,percentage' => [_i("rispetto al costo del prodotto, calcola"), '%'],
-            'passive,booking,percentage' => [_i("rispetto al costo della prenotazione, calcola"), '%'],
+            'passive,product,percentage' => [_i('rispetto al costo del prodotto, calcola'), '%'],
+            'passive,booking,percentage' => [_i('rispetto al costo della prenotazione, calcola'), '%'],
             'passive,order,percentage' => [_i("rispetto al costo dell'ordine, calcola"), '%'],
-			'passive,product,mass' => [_i("per ogni Kg di prodotto, calcola"), $currency],
-            'passive,booking,mass' => [_i("per ogni Kg nella prenotazione, calcola"), $currency],
+            'passive,product,mass' => [_i('per ogni Kg di prodotto, calcola'), $currency],
+            'passive,booking,mass' => [_i('per ogni Kg nella prenotazione, calcola'), $currency],
             'passive,order,mass' => [_i("per ogni Kg nell'ordine, calcola"), $currency],
 
-            'apply,product,price' => [_i("applica il prezzo unitario"), $currency],
-            'apply,booking,price' => [_i("applica il prezzo unitario"), $currency],
-            'apply,order,price' => [_i("applica il prezzo unitario"), $currency],
+            'apply,product,price' => [_i('applica il prezzo unitario'), $currency],
+            'apply,booking,price' => [_i('applica il prezzo unitario'), $currency],
+            'apply,order,price' => [_i('applica il prezzo unitario'), $currency],
         ];
     }
 
@@ -135,12 +135,12 @@ class Modifier
 
         $labels = [];
 
-        foreach($value_labels as $vl => $vs) {
-            foreach($targets_labels as $tl => $ts) {
-                foreach($scale_labels as $sl => $ss) {
-                    foreach($value_units as $vu => $vus) {
-                        foreach($distribution_labels as $dl => $ds) {
-                            foreach($distribution_types as $dt => $dts) {
+        foreach ($value_labels as $vl => $vs) {
+            foreach ($targets_labels as $tl => $ts) {
+                foreach ($scale_labels as $sl => $ss) {
+                    foreach ($value_units as $vu => $vus) {
+                        foreach ($distribution_labels as $dl => $ds) {
+                            foreach ($distribution_types as $dt => $dts) {
                                 $key = sprintf('%s,%s,%s,%s,%s,%s', $vl, $tl, $sl, $vu, $dl, $dt);
                                 $labels[$key] = [
                                     _i('Se %s %s %s', [$vs, $ts, $ss]),

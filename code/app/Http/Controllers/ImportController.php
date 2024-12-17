@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 use DB;
 use Log;
@@ -19,6 +18,7 @@ class ImportController extends Controller
     public function esModal()
     {
         $entries = App::make('RemoteRepository')->getList();
+
         return view('import.esmodal', ['entries' => $entries]);
     }
 
@@ -37,14 +37,16 @@ class ImportController extends Controller
             switch ($step) {
                 case 'guess':
                     $parameters = $importer->guess($request);
+
                     return view('import.csvsortcolumns', $parameters);
 
                 case 'select':
                     try {
                         $parameters = $importer->select($request);
+
                         return $importer->formatSelect($parameters);
                     }
-                    catch(MissingFieldException $e) {
+                    catch (MissingFieldException $e) {
                         return view('import.csvimportfinal', [
                             'title' => _i('Importazione fallita'),
                             'objects' => [],
@@ -54,6 +56,7 @@ class ImportController extends Controller
 
                 case 'run':
                     $parameters = $importer->run($request);
+
                     return view($importer->finalTemplate(), $parameters);
             }
         }
@@ -72,7 +75,7 @@ class ImportController extends Controller
 
         $working_dir = sys_get_temp_dir();
 
-        switch($request->input('format', 'json')) {
+        switch ($request->input('format', 'json')) {
             case 'xml':
                 $xml = $obj->exportXML();
 
@@ -106,7 +109,7 @@ class ImportController extends Controller
 
         if (in_array($type, ['text/plain', 'application/json'])) {
             $info = json_decode(file_get_contents($path));
-            foreach($info->blocks as $c) {
+            foreach ($info->blocks as $c) {
                 if ($execute) {
                     $data[] = Suppliers::importJSON($info, $c->supplier, $supplier_replace);
                 }
@@ -117,14 +120,14 @@ class ImportController extends Controller
         }
         else {
             $archive = ezcArchive::open('compress.zlib://' . $path);
-            while($archive->valid()) {
+            while ($archive->valid()) {
                 $entry = $archive->current();
                 $archive->extractCurrent($working_dir);
                 $filepath = sprintf('%s/%s', $working_dir, $entry->getPath());
                 $contents = file_get_contents($filepath);
                 $contents = simplexml_load_string($contents);
 
-                foreach($contents->children() as $c) {
+                foreach ($contents->children() as $c) {
                     if ($execute) {
                         $data[] = Suppliers::importXML($c, $supplier_replace);
                     }
@@ -144,43 +147,44 @@ class ImportController extends Controller
     public function postGdxp(Request $request)
     {
         // try {
-            $archivepath = '';
-            $working_dir = sys_get_temp_dir();
-            $step = $request->input('step', 'read');
+        $archivepath = '';
+        $working_dir = sys_get_temp_dir();
+        $step = $request->input('step', 'read');
 
-            if ($step == 'read') {
-                $file = $request->file('file');
-                if (is_null($file) || $file->isValid() == false) {
-                    $url = $request->input('url');
-                    $file = file_get_contents($url);
-                    $archivepath = tempnam($working_dir, 'gdxp_remote_file');
-                    file_put_contents($archivepath, $file);
-                }
-                else {
-                    $filename = basename(tempnam($working_dir, 'import_gdxp_'));
-                    $file->move($working_dir, $filename);
-                    $archivepath = sprintf('%s/%s', $working_dir, $filename);
-                }
-
-                $data = $this->readGdxpFile($archivepath, false, null);
-                return view('import.gdxpsummary', ['data' => $data, 'path' => $archivepath]);
+        if ($step == 'read') {
+            $file = $request->file('file');
+            if (is_null($file) || $file->isValid() == false) {
+                $url = $request->input('url');
+                $file = file_get_contents($url);
+                $archivepath = tempnam($working_dir, 'gdxp_remote_file');
+                file_put_contents($archivepath, $file);
             }
-            else if ($step == 'run') {
-                DB::beginTransaction();
-
-                $archivepath = $request->input('path');
-                if ($request->input('supplier_source') == 'new') {
-                    $data = $this->readGdxpFile($archivepath, true, null);
-                }
-                else {
-                    $data = $this->readGdxpFile($archivepath, true, $request->input('supplier_update'));
-                }
-
-                unlink($archivepath);
-                DB::commit();
-
-                return view('import.gdxpfinal', ['data' => $data]);
+            else {
+                $filename = basename(tempnam($working_dir, 'import_gdxp_'));
+                $file->move($working_dir, $filename);
+                $archivepath = sprintf('%s/%s', $working_dir, $filename);
             }
+
+            $data = $this->readGdxpFile($archivepath, false, null);
+
+            return view('import.gdxpsummary', ['data' => $data, 'path' => $archivepath]);
+        }
+        elseif ($step == 'run') {
+            DB::beginTransaction();
+
+            $archivepath = $request->input('path');
+            if ($request->input('supplier_source') == 'new') {
+                $data = $this->readGdxpFile($archivepath, true, null);
+            }
+            else {
+                $data = $this->readGdxpFile($archivepath, true, $request->input('supplier_update'));
+            }
+
+            unlink($archivepath);
+            DB::commit();
+
+            return view('import.gdxpfinal', ['data' => $data]);
+        }
         /*
         }
         catch(\Exception $e) {

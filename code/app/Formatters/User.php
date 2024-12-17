@@ -12,34 +12,35 @@ class User extends Formatter
     private static function formatContact($obj, $type)
     {
         $contacts = $obj->getContactsByType($type);
-        return join(', ', $contacts);
+
+        return implode(', ', $contacts);
     }
 
-	private static function columnsForContacts($ret)
-	{
-		foreach(Contact::types() as $identifier => $name) {
-			$ret[$identifier] = (object) [
+    private static function columnsForContacts($ret)
+    {
+        foreach (Contact::types() as $identifier => $name) {
+            $ret[$identifier] = (object) [
                 'name' => $name,
-                'format' => function($obj, $context) use ($identifier) {
+                'format' => function ($obj, $context) use ($identifier) {
                     return self::formatContact($obj, $identifier);
                 },
             ];
-		}
+        }
 
-		return $ret;
-	}
+        return $ret;
+    }
 
     private static function columnsByFeatures($ret)
     {
         $current_gas = currentAbsoluteGas();
 
         $groups = Group::where('context', 'user')->get();
-        foreach($groups as $group) {
+        foreach ($groups as $group) {
             $ret['group_' . $group->id] = (object) [
                 'name' => _i('Gruppo %s', [$group->name]),
                 'checked' => true,
-                'format' => function($obj, $context) use ($group) {
-                    return join(' - ', array_map(fn($c) => $c->printableName(), $obj->circlesByGroup($group)->circles));
+                'format' => function ($obj, $context) use ($group) {
+                    return implode(' - ', array_map(fn ($c) => $c->printableName(), $obj->circlesByGroup($group)->circles));
                 },
             ];
         }
@@ -49,11 +50,11 @@ class User extends Formatter
                 'name' => _i('IBAN'),
             ];
 
-			$ret['rid->id'] = (object) [
+            $ret['rid->id'] = (object) [
                 'name' => _i('Mandato SEPA'),
             ];
 
-			$ret['rid->date'] = (object) [
+            $ret['rid->date'] = (object) [
                 'name' => _i('Data Mandato SEPA'),
             ];
         }
@@ -66,7 +67,7 @@ class User extends Formatter
         if (App::make('GlobalScopeHub')->enabled() == false) {
             $ret['gas'] = (object) [
                 'name' => _i('GAS'),
-                'format' => function($obj, $context) {
+                'format' => function ($obj, $context) {
                     return $obj->gas->name;
                 },
             ];
@@ -80,44 +81,44 @@ class User extends Formatter
         if ($type == 'export' || $type == 'all') {
             $ret['last_login'] = (object) [
                 'name' => _i('Ultimo Accesso'),
-                'format' => function($obj, $context) {
+                'format' => function ($obj, $context) {
                     return $obj->last_login;
                 },
             ];
 
             $ret['last_booking'] = (object) [
                 'name' => _i('Ultima Prenotazione'),
-                'format' => function($obj, $context) {
+                'format' => function ($obj, $context) {
                     return $obj->last_booking;
                 },
             ];
 
-			$ret['member_since'] = (object) [
-				'name' => _i('Membro da'),
-				'format' => function($obj, $context) {
-					return $obj->member_since;
-				},
-			];
+            $ret['member_since'] = (object) [
+                'name' => _i('Membro da'),
+                'format' => function ($obj, $context) {
+                    return $obj->member_since;
+                },
+            ];
 
             $ret['birthplace'] = (object) [
-				'name' => _i('Luogo di Nascita'),
-				'format' => function($obj, $context) {
-					return $obj->birthplace;
-				},
-			];
+                'name' => _i('Luogo di Nascita'),
+                'format' => function ($obj, $context) {
+                    return $obj->birthplace;
+                },
+            ];
 
             $ret['birthday'] = (object) [
-				'name' => _i('Data di Nascita'),
-				'format' => function($obj, $context) {
-					return $obj->birthday;
-				},
-			];
+                'name' => _i('Data di Nascita'),
+                'format' => function ($obj, $context) {
+                    return $obj->birthday;
+                },
+            ];
         }
 
         if ($type == 'shipping' || $type == 'all') {
             $ret['other_shippings'] = (object) [
                 'name' => _i('Altre Prenotazioni'),
-                'format' => function($obj, $context) {
+                'format' => function ($obj, $context) {
                     /*
                         Qui, $context deve essere un Aggregate
                     */
@@ -142,7 +143,7 @@ class User extends Formatter
             ],
             'fullname' => (object) [
                 'name' => _i('Nome Completo'),
-                'format' => function($obj, $context) {
+                'format' => function ($obj, $context) {
                     return $obj->printableName();
                 },
             ],
@@ -157,19 +158,19 @@ class User extends Formatter
             ],
             'status' => (object) [
                 'name' => _i('Stato'),
-                'format' => function($obj, $context) {
+                'format' => function ($obj, $context) {
                     return $obj->printableStatus();
                 },
             ],
             'payment_method' => (object) [
                 'name' => _i('Modalità Pagamento'),
-                'format' => function($obj, $context) {
+                'format' => function ($obj, $context) {
                     return $obj->payment_method->name;
                 },
             ],
         ];
 
-		$ret = self::columnsForContacts($ret);
+        $ret = self::columnsForContacts($ret);
         $ret = self::columnsByFeatures($ret);
         $ret = self::columnsByType($ret, $type);
 

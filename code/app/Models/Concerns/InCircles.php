@@ -32,7 +32,7 @@ trait InCircles
             $iterate = $this->circles->where('group_id', $group->id);
         }
 
-        foreach($iterate as $circle) {
+        foreach ($iterate as $circle) {
             if (isset($ret[$circle->group->id]) == false) {
                 $ret[$circle->group->id] = (object) [
                     'group' => $circle->group,
@@ -49,7 +49,7 @@ trait InCircles
                     (object) [
                         'group' => $group,
                         'circles' => [],
-                    ]
+                    ],
                 ];
             }
             else {
@@ -67,7 +67,7 @@ trait InCircles
 
         $circles = [];
 
-        foreach($groups as $group) {
+        foreach ($groups as $group) {
             $key = sprintf('circles__%s__%s', $this->id, $group->id);
             $circles = array_merge($circles, $request[$key] ?? []);
         }
@@ -75,5 +75,5 @@ trait InCircles
         $this->circles()->sync($circles);
     }
 
-    public abstract function eligibleGroups();
+    abstract public function eligibleGroups();
 }

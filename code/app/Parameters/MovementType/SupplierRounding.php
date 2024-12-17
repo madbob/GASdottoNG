@@ -21,7 +21,7 @@ class SupplierRounding extends MovementType
                 'method' => 'cash',
                 'sender' => $this->format(['bank' => 'decrement']),
                 'target' => $this->format(['gas' => 'increment']),
-            ]
+            ],
         ]));
 
         return $type;

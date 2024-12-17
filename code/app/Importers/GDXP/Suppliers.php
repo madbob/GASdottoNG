@@ -16,21 +16,21 @@ class Suppliers extends GDXPImporter
         $products = new Collection();
         $orders = new Collection();
 
-        foreach($xml->children() as $c) {
-            switch($c->getName()) {
+        foreach ($xml->children() as $c) {
+            switch ($c->getName()) {
                 case 'name':
                     $supplier->name = $supplier->business_name = html_entity_decode((string) $c);
                     break;
 
                 case 'products':
-                    foreach($c->children() as $a) {
+                    foreach ($c->children() as $a) {
                         $product = Products::readXML($a);
                         $products->push($product);
                     }
                     break;
 
                 case 'orders':
-                    foreach($c->children() as $a) {
+                    foreach ($c->children() as $a) {
                         $order = Orders::readXML($a);
                         $orders->push($order);
                     }
@@ -38,8 +38,9 @@ class Suppliers extends GDXPImporter
             }
         }
 
-		$supplier->setRelation('products', $products);
-		$supplier->setRelation('orders', $orders);
+        $supplier->setRelation('products', $products);
+        $supplier->setRelation('orders', $orders);
+
         return $supplier;
     }
 
@@ -58,8 +59,8 @@ class Suppliers extends GDXPImporter
 
         $product_ids = [];
 
-        foreach($xml->children() as $c) {
-            switch($c->getName()) {
+        foreach ($xml->children() as $c) {
+            switch ($c->getName()) {
                 case 'taxCode':
                     $supplier->taxcode = html_entity_decode((string) $c);
                     break;
@@ -75,7 +76,7 @@ class Suppliers extends GDXPImporter
                         Per evitare collisioni sui nomi dei fornitori
                     */
                     $index = 2;
-                    while(Supplier::where('name', $name)->first() != null) {
+                    while (Supplier::where('name', $name)->first() != null) {
                         $name = $supplier->business_name . ' ' . $index++;
                     }
 
@@ -83,16 +84,16 @@ class Suppliers extends GDXPImporter
                     break;
 
                 case 'contacts':
-                    foreach($c->children() as $a) {
+                    foreach ($c->children() as $a) {
                         Contacts::importXML($a, $supplier);
                     }
                     break;
 
                 case 'products':
-                    foreach($c->children() as $a) {
+                    foreach ($c->children() as $a) {
                         $ex_product = null;
 
-                        foreach($a->children() as $a_child) {
+                        foreach ($a->children() as $a_child) {
                             if ($a_child->getName() == 'name') {
                                 $ex_product = $supplier->products()->where('name', html_entity_decode((string) $a_child))->first();
                                 break;
@@ -107,7 +108,7 @@ class Suppliers extends GDXPImporter
                     break;
 
                 case 'orders':
-                    foreach($c->children() as $a) {
+                    foreach ($c->children() as $a) {
                         $aggregate = new Aggregate();
                         $aggregate->save();
 
@@ -133,7 +134,7 @@ class Suppliers extends GDXPImporter
         $supplier->vat = $json->vatNumber ?? '';
 
         $products = new Collection();
-        foreach($json->products as $a) {
+        foreach ($json->products as $a) {
             $product = Products::readJSON($a);
             $products->push($product);
         }
@@ -144,8 +145,9 @@ class Suppliers extends GDXPImporter
             $orders->push($order);
         }
 
-		$supplier->setRelation('products', $products);
-		$supplier->setRelation('orders', $orders);
+        $supplier->setRelation('products', $products);
+        $supplier->setRelation('orders', $orders);
+
         return $supplier;
     }
 
@@ -167,11 +169,11 @@ class Suppliers extends GDXPImporter
         $supplier->vat = $json->vatNumber ?? '';
         $supplier->save();
 
-        foreach($json->contacts as $c) {
+        foreach ($json->contacts as $c) {
             Contacts::importJSON($c, $supplier);
         }
 
-        if (!empty($json->address->locality)) {
+        if (! empty($json->address->locality)) {
             $contact = new Contact();
             $contact->type = 'address';
             $contact->value = normalizeAddress($json->address->street, $json->address->locality, $json->address->zipCode);
@@ -180,7 +182,7 @@ class Suppliers extends GDXPImporter
             $contact->save();
         }
 
-        foreach($json->products as $json_product) {
+        foreach ($json->products as $json_product) {
             $pname = $json_product->name;
             $psku = $json_product->sku ?? '';
             $ex_product = null;

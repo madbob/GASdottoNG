@@ -4,7 +4,6 @@ namespace App\Exceptions;
 
 use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Support\Facades\Route;
 
 class Handler extends ExceptionHandler
 {

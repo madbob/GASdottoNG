@@ -13,6 +13,7 @@ class CirclesService extends BaseService
     public function show($id)
     {
         $this->ensureAuth(['gas.config' => 'gas']);
+
         return Circle::findOrFail($id);
     }
 
@@ -40,7 +41,7 @@ class CirclesService extends BaseService
 
         if ($was_first) {
             if ($group->context == 'user') {
-                foreach(User::topLevel()->get() as $user) {
+                foreach (User::topLevel()->get() as $user) {
                     $user->circles()->attach($c->id);
                 }
             }
@@ -81,11 +82,11 @@ class CirclesService extends BaseService
                 $new_default->is_default = true;
                 $new_default->save();
 
-                $users = User::topLevel()->whereHas('circles', function($query) use ($c) {
+                $users = User::topLevel()->whereHas('circles', function ($query) use ($c) {
                     $query->where('circles.id', $c->id);
                 })->get();
 
-                foreach($users as $user) {
+                foreach ($users as $user) {
                     $user->circles()->attach($new_default->id);
                 }
             }

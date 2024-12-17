@@ -13,7 +13,7 @@ class MovementFactory extends Factory
     public function definition()
     {
         return [
-            'amount' => $this->faker->randomNumber(2)
+            'amount' => $this->faker->randomNumber(2),
         ];
     }
 }

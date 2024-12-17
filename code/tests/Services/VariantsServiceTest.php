@@ -18,7 +18,7 @@ class VariantsServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -29,7 +29,7 @@ class VariantsServiceTest extends TestCase
         $this->product = Product::factory()->create([
             'supplier_id' => $this->supplier->id,
             'category_id' => $this->category->id,
-            'measure_id' => $this->measure->id
+            'measure_id' => $this->measure->id,
         ]);
 
         $this->userWithReferrerPerms = $this->createRoleAndUser($this->gas, 'supplier.modify', $this->supplier);
@@ -39,7 +39,7 @@ class VariantsServiceTest extends TestCase
     /*
         Salvataggio Variante con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -49,7 +49,7 @@ class VariantsServiceTest extends TestCase
     /*
         Salvataggio Variante con permessi corretti
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userWithReferrerPerms);
 
@@ -77,7 +77,7 @@ class VariantsServiceTest extends TestCase
     /*
         Modifica Variante
     */
-    public function testModify()
+    public function test_modify()
     {
         $variant = $this->createVariant($this->product);
         $old_value = $variant->values()->where('value', 'Rosso')->first();
@@ -89,7 +89,7 @@ class VariantsServiceTest extends TestCase
                 $variant->values()->where('value', 'Rosso')->first()->id,
                 $variant->values()->where('value', 'Verde')->first()->id,
                 $variant->values()->where('value', 'Blu')->first()->id,
-                ''
+                '',
             ],
             'value' => ['Rosso', 'Verde', 'Blu', 'Giallo'],
         ]);
@@ -113,7 +113,7 @@ class VariantsServiceTest extends TestCase
             'id' => [
                 $variant->values()->where('value', 'Rosso')->first()->id,
                 $variant->values()->where('value', 'Verde')->first()->id,
-                $variant->values()->where('value', 'Giallo')->first()->id
+                $variant->values()->where('value', 'Giallo')->first()->id,
             ],
             'value' => ['Rosso', 'Verde', 'Giallo'],
         ]);
@@ -128,7 +128,7 @@ class VariantsServiceTest extends TestCase
     /*
         Cancellazione Variante
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $variant = $this->createVariant($this->product);
         $this->assertEquals(3, $this->product->variant_combos->count());
@@ -140,27 +140,27 @@ class VariantsServiceTest extends TestCase
         $this->assertEquals(0, $product->variant_combos->count());
     }
 
-	/*
-		Recupero variante a partire dal nome
-	*/
-	public function testStringReading()
-	{
-		$variant = $this->createVariant($this->product);
-		$combo = $this->product->variant_combos->first();
+    /*
+        Recupero variante a partire dal nome
+    */
+    public function test_string_reading()
+    {
+        $variant = $this->createVariant($this->product);
+        $combo = $this->product->variant_combos->first();
 
-		$string = $combo->printableName();
+        $string = $combo->printableName();
 
-		$p = productByString($string);
-		$this->assertNotNull($p);
-		$this->assertNotNull($p[1]);
-		$this->assertEquals($p[0]->id, $this->product->id);
-		$this->assertEquals($p[1]->id, $combo->id);
-	}
+        $p = productByString($string);
+        $this->assertNotNull($p);
+        $this->assertNotNull($p[1]);
+        $this->assertEquals($p[0]->id, $this->product->id);
+        $this->assertEquals($p[1]->id, $combo->id);
+    }
 
     /*
         Modifica matrice
     */
-    public function testMatrixUpdate()
+    public function test_matrix_update()
     {
         $variant = $this->createVariant($this->product);
 
@@ -169,7 +169,7 @@ class VariantsServiceTest extends TestCase
         $ids = [];
         $actives = [];
 
-        foreach($variant->values as $index => $val) {
+        foreach ($variant->values as $index => $val) {
             $ids[] = $val->id;
 
             if ($index != 0) {
@@ -182,10 +182,10 @@ class VariantsServiceTest extends TestCase
 
         $this->nextRound();
 
-        foreach($variant->values as $index => $val) {
+        foreach ($variant->values as $index => $val) {
             $combo = VariantCombo::byValues([$val->id]);
 
-            switch($index) {
+            switch ($index) {
                 case 0:
                     $this->assertEquals(0, $combo->active);
                     $this->assertEquals('', $combo->code);
@@ -208,7 +208,7 @@ class VariantsServiceTest extends TestCase
                     break;
 
                 default:
-                    throw new \Exception("Invalid combo index", 1);
+                    throw new \Exception('Invalid combo index', 1);
             }
         }
     }
@@ -216,7 +216,7 @@ class VariantsServiceTest extends TestCase
     /*
         Verifica generazione ID univoci per valori
     */
-    public function testCollision()
+    public function test_collision()
     {
         $variant = app()->make('VariantsService')->store([
             'product_id' => $this->product->id,
@@ -225,13 +225,13 @@ class VariantsServiceTest extends TestCase
             'value' => [
                 'Valore molto lungo da aggiungere alla variante, per verificare come vengono tagliati i nomi. Questo è il valore numero 1',
                 'Valore molto lungo da aggiungere alla variante, per verificare come vengono tagliati i nomi. Questo è il valore numero 2',
-                'Valore molto lungo da aggiungere alla variante, per verificare come vengono tagliati i nomi. Questo è il valore numero 3'
+                'Valore molto lungo da aggiungere alla variante, per verificare come vengono tagliati i nomi. Questo è il valore numero 3',
             ],
         ]);
 
         $this->assertEquals(3, $variant->values->count());
 
-        foreach($variant->values as $val) {
+        foreach ($variant->values as $val) {
             $this->assertTrue(strlen($val->id) < 191);
         }
     }

@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
 
 use App\Events\SluggableCreating;
-use App\GASModel;
-use App\SluggableID;
 
 class Contact extends Model
 {
     use GASModel, SluggableID;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $dispatchesEvents = [
@@ -34,6 +33,7 @@ class Contact extends Model
     public function getTypeNameAttribute()
     {
         $types = Contact::types();
+
         return $types[$this->type] ?? '???';
     }
 
@@ -60,11 +60,11 @@ class Contact extends Model
     public function asAddress()
     {
         $tokens = explode(',', $this->value);
-        foreach($tokens as $index => $value) {
+        foreach ($tokens as $index => $value) {
             $tokens[$index] = trim($value);
         }
 
-        for($i = count($tokens); $i < 3; $i++) {
+        for ($i = count($tokens); $i < 3; $i++) {
             $tokens[$i] = '';
         }
 

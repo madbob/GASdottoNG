@@ -12,6 +12,7 @@ use PDF;
 class Document implements Component
 {
     private $children;
+
     private $format;
 
     public function __construct($format)
@@ -32,6 +33,7 @@ class Document implements Component
         ]);
 
         enablePdfPagesNumbers($pdf);
+
         return $pdf;
     }
 
@@ -39,7 +41,7 @@ class Document implements Component
     {
         $ret = [];
 
-        foreach($this->children as $child) {
+        foreach ($this->children as $child) {
             $c = $child->renderCsv();
             if ($c) {
                 $ret = array_merge($ret, $c);
@@ -53,7 +55,7 @@ class Document implements Component
     {
         $ret = '';
 
-        foreach($this->children as $child) {
+        foreach ($this->children as $child) {
             $ret .= $child->renderHtml();
         }
 
@@ -67,15 +69,16 @@ class Document implements Component
 
     public function download($filename)
     {
-        switch($this->format) {
+        switch ($this->format) {
             case 'pdf':
                 $pdf = $this->preparePdf();
+
                 return $pdf->download($filename);
 
             case 'csv':
                 $rows = $this->prepareCsv();
 
-                return output_csv($filename, null, $rows, function($row) {
+                return output_csv($filename, null, $rows, function ($row) {
                     return $row;
                 });
         }
@@ -83,7 +86,7 @@ class Document implements Component
 
     public function save($path)
     {
-        switch($this->format) {
+        switch ($this->format) {
             case 'pdf':
                 $pdf = $this->preparePdf();
                 $pdf->save($path);
@@ -92,7 +95,7 @@ class Document implements Component
             case 'csv':
                 $rows = $this->prepareCsv();
 
-                output_csv(null, null, $rows, function($row) {
+                output_csv(null, null, $rows, function ($row) {
                     return $row;
                 }, $path);
 

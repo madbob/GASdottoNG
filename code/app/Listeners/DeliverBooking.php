@@ -22,7 +22,7 @@ class DeliverBooking
             La consegna viene effettivamente marcata come consegnata al
             salvataggio del relativo movimento contabile, in MovementType
         */
-        return (someoneCan('movements.admin', $user->gas) && $new_status == 'shipped' && $booking->payment == null);
+        return someoneCan('movements.admin', $user->gas) && $new_status == 'shipped' && $booking->payment == null;
     }
 
     public function handle(BookingDelivered $event)
@@ -44,7 +44,7 @@ class DeliverBooking
         $booking->saveFinalPrices();
         $booking->saveModifiers();
 
-        foreach($booking->friends_bookings as $friend_booking) {
+        foreach ($booking->friends_bookings as $friend_booking) {
             $friend_booking->status = $new_status;
             $friend_booking->save();
         }

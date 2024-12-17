@@ -1,0 +1,16 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "array_indentation": false,
+        "ordered_imports": false,
+        "concat_space": false,
+        "no_extra_blank_lines": false,
+        "control_structure_continuation_position": {
+            "position": "next_line"
+        },
+        "new_with_parentheses": {
+            "anonymous_class": true,
+            "named_class": true
+        }
+    }
+}

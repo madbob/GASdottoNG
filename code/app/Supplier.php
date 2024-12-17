@@ -4,17 +4,14 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Collection;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
-use URL;
 
 use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\ContactableTrait;
@@ -30,11 +27,12 @@ use App\Events\AttachableToGas;
 
 class Supplier extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes, TracksUpdater,
-        AttachableTrait, ContactableTrait, CreditableTrait, PayableTrait, ExportableTrait, SuspendableTrait, ModifiableTrait,
-        GASModel, SluggableID, WithinGas, Cachable;
+    use AttachableTrait, Cachable, ContactableTrait, CreditableTrait,
+        ExportableTrait, GASModel, HasFactory, ModifiableTrait, Notifiable, PayableTrait, SluggableID,
+        SoftDeletes, SuspendableTrait, TracksUpdater, WithinGas;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $dispatchesEvents = [
@@ -81,10 +79,12 @@ class Supplier extends Model
     public function scopeFilterEnabled($query)
     {
         $user = Auth::user();
-        if ($user->can('supplier.add', $user->gas))
+        if ($user->can('supplier.add', $user->gas)) {
             return $query->withTrashed();
-        else
+        }
+        else {
             return $query;
+        }
     }
 
     public function getActiveOrdersAttribute()
@@ -97,7 +97,7 @@ class Supplier extends Model
         $contacts = $this->contacts()->where('type', 'email')->get();
 
         $users = everybodyCan('supplier.modify', $this);
-        foreach($users as $u) {
+        foreach ($users as $u) {
             $contacts = $contacts->merge($u->contacts()->where('type', 'email')->get());
         }
 
@@ -133,17 +133,17 @@ class Supplier extends Model
         $type = $direction . '_type';
         $id = $direction . '_id';
 
-        $query->where(function($query) use ($supplier, $type, $id, $with_invoices) {
-            $query->where(function($query) use ($supplier, $type, $id) {
+        $query->where(function ($query) use ($supplier, $type, $id, $with_invoices) {
+            $query->where(function ($query) use ($supplier, $type, $id) {
                 $query->where($type, 'App\Supplier')->where($id, $supplier->id);
-            })->orWhere(function($query) use ($supplier, $type, $id) {
+            })->orWhere(function ($query) use ($supplier, $type, $id) {
                 $query->where($type, 'App\Order')->whereIn($id, $supplier->orders()->pluck('orders.id'));
-            })->orWhere(function($query) use ($supplier, $type, $id) {
+            })->orWhere(function ($query) use ($supplier, $type, $id) {
                 $query->where($type, 'App\Booking')->whereIn($id, $supplier->bookings()->pluck('bookings.id'));
             });
 
             if ($with_invoices) {
-                $query->orWhere(function($query) use ($supplier, $type, $id) {
+                $query->orWhere(function ($query) use ($supplier, $type, $id) {
                     $query->where($type, 'App\Invoice')->whereIn($id, $supplier->invoices()->pluck('invoices.id'));
                 });
             }
@@ -158,12 +158,12 @@ class Supplier extends Model
 
         $supplier = $this;
 
-        switch($type) {
+        switch ($type) {
             case 'all':
-                $query->where(function($query) use ($supplier) {
-                    $query->where(function($query) use ($supplier) {
+                $query->where(function ($query) use ($supplier) {
+                    $query->where(function ($query) use ($supplier) {
                         $this->innerQuery($query, 'sender', $supplier, true);
-                    })->orWhere(function($query) use ($supplier) {
+                    })->orWhere(function ($query) use ($supplier) {
                         $this->innerQuery($query, 'target', $supplier, true);
                     });
                 });
@@ -172,9 +172,9 @@ class Supplier extends Model
             case 'invoices':
                 $invoices = $supplier->invoices()->pluck('invoices.id');
 
-                $query->where(function($query) use ($invoices) {
+                $query->where(function ($query) use ($invoices) {
                     $query->where('sender_type', 'App\Invoice')->whereIn('sender_id', $invoices);
-                })->orWhere(function($query) use ($invoices) {
+                })->orWhere(function ($query) use ($invoices) {
                     $query->where('target_type', 'App\Invoice')->whereIn('target_id', $invoices);
                 });
 

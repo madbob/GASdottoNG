@@ -9,7 +9,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class VatRate extends Model
 {
-    use HasFactory, GASModel, Cachable;
+    use Cachable, GASModel, HasFactory;
 
     protected $fillable = ['percentage', 'name'];
 

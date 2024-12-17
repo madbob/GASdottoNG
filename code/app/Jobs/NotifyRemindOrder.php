@@ -13,7 +13,7 @@ use App\Order;
 
 class NotifyRemindOrder implements ShouldQueue
 {
-	use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $orders_id;
 
@@ -24,41 +24,42 @@ class NotifyRemindOrder implements ShouldQueue
 
     public function handle()
     {
-		$hub = app()->make('GlobalScopeHub');
+        $hub = app()->make('GlobalScopeHub');
 
-		foreach($this->orders_id as $order_id) {
-	        $order = Order::find($order_id);
-			if (is_null($order)) {
-				\Log::error('Ordine non trovato per notifica reminder: ' . $order_id);
-				continue;
-			}
+        foreach ($this->orders_id as $order_id) {
+            $order = Order::find($order_id);
+            if (is_null($order)) {
+                \Log::error('Ordine non trovato per notifica reminder: ' . $order_id);
 
-			foreach($order->aggregate->gas as $gas) {
-				$hub->setGas($gas->id);
+                continue;
+            }
 
-				$aggregate_users = [];
-		        $users = $order->notifiableUsers($gas);
+            foreach ($order->aggregate->gas as $gas) {
+                $hub->setGas($gas->id);
 
-				foreach($users as $user) {
-					if (isset($aggregate_users[$user->id]) == false) {
-						$aggregate_users[$user->id] = (object) [
-							'user' => $user,
-							'orders' => [],
-						];
-					}
+                $aggregate_users = [];
+                $users = $order->notifiableUsers($gas);
 
-					$aggregate_users[$user->id]->orders[] = $order;
-				}
+                foreach ($users as $user) {
+                    if (isset($aggregate_users[$user->id]) == false) {
+                        $aggregate_users[$user->id] = (object) [
+                            'user' => $user,
+                            'orders' => [],
+                        ];
+                    }
 
-				foreach($aggregate_users as $auser) {
-					try {
-						$auser->user->notify(new RemindOrderNotification($auser->orders));
-					}
-					catch(\Exception $e) {
-						\Log::error('Impossibile inoltrare mail di promemoria ordine: ' . $e->getMessage());
-					}
-				}
-			}
-		}
+                    $aggregate_users[$user->id]->orders[] = $order;
+                }
+
+                foreach ($aggregate_users as $auser) {
+                    try {
+                        $auser->user->notify(new RemindOrderNotification($auser->orders));
+                    }
+                    catch (\Exception $e) {
+                        \Log::error('Impossibile inoltrare mail di promemoria ordine: ' . $e->getMessage());
+                    }
+                }
+            }
+        }
     }
 }

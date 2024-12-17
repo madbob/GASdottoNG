@@ -9,5 +9,5 @@ use App\Models\Concerns\HierarcableTrait;
 
 class Config extends Model
 {
-    use HierarcableTrait, Cachable;
+    use Cachable, HierarcableTrait;
 }

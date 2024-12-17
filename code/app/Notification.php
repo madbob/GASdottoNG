@@ -6,10 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Builder;
 
-use Auth;
-use Mail;
 use Log;
 
 use App\Models\Concerns\Datable;
@@ -19,7 +16,7 @@ use App\Scopes\RestrictedGAS;
 
 class Notification extends Model implements Datable
 {
-    use HasFactory, GASModel, AttachableTrait;
+    use AttachableTrait, GASModel, HasFactory;
 
     protected static function boot()
     {
@@ -57,31 +54,32 @@ class Notification extends Model implements Datable
     {
         if ($this->mailed == false) {
             \Log::info('Notification ' . $this->id . ' already delivered by mail');
+
             return;
         }
 
         try {
             DeliverNotification::dispatch($this->id);
         }
-        catch(\Exception $e) {
+        catch (\Exception $e) {
             Log::error('Unable to trigger DeliverNotification job while sending notification: ' . $e->getMessage());
         }
     }
 
-	public function formattedContent($target)
-	{
-		if (filled($this->mailtype)) {
-			$type = systemParameters('MailTypes')[$this->mailtype];
-			$ret = $type->formatText($this->content, $this->gas, [
-				'user' => $target,
-			]);
-		}
-		else {
-			$ret = $this->content;
-		}
+    public function formattedContent($target)
+    {
+        if (filled($this->mailtype)) {
+            $type = systemParameters('MailTypes')[$this->mailtype];
+            $ret = $type->formatText($this->content, $this->gas, [
+                'user' => $target,
+            ]);
+        }
+        else {
+            $ret = $this->content;
+        }
 
-		return nl2br($ret);
-	}
+        return nl2br($ret);
+    }
 
     public function printableName()
     {
@@ -90,7 +88,8 @@ class Notification extends Model implements Datable
 
         if ($c == 1) {
             return $users->first()->printableName();
-        } else {
+        }
+        else {
             return sprintf('%d utenti', $c);
         }
     }

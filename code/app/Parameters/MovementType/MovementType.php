@@ -24,10 +24,10 @@ abstract class MovementType extends Parameter
     */
     protected function voidFunctions($array)
     {
-        foreach(array_keys($array) as $i) {
-            foreach(['sender', 'target', 'master'] as $t) {
+        foreach (array_keys($array) as $i) {
+            foreach (['sender', 'target', 'master'] as $t) {
                 $array[$i]->$t ??= (object) [
-                    'operations' => []
+                    'operations' => [],
                 ];
             }
         }
@@ -71,5 +71,5 @@ abstract class MovementType extends Parameter
         $type->save();
     }
 
-    public abstract function initNew($type);
+    abstract public function initNew($type);
 }

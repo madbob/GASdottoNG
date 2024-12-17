@@ -8,11 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -23,16 +20,17 @@ use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\ReducibleTrait;
 use App\Models\Concerns\TracksUpdater;
-use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 use App\Events\BookingDeleting;
 
 class Booking extends Model
 {
-    use HasFactory, GASModel, SluggableID, TracksUpdater, InCircles, ModifiedTrait, PayableTrait, CreditableTrait, ReducibleTrait, Cachable;
+    use Cachable, CreditableTrait, GASModel, HasFactory, InCircles, ModifiedTrait, PayableTrait, ReducibleTrait, SluggableID, TracksUpdater;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     public $enforced_total = null;
 
     protected $dispatchesEvents = [
@@ -56,8 +54,8 @@ class Booking extends Model
             Questo è per limitare le prenotazioni a quelle effettivamente
             accessibili nel GAS corrente
         */
-        static::addGlobalScope('restricted', function(Builder $builder) {
-            $builder->whereHas('order', function($query) {
+        static::addGlobalScope('restricted', function (Builder $builder) {
+            $builder->whereHas('order', function ($query) {
                 $query->has('aggregate');
             })->has('user');
         });
@@ -109,10 +107,10 @@ class Booking extends Model
     public function scopeAngryload($query)
     {
         $query->with([
-			'payment', 'modifiedValues', 'modifiedValues.modifier', 'modifiedValues.modifier.modifierType',
+            'payment', 'modifiedValues', 'modifiedValues.modifier', 'modifiedValues.modifier.modifierType',
             'products', 'products.modifiedValues', 'products.modifiedValues.modifier', 'products.modifiedValues.modifier.modifierType',
             'user', 'user.friends_with_trashed',
-            'user.circles', 'user.circles.modifiers', 'user.circles.modifiers.modifierType'
+            'user.circles', 'user.circles.modifiers', 'user.circles.modifiers.modifierType',
         ]);
     }
 
@@ -121,7 +119,7 @@ class Booking extends Model
         $values = $this->modifiedValues;
 
         if ($id) {
-            $values = $values->filter(function($i) use ($id) {
+            $values = $values->filter(function ($i) use ($id) {
                 return $i->modifier_id == $id;
             });
         }
@@ -134,18 +132,18 @@ class Booking extends Model
         $values = $this->localModifiedValues($id);
 
         $products = $this->products;
-        $values = $products->reduce(function($carry, $product) {
+        $values = $products->reduce(function ($carry, $product) {
             return $carry->merge($product->modifiedValues);
         }, $values);
 
         if ($with_friends) {
-            foreach($this->friends_bookings as $friend) {
+            foreach ($this->friends_bookings as $friend) {
                 $values = $values->merge($friend->allModifiedValues($id, true));
             }
         }
 
         if ($id) {
-            $values = $values->filter(function($i) use ($id) {
+            $values = $values->filter(function ($i) use ($id) {
                 return $i->modifier_id == $id;
             });
         }
@@ -168,7 +166,7 @@ class Booking extends Model
             $this->unsetRelation('products');
         }
 
-        return $this->innerCache($key, function($obj) use ($type, $with_friends) {
+        return $this->innerCache($key, function ($obj) use ($type, $with_friends) {
             $value = 0;
 
             /*
@@ -211,7 +209,7 @@ class Booking extends Model
                         $modified_values = $obj->allModifiedValues(null, true);
 
                         if ($with_friends) {
-                            foreach($obj->friends_bookings as $friend_booking) {
+                            foreach ($obj->friends_bookings as $friend_booking) {
                                 $friend_modified_values = $friend_booking->allModifiedValues(null, true);
                                 $modified_values = $modified_values->merge($friend_modified_values);
                             }
@@ -226,7 +224,7 @@ class Booking extends Model
                             $modified_values = $obj->calculateModifiers($aggregate_data, false);
 
                             if ($with_friends) {
-                                foreach($obj->friends_bookings as $friend_booking) {
+                                foreach ($obj->friends_bookings as $friend_booking) {
                                     $friend_aggregate_data = $friend_booking->minimumRedux($modifiers);
                                     $friend_modified_values = $friend_booking->calculateModifiers($friend_aggregate_data, false);
                                     $modified_values = $modified_values->merge($friend_modified_values);
@@ -311,7 +309,7 @@ class Booking extends Model
         if ($p) {
             if ($combo) {
                 $inner_combos = $p->getBookedCombos($combo);
-                foreach($inner_combos as $ic) {
+                foreach ($inner_combos as $ic) {
                     $ret += $ic->$field;
                 }
             }
@@ -323,7 +321,7 @@ class Booking extends Model
         if ($friends_bookings) {
             foreach ($this->friends_bookings as $sub) {
                 $ret += $sub->readProductQuantity($combo ?: $product, $field, false);
-			}
+            }
 
         }
 
@@ -363,8 +361,8 @@ class Booking extends Model
         $total = 0;
         $total_vat = 0;
 
-        foreach($this->products_with_friends as $booked_product) {
-            list($product_total, $product_total_tax) = $booked_product->deliveredTaxedValue();
+        foreach ($this->products_with_friends as $booked_product) {
+            [$product_total, $product_total_tax] = $booked_product->deliveredTaxedValue();
             $total += $product_total;
             $total_vat += $product_total_tax;
         }
@@ -374,7 +372,7 @@ class Booking extends Model
 
     public function getProductsWithFriendsAttribute()
     {
-        return $this->innerCache('friends_products', function($obj) {
+        return $this->innerCache('friends_products', function ($obj) {
             /*
                 Qui devo fare una copia di $this->products anziché usarlo
                 direttamente, altrimenti finisco con l'alterare l'elenco stesso
@@ -384,7 +382,7 @@ class Booking extends Model
                 anziché quello della prenotazione primaria)
             */
             $products = new Collection();
-            foreach($this->products as $p) {
+            foreach ($this->products as $p) {
                 $p = clone $p;
                 $p->setRelation('booking', $obj);
                 $products->push($p);
@@ -392,8 +390,8 @@ class Booking extends Model
 
             $friends = $this->friends_bookings;
 
-            foreach($friends as $sub) {
-                foreach($sub->products as $sub_p) {
+            foreach ($friends as $sub) {
+                foreach ($sub->products as $sub_p) {
                     $sub_p->setRelation('booking', $sub);
 
                     $master_p = $products->firstWhere('product_id', $sub_p->product_id);
@@ -410,18 +408,18 @@ class Booking extends Model
                             $master_p->delivered += $sub_p->delivered;
                             $master_p->final_price += $sub_p->final_price;
 
-                            foreach($sub_p->variants as $sub_variant) {
+                            foreach ($sub_p->variants as $sub_variant) {
                                 $master_p->variants->squashBookedVariant($sub_variant);
                             }
 
                             $modifiedValues = $master_p->modifiedValues->merge($sub_p->modifiedValues);
-    						$master_p->setRelation('modifiedValues', $modifiedValues);
+                            $master_p->setRelation('modifiedValues', $modifiedValues);
                         }
                     }
                 }
             }
 
-            $products = $products->sort(function($a, $b) {
+            $products = $products->sort(function ($a, $b) {
                 return $a->product->name <=> $b->product->name;
             });
 
@@ -435,19 +433,20 @@ class Booking extends Model
         $hub->setEnforced(true);
         $ret = $this->products_with_friends;
         $hub->setEnforced(false);
+
         return $ret;
     }
 
     public function getFriendsBookingsAttribute()
     {
-        return $this->innerCache('friends_bookings', function($obj) {
+        return $this->innerCache('friends_bookings', function ($obj) {
             if ($obj->user->friends_with_trashed->isEmpty()) {
                 return new Collection();
             }
             else {
                 $bookings = Booking::where('order_id', $obj->order_id)->whereIn('user_id', $obj->user->friends_with_trashed->pluck('id'))->angryload()->get();
 
-                foreach($bookings as $b) {
+                foreach ($bookings as $b) {
                     $b->setRelation('order', $obj->order);
                 }
 
@@ -460,7 +459,7 @@ class Booking extends Model
     {
         $ret = 0;
 
-        foreach($this->friends_bookings as $sub) {
+        foreach ($this->friends_bookings as $sub) {
             $ret += $sub->getValue('effective', true);
         }
 
@@ -481,7 +480,7 @@ class Booking extends Model
 
     public function getCirclesSortingAttribute()
     {
-        return $this->involvedCircles()->sortBy('group_id')->map(fn($c) => $c->name)->join(' - ');
+        return $this->involvedCircles()->sortBy('group_id')->map(fn ($c) => $c->name)->join(' - ');
     }
 
     public function printableName()
@@ -498,11 +497,11 @@ class Booking extends Model
     {
         $this->unsetRelation('modifiedValues');
 
-        foreach($this->products as $prod) {
+        foreach ($this->products as $prod) {
             $prod->unsetRelation('modifiedValues');
         }
 
-        foreach($this->friends_bookings as $friend) {
+        foreach ($this->friends_bookings as $friend) {
             $friend->unsetModifiedValues();
         }
     }
@@ -532,7 +531,7 @@ class Booking extends Model
         $keep_status = $this->status;
         $this->status = 'pending';
 
-        foreach($this->products as $p) {
+        foreach ($this->products as $p) {
             $p->setRelation('booking', $this);
             $p->final_price = $p->getValue('delivered');
             $p->saveQuietly();
@@ -549,7 +548,7 @@ class Booking extends Model
             $modifiers = $modifiers->merge($circle->modifiers);
         }
 
-        return $modifiers->filter(function($mod) {
+        return $modifiers->filter(function ($mod) {
             return $mod->active;
         })->sortBy('priority');
     }
@@ -558,7 +557,7 @@ class Booking extends Model
     {
         $modifiers = $this->modifiedValues;
 
-        foreach($this->products as $product) {
+        foreach ($this->products as $product) {
             $modifiers = $modifiers->merge($product->modifiedValues);
         }
 
@@ -646,7 +645,7 @@ class Booking extends Model
 
             $engine = app()->make('ModifierEngine');
 
-            foreach($modifiers as $modifier) {
+            foreach ($modifiers as $modifier) {
                 $value = $engine->apply($modifier, $this, $aggregate_data);
                 if ($value) {
                     $values = $values->push($value);
@@ -675,7 +674,7 @@ class Booking extends Model
     {
         $modifiers = $this->applyModifiers($aggregate_data, false);
 
-        foreach($this->friends_bookings as $friend) {
+        foreach ($this->friends_bookings as $friend) {
             $friend_modifiers = $friend->applyModifiers($aggregate_data, false);
             $modifiers = $modifiers->merge($friend_modifiers);
         }
@@ -686,19 +685,21 @@ class Booking extends Model
     public function aggregatedModifiers()
     {
         $modifiers = $this->applyModifiers(null, false);
+
         return ModifiedValue::aggregateByType($modifiers);
     }
 
     public function aggregatedModifiersWithFriends()
     {
         $modifiers = $this->applyModifiersWithFriends(null, false);
+
         return ModifiedValue::aggregateByType($modifiers);
     }
 
     public function deleteModifiedValues()
     {
         $modified = $this->involvedModifiedValues();
-        foreach($modified as $mod) {
+        foreach ($modified as $mod) {
             $mod->delete();
         }
     }
@@ -719,17 +720,19 @@ class Booking extends Model
     {
         $ret = $this->emptyReduxBehaviour();
 
-        $ret->children = function($item, $filters) {
+        $ret->children = function ($item, $filters) {
             return $item->products;
         };
 
-        $ret->optimize = function($item, $child) {
+        $ret->optimize = function ($item, $child) {
             $child->setRelation('booking', $item);
             $child->setRelation('product', $item->order->products->firstWhere('id', $child->product_id));
+
             return $child;
         };
 
         $ret->collected = 'products';
+
         return $ret;
     }
 

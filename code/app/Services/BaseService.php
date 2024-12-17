@@ -32,7 +32,7 @@ class BaseService
 
         $has_something = false;
 
-        foreach($permissions as $permission => $subject) {
+        foreach ($permissions as $permission => $subject) {
             if ($subject == 'gas') {
                 $subject = $user->gas;
             }
@@ -49,7 +49,7 @@ class BaseService
         }
 
         if ($has_something == false) {
-            Log::info('Utente non autorizzato: ' . $user->id . ' non ha nessun permesso tra ' . join(', ', array_keys($permissions)));
+            Log::info('Utente non autorizzato: ' . $user->id . ' non ha nessun permesso tra ' . implode(', ', array_keys($permissions)));
             throw new AuthException(403);
         }
 

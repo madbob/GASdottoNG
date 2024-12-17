@@ -2,6 +2,4 @@
 
 namespace app\Exceptions;
 
-class PermissionException extends \Exception
-{
-}
+class PermissionException extends \Exception {}

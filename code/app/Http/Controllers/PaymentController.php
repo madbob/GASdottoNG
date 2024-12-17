@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -60,10 +59,10 @@ class PaymentController extends Controller
                     'currency' => 'EUR',
                     'amount_unit' => $amount * 100,
                     'description' => $notes,
-                    'callback_url' => urldecode(route('payment.status_satispay', ['charge_id' => '{uuid}']))
+                    'callback_url' => urldecode(route('payment.status_satispay', ['charge_id' => '{uuid}'])),
                 ]);
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 Log::error('Errore richiesta Satispay: ' . $e->getMessage());
                 $charge = null;
             }
@@ -100,7 +99,7 @@ class PaymentController extends Controller
         $charge_id = $request->input('payment_id');
         $charge = \SatispayGBusiness\Payment::get($charge_id);
 
-        foreach($charge->data as $d) {
+        foreach ($charge->data as $d) {
             if ($d->status == 'ACCEPTED') {
                 $movement = Cache::pull('satispay_movement_' . $d->id);
                 if ($movement != null) {

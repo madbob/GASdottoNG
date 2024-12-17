@@ -44,6 +44,7 @@ class Product extends Formatter
         $ret['price']->format = 'static::formatPrice';
         $ret['active']->format = 'static::formatActive';
         $ret['vat_rate']->format = 'static::formatVat';
+
         return $ret;
     }
 
@@ -52,7 +53,7 @@ class Product extends Formatter
         if ($obj->variant_combos->isEmpty() == false) {
             return (object) [
                 'formatter' => VariantCombo::class,
-                'children' => $obj->variant_combos
+                'children' => $obj->variant_combos,
             ];
         }
         else {

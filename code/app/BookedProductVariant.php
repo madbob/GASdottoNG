@@ -11,7 +11,7 @@ use App\Models\Concerns\LeafReducibleTrait;
 
 class BookedProductVariant extends Model
 {
-    use GASModel, LeafReducibleTrait, Cachable;
+    use Cachable, GASModel, LeafReducibleTrait;
 
     public function product(): BelongsTo
     {
@@ -50,9 +50,9 @@ class BookedProductVariant extends Model
         }
 
         sort($values);
-        $myid = join(' ', $values);
+        $myid = implode(' ', $values);
 
-        return $this->product->product->variantCombos->first(function($v) use ($myid) {
+        return $this->product->product->variantCombos->first(function ($v) use ($myid) {
             return $v->innerIdentifier() == $myid;
         });
     }
@@ -110,10 +110,12 @@ class BookedProductVariant extends Model
     private function normalizeQuantity($attribute)
     {
         $product = $this->product->product;
-        if ($product->portion_quantity != 0)
+        if ($product->portion_quantity != 0) {
             return $this->$attribute * $product->portion_quantity;
-        else
+        }
+        else {
             return $this->$attribute;
+        }
     }
 
     public function getTrueQuantityAttribute()
@@ -145,7 +147,7 @@ class BookedProductVariant extends Model
             Essendo la variante prenotata la foglia più estrema dell'albero di
             riduzione, questa funzione non dovrebbe mai essere chiamata
         */
-        throw new \Exception("Invocata funzione reduxBehaviour() su BookedProductVariant", 1);
+        throw new \Exception('Invocata funzione reduxBehaviour() su BookedProductVariant', 1);
     }
 
     public function reduxData($filters = null)

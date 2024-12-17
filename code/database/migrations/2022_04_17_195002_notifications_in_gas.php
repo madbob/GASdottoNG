@@ -17,7 +17,7 @@ class NotificationsInGas extends Migration
 
         $first_gas = Gas::orderBy('created_at', 'asc')->first();
 
-        foreach(Notification::all() as $notification) {
+        foreach (Notification::all() as $notification) {
             if ($notification->users->isEmpty() == false) {
                 $notification->gas_id = $notification->users->first()->gas_id;
             }

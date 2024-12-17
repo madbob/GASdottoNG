@@ -4,14 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Http\Controllers\Controller;
-
 use DB;
 
 use App\Services\VariantsService;
 
 use App\Product;
-use App\Variant;
 use App\VariantCombo;
 
 class VariantsController extends BackedController
@@ -22,7 +19,7 @@ class VariantsController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Variant',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
@@ -30,12 +27,13 @@ class VariantsController extends BackedController
     {
         $product = Product::findOrFail($request->input('product_id'));
         $this->ensureAuth(['supplier.modify' => $product->supplier]);
+
         return view('variant.edit', ['product' => $product, 'variant' => null]);
     }
 
     public function edit($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $variant = $this->service->show($id);
 
             if ($variant->product->variants()->count() == 1) {
@@ -55,6 +53,7 @@ class VariantsController extends BackedController
     {
         $product = Product::findOrFail($id);
         $this->ensureAuth(['supplier.modify' => $product->supplier]);
+
         return view('variant.editor', ['product' => $product]);
     }
 
@@ -62,13 +61,14 @@ class VariantsController extends BackedController
     {
         $product = Product::findOrFail($id);
         $this->ensureAuth(['supplier.modify' => $product->supplier]);
+
         return view('variant.matrix', ['product' => $product]);
     }
 
     private function transformFromSimplified($request, $product)
     {
         $original_combinations = $request->input('combination', []);
-        $ids = array_map(fn($item) => Str::startsWith($item, 'new_') ? '' : $item, $original_combinations);
+        $ids = array_map(fn ($item) => Str::startsWith($item, 'new_') ? '' : $item, $original_combinations);
 
         $values = $request->input('value', []);
 
@@ -79,7 +79,7 @@ class VariantsController extends BackedController
             'value' => $values,
         ]);
 
-        $combinations = array_map(fn($v) => $variant->values()->where('value', $v)->first()->id, $values);
+        $combinations = array_map(fn ($v) => $variant->values()->where('value', $v)->first()->id, $values);
 
         /*
             Ai nuovi valori dinamicamente immessi nella tabella aggiungo un
@@ -116,7 +116,7 @@ class VariantsController extends BackedController
             attributi dei valori.
         */
         if ($product->variants()->count() == 1) {
-            list($combinations, $actives) = $this->transformFromSimplified($request, $product);
+            [$combinations, $actives] = $this->transformFromSimplified($request, $product);
         }
         else {
             $combinations = $request->input('combination');

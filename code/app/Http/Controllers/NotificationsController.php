@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
 use Carbon\Carbon;
 
-use DB;
-use Auth;
 
 use App\Services\NotificationsService;
 
@@ -20,13 +16,14 @@ class NotificationsController extends BackedController
     {
         $this->commonInit([
             'reference_class' => Notification::class,
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function index()
     {
         $notifications = $this->service->list(Carbon::now()->subYears(1), null);
+
         return view('pages.notifications', ['notifications' => $notifications]);
     }
 
@@ -45,14 +42,14 @@ class NotificationsController extends BackedController
 
     public function show(Request $request, $id)
     {
-        return $this->easyExecute(function() use ($request, $id) {
+        return $this->easyExecute(function () use ($request, $id) {
             $n = $this->service->show($id);
             $user = $request->user();
 
             if ($user->can('notifications.admin', $user->gas)) {
                 return view('notification.edit', ['notification' => $n]);
             }
-            else if ($n->hasUser($user)) {
+            elseif ($n->hasUser($user)) {
                 return view('notification.show', ['notification' => $n]);
             }
         });
@@ -60,8 +57,8 @@ class NotificationsController extends BackedController
 
     public function markread($id)
     {
-		return $this->easyExecute(function() use ($id) {
-			$this->service->markread($id);
-		});
+        return $this->easyExecute(function () use ($id) {
+            $this->service->markread($id);
+        });
     }
 }

@@ -26,6 +26,7 @@ class LogHarvester
         }
         else {
             $length = count($this->stack);
+
             return $this->stack[$length - 1];
         }
     }

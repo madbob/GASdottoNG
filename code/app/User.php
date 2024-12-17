@@ -8,19 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 use Auth;
-use Log;
-use App;
-use URL;
 
 use App\Models\Concerns\ContactableTrait;
 use App\Models\Concerns\InCircles;
@@ -38,12 +31,14 @@ use App\Events\SluggableCreating;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, Authorizable, CanResetPassword, SoftDeletes, TracksUpdater,
-        ContactableTrait, InCircles, PayableTrait, SuspendableTrait, HierarcableTrait, RoleableTrait, BookerTrait, PaysFees,
-        GASModel, SluggableID, Cachable;
+    use Authorizable, BookerTrait, Cachable, CanResetPassword, ContactableTrait, GASModel,
+        HasFactory, HierarcableTrait, InCircles, Notifiable, PayableTrait, PaysFees, RoleableTrait, SluggableID,
+        SoftDeletes, SuspendableTrait, TracksUpdater;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     protected $hidden = ['password', 'remember_token'];
 
     protected $dispatchesEvents = [
@@ -105,19 +100,20 @@ class User extends Authenticatable
 
     public function getPaymentMethodAttribute()
     {
-        return $this->innerCache('payment_method', function($obj) {
+        return $this->innerCache('payment_method', function ($obj) {
             $ret = paymentMethodByType($obj->payment_method_id);
 
-            if (!$ret) {
+            if (! $ret) {
                 $ret = (object) [
                     'name' => _i('Non Specificato'),
-                    'valid_config' => function($target) {
+                    'valid_config' => function ($target) {
                         return true;
-                    }
+                    },
                 ];
             }
 
             $ret->id = $this->payment_method_id;
+
             return $ret;
         });
     }
@@ -154,7 +150,7 @@ class User extends Authenticatable
         $ret = $this->printableName();
 
         $tot = 0;
-        foreach($aggregate->orders as $order) {
+        foreach ($aggregate->orders as $order) {
             $order->setRelation('aggregate', $aggregate);
             $tot += $order->userBooking($this)->getValue('effective', false);
         }
@@ -185,10 +181,12 @@ class User extends Authenticatable
 
     public function getPictureUrlAttribute()
     {
-        if (empty($this->picture))
+        if (empty($this->picture)) {
             return '';
-        else
+        }
+        else {
             return url('users/picture/' . $this->id);
+        }
     }
 
     public function sendPasswordResetNotification($token)
@@ -200,7 +198,7 @@ class User extends Authenticatable
     {
         $this->load('contacts');
 
-        if (!empty($this->getContactsByType('email'))) {
+        if (! empty($this->getContactsByType('email'))) {
             $this->enforce_password_change = true;
             $this->access_token = Str::random(10);
             $this->save();
@@ -208,7 +206,7 @@ class User extends Authenticatable
             try {
                 $this->notify(new ManualWelcomeMessage($this->access_token));
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 \Log::error('Impossibile inviare email di benvenuto a utente ' . $this->id . ': ' . $e->getMessage());
             }
         }
@@ -222,7 +220,7 @@ class User extends Authenticatable
     */
     public function morePendingBookings($aggregate)
     {
-        $other_bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function($query) use ($aggregate) {
+        $other_bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function ($query) use ($aggregate) {
             $query->where('aggregate_id', '!=', $aggregate->id)->where('shipping', $aggregate->shipping);
         })->get();
 
@@ -235,6 +233,7 @@ class User extends Authenticatable
             }
 
             $notice .= '</ul>';
+
             return $notice;
         }
 

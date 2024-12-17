@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
@@ -14,6 +13,7 @@ use App\Aggregate;
 class OpenOrders extends Command
 {
     protected $signature = 'open:orders';
+
     protected $description = 'Controlla lo stato degli ordini da aprire automaticamente';
 
     private function getDates()
@@ -22,19 +22,19 @@ class OpenOrders extends Command
         $today = date('Y-m-d');
         $aggregable = [];
 
-        foreach($dates as $date) {
+        foreach ($dates as $date) {
             try {
                 $all_previous = true;
 
-                foreach($date->order_dates as $d) {
+                foreach ($date->order_dates as $d) {
                     if ($d->start < $today) {
                         // @phpstan-ignore-next-line
                         $all_previous = $all_previous && true;
                     }
-                    else if ($d->start > $today) {
+                    elseif ($d->start > $today) {
                         $all_previous = false;
                     }
-                    else if ($d->start == $today) {
+                    elseif ($d->start == $today) {
                         $all_previous = false;
 
                         /*
@@ -58,7 +58,7 @@ class OpenOrders extends Command
                         }
 
                         $aggregable_key = sprintf('%s_%s', $d->end, $d->shipping);
-                        if (!isset($aggregable[$aggregable_key])) {
+                        if (! isset($aggregable[$aggregable_key])) {
                             $aggregable[$aggregable_key] = [];
                         }
 
@@ -70,7 +70,7 @@ class OpenOrders extends Command
                     $date->delete();
                 }
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 Log::error('Errore in apertura automatica ordine: ' . $e->getMessage());
             }
         }
@@ -80,11 +80,11 @@ class OpenOrders extends Command
 
     private function openByDates($aggregable)
     {
-        foreach($aggregable as $aggr) {
+        foreach ($aggregable as $aggr) {
             $aggregate = new Aggregate();
             $aggregate->save();
 
-            foreach($aggr as $date) {
+            foreach ($aggr as $date) {
                 $supplier = $date->target;
 
                 $order = new Order();
@@ -116,7 +116,7 @@ class OpenOrders extends Command
         */
 
         $pending = Order::withoutGlobalScopes()->where('status', 'suspended')->where('start', Carbon::today()->format('Y-m-d'))->get();
-        foreach($pending as $p) {
+        foreach ($pending as $p) {
             $p->status = 'open';
             $p->save();
         }

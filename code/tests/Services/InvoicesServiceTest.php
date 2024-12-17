@@ -16,7 +16,7 @@ class InvoicesServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -30,7 +30,7 @@ class InvoicesServiceTest extends TestCase
     /*
         Salvataggio Fattura con permessi sbagliati (utente)
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -46,7 +46,7 @@ class InvoicesServiceTest extends TestCase
     /*
         Salvataggio Fattura con permessi sbagliati (amministratore)
     */
-    public function testFailsToStoreAdmin()
+    public function test_fails_to_store_admin()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithAdminPerm);
@@ -61,17 +61,17 @@ class InvoicesServiceTest extends TestCase
     /*
         Salvataggio Fattura con permessi sbagliati (fornitore sbagliato)
     */
-    public function testFailsToStoreSupplier()
+    public function test_fails_to_store_supplier()
     {
         $this->expectException(AuthException::class);
         $other_supplier = Supplier::factory()->create();
         $this->actingAs($this->userWithInvoicesPerm);
 
-        $invoice = app()->make('InvoicesService')->store(array(
+        $invoice = app()->make('InvoicesService')->store([
             'number' => 'ABC123',
             'supplier_id' => $other_supplier->id,
             'date' => printableDate(date('Y-m-d')),
-        ));
+        ]);
 
         return app()->make('InvoicesService')->show($invoice->id);
     }
@@ -80,35 +80,35 @@ class InvoicesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithInvoicesPerm);
 
-        $invoice = app()->make('InvoicesService')->store(array(
+        $invoice = app()->make('InvoicesService')->store([
             'number' => 'ABC123',
             'supplier_id' => $this->supplier->id,
             'date' => printableDate(date('Y-m-d')),
-        ));
+        ]);
 
         return app()->make('InvoicesService')->show($invoice->id);
     }
 
-	private function wireOrders($invoice)
-	{
-		$order1 = Order::factory()->create([
+    private function wireOrders($invoice)
+    {
+        $order1 = Order::factory()->create([
             'supplier_id' => $this->supplier->id,
         ]);
 
-		$order2 = Order::factory()->create([
+        $order2 = Order::factory()->create([
             'supplier_id' => $this->supplier->id,
         ]);
 
         $this->actingAs($this->userWithInvoicesPerm);
-		app()->make('InvoicesService')->wire($invoice->id, 'review', [
-			'order_id' => [$order1->id, $order2->id]
-		]);
-	}
+        app()->make('InvoicesService')->wire($invoice->id, 'review', [
+            'order_id' => [$order1->id, $order2->id],
+        ]);
+    }
 
     /*
         Salvataggio Fattura
     */
-    public function testStore()
+    public function test_store()
     {
         $invoice = $this->createInvoice();
 
@@ -119,12 +119,12 @@ class InvoicesServiceTest extends TestCase
         $this->assertEquals(0, $invoice->otherMovements()->count());
         $this->assertNull($invoice->payment);
 
-		$this->wireOrders($invoice);
+        $this->wireOrders($invoice);
 
-		$this->nextRound();
+        $this->nextRound();
 
-		$invoice = app()->make('InvoicesService')->show($invoice->id);
-		$this->assertEquals(2, $invoice->orders()->count());
+        $invoice = app()->make('InvoicesService')->show($invoice->id);
+        $this->assertEquals(2, $invoice->orders()->count());
 
         return $invoice;
     }
@@ -132,7 +132,7 @@ class InvoicesServiceTest extends TestCase
     /*
         Permessi sbagliati su elenco Fatture
     */
-    public function testNoList()
+    public function test_no_list()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -145,13 +145,13 @@ class InvoicesServiceTest extends TestCase
     /*
         Elenco Fatture corretto
     */
-    public function testList()
+    public function test_list()
     {
         $this->createInvoice();
         $past = date('Y-m-d', strtotime('-1 months'));
         $future = date('Y-m-d', strtotime('+10 years'));
 
-        foreach([$this->userWithInvoicesPerm, $this->userWithSupplierPerm, $this->userWithAdminPerm] as $index => $user) {
+        foreach ([$this->userWithInvoicesPerm, $this->userWithSupplierPerm, $this->userWithAdminPerm] as $index => $user) {
             $this->actingAs($user);
 
             $this->nextRound();
@@ -170,9 +170,9 @@ class InvoicesServiceTest extends TestCase
     /*
         Contenuto della Invoice
     */
-    public function testContents()
-	{
-		$invoice = $this->createInvoice();
+    public function test_contents()
+    {
+        $invoice = $this->createInvoice();
 
         $order1 = $this->initOrder(null);
         $this->populateOrder($order1);
@@ -184,20 +184,20 @@ class InvoicesServiceTest extends TestCase
 
         $this->actingAs($this->userWithInvoicesPerm);
 
-		app()->make('InvoicesService')->wire($invoice->id, 'review', [
-			'order_id' => [$order1->id, $order2->id]
-		]);
+        app()->make('InvoicesService')->wire($invoice->id, 'review', [
+            'order_id' => [$order1->id, $order2->id],
+        ]);
 
         $this->nextRound();
 
         $products = app()->make('InvoicesService')->products($invoice->id);
         $this->assertEquals($order1->products->count() + $order2->products->count(), count($products['global_summary']->products));
-	}
+    }
 
     /*
         Pagamento fattura
     */
-    public function testPayAndList()
+    public function test_pay_and_list()
     {
         $invoice = $this->createInvoice();
 
@@ -216,9 +216,9 @@ class InvoicesServiceTest extends TestCase
 
         $this->nextRound();
 
-		$this->wireOrders($invoice);
+        $this->wireOrders($invoice);
 
-		$this->nextRound();
+        $this->nextRound();
 
         $this->actingAs($this->userWithSupplierPerm);
 
@@ -236,26 +236,26 @@ class InvoicesServiceTest extends TestCase
         $movement = $movements->first();
         $this->assertEquals(10, $movement->amount);
 
-		$invoice = app()->make('InvoicesService')->show($invoice->id);
+        $invoice = app()->make('InvoicesService')->show($invoice->id);
         $this->assertEquals($invoice->payment->id, $movement->id);
         $this->assertEquals($invoice->status, 'payed');
 
-		foreach($invoice->orders as $order) {
-			$this->assertEquals($movement->id, $order->payment_id);
-		}
+        foreach ($invoice->orders as $order) {
+            $this->assertEquals($movement->id, $order->payment_id);
+        }
     }
 
     /*
         Pagamento fattura con permessi sbagliati
     */
-    public function testWrongPayment()
+    public function test_wrong_payment()
     {
         $this->expectException(AuthException::class);
 
         $invoice = $this->createInvoice();
         $this->nextRound();
-		$this->wireOrders($invoice);
-		$this->nextRound();
+        $this->wireOrders($invoice);
+        $this->nextRound();
 
         $this->actingAs($this->userWithInvoicesPerm);
 
@@ -270,37 +270,37 @@ class InvoicesServiceTest extends TestCase
     /*
         Modifica Fattura con permessi sbagliati
     */
-    public function testFailsToUpdate()
+    public function test_fails_to_update()
     {
         $invoice = $this->createInvoice();
 
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('InvoicesService')->update($invoice->id, array());
+        app()->make('InvoicesService')->update($invoice->id, []);
     }
 
     /*
         Modifica Fattura con ID non esistente
     */
-    public function testFailsToUpdateBecauseNoUserWithID()
+    public function test_fails_to_update_because_no_user_with_id()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithSupplierPerm);
-        app()->make('InvoicesService')->update('id', array());
+        app()->make('InvoicesService')->update('id', []);
     }
 
     /*
         Modifica Fattura
     */
-    public function testUpdate()
+    public function test_update()
     {
         $invoice = $this->createInvoice();
         $old_date = date('Y-m-d', strtotime('-10 days'));
 
-        app()->make('InvoicesService')->update($invoice->id, array(
+        app()->make('InvoicesService')->update($invoice->id, [
             'number' => '123ABC',
             'date' => $old_date,
-        ));
+        ]);
 
         $invoice = app()->make('InvoicesService')->show($invoice->id);
         $this->assertEquals($old_date, $invoice->date);
@@ -310,7 +310,7 @@ class InvoicesServiceTest extends TestCase
     /*
         Accesso Fattura con ID non esistente
     */
-    public function testFailsToShowInexistent()
+    public function test_fails_to_show_inexistent()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->actingAs($this->userWithAdminPerm);
@@ -320,7 +320,7 @@ class InvoicesServiceTest extends TestCase
     /*
         Cancellazione Fattura con permessi sbagliati
     */
-    public function testFailsToDestroy()
+    public function test_fails_to_destroy()
     {
         $invoice = $this->createInvoice();
         $this->nextRound();
@@ -333,29 +333,29 @@ class InvoicesServiceTest extends TestCase
     /*
         Cancellazione Fattura
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $invoice = $this->createInvoice();
-		$this->wireOrders($invoice);
+        $this->wireOrders($invoice);
         $invoice = app()->make('InvoicesService')->show($invoice->id);
         $this->assertNotNull($invoice);
 
-		$orders = $invoice->orders;
-		$this->assertEquals(2, $orders->count());
+        $orders = $invoice->orders;
+        $this->assertEquals(2, $orders->count());
 
-		$this->nextRound();
+        $this->nextRound();
 
         $movement = Movement::generate('invoice-payment', $this->userWithSupplierPerm->gas, $invoice, 10);
         $movement->save();
 
-		$this->nextRound();
+        $this->nextRound();
 
-		foreach($orders as $order) {
-			$order = app()->make('OrdersService')->show($order->id);
-			$this->assertEquals($movement->id, $order->payment_id);
-		}
+        foreach ($orders as $order) {
+            $order = app()->make('OrdersService')->show($order->id);
+            $this->assertEquals($movement->id, $order->payment_id);
+        }
 
-		$this->nextRound();
+        $this->nextRound();
 
         $invoice = app()->make('InvoicesService')->destroy($invoice->id);
 
@@ -367,11 +367,11 @@ class InvoicesServiceTest extends TestCase
             // good boy
         }
 
-		$this->nextRound();
+        $this->nextRound();
 
-		foreach($orders as $order) {
-			$order = app()->make('OrdersService')->show($order->id);
-			$this->assertNull($order->payment_id);
-		}
+        foreach ($orders as $order) {
+            $order = app()->make('OrdersService')->show($order->id);
+            $this->assertNull($order->payment_id);
+        }
     }
 }

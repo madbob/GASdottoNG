@@ -2,9 +2,7 @@
 
 namespace App\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Events\NotificationSent;
-use Illuminate\Queue\InteractsWithQueue;
 
 class AfterNotification
 {
@@ -13,7 +11,7 @@ class AfterNotification
         if (hasTrait($event->notification, 'App\Notifications\TemporaryFiles')) {
             // @phpstan-ignore-next-line
             $files = $event->notification->getFiles();
-            foreach($files as $f) {
+            foreach ($files as $f) {
                 @unlink($f);
             }
         }

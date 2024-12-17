@@ -16,13 +16,13 @@ class ImportersTest extends TestCase
     /*
         Importazione GDXP 1.0
     */
-    public function testGdxp()
+    public function test_gdxp()
     {
         $data = [];
         $path = base_path('tests/data/gdxp.json');
         $info = json_decode(file_get_contents($path));
 
-        foreach($info->blocks as $c) {
+        foreach ($info->blocks as $c) {
             $data[] = Suppliers::importJSON($info, $c->supplier, null);
         }
 
@@ -45,13 +45,13 @@ class ImportersTest extends TestCase
     /*
         Importazione GDXP 2.0
     */
-    public function testGdxp2()
+    public function test_gdxp2()
     {
         $data = [];
         $path = base_path('tests/data/gdxp2.json');
         $info = json_decode(file_get_contents($path));
 
-        foreach($info->blocks as $c) {
+        foreach ($info->blocks as $c) {
             $data[] = Suppliers::importJSON($info, $c->supplier, null);
         }
 
@@ -66,7 +66,7 @@ class ImportersTest extends TestCase
         $this->assertEquals(2, $supplier->modifiers->count());
         $has_shipping = $has_discount = false;
 
-        foreach($supplier->modifiers as $mod) {
+        foreach ($supplier->modifiers as $mod) {
             $definitions = $mod->definitions;
 
             if ($mod->modifierType->identifier == 'shipping') {
@@ -79,7 +79,7 @@ class ImportersTest extends TestCase
                 $this->assertEquals(10, $definitions[1]->amount);
                 $this->assertEquals('price', $mod->applies_type);
             }
-            else if ($mod->modifierType->identifier == 'discount') {
+            elseif ($mod->modifierType->identifier == 'discount') {
                 $has_discount = true;
                 $this->assertEquals('percentage', $mod->value);
                 $this->assertEquals(1, count($definitions));
@@ -96,7 +96,7 @@ class ImportersTest extends TestCase
     /*
         https://github.com/madbob/GASdottoNG/issues/143
     */
-    public function testProductsCsv()
+    public function test_products_csv()
     {
         $data = [];
         $path = base_path('tests/data/products.csv');
@@ -171,7 +171,7 @@ class ImportersTest extends TestCase
             'want_replace' => [],
         ];
 
-        foreach($data['products'] as $index => $prod) {
+        foreach ($data['products'] as $index => $prod) {
             $final_block['import'][] = $index;
             $final_block['weight'][] = $prod->weight;
             $final_block['package_size'][] = $prod->package_size;
@@ -204,7 +204,7 @@ class ImportersTest extends TestCase
         $this->assertNotNull(Measure::where('name', 'Sacchetti')->first());
     }
 
-    public function testUsersCsv()
+    public function test_users_csv()
     {
         $this->actingAs($this->userAdmin);
 
@@ -238,7 +238,7 @@ class ImportersTest extends TestCase
         Notification::assertCount(2);
     }
 
-    public function testMovementsCsv()
+    public function test_movements_csv()
     {
         $this->actingAs($this->userAdmin);
 

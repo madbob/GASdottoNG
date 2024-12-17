@@ -22,8 +22,8 @@ class CreateModifiersTable extends Migration
             $table->enum('applies_target', ['product', 'booking', 'order'])->default('order');
             $table->enum('distribution_type', ['none', 'quantity', 'price', 'weight'])->default('none');
             $table->text('definition');
-			$table->string('movement_type_id')->nullable()->default(null);
-			$table->boolean('always_on')->default(false);
+            $table->string('movement_type_id')->nullable()->default(null);
+            $table->boolean('always_on')->default(false);
 
             $table->foreign('modifier_type_id')->references('id')->on('modifier_types')->onDelete('cascade');
         });

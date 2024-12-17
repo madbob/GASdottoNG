@@ -7,9 +7,10 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class Currency extends Model
 {
-    use GASModel, Cachable;
+    use Cachable, GASModel;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     public static function enabled()

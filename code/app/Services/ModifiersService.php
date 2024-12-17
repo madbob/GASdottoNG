@@ -18,7 +18,7 @@ class ModifiersService extends BaseService
 {
     private function testAccess($modifier)
     {
-        switch($modifier->target_type) {
+        switch ($modifier->target_type) {
             case 'App\Supplier':
                 $this->ensureAuth(['supplier.modify' => $modifier->target]);
                 break;
@@ -35,7 +35,7 @@ class ModifiersService extends BaseService
                 $test = false;
 
                 $user = Auth::user();
-                foreach($modifier->target->orders as $order) {
+                foreach ($modifier->target->orders as $order) {
                     if ($user->can('supplier.modify', $order->supplier) || $user->can('supplier.orders', $order->supplier)) {
                         $test = true;
                         break;
@@ -98,7 +98,7 @@ class ModifiersService extends BaseService
             $thresholds = $request['threshold'] ?? [];
             $amounts = $request['amount'] ?? [];
 
-            foreach($thresholds as $index => $threshold) {
+            foreach ($thresholds as $index => $threshold) {
                 $threshold = trim($threshold);
                 $amount = trim($amounts[$index]);
 
@@ -129,9 +129,9 @@ class ModifiersService extends BaseService
 
     public function destroy($id)
     {
-		$modifier = Modifier::find($id);
+        $modifier = Modifier::find($id);
 
-        DB::transaction(function() use ($modifier) {
+        DB::transaction(function () use ($modifier) {
             $this->testAccess($modifier);
             $modifier->definition = '[]';
             $modifier->save();

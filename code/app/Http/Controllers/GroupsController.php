@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Services\GroupsService;
 
 use App\User;
-use App\Group;
 
 class GroupsController extends BackedController
 {
@@ -17,14 +16,15 @@ class GroupsController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Group',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function show($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             $g = $this->service->show($id);
+
             return view('groups.edit', ['group' => $g]);
         });
     }
@@ -35,6 +35,7 @@ class GroupsController extends BackedController
     public function matrix()
     {
         $this->ensureAuth(['gas.config' => 'gas']);
+
         return view('groups.matrix');
     }
 
@@ -49,7 +50,7 @@ class GroupsController extends BackedController
         $users = User::topLevel()->whereIn('id', $users)->get();
 
         $request = $request->all();
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $user->readCircles($request);
         }
 

@@ -9,7 +9,7 @@ function flaxComplexOptions($array)
     $options = [];
     $values = [];
 
-    foreach($array as $key => $meta) {
+    foreach ($array as $key => $meta) {
         $options[$key] = $meta->name;
         if ($meta->checked ?? false) {
             $values[] = $key;
@@ -52,7 +52,7 @@ function formatObjectsToComponentRec($options)
 {
     $ret = [];
 
-    foreach($options as $option) {
+    foreach ($options as $option) {
         if (is_a($option, \App\Models\Concerns\HasChildren::class) && $option->children->count() != 0) {
             $ret[$option->id] = (object) [
                 // @phpstan-ignore-next-line
@@ -70,11 +70,11 @@ function formatObjectsToComponentRec($options)
 
 function translateValueInComponent($params, $extraitem)
 {
-	$translated = [];
+    $translated = [];
 
-    if (!empty($params['value'])) {
+    if (! empty($params['value'])) {
         if (is_iterable($params['value'])) {
-            foreach($params['value'] as $option) {
+            foreach ($params['value'] as $option) {
                 $translated[] = $option->id;
             }
         }
@@ -87,7 +87,7 @@ function translateValueInComponent($params, $extraitem)
         $translated[] = '0';
     }
 
-	return $translated;
+    return $translated;
 }
 
 function formatObjectsToComponent($component, $params)
@@ -141,6 +141,7 @@ function formatDecimalToComponent($component, $params)
     $decimals = $params['attributes']['decimals'];
     $params['attributes']['data-trim-digits'] = $decimals;
     $params['value'] = sprintf('%.0' . $decimals . 'f', $params['value']);
+
     return $params;
 }
 
@@ -149,8 +150,8 @@ function formatChecksComponentValues($component, $params)
     $values = [];
     $options = [];
 
-    foreach($params['options'] as $val => $meta) {
-        if (!is_object($meta)) {
+    foreach ($params['options'] as $val => $meta) {
+        if (! is_object($meta)) {
             return $params;
         }
 
@@ -170,6 +171,7 @@ function formatChecksComponentValues($component, $params)
 function formatPeriodicToComponent($component, $params)
 {
     $params['value'] = printablePeriodic($params['value']);
+
     return $params;
 }
 
@@ -178,7 +180,7 @@ function formatUpdater($buttons, $params)
     $obj = $params['obj'];
 
     if ($obj && hasTrait($obj, \App\Models\Concerns\TracksUpdater::class)) {
-        $exists = array_filter($buttons, fn($b) => isset($b['element']) && $b['element'] == 'larastrap::updater');
+        $exists = array_filter($buttons, fn ($b) => isset($b['element']) && $b['element'] == 'larastrap::updater');
 
         if (count($exists) == 0) {
             $buttons[] = [
@@ -193,6 +195,7 @@ function formatUpdater($buttons, $params)
 function formatInnerLastUpdater($component, $params)
 {
     $params['buttons'] = formatUpdater($params['buttons'], $params);
+
     return $params;
 }
 
@@ -225,7 +228,7 @@ function mainFormButtons($params)
     $obj = $params['obj'];
 
     $nodelete = filter_var($params['attributes']['nodelete'] ?? false, FILTER_VALIDATE_BOOLEAN);
-    if (!$nodelete) {
+    if (! $nodelete) {
         $buttons[] = [
             'color' => 'danger',
             'classes' => ['delete-button'],
@@ -234,7 +237,7 @@ function mainFormButtons($params)
     }
 
     $nosave = filter_var($params['attributes']['nosave'] ?? false, FILTER_VALIDATE_BOOLEAN);
-    if (!$nosave) {
+    if (! $nosave) {
         $buttons[] = [
             'color' => 'success',
             'classes' => ['save-button'],

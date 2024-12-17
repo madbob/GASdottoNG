@@ -11,7 +11,7 @@ class Sepa extends PaymentType
 
     public function enabled()
     {
-        return (currentAbsoluteGas()->hasFeature('rid'));
+        return currentAbsoluteGas()->hasFeature('rid');
     }
 
     public function definition()
@@ -21,9 +21,9 @@ class Sepa extends PaymentType
             'identifier' => true,
             'icon' => 'cloud-plus',
             'active_for' => 'App\User',
-            'valid_config' => function($target) {
-                return (get_class($target) == 'App\User' && !empty($target->rid['iban']));
-            }
+            'valid_config' => function ($target) {
+                return get_class($target) == 'App\User' && ! empty($target->rid['iban']);
+            },
         ];
     }
 }

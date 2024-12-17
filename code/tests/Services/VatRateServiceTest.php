@@ -12,7 +12,7 @@ class VatRateServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -24,24 +24,24 @@ class VatRateServiceTest extends TestCase
     /*
         Salvataggio Aliquota IVA con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('VatRatesService')->store(array());
+        app()->make('VatRatesService')->store([]);
     }
 
     /*
         Salvataggio Aliquota IVA con permessi corretti
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userAdmin);
 
-        $newVat = app()->make('VatRatesService')->store(array(
+        $newVat = app()->make('VatRatesService')->store([
             'name' => '22%',
             'percentage' => 22,
-        ));
+        ]);
 
         $this->assertEquals('22%', $newVat->name);
         $this->assertEquals(22, $newVat->percentage);
@@ -50,14 +50,14 @@ class VatRateServiceTest extends TestCase
     /*
         Modifica Aliquota IVA
     */
-    public function testUpdate()
+    public function test_update()
     {
         $this->actingAs($this->userAdmin);
 
-        $vat = app()->make('VatRatesService')->update($this->vat_rate->id, array(
+        $vat = app()->make('VatRatesService')->update($this->vat_rate->id, [
             'name' => 'pippo',
             'percentage' => 22,
-        ));
+        ]);
 
         $this->assertEquals('pippo', $vat->name);
         $this->assertEquals(22, $vat->percentage);
@@ -66,7 +66,7 @@ class VatRateServiceTest extends TestCase
     /*
         Cancellazione Aliquota IVA con permessi sbagliati
     */
-    public function testFailsToDestroy()
+    public function test_fails_to_destroy()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
@@ -76,7 +76,7 @@ class VatRateServiceTest extends TestCase
     /*
         Cancellazione Aliquota IVA
     */
-    public function testDestroy()
+    public function test_destroy()
     {
         $this->actingAs($this->userAdmin);
         app()->make('VatRatesService')->destroy($this->vat_rate->id);

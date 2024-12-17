@@ -15,6 +15,7 @@ class MovementTypesService extends BaseService
         $this->ensureAuth(['movements.types' => 'gas']);
         $type = movementTypes($id);
         $type->id = $id;
+
         return $type;
     }
 
@@ -32,6 +33,7 @@ class MovementTypesService extends BaseService
         $type->save();
         DB::commit();
         movementTypes('VOID');
+
         return $type;
     }
 
@@ -41,17 +43,18 @@ class MovementTypesService extends BaseService
             'method' => $pay_id,
             'is_default' => (($request['payment_default'] ?? null) == $pay_id),
             'sender' => (object) [
-                'operations' => []
+                'operations' => [],
             ],
             'target' => (object) [
-                'operations' => []
+                'operations' => [],
             ],
             'master' => (object) [
-                'operations' => []
+                'operations' => [],
             ],
         ];
 
         array_push($data, $cell);
+
         return $cell;
     }
 
@@ -61,13 +64,13 @@ class MovementTypesService extends BaseService
         $valid_payments = array_intersect_key($request, $payments);
         $fields = (new $classname())->balanceFields();
 
-        foreach(array_keys($fields) as $f) {
-            foreach(array_keys($valid_payments) as $pay_id) {
+        foreach (array_keys($fields) as $f) {
+            foreach (array_keys($valid_payments) as $pay_id) {
                 $conf = $request[$role . '-' . $classname . '-' . $f . '-' . $pay_id] ?? 'ignore';
                 if ($conf != 'ignore') {
                     $cell = null;
 
-                    foreach($data as $d) {
+                    foreach ($data as $d) {
                         if ($d->method == $pay_id) {
                             $cell = $d;
                             break;
@@ -80,7 +83,7 @@ class MovementTypesService extends BaseService
 
                     $cell->$role->operations[] = (object) [
                         'operation' => $conf,
-                        'field' => $f
+                        'field' => $f,
                     ];
                 }
             }
@@ -92,8 +95,8 @@ class MovementTypesService extends BaseService
         $payments = paymentTypes();
         $valid_payments = array_intersect_key($request, $payments);
 
-        foreach(array_keys($valid_payments) as $pay_id) {
-            $exists = array_filter($data, function($d) use ($pay_id) {
+        foreach (array_keys($valid_payments) as $pay_id) {
+            $exists = array_filter($data, function ($d) use ($pay_id) {
                 return $d->method == $pay_id;
             });
 
@@ -142,6 +145,7 @@ class MovementTypesService extends BaseService
         $type->function = json_encode($data);
         $type->save();
         movementTypes('VOID');
+
         return $type;
     }
 
@@ -162,6 +166,7 @@ class MovementTypesService extends BaseService
 
         DB::commit();
         movementTypes('VOID');
+
         return $type;
     }
 }

@@ -3,20 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Http\Request;
 
 use App\Models\Concerns\TracksUpdater;
 use App\Scopes\RestrictedGAS;
 
 class Movement extends Model
 {
-    use HasFactory, TracksUpdater, GASModel;
+    use GASModel, HasFactory, TracksUpdater;
 
     /*
         Per verificare il corretto salvataggio di un movimento, non consultare
@@ -114,11 +112,11 @@ class Movement extends Model
         }
         else {
             $total_amount = [printablePriceCurrency($this->amount, '.', $this->currency)];
-            foreach($this->related as $rel) {
+            foreach ($this->related as $rel) {
                 $total_amount[] = printablePriceCurrency($rel->amount, '.', $rel->currency);
             }
 
-            return sprintf('%s | %s | %s', $this->printableDate('date'), join(' + ', $total_amount), $this->payment_icon);
+            return sprintf('%s | %s | %s', $this->printableDate('date'), implode(' + ', $total_amount), $this->payment_icon);
         }
     }
 
@@ -141,6 +139,7 @@ class Movement extends Model
                 return $details->name;
             }
         }
+
         return '???';
     }
 
@@ -180,7 +179,7 @@ class Movement extends Model
         if ($this->sender_id == $obj_peer->id) {
             $ret = 'sender';
         }
-        else if ($this->target_id == $obj_peer->id) {
+        elseif ($this->target_id == $obj_peer->id) {
             $ret = 'target';
         }
         else {
@@ -249,6 +248,7 @@ class Movement extends Model
         $ret->date = date('Y-m-d');
         $ret->notes = $type_descr->default_notes;
         $ret->method = defaultPaymentByType($type);
+
         return $ret;
     }
 

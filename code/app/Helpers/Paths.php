@@ -50,7 +50,7 @@ function env_file()
         if (isset($_SERVER['HTTP_HOST'])) {
             $instance = substr($_SERVER['HTTP_HOST'], 0, strpos($_SERVER['HTTP_HOST'], '.'));
         }
-        else if (app()->runningInConsole()) {
+        elseif (app()->runningInConsole()) {
             $domain = parse_url(env('APP_URL'), PHP_URL_HOST);
             $instance = preg_replace('/^([^\.]*)\.gasdotto\.net.*$/', '\1', $domain);
         }

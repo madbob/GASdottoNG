@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
 use Carbon\Carbon;
@@ -59,7 +58,7 @@ class DemoSeeder extends Seeder
             ['benso', 'Camillo', 'Benso'],
         ];
 
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $u = new User();
             $u->gas_id = $gas->id;
             $u->member_since = date('Y-m-d');
@@ -117,7 +116,7 @@ class DemoSeeder extends Seeder
                         'unit_measure' => $kg_measure->id,
                         'category' => $category->id,
                         'min_quantity' => 3,
-                        'variants' => []
+                        'variants' => [],
                     ],
                     (object) [
                         'name' => 'Melanzane',
@@ -126,8 +125,8 @@ class DemoSeeder extends Seeder
                         'category' => $category->id,
                         'variants' => [
                             'Forma' => ['Tonda', 'Ovale', 'Lunga'],
-                            'Colore' => ['Nera', 'Viola']
-                        ]
+                            'Colore' => ['Nera', 'Viola'],
+                        ],
                     ],
                     (object) [
                         'name' => 'Peperoncino piccante',
@@ -135,8 +134,8 @@ class DemoSeeder extends Seeder
                         'unit_measure' => $portion_measure->id,
                         'category' => $category->id,
                         'variants' => [
-                            'Piccantezza' => ['Poco piccante', 'Molto piccante']
-                        ]
+                            'Piccantezza' => ['Poco piccante', 'Molto piccante'],
+                        ],
                     ],
                     (object) [
                         'name' => 'Zucchine',
@@ -144,7 +143,7 @@ class DemoSeeder extends Seeder
                         'unit_measure' => $kg_measure->id,
                         'category' => $category->id,
                         'max_available' => 3,
-                        'variants' => []
+                        'variants' => [],
                     ],
                 ];
 
@@ -156,16 +155,16 @@ class DemoSeeder extends Seeder
                         'price' => $p->price,
                         'measure_id' => $p->unit_measure,
                         'category_id' => $p->category,
-                        'vat_rate_id' => $vat_rate->id
+                        'vat_rate_id' => $vat_rate->id,
                     ]);
 
-                    foreach($p->variants as $name => $values) {
+                    foreach ($p->variants as $name => $values) {
                         $v = new Variant();
                         $v->name = $name;
                         $v->product_id = $prod->id;
                         $v->save();
 
-                        foreach($values as $value) {
+                        foreach ($values as $value) {
                             $val = new VariantValue();
                             $val->variant_id = $v->id;
                             $val->value = $value;

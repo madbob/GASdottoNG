@@ -4,9 +4,7 @@ namespace Tests\Services;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Artisan;
 
-use App\Exceptions\AuthException;
 use App\User;
 use App\Circle;
 use App\Group;
@@ -15,7 +13,7 @@ class GroupsServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
@@ -24,9 +22,9 @@ class GroupsServiceTest extends TestCase
     /*
         Salvataggio Gruppo e Cerchie
     */
-    public function testStore()
+    public function test_store()
     {
-        list($group, $circle, $circle2) = $this->createGroupWithCircle();
+        [$group, $circle, $circle2] = $this->createGroupWithCircle();
 
         $this->nextRound();
 
@@ -40,7 +38,7 @@ class GroupsServiceTest extends TestCase
         $users = User::all();
         $this->assertTrue($users->count() > 0);
 
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $assigned = $user->circlesByGroup($group);
             $this->assertEquals(1, count($assigned->circles));
             $this->assertEquals($circle->id, $assigned->circles[0]->id);
@@ -50,9 +48,9 @@ class GroupsServiceTest extends TestCase
     /*
         Aggiornamento Gruppo e Cerchie
     */
-    public function testUpdate()
+    public function test_update()
     {
-        list($group, $circle, $circle2) = $this->createGroupWithCircle();
+        [$group, $circle, $circle2] = $this->createGroupWithCircle();
 
         $this->nextRound();
 
@@ -78,7 +76,7 @@ class GroupsServiceTest extends TestCase
         $this->assertTrue($circle2->is_default == true);
 
         $users = User::all();
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $assigned = $user->circlesByGroup($group);
             $this->assertEquals(1, count($assigned->circles));
             $this->assertEquals($circle2->id, $assigned->circles[0]->id);

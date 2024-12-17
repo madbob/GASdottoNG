@@ -2,8 +2,6 @@
 
 namespace App\Singletons;
 
-use Illuminate\Support\Facades\DB;
-
 use App\Order;
 
 /*
@@ -34,9 +32,10 @@ class OrderNumbersDispatcher
 
         $counter = 0;
 
-        foreach($this->cache[$year] as $id => $start) {
+        foreach ($this->cache[$year] as $id => $start) {
             if ($start < $order->start || ($start == $order->start && $id < $order->id)) {
                 $counter++;
+
                 continue;
             }
 

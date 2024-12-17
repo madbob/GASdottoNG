@@ -19,7 +19,7 @@ class DatesServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -30,7 +30,7 @@ class DatesServiceTest extends TestCase
         $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
 
         $role = Role::factory()->create([
-            'actions' => 'supplier.orders,notifications.admin'
+            'actions' => 'supplier.orders,notifications.admin',
         ]);
 
         $this->userAdmin->addRole($role->id, $this->supplier1);
@@ -44,17 +44,17 @@ class DatesServiceTest extends TestCase
     /*
         Salvataggio Date con permessi sbagliati
     */
-    public function testFailsToStore()
+    public function test_fails_to_store()
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('DatesService')->update(0, array());
+        app()->make('DatesService')->update(0, []);
     }
 
     /*
         Salvataggio e rimozione Date con permessi corretti
     */
-    public function testStore()
+    public function test_store()
     {
         $this->actingAs($this->userAdmin);
 
@@ -109,7 +109,7 @@ class DatesServiceTest extends TestCase
 
         $days = localeDays();
         $today = mb_strtolower(date('l'));
-        foreach($days as $it => $en) {
+        foreach ($days as $it => $en) {
             if ($en == $today) {
                 $weekday = ucwords($it);
                 break;
@@ -122,7 +122,7 @@ class DatesServiceTest extends TestCase
     /*
         Salvataggio e apertura ordini ricorrenti
     */
-    public function testOrders()
+    public function test_orders()
     {
         $this->actingAs($this->userAdmin);
         $weekday = $this->getCurrentWeekday();
@@ -146,7 +146,7 @@ class DatesServiceTest extends TestCase
 
         $orders = Order::where('status', 'open')->get();
         $this->assertEquals($orders->count(), 1);
-        foreach($orders as $o) {
+        foreach ($orders as $o) {
             $this->assertEquals($o->supplier_id, $this->supplier1->id);
             $this->assertEquals($o->start, date('Y-m-d'));
             $this->assertEquals($o->end, date('Y-m-d', strtotime('+10 days')));
@@ -158,7 +158,7 @@ class DatesServiceTest extends TestCase
         $this->assertEquals($orders->count(), 1);
     }
 
-    public function testRecurrences()
+    public function test_recurrences()
     {
         $this->actingAs($this->userAdmin);
         $recurrence = 'Lunedì - Secondo del Mese - ' . printableDate(date('Y-m-d')) . ' - ' . printableDate(date('Y-m-d', strtotime('+6 months')));
@@ -191,20 +191,20 @@ class DatesServiceTest extends TestCase
         $reference_monday = Carbon::parse('second monday of next month');
         $reference_monday_formatted = $reference_monday->format('Y-m-d');
 
-        foreach($dates as $index => $date) {
+        foreach ($dates as $index => $date) {
             $this->assertEquals($this->supplier1->id, $date->target->id);
             $orders = $date->order_dates;
             $this->assertTrue(count($orders) > 0);
             $found = false;
 
-            switch($index) {
+            switch ($index) {
                 case 0:
                     $this->assertEquals('open', $date->action);
                     $this->assertEquals(10, $date->first_offset);
                     $this->assertEquals(11, $date->second_offset);
                     $this->assertEquals('', $date->comment);
 
-                    foreach($orders as $order) {
+                    foreach ($orders as $order) {
                         if ($order->start == $reference_monday_formatted) {
                             $this->assertEquals($reference_monday->copy()->addDays(10)->format('Y-m-d'), $order->end);
                             $this->assertEquals($reference_monday->copy()->addDays(11)->format('Y-m-d'), $order->shipping);
@@ -222,7 +222,7 @@ class DatesServiceTest extends TestCase
                     $this->assertEquals(3, $date->second_offset);
                     $this->assertEquals('pippo', $date->comment);
 
-                    foreach($orders as $order) {
+                    foreach ($orders as $order) {
                         if ($order->end == $reference_monday_formatted) {
                             $this->assertEquals($reference_monday->copy()->subDays(6)->format('Y-m-d'), $order->start);
                             $this->assertEquals($reference_monday->copy()->addDays(3)->format('Y-m-d'), $order->shipping);
@@ -240,7 +240,7 @@ class DatesServiceTest extends TestCase
                     $this->assertEquals(2, $date->second_offset);
                     $this->assertEquals('', $date->comment);
 
-                    foreach($orders as $order) {
+                    foreach ($orders as $order) {
                         if ($order->shipping == $reference_monday_formatted) {
                             $this->assertEquals($reference_monday->copy()->subDays(5)->format('Y-m-d'), $order->start);
                             $this->assertEquals($reference_monday->copy()->subDays(2)->format('Y-m-d'), $order->end);

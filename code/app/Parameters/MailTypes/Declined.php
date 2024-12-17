@@ -9,15 +9,18 @@ class Declined extends MailType
         return 'declined';
     }
 
-    public function description() {
+    public function description()
+    {
         return _i('Messaggio inviato agli iscritti non approvati.');
     }
 
-    public function params() {
+    public function params()
+    {
         return [];
     }
 
-    public function enabled($gas) {
+    public function enabled($gas)
+    {
         return $gas->hasFeature('public_registrations') && $gas->public_registrations['manual'] == true;
     }
 }

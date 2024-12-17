@@ -11,9 +11,10 @@ use App\Events\SluggableCreating;
 
 class ModifierType extends Model
 {
-    use HasFactory, GASModel, SluggableID, Cachable;
+    use Cachable, GASModel, HasFactory, SluggableID;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $dispatchesEvents = [
@@ -33,7 +34,7 @@ class ModifierType extends Model
     {
         $ret = [];
 
-        foreach(ModifierType::orderBy('name', 'asc')->get() as $modtype) {
+        foreach (ModifierType::orderBy('name', 'asc')->get() as $modtype) {
             if (in_array($class, accessAttr($modtype, 'classes'))) {
                 $ret[] = $modtype;
             }

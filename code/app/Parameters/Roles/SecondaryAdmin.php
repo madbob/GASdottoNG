@@ -9,17 +9,18 @@ class SecondaryAdmin extends Role
         return 'secondary_admin';
     }
 
-	public function initNew($type)
+    public function initNew($type)
     {
         $type->name = _i('Amministratore GAS Secondario');
         $type->system = true;
-		$type->actions = 'gas.access,gas.config,supplier.view,supplier.book,supplier.add,users.admin,users.movements,movements.admin,notifications.admin';
-		$type->parent_id = $this->getID('admin');
+        $type->actions = 'gas.access,gas.config,supplier.view,supplier.book,supplier.add,users.admin,users.movements,movements.admin,notifications.admin';
+        $type->parent_id = $this->getID('admin');
+
         return $type;
     }
 
-	public function enabled()
-	{
-		return currentAbsoluteGas()->multigas;
-	}
+    public function enabled()
+    {
+        return currentAbsoluteGas()->multigas;
+    }
 }

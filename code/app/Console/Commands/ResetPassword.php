@@ -10,6 +10,7 @@ use App\User;
 class ResetPassword extends Command
 {
     protected $signature = 'reset:password {user} {new_password}';
+
     protected $description = 'Resetta la password di un utente';
 
     public function handle()

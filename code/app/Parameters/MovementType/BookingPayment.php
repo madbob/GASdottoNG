@@ -49,14 +49,14 @@ class BookingPayment extends MovementType
             Questo va considerato qualora i movimenti correlati fossero
             utilizzati anche per altri scopi, oltre i modificatori.
         */
-        foreach($movement->related as $rel) {
+        foreach ($movement->related as $rel) {
             $rel->delete();
         }
 
         $values = $booking->allModifiedValues(null, false);
         $amount = $movement->amount;
 
-        foreach($values as $value) {
+        foreach ($values as $value) {
             $movement_type = $value->modifier->movementType;
             if (is_null($movement_type)) {
                 $amount = $value->sumAmount($amount);
@@ -178,15 +178,15 @@ class BookingPayment extends MovementType
                     $target->status = 'shipped';
                     $target->save();
 
-                    foreach($target->friends_bookings as $friend_booking) {
+                    foreach ($target->friends_bookings as $friend_booking) {
                         $friend_booking->status = 'shipped';
                         $friend_booking->save();
                     }
                 }
             },
-            'delete' => function(Movement $movement) {
+            'delete' => function (Movement $movement) {
                 $movement->detachFromTarget();
-            }
+            },
         ];
 
         return $mov;

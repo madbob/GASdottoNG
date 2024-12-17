@@ -39,6 +39,7 @@ function translateNumberFormat($value)
     }
     else {
         $value = str_replace('.', '', $value);
+
         return (float) strtr($value, ',', '.');
     }
 }
@@ -83,11 +84,13 @@ function getLanguages()
 function localeMonths()
 {
     $lang = currentLang();
+
     return App\View\Texts\Months::get($lang);
 }
 
 function localeDays()
 {
     $lang = currentLang();
+
     return App\View\Texts\Days::get($lang);
 }

@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Services\CirclesService;
 
 class CirclesController extends BackedController
@@ -14,15 +12,15 @@ class CirclesController extends BackedController
 
         $this->commonInit([
             'reference_class' => 'App\\Circle',
-            'service' => $service
+            'service' => $service,
         ]);
     }
 
     public function show($id)
     {
-        return $this->easyExecute(function() use ($id) {
+        return $this->easyExecute(function () use ($id) {
             return view('circles.edit', [
-                'circle' => $this->service->show($id)
+                'circle' => $this->service->show($id),
             ]);
         });
     }

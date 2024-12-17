@@ -9,55 +9,55 @@ use App\Booking;
 
 class FastBookingsService extends BaseService
 {
-	private function sumUpProducts($booking, &$datarow)
-	{
-		/*
-			TODO: Nel caso di prenotazioni salvate sarebbe molto più efficiente
-			cambiare semplicemente lo stato della prenotazione stessa, giacché
-			tutte le quantità sono già al loro posto. Ma servirebbe comunque una
-			funzione che gestisca questo caso speciale, con tutte le conseguenze
-			(e.g. gestire la registrazione del movimento contabile di pagamento)
-		*/
-		if ($booking->status == 'pending') {
-			$quantity_attribute = 'true_quantity';
-		}
-		else {
-			$quantity_attribute = 'true_delivered';
-		}
+    private function sumUpProducts($booking, &$datarow)
+    {
+        /*
+            TODO: Nel caso di prenotazioni salvate sarebbe molto più efficiente
+            cambiare semplicemente lo stato della prenotazione stessa, giacché
+            tutte le quantità sono già al loro posto. Ma servirebbe comunque una
+            funzione che gestisca questo caso speciale, con tutte le conseguenze
+            (e.g. gestire la registrazione del movimento contabile di pagamento)
+        */
+        if ($booking->status == 'pending') {
+            $quantity_attribute = 'true_quantity';
+        }
+        else {
+            $quantity_attribute = 'true_delivered';
+        }
 
-		foreach($booking->products_with_friends as $booked) {
-			$product_id = $booked->product_id;
+        foreach ($booking->products_with_friends as $booked) {
+            $product_id = $booked->product_id;
 
-			if ($booked->variants->isEmpty() == false) {
-				if (isset($datarow['variant_quantity_' . $product_id]) == false) {
-					$datarow['variant_quantity_' . $product_id] = [];
-				}
+            if ($booked->variants->isEmpty() == false) {
+                if (isset($datarow['variant_quantity_' . $product_id]) == false) {
+                    $datarow['variant_quantity_' . $product_id] = [];
+                }
 
-				foreach($booked->variants as $bpv) {
-					$combo = $bpv->variantsCombo();
+                foreach ($booked->variants as $bpv) {
+                    $combo = $bpv->variantsCombo();
 
-					foreach ($combo->values as $val) {
-						$variant_id = $val->variant->id;
+                    foreach ($combo->values as $val) {
+                        $variant_id = $val->variant->id;
 
-						if (isset($datarow['variant_selection_' . $variant_id]) == false) {
-							$datarow['variant_selection_' . $variant_id] = [];
-						}
+                        if (isset($datarow['variant_selection_' . $variant_id]) == false) {
+                            $datarow['variant_selection_' . $variant_id] = [];
+                        }
 
-						$datarow['variant_selection_' . $variant_id][] = $val->id;
-					}
+                        $datarow['variant_selection_' . $variant_id][] = $val->id;
+                    }
 
-					$datarow['variant_quantity_' . $product_id][] = $bpv->$quantity_attribute;
-				}
-			}
-			else {
-				if (isset($datarow[$booked->product_id]) == false) {
-					$datarow[$booked->product_id] = 0;
-				}
+                    $datarow['variant_quantity_' . $product_id][] = $bpv->$quantity_attribute;
+                }
+            }
+            else {
+                if (isset($datarow[$booked->product_id]) == false) {
+                    $datarow[$booked->product_id] = 0;
+                }
 
-				$datarow[$booked->product_id] += $booked->$quantity_attribute;
-			}
-		}
-	}
+                $datarow[$booked->product_id] += $booked->$quantity_attribute;
+            }
+        }
+    }
 
     /*
         Se definito, $users è un array associativo che contiene come chiavi gli
@@ -70,46 +70,46 @@ class FastBookingsService extends BaseService
     {
         DB::beginTransaction();
 
-		$service = app()->make('BookingsService');
+        $service = app()->make('BookingsService');
 
         $default_payment_method = defaultPaymentByType('booking-payment');
         $bookings = $aggregate->bookings;
 
         if ($users) {
             $users_ids = array_keys($users);
-            $bookings = array_filter($bookings, function($booking) use ($users_ids) {
+            $bookings = array_filter($bookings, function ($booking) use ($users_ids) {
                 return in_array($booking->user->id, $users_ids);
             });
         }
 
         foreach ($bookings as $booking) {
-			$grand_total = 0;
+            $grand_total = 0;
 
-			foreach ($booking->bookings as $book) {
-				$datarow = [
-					'action' => 'shipped',
-				];
+            foreach ($booking->bookings as $book) {
+                $datarow = [
+                    'action' => 'shipped',
+                ];
 
-				$this->sumUpProducts($book, $datarow);
-				$shipped_booking = $service->handleBookingUpdate($datarow, $deliverer, $book->order, $booking->user, true);
+                $this->sumUpProducts($book, $datarow);
+                $shipped_booking = $service->handleBookingUpdate($datarow, $deliverer, $book->order, $booking->user, true);
 
-				/*
-					Qui forzo la rilettura della prenotazione direttamente dal
-					DB, essendo stati i prodotti referenziati nella prenotazione
-					manipolati da handleBookingUpdate() in modi impredicibili
-				*/
-				$shipped_booking = Booking::find($shipped_booking->id);
+                /*
+                    Qui forzo la rilettura della prenotazione direttamente dal
+                    DB, essendo stati i prodotti referenziati nella prenotazione
+                    manipolati da handleBookingUpdate() in modi impredicibili
+                */
+                $shipped_booking = Booking::find($shipped_booking->id);
 
-				$grand_total += $shipped_booking->getValue('effective', true, true);
-			}
+                $grand_total += $shipped_booking->getValue('effective', true, true);
+            }
 
             if ($grand_total != 0) {
                 $booking->generateReceipt();
 
-				$meta = $users[$booking->user->id] ?? [
-	                'date' => date('Y-m-d'),
-	                'method' => $default_payment_method,
-	            ];
+                $meta = $users[$booking->user->id] ?? [
+                    'date' => date('Y-m-d'),
+                    'method' => $default_payment_method,
+                ];
 
                 $movement = Movement::generate('booking-payment', $booking->user, $aggregate, $grand_total);
                 $movement->method = $meta['method'];

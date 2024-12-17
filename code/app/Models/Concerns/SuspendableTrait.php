@@ -6,7 +6,7 @@ trait SuspendableTrait
 {
     public function setStatus($status, $deleted_at, $suspended_at)
     {
-        switch($status) {
+        switch ($status) {
             case 'active':
                 $this->suspended_at = null;
                 $this->deleted_at = null;
@@ -27,17 +27,17 @@ trait SuspendableTrait
         if (is_null($this->suspended_at) && is_null($this->deleted_at)) {
             return 'active';
         }
-        else if (is_null($this->suspended_at) == false) {
+        elseif (is_null($this->suspended_at) == false) {
             return 'suspended';
         }
-        else if (is_null($this->deleted_at) == false) {
+        elseif (is_null($this->deleted_at) == false) {
             return 'deleted';
         }
     }
 
     public function printableStatus()
     {
-        switch($this->plainStatus()) {
+        switch ($this->plainStatus()) {
             case 'active':
                 return _i('Attivo');
             case 'suspended':
@@ -47,8 +47,8 @@ trait SuspendableTrait
         }
     }
 
-	public function scopeFullEnabled($query)
-	{
-		$query->whereNull('deleted_at')->whereNull('suspended_at');
-	}
+    public function scopeFullEnabled($query)
+    {
+        $query->whereNull('deleted_at')->whereNull('suspended_at');
+    }
 }

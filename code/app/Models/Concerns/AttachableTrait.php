@@ -40,8 +40,8 @@ trait AttachableTrait
         if ($this->attachmentPermissionGranted() == false) {
             $user = Auth::user();
             if ($user) {
-                $relation->where(function($query) use ($user) {
-                    $query->whereDoesntHave('users')->orWhereHas('users', function($query) use ($user) {
+                $relation->where(function ($query) use ($user) {
+                    $query->whereDoesntHave('users')->orWhereHas('users', function ($query) use ($user) {
                         $query->where('users.id', $user->id);
                     });
                 });
@@ -79,6 +79,7 @@ trait AttachableTrait
         }
 
         $file->move($filepath, $filename);
+
         return $filename;
     }
 
@@ -97,6 +98,7 @@ trait AttachableTrait
         $users = $request['users'] ?? [];
         $users = unrollSpecialSelectors($users);
         $attachment->users()->sync($users);
+
         return $attachment;
     }
 
@@ -116,7 +118,7 @@ trait AttachableTrait
 
             $url = '';
         }
-        else if (is_null($url) == false) {
+        elseif (is_null($url) == false) {
             $filename = '';
         }
         else {
