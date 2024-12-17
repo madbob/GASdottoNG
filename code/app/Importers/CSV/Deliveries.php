@@ -160,13 +160,14 @@ class Deliveries extends CSVImporter
 
                     if ($target_user) {
                         $booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
-
-                        $data[] = $datarow;
-                        $bookings[] = (object) [
-                            'user_id' => $target_user->id,
-                            'user_name' => $target_user->printableName(),
-                            'total' => $booking->getValue('effective', true),
-                        ];
+                        if ($booking) {
+                            $data[] = $datarow;
+                            $bookings[] = (object) [
+                                'user_id' => $target_user->id,
+                                'user_name' => $target_user->printableName(),
+                                'total' => $booking->getValue('effective', true),
+                            ];
+                        }
                     }
                 }
                 catch (\Exception $e) {

@@ -75,8 +75,6 @@ class Delivery extends Model
 
             return $ret;
         }]);
-
-        return $bookings;
     }
 
     public static function sortBookingsByShippingPlace($bookings, $shipping_place)
