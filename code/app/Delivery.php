@@ -49,7 +49,7 @@ class Delivery extends Model
 
     private static function sortByPlace($bookings)
     {
-        usort($bookings, function ($a, $b) {
+        return $bookings->sortBy([function ($a, $b) {
             $a_place = $a->shipping_place;
             $b_place = $b->shipping_place;
 
@@ -74,7 +74,7 @@ class Delivery extends Model
             }
 
             return $ret;
-        });
+        }]);
 
         return $bookings;
     }
