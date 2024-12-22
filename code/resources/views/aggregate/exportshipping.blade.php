@@ -33,6 +33,10 @@ else {
 
         <x-larastrap::radios name="status" :label="_i('Stato Prenotazioni')" :options="['pending' => _i('Prenotate'), 'shipped' => _i('Consegnate')]" value="pending" />
 
+        @if(someoneCan('users.subusers'))
+            <x-larastrap::radios name="isolate_friends" :label="_i('Amici separati')" :options="['0' => _i('No'), '1' => _i('Sì')]" value="0" :pophelp="_i('Di default, le prenotazioni degli utenti \'amici\' vengono aggregate in quelle dei rispettivi utenti principali. Selezionando \'Sì\', vengono rappresentate nel documento come prenotazioni autonome.')" />
+        @endif
+
         <x-larastrap::radios name="format" :label="_i('Formato')" :options="['pdf' => _i('PDF'), 'csv' => _i('CSV')]" value="pdf" />
     </x-larastrap::form>
 </x-larastrap::modal>
