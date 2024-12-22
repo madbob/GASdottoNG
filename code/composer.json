@@ -28,7 +28,6 @@
         "symfony/http-client": "^6.2",
         "symfony/psr-http-message-bridge": "^2.1",
         "symfony/scaleway-mailer": "^7.0",
-        "symfony/sendinblue-mailer": "^6.2",
         "vadikv/laravel-gettext": "^8.2",
         "zetacomponents/archive": "dev-master"
     },
