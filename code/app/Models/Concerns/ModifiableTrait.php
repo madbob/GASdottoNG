@@ -21,6 +21,7 @@ trait ModifiableTrait
             $mod->modifier_type_id = $modtype->id;
             $mod->target_type = get_class($this);
             $mod->target_id = (string) $this->id;
+            $mod->applies_type = 'none';
             $mod->definition = '[]';
             $mod->save();
 
