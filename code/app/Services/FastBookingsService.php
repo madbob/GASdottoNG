@@ -106,7 +106,7 @@ class FastBookingsService extends BaseService
             if ($grand_total != 0) {
                 $booking->generateReceipt();
 
-                $meta = $users[$book->user_id] ?? [
+                $meta = $users[$booking->user->id] ?? [
                     'date' => date('Y-m-d'),
                     'method' => $default_payment_method,
                 ];
