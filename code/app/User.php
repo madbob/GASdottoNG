@@ -167,7 +167,7 @@ class User extends Authenticatable
         return $ret;
     }
 
-    public function testUserAccess($myself = null)
+    public function testUserAccess($myself = null): bool
     {
         if (is_null($myself)) {
             $myself = Auth::user();

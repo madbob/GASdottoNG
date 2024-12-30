@@ -25,7 +25,7 @@ class DeliveryUserController extends Controller
         $user = $request->user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false) {
+        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) === false) {
             abort(503);
         }
 
@@ -60,7 +60,7 @@ class DeliveryUserController extends Controller
     public function getFastShipping(Request $request, $aggregate_id)
     {
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        if ($request->user()->can('supplier.shippings', $aggregate) == false) {
+        if ($request->user()->can('supplier.shippings', $aggregate) === false) {
             abort(503);
         }
 

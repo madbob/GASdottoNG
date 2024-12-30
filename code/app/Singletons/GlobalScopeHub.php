@@ -24,12 +24,12 @@ class GlobalScopeHub
         return $this->has_many_gas;
     }
 
-    public function enable($active)
+    public function enable(bool $active)
     {
         $this->enabled_global_scopes = $active;
     }
 
-    public function enabled()
+    public function enabled(): bool
     {
         return $this->enabled_global_scopes;
     }

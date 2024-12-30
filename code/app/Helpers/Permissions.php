@@ -77,7 +77,7 @@ function someoneCan($permission, $subject = null)
             $users = $br->usersByTarget($subject);
         }
 
-        if ($users->isEmpty() == false) {
+        if ($users->isEmpty() === false) {
             return true;
         }
     }

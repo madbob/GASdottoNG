@@ -19,7 +19,7 @@ class Kernel extends ConsoleKernel
             Se si fa qualche modifica nell'elenco di questi comandi, apportare
             le stesse modifiche nel suddetto script
         */
-        if (env('GASDOTTO_NET', false) == false) {
+        if (env('GASDOTTO_NET', false) === false) {
             $schedule->command('check:fees')->daily();
             $schedule->command('close:orders')->daily();
             $schedule->command('open:orders')->daily();

@@ -91,7 +91,7 @@ class BookedProduct extends Model
             sia diversa da 0, in quanto si può assumere che i prodotti prenotati
             non abbiano mai una quantità a 0
         */
-        if ($this->variants->isEmpty() == false) {
+        if ($this->variants->isEmpty() === false) {
             return $this->variants->reduce(function ($carry, $item) use ($rectify, $attribute) {
                 return $carry + ($item->unitPrice($rectify) * $item->$attribute);
             }, 0);
@@ -195,7 +195,7 @@ class BookedProduct extends Model
             ],
         ];
 
-        if ($this->variants->isEmpty() == false) {
+        if ($this->variants->isEmpty() === false) {
             $true_variants = [];
 
             foreach ($this->variants as $variant) {
@@ -238,7 +238,7 @@ class BookedProduct extends Model
 
     private function fixWeight($attribute)
     {
-        if ($this->variants->isEmpty() == false) {
+        if ($this->variants->isEmpty() === false) {
             $ret = $this->variants->reduce(function ($carry, $item) use ($attribute) {
                 return $carry + $item->fixWeight($attribute);
             }, 0);
@@ -382,7 +382,7 @@ class BookedProduct extends Model
     {
         $ret = $this->initRedux();
 
-        if ($this->variants->isEmpty() == false) {
+        if ($this->variants->isEmpty() === false) {
             $ret = $this->descendReduction($ret, $filters);
         }
         else {

@@ -41,7 +41,7 @@ function sanitizeFilename($filename)
 function normalizeUrl($url)
 {
     $url = strtolower($url);
-    if (str_starts_with($url, 'http') == false) {
+    if (str_starts_with($url, 'http') === false) {
         $url = 'http://' . $url;
     }
 

@@ -26,7 +26,7 @@ class DeliveriesController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->can('gas.config', $user->gas) == false) {
+        if ($user->can('gas.config', $user->gas) === false) {
             abort(503);
         }
 
@@ -47,7 +47,7 @@ class DeliveriesController extends Controller
     public function show($id)
     {
         $user = Auth::user();
-        if ($user->can('gas.config', $user->gas) == false) {
+        if ($user->can('gas.config', $user->gas) === false) {
             abort(503);
         }
 
@@ -61,7 +61,7 @@ class DeliveriesController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->can('gas.config', $user->gas) == false) {
+        if ($user->can('gas.config', $user->gas) === false) {
             abort(503);
         }
 
@@ -84,7 +84,7 @@ class DeliveriesController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->can('gas.config', $user->gas) == false) {
+        if ($user->can('gas.config', $user->gas) === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
@@ -99,7 +99,7 @@ class DeliveriesController extends Controller
             $fallback = Delivery::where('default', true)->first();
         }
 
-        if (is_null($fallback) == false) {
+        if (is_null($fallback) === false) {
             $fallback_id = $fallback->id;
         }
 

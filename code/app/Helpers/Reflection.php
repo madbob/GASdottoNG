@@ -16,7 +16,7 @@ function currentAbsoluteGas()
 
     if (is_null($gas)) {
         $user = Auth::user();
-        if (is_null($user) == false) {
+        if (is_null($user) === false) {
             $gas = $user->gas;
         }
     }
@@ -202,7 +202,7 @@ function productByString($string, $products = null)
     }
 
     if ($target) {
-        if ($target->variants->isEmpty() == false) {
+        if ($target->variants->isEmpty() === false) {
             foreach ($target->variant_combos as $combo) {
                 if ($combo->printableName() == $string) {
                     $target_combo = $combo;

@@ -218,7 +218,7 @@ function duplicateAllCurrentBalances($latest_date)
             $class = get_class($obj);
 
             foreach ($currencies as $curr) {
-                if (isset($current_status[$curr->id][$class][$obj->id]) == false) {
+                if (isset($current_status[$curr->id][$class][$obj->id]) === false) {
                     $latest = $obj->currentBalance($curr);
                     $new = $latest->replicate();
 

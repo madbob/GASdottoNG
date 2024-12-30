@@ -187,17 +187,16 @@ trait AttachableTrait
         return $path;
     }
 
-    public function attachmentPermissionGranted()
+    public function attachmentPermissionGranted(): bool
     {
         $required = $this->requiredAttachmentPermission();
-        if ($required != null) {
+        if ($required) {
             $user = Auth::user();
             if ($user) {
                 return $user->can($required, $this);
             }
         }
-        else {
-            return true;
-        }
+
+        return true;
     }
 }
