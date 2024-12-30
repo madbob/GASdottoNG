@@ -75,9 +75,20 @@ class DeliveryUserController extends Controller
         $users = [];
         $selected = $request->input('bookings', []);
         foreach ($selected as $user_id) {
+            /*
+                È capitato che questa funzione si spaccasse in presenza di ID
+                utente con degli spazi nel mezzo (di ignota origine), che
+                vengono sanitizzati - e, dunque, rotti - all'interno della
+                $request.
+                Pertanto, ciascuna riga nella tabella delle consegne veloci
+                viene ora identificata da una stringa che contiene sia l'ID
+                dell'utente che una stringa random che isola i relativi input
+            */
+            [$user_id, $identifier] = explode('||', $user_id);
+
             $users[$user_id] = [
-                'date' => decodeDate($request->input('date-' . $user_id)),
-                'method' => $request->input('method-' . $user_id),
+                'date' => decodeDate($request->input('date-' . $identifier)),
+                'method' => $request->input('method-' . $identifier),
             ];
         }
 
