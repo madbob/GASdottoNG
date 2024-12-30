@@ -14,8 +14,8 @@
         }
     }
 
-    $effective_dates = array_sort($effective_dates);
-    $automatic_dates = array_sort($automatic_dates);
+    sort($effective_dates);
+    sort($automatic_dates);
 
     ?>
 
