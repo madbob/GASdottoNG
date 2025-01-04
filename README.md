@@ -3,7 +3,7 @@
 GASdotto è il gestionale web-based per gruppi di acquisto.
 
 [![Build Status](https://github.com/madbob/gasdottong/actions/workflows/test.yml/badge.svg)](https://github.com/madbob/GASdottoNG/actions)
-[![Maintainability](https://api.codeclimate.com/v1/badges/1ff2c4db03668abadd46/maintainability)](https://codeclimate.com/github/madbob/GASdottoNG/maintainability)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=madbob_GASdottoNG&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=madbob_GASdottoNG)
 [![Translations Status](https://hosted.weblate.org/widgets/gasdottong/-/translations/svg-badge.svg)](https://hosted.weblate.org/engage/gasdottong/?utm_source=widget)
 
 ### Per documentazione e hosting gratuito visita il sito www.gasdotto.net
@@ -14,7 +14,7 @@ GASdotto è il gestionale web-based per gruppi di acquisto.
 * non è possibile inoltrare le email usando GMail, a causa delle restrizioni imposte all'autenticazione
 
 # Scarica e Installa
-GASdotto può essere installato localmente o in un container Docker utilizzando Laravel Sail. 
+GASdotto può essere installato localmente o in un container Docker utilizzando Laravel Sail.
 
 Per installare GASdotto localmente, segui le istruzioni fornite sul sito ufficiale all'indirizzo [www.gasdotto.net/docs/installazione](https://www.gasdotto.net/docs/installazione).
 
@@ -26,13 +26,13 @@ Se preferisci installarlo in un container Docker, segui i seguenti passaggi.
 
 - Docker e Docker Compose
 
-### Installazione 
+### Installazione
 
 #### 1. Clona GASdottoNG e naviga nella cartella `<cartella di instaliazione>/GASdottoNG/code/`
 ```shell
 git clone https://github.com/madbob/GASdottoNG.git && cd GASdottoNG/code/
 ```
- 
+
 #### 2. Installa le dipendenze con Composer tramite Docker
 ```shell
 docker run --rm \
@@ -95,18 +95,18 @@ Adesso puoi visitare `localhost` e iniziare a testare e sviluppare.
 #### Per fermare i contenitori Docker, utilizza il comando `stop`.
 `sail stop`
 
-Per saperne di più su [Laravel Sail](https://laravel.com/docs/master/sail) 
+Per saperne di più su [Laravel Sail](https://laravel.com/docs/master/sail)
 visita e consulta la documentazione ufficiale di Laravel.
 
 ### Uso comune nello sviluppo.
-- `sail up -d` -> Per avviare i contenitori Docker 
+- `sail up -d` -> Per avviare i contenitori Docker
 
 - `sail shell` -> Per entrare nella terminale interattiva all'interno del container
 
 #### Al interno, all'interno della terminale esegui i comandi necessari come se stessi lavorando in locale.
 
 - `exit`-> Per uscire dalla container
-- `sail stop` -> Per fermare i contenitori Docker 
+- `sail stop` -> Per fermare i contenitori Docker
 
 ### Licenza
 
