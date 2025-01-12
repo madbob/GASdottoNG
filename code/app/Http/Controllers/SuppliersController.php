@@ -48,7 +48,11 @@ class SuppliersController extends BackedController
         return $this->easyExecute(function () use ($id) {
             $supplier = $this->service->show($id);
 
-            return view('supplier.base_show', ['supplier' => $supplier, 'editable' => false]);
+            return view('supplier.base_show', [
+                'supplier' => $supplier,
+                'editable' => false,
+                'selfview' => true,
+            ]);
         });
     }
 

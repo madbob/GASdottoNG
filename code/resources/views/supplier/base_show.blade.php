@@ -1,20 +1,22 @@
 <x-larastrap::mform :obj="$supplier" nosave nodelete>
     <x-larastrap::hidden name="id" />
 
-    <div class="alert alert-info text-center mb-2">
-        @php
-        $current_orders = $supplier->orders()->accessibleBooking()->where('status', 'open')->get();
-        @endphp
+    @if($selfview == false)
+        <div class="alert alert-info text-center mb-2">
+            @php
+            $current_orders = $supplier->orders()->accessibleBooking()->where('status', 'open')->get();
+            @endphp
 
-        @if($current_orders->isEmpty())
-            {{ _i('Attualmente non ci sono ordini aperti per questo fornitore.') }}
-        @else
-            {{ _i('Ci sono ordini aperti per questo fornitore:') }}
-            @foreach($current_orders as $current_order)
-                <x-larastrap::link class="btn btn-info" :href="$current_order->getBookingURL()" :label="$current_order->printableName()" />
-            @endforeach
-        @endif
-    </div>
+            @if($current_orders->isEmpty())
+                {{ _i('Attualmente non ci sono ordini aperti per questo fornitore.') }}
+            @else
+                {{ _i('Ci sono ordini aperti per questo fornitore:') }}
+                @foreach($current_orders as $current_order)
+                    <x-larastrap::link class="btn btn-info" :href="$current_order->getBookingURL()" :label="$current_order->printableName()" />
+                @endforeach
+            @endif
+        </div>
+    @endif
 
     <div class="row">
         <div class="col-md-6">
