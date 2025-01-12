@@ -1,5 +1,5 @@
-<x-larastrap::tabs>
-    <x-larastrap::tabpane active="true" :label="_i('Dettagli')" icon="bi-tags">
+<x-larastrap::tabs active="0">
+    <x-larastrap::tabpane :label="_i('Dettagli')" icon="bi-tags">
         @include('supplier.base_show', ['supplier' => $supplier, 'editable' => true])
     </x-larastrap::tabpane>
 
