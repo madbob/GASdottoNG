@@ -27,7 +27,7 @@ class AttachmentsController extends Controller
         $target_type = $request->input('target_type');
         $target = $target_type::findOrFail($request->input('target_id'));
 
-        if ($target->attachmentPermissionGranted() == false) {
+        if ($target->attachmentPermissionGranted() === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
@@ -49,7 +49,7 @@ class AttachmentsController extends Controller
         DB::beginTransaction();
 
         $a = Attachment::findOrFail($id);
-        if ($a->attached->attachmentPermissionGranted() == false) {
+        if ($a->attached->attachmentPermissionGranted() === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
@@ -106,7 +106,7 @@ class AttachmentsController extends Controller
         /*
             I files autogenerati non possono essere eliminati. Mai
         */
-        if ($a->internal || $a->attached->attachmentPermissionGranted() == false) {
+        if ($a->internal || $a->attached->attachmentPermissionGranted() === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 

@@ -49,16 +49,16 @@ function guessDecimal($value)
     $has_dot = (strpos($value, '.') !== false);
     $has_comma = (strpos($value, ',') !== false);
 
-    if ($has_dot == false && $has_comma == false) {
+    if ($has_dot === false && $has_comma === false) {
         return (int) $value;
     }
 
-    if ($has_dot && $has_comma == false) {
+    if ($has_dot && $has_comma === false) {
         return (float) $value;
     }
 
     // @phpstan-ignore-next-line
-    if ($has_dot == false && $has_comma) {
+    if ($has_dot === false && $has_comma) {
         return (float) strtr($value, ',', '.');
     }
 

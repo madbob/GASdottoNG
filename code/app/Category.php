@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
@@ -24,9 +25,14 @@ class Category extends Model implements HasChildren
         'creating' => SluggableCreating::class,
     ];
 
+    public function parent(): BelongsTo
+    {
+        return $this->BelongsTo(Category::class);
+    }
+
     public function children(): HasMany
     {
-        return $this->hasMany('App\Category', 'parent_id');
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
     public static function defaultValue()

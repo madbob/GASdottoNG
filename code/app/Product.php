@@ -250,7 +250,7 @@ class Product extends Model
         (e.g. la carne venduta a pacchi da N etti: può essere sempre la stessa
         carne, ma ne voglio pacchi diversi ciascuno col suo peso)
     */
-    public function canAggregateQuantities()
+    public function canAggregateQuantities(): bool
     {
         $hub = App::make('AggregationSwitch');
 

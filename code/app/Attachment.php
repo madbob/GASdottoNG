@@ -37,7 +37,7 @@ class Attachment extends Model
 
     public function getTypeAttribute()
     {
-        if (empty($this->url) == false) {
+        if (empty($this->url) === false) {
             return 'url';
         }
         else {
@@ -101,7 +101,7 @@ class Attachment extends Model
 
     public function getDownloadUrlAttribute()
     {
-        if (empty($this->url) == false) {
+        if (empty($this->url) === false) {
             return $this->url;
         }
         else {

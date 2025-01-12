@@ -45,7 +45,7 @@ class FixDatabase extends Command
         foreach (Gas::all() as $gas) {
             $restriction_info = $gas->getConfig('restrict_booking_to_credit');
             $restriction_info = json_decode($restriction_info);
-            if (is_object($restriction_info) == false) {
+            if (is_object($restriction_info) === false) {
                 $restriction_info = (object) [
                     'enabled' => $restriction_info,
                     'limit' => 0,
@@ -87,7 +87,7 @@ class FixDatabase extends Command
         $dates = Date::where('type', 'order')->get();
         foreach ($dates as $d) {
             $attributes = json_decode($d->description);
-            if (isset($attributes->action) == false) {
+            if (isset($attributes->action) === false) {
                 $attributes->action = 'open';
                 $attributes->offset1 = $attributes->end;
                 $attributes->offset2 = $attributes->shipping;

@@ -55,7 +55,7 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $gas = currentAbsoluteGas();
-        if ($gas->hasFeature('public_registrations') == false) {
+        if ($gas->hasFeature('public_registrations') === false) {
             return redirect()->route('login');
         }
         else {

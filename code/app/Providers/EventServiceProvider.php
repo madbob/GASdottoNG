@@ -52,9 +52,6 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Notifications\Events\NotificationSent' => [
             'App\Listeners\AfterNotification',
         ],
-        'Illuminate\Mail\Events\MessageSending' => [
-            'App\Listeners\CustomMailTag',
-        ],
     ];
 
     public function boot()

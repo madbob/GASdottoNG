@@ -29,10 +29,6 @@ return [
         ],
     ],
 
-    'sendinblue' => [
-        'key' => env('SENDINBLUE_KEY'),
-    ],
-
     'sparkpost' => [
         'secret' => env('SPARKPOST_SECRET'),
     ],

@@ -72,7 +72,7 @@ class Aggregate extends Model
     {
         return $this->innerCache('pending_packages', function ($obj) {
             foreach ($obj->orders as $o) {
-                if ($o->keep_open_packages != 'no' && $o->status == 'closed' && $o->pendingPackages()->isEmpty() == false) {
+                if ($o->keep_open_packages != 'no' && $o->status == 'closed' && $o->pendingPackages()->isEmpty() === false) {
                     return true;
                 }
             }
@@ -212,7 +212,7 @@ class Aggregate extends Model
         return route('booking.index') . '#' . $this->id;
     }
 
-    public function isActive()
+    public function isActive(): bool
     {
         foreach ($this->orders as $order) {
             if ($order->isActive()) {
@@ -255,7 +255,7 @@ class Aggregate extends Model
 
             $dates = array_keys($dates);
 
-            if (empty($dates) == false) {
+            if (empty($dates) === false) {
                 sort($dates);
                 $date = $dates[0];
 
@@ -506,7 +506,7 @@ class Aggregate extends Model
 
         foreach ($this->orders as $order) {
             foreach ($order->supplier->gas as $gas) {
-                if (isset($candidates[$gas->id]) == false) {
+                if (isset($candidates[$gas->id]) === false) {
                     $candidates[$gas->id] = 0;
                 }
 

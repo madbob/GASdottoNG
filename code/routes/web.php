@@ -10,7 +10,6 @@ Route::get('gas/{id}/logo', 'GasController@getLogo');
 
 Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')->name('payment.status_satispay');
 
-Route::post('mail/status/sib', 'MailController@postStatusSendinblue');
 Route::post('mail/status/sway', 'MailController@postStatusScaleway');
 
 Route::middleware(['auth'])->group(function () {

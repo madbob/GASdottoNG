@@ -90,12 +90,12 @@ class Gas extends Model
         return sprintf('%s/%s', $ret, $now);
     }
 
-    public function hasFeature($name)
+    public function hasFeature($name): bool
     {
         return $this->innerCache('feature_' . $name, function ($obj) use ($name) {
             switch ($name) {
                 case 'shipping_places':
-                    return $obj->deliveries->isEmpty() == false;
+                    return $obj->deliveries->isEmpty() === false;
                 case 'rid':
                     return ! empty($obj->rid['iban']);
                 case 'satispay':

@@ -32,7 +32,7 @@ class BookingUserController extends Controller
     public function index(Request $request, $aggregate_id)
     {
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        if ($request->user()->can('supplier.shippings', $aggregate) == false) {
+        if ($request->user()->can('supplier.shippings', $aggregate) === false) {
             abort(503);
         }
 
@@ -44,7 +44,7 @@ class BookingUserController extends Controller
         $user = User::findOrFail($user_id);
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->testUserAccess() == false && $request->user()->can('supplier.shippings', $aggregate) == false) {
+        if ($user->testUserAccess() === false && $request->user()->can('supplier.shippings', $aggregate) === false) {
             abort(503);
         }
 
@@ -128,7 +128,7 @@ class BookingUserController extends Controller
         $user = $request->user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false) {
+        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) === false) {
             abort(503);
         }
 

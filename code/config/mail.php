@@ -50,10 +50,6 @@ return [
             'transport' => 'ses',
         ],
 
-        'sendinblue' => [
-            'transport' => 'sendinblue',
-        ],
-
         'scaleway' => [
             'transport' => 'scaleway',
             'username' => env('MAIL_USERNAME'),

@@ -90,57 +90,77 @@
 
     <div class="col-md-6">
         @if($currentuser->isFriend() == false)
-            <?php
+            @php
+            $configuration = $currentgas->credit_home;
+            @endphp
 
-            $balances = [];
-            $default_currency = defaultCurrency();
-            $currencies = App\Currency::enabled();
+            @if($configuration['current_credit'] || $configuration['to_pay'])
+                @php
 
-            foreach ($currencies as $currency) {
-                $balances[$currency->id] = $currentuser->currentBalanceAmount($currency);
-            }
+                $balances = [];
+                $default_currency = defaultCurrency();
+                $currencies = App\Currency::enabled();
 
-            $to_pay = $currentuser->pending_balance;
-            $to_pay_friend = [];
-
-            foreach($currentuser->friends as $friend) {
-                $tpf = $friend->pending_balance;
-                if ($tpf != 0) {
-                    $to_pay += $tpf;
-                    $to_pay_friend[$friend->printableName()] = printablePrice($tpf);
+                if ($configuration['current_credit']) {
+                    foreach ($currencies as $currency) {
+                        $balances[$currency->id] = $currentuser->currentBalanceAmount($currency);
+                    }
                 }
-            }
+                else {
+                    $balances[$default_currency->id] = 0;
+                }
 
-            ?>
+                if ($configuration['to_pay']) {
+                    $to_pay = $currentuser->pending_balance;
+                    $to_pay_friend = [];
 
-            <div class="alert {{ $balances[$default_currency->id] >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
-                @foreach($currencies as $curr)
-                    <p class="d-flex align-items-center justify-content-start">
-                        <x-larastrap::pophelp classes="me-2" :text="_i('Questo è il tuo saldo attuale nei confronti del GAS.')" />
-                        <span class="lead">{{ _i('Credito Attuale') }}: {{ printablePriceCurrency($balances[$curr->id], '.', $curr) }}</span>
-                    </p>
-                @endforeach
+                    foreach($currentuser->friends as $friend) {
+                        $tpf = $friend->pending_balance;
+                        if ($tpf != 0) {
+                            $to_pay += $tpf;
+                            $to_pay_friend[$friend->printableName()] = printablePrice($tpf);
+                        }
+                    }
+                }
+                else {
+                    $to_pay = 0;
+                }
 
-                <p class="d-flex align-items-center justify-content-start">
-                    <x-larastrap::pophelp classes="me-2" :text="_i('Questo è il totale delle tue prenotazioni non ancora consegnate, e di cui non è dunque ancora stato registrato il pagamento.')" />
-                    <span class="lead">{{ _i('Da Pagare') }}: {{ printablePriceCurrency($to_pay) }}</span>
-                </p>
-                @if(!empty($to_pay_friend))
-                    <p>{{ _i('di cui') }}</p>
-                    @foreach($to_pay_friend as $friend_name => $friend_amount)
-                        <p>{{ $friend_name }} {{ $friend_amount }} {{ $currentgas->currency }}</p>
-                    @endforeach
-                @endif
-            </div>
+                @endphp
 
-            <br>
+                <div class="alert {{ $balances[$default_currency->id] >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
+                    @if($configuration['current_credit'])
+                        @foreach($currencies as $curr)
+                            <p class="d-flex align-items-center justify-content-start">
+                                <x-larastrap::pophelp classes="me-2" :text="_i('Questo è il tuo saldo attuale nei confronti del GAS.')" />
+                                <span class="lead">{{ _i('Credito Attuale') }}: {{ printablePriceCurrency($balances[$curr->id], '.', $curr) }}</span>
+                            </p>
+                        @endforeach
+                    @endif
 
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    @include('dates.calendar')
+                    @if($configuration['to_pay'])
+                        <p class="d-flex align-items-center justify-content-start">
+                            <x-larastrap::pophelp classes="me-2" :text="_i('Questo è il totale delle tue prenotazioni non ancora consegnate, e di cui non è dunque ancora stato registrato il pagamento.')" />
+                            <span class="lead">{{ _i('Da Pagare') }}: {{ printablePriceCurrency($to_pay) }}</span>
+                        </p>
+                        @if(!empty($to_pay_friend))
+                            <p>{{ _i('di cui') }}</p>
+                            @foreach($to_pay_friend as $friend_name => $friend_amount)
+                                <p>{{ $friend_name }} {{ printablePriceCurrency($friend_amount) }}</p>
+                            @endforeach
+                        @endif
+                    @endif
                 </div>
-            </div>
+
+                <br>
+            @endif
         @endif
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @include('dates.calendar')
+            </div>
+        </div>
     </div>
 </div>
 

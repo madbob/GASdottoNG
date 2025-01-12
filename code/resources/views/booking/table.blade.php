@@ -40,17 +40,22 @@
                         </thead>
                         <tbody>
                             @foreach($aggregate->bookings as $booking)
+                                @php
+                                $internal_id = Illuminate\Support\Str::random(10);
+                                $row_id = sprintf('%s||%s', $booking->user->id, $internal_id);
+                                @endphp
+
                                 <tr>
                                     <td>
                                         @if($booking->status != 'shipped')
-                                            <x-larastrap::check name="bookings[]" classes="booking-select" squeeze :value="$booking->id" switch="false" checked="true" />
+                                            <x-larastrap::check name="bookings[]" classes="booking-select" squeeze :value="$row_id" switch="false" checked="true" />
                                         @endif
                                     </td>
                                     <td>{{ $booking->user->printableName() }}</td>
                                     <td>{{ printablePriceCurrency($booking->getValue('effective', true)) }}</td>
                                     <td>
                                         @if($booking->status != 'shipped')
-                                            <x-larastrap::datepicker name="date-{{ $booking->id }}" :value="date('Y-m-d')" squeeze />
+                                            <x-larastrap::datepicker name="date-{{ $internal_id }}" :value="date('Y-m-d')" squeeze />
                                         @else
                                             <x-larastrap::text :value="printableDate($booking->delivery)" readonly disabled squeeze />
                                         @endif
@@ -61,7 +66,7 @@
                                             <div class="btn-group float-end" data-toggle="buttons">
                                                 @foreach($payments as $method_id => $name)
                                                     <label class="btn btn-ight method-select-{{ $method_id }} {{ $method_id == $payment_method ? 'active' : '' }}">
-                                                        <input type="radio" name="method-{{ $booking->id }}" value="{{ $method_id }}" autocomplete="off" {{ $method_id == $payment_method ? 'checked' : '' }}> {{ $name }}
+                                                        <input type="radio" name="method-{{ $internal_id }}" value="{{ $method_id }}" autocomplete="off" {{ $method_id == $payment_method ? 'checked' : '' }}> {{ $name }}
                                                     </label>
                                                 @endforeach
                                             </div>

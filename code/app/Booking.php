@@ -218,7 +218,7 @@ class Booking extends Model
                         $type = 'booked';
                         $modifiers = $obj->involvedModifiers();
 
-                        if ($modifiers->isEmpty() == false) {
+                        if ($modifiers->isEmpty() === false) {
                             $aggregate_data = $obj->minimumRedux($modifiers);
                             $modified_values = $obj->calculateModifiers($aggregate_data, false);
 
@@ -271,7 +271,7 @@ class Booking extends Model
             $this->products->push($p);
         }
 
-        if (is_null($p) == false) {
+        if (is_null($p) === false) {
             $p->setRelation('booking', $this);
 
             if ($product) {
@@ -616,7 +616,7 @@ class Booking extends Model
             Se non ci sono modificatori coinvolti, evito di fare la riduzione
             dell'intero aggregato.
         */
-        if ($modifiers->isEmpty() == false) {
+        if ($modifiers->isEmpty() === false) {
             if (is_null($aggregate_data)) {
                 $aggregate_data = $this->minimumRedux($modifiers);
             }

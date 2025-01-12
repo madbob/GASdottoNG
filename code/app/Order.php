@@ -308,7 +308,7 @@ class Order extends Model
         ];
 
         $variants = $product->variant_combos;
-        if ($variants->isEmpty() == false) {
+        if ($variants->isEmpty() === false) {
             $row['variants'] = [];
 
             foreach ($variants as $variant) {
@@ -337,7 +337,7 @@ class Order extends Model
         $products_ids = $new_products->pluck('id')->toArray();
 
         foreach ($booked_products as $bp) {
-            if (in_array($bp->product_id, $products_ids) == false) {
+            if (in_array($bp->product_id, $products_ids) === false) {
                 throw new \Exception("Un prodotto già prenotato non è nell'elenco dei nuovi prodotti per l'ordine! Ordine: " . $this->id . ', prodotto: ' . $bp->product_id, 1);
             }
         }
@@ -390,7 +390,7 @@ class Order extends Model
         */
         foreach ($this->bookings as $booking) {
             $products = $booking->products()->where('product_id', $product->id)->get();
-            if ($products->isEmpty() == false) {
+            if ($products->isEmpty() === false) {
                 $altered_bookings++;
                 foreach ($products as $p) {
                     $p->delete();
@@ -413,22 +413,28 @@ class Order extends Model
     public function showableContacts()
     {
         $gas = currentAbsoluteGas();
+        $ret = null;
 
         switch ($gas->booking_contacts) {
             case 'none':
-                return new Collection();
+                $ret = new Collection();
+                break;
 
             case 'manual':
-                return $this->users;
+                $ret = $this->users;
+                break;
 
             default:
                 $role = Role::find($gas->booking_contacts);
                 if ($role) {
-                    return $role->usersByTarget($this->supplier);
+                    $ret = $role->usersByTarget($this->supplier);
                 }
-
-                return new Collection();
+                else {
+                    $ret = new Collection();
+                }
         }
+
+        return $ret;
     }
 
     public function enforcedContacts()
@@ -459,7 +465,7 @@ class Order extends Model
         $query_users->fullEnabled();
 
         $deliveries = $order->deliveries;
-        if ($deliveries->isEmpty() == false) {
+        if ($deliveries->isEmpty() === false) {
             $query_users->where(function ($query) use ($deliveries) {
                 $query->whereIn('preferred_delivery_id', $deliveries->pluck('id'))->orWhere('preferred_delivery_id', '0');
             });
@@ -509,14 +515,14 @@ class Order extends Model
         return $bookings;
     }
 
-    public function isActive()
+    public function isActive(): bool
     {
         return $this->status != 'shipped' && $this->status != 'archived';
     }
 
-    public function isRunning()
+    public function isRunning(): bool
     {
-        return ($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages != 'no' && $this->pendingPackages()->isEmpty() == false);
+        return ($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages != 'no' && $this->pendingPackages()->isEmpty() === false);
     }
 
     public function pendingPackages()
@@ -525,7 +531,7 @@ class Order extends Model
             $ret = new Collection();
             $products = $obj->products()->where('package_size', '!=', 0)->with('measure')->get();
 
-            if ($products->isEmpty() == false) {
+            if ($products->isEmpty() === false) {
                 $order = $this;
                 $order_data = app()->make('GlobalScopeHub')->executedForAll($this->keep_open_packages != 'each', function () use ($order) {
                     return $order->reduxData();
@@ -579,7 +585,7 @@ class Order extends Model
             $price_delivered = $query->sum('final_price');
             $quantity_delivered = $query->sum('delivered');
 
-            if (isset($rates[$product->vat_rate_id]) == false) {
+            if (isset($rates[$product->vat_rate_id]) === false) {
                 $rates[$product->vat_rate_id] = $product->vat_rate;
             }
 
@@ -713,16 +719,16 @@ class Order extends Model
         $key = 'involved_modifiers_' . ($include_shipping_places ? 'shipping' : 'no_shipping');
 
         return $this->innerCache($key, function ($obj) use ($include_shipping_places) {
-            $modifiers = $this->modifiers;
+            $modifiers = $obj->modifiers;
 
-            foreach ($this->products as $product) {
+            foreach ($obj->products as $product) {
                 $modifiers = $modifiers->merge($product->modifiers);
             }
 
             if ($include_shipping_places) {
                 $managed_shipping_places = [];
 
-                foreach ($this->bookings as $booking) {
+                foreach ($obj->bookings as $booking) {
                     $booker = $booking->user;
                     if ($booker->shippingplace && ! isset($managed_shipping_places[$booker->shippingplace->id])) {
                         $managed_shipping_places[$booker->shippingplace->id] = true;
@@ -756,7 +762,7 @@ class Order extends Model
         */
         $has_shipped_bookings = $this->bookings->where('status', '!=', 'pending')->count() != 0;
 
-        if ($order_modifiers->isEmpty() == false || $has_shipped_bookings) {
+        if ($order_modifiers->isEmpty() === false || $has_shipped_bookings) {
             DB::beginTransaction();
 
             if (is_null($aggregate_data)) {
@@ -815,13 +821,11 @@ class Order extends Model
 
         foreach ($pending_modifiers as $pending_id => $pending_mod) {
             foreach ($shipped_modifiers as $shipped_id => $shipped_mod) {
-                if ($pending_id == $shipped_id) {
-                    if (round($pending_mod->amount, 2) != round($shipped_mod->amount, 2)) {
-                        $ret[] = (object) [
-                            'pending' => $pending_mod,
-                            'shipped' => $shipped_mod,
-                        ];
-                    }
+                if ($pending_id == $shipped_id && round($pending_mod->amount, 2) != round($shipped_mod->amount, 2)) {
+                    $ret[] = (object) [
+                        'pending' => $pending_mod,
+                        'shipped' => $shipped_mod,
+                    ];
                 }
             }
         }

@@ -13,7 +13,7 @@ class Deliveries extends CSVImporter
 {
     public function fields()
     {
-        $ret = [
+        return [
             'username' => (object) [
                 'label' => _i('Username'),
                 'mandatory' => true,
@@ -24,8 +24,6 @@ class Deliveries extends CSVImporter
                 'explain' => _i("Usa questo elemento per identificare il primo prodotto che appare nell'elenco"),
             ],
         ];
-
-        return $ret;
     }
 
     public function extraInformations()
@@ -73,7 +71,7 @@ class Deliveries extends CSVImporter
         $target_order = null;
 
         [$first_product_index] = $this->getColumnsIndex($columns, ['first']);
-        $csvdata = iterator_to_array($this->getRecords());
+        $csvdata = $this->getRecords();
 
         $header = $csvdata[0];
 
@@ -138,14 +136,14 @@ class Deliveries extends CSVImporter
                                 $datarow[$product_id] = $quantity;
 
                                 if ($mapped_products[$index]->combo) {
-                                    if (isset($datarow['variant_quantity_' . $product_id]) == false) {
+                                    if (isset($datarow['variant_quantity_' . $product_id]) === false) {
                                         $datarow['variant_quantity_' . $product_id] = [];
                                     }
 
                                     foreach ($mapped_products[$index]->combo->values as $val) {
                                         $variant_id = $val->variant->id;
 
-                                        if (isset($datarow['variant_selection_' . $variant_id]) == false) {
+                                        if (isset($datarow['variant_selection_' . $variant_id]) === false) {
                                             $datarow['variant_selection_' . $variant_id] = [];
                                         }
 
@@ -160,13 +158,14 @@ class Deliveries extends CSVImporter
 
                     if ($target_user) {
                         $booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
-
-                        $data[] = $datarow;
-                        $bookings[] = (object) [
-                            'user_id' => $target_user->id,
-                            'user_name' => $target_user->printableName(),
-                            'total' => $booking->getValue('effective', true),
-                        ];
+                        if ($booking) {
+                            $data[] = $datarow;
+                            $bookings[] = (object) [
+                                'user_id' => $target_user->id,
+                                'user_name' => $target_user->printableName(),
+                                'total' => $booking->getValue('effective', true),
+                            ];
+                        }
                     }
                 }
                 catch (\Exception $e) {
