@@ -80,6 +80,7 @@ class GasController extends Controller
             'annual_fee_amount',
             'deposit_amount',
             'auto_fee',
+            'credit_home',
             'rid',
             'satispay',
             'integralces',

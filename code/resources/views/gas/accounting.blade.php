@@ -7,7 +7,14 @@
                 <x-larastrap::text name="year_closing" :label="_i('Inizio Anno Sociale')" classes="date-to-month" :value="ucwords(\Carbon\Carbon::parse($gas->getConfig('year_closing'))->isoFormat('DD MMMM'))" textappend="<i class='bi-calendar'></i>" :pophelp="_i('In questa data le quote di iscrizione verranno automaticamente fatte scadere e dovranno essere rinnovate')" />
                 <x-larastrap::price name="annual_fee_amount" :label="_i('Quota Annuale')" :pophelp="_i('Se non configurato (valore = 0) non verranno gestite le quote di iscrizione')" />
                 <x-larastrap::price name="deposit_amount" :label="_i('Cauzione')" :pophelp="_i('Se non configurato (valore = 0) non verranno gestite le cauzioni da parte dei nuovi soci')" />
-                <x-larastrap::check name="auto_fee" :label="_i('Addebita automaticamente quota alla scadenza dell\'anno sociale')" :pophelp="_i('Abilitando questa opzione, alla scadenza dell\'anno sociale saranno automaticamente aggiornate le quote di tutti i soci attivi, addebitandole direttamente nel credito utente.')" />
+                <x-larastrap::check name="auto_fee" :label="_i('Addebito automatico quota')" :pophelp="_i('Abilitando questa opzione, alla scadenza dell\'anno sociale saranno automaticamente aggiornate le quote di tutti i soci attivi, addebitandole direttamente nel credito utente.')" />
+
+                <x-larastrap::field label="Informazioni in homepage">
+                    <x-larastrap::check name="credit_home->current_credit" :label="_('Credito corrente')" :checked="$gas->credit_home['current_credit']" squeeze inline switch />
+                    <x-larastrap::check name="credit_home->to_pay" :label="_('Prenotazioni di pagare')" :checked="$gas->credit_home['to_pay']" squeeze inline switch />
+                </x-larastrap::field>
+
+                <hr>
 
                 <x-larastrap::check name="enable_rid" :label="_i('Abilita SEPA')" triggers_collapse="enable_rid" :value="$gas->hasFeature('rid')" :pophelp="_i('Abilitando questa opzione e popolando i relativi campi verrà attivata l\'esportazione dei files SEPA, con cui automatizzare le transazioni bancarie. I files saranno generabili da Contabilità -> Stato Crediti -> Esporta SEPA. Dopo aver compilato questo form, per ogni utente dovrai specificare alcuni parametri dai relativi pannelli in Utenti')" />
                 <x-larastrap::collapse id="enable_rid">
