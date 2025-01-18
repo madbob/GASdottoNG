@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 
 use App\Rules\Captcha;
 use App\Rules\EMail;
+use App\Rules\FirstLastName;
 use App\Notifications\WelcomeMessage;
 use App\Notifications\NewUserNotification;
 
@@ -89,11 +90,11 @@ class RegisterController extends Controller
         $mandatory = $gas->public_registrations['mandatory_fields'];
 
         if (in_array('firstname', $mandatory)) {
-            $options['firstname'] = 'required|string|max:255';
+            $options['firstname'] = ['required', 'string', 'max:255'];
         }
 
         if (in_array('lastname', $mandatory)) {
-            $options['lastname'] = 'required|string|max:255';
+            $options['lastname'] = ['required', 'string', 'max:255'];
         }
 
         if (in_array('email', $mandatory)) {
@@ -102,6 +103,22 @@ class RegisterController extends Controller
 
         if (in_array('phone', $mandatory)) {
             $options['phone'] = 'required|string|max:255';
+        }
+
+        /*
+            Sulle istanze pubbliche, capita non di rado che un utente già
+            registrato come amico di qualcun altro pretenda di registrarsi a sua
+            volta. Ma in UserObserver verifico e nego l'esistenza di due utenti
+            con lo stesso nome e cognome, dunque se procedessi l'intera
+            operazione risulterebbe in un errore.
+            Qui verifico tale eventuale esistenza, e nel caso la segnalo usando
+            la regola FirstLastName (che esiste al solo scopo di segnalare
+            questo caso)
+        */
+        $test = User::where('firstname', $data['firstname'])->where('lastname', $data['lastname'])->first();
+        if ($test != null) {
+            $options['firstname'] = array_merge($options['firstname'] ?? [], [new FirstLastName()]);
+            $options['lastname'] = array_merge($options['lastname'] ?? [], [new FirstLastName()]);
         }
 
         return Validator::make($data, $options);
