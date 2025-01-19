@@ -11,7 +11,7 @@
 
                 <x-larastrap::field label="Informazioni in homepage">
                     <x-larastrap::check name="credit_home->current_credit" :label="_('Credito corrente')" :checked="$gas->credit_home['current_credit']" squeeze inline switch />
-                    <x-larastrap::check name="credit_home->to_pay" :label="_('Prenotazioni di pagare')" :checked="$gas->credit_home['to_pay']" squeeze inline switch />
+                    <x-larastrap::check name="credit_home->to_pay" :label="_('Prenotazioni da pagare')" :checked="$gas->credit_home['to_pay']" squeeze inline switch />
                 </x-larastrap::field>
 
                 <hr>
