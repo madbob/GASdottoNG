@@ -89,7 +89,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $admin = User::create([
-            'id' => str_slug('Amministratore Globale'),
+            'id' => Str::slug('Amministratore Globale'),
             'gas_id' => $gas->id,
             'member_since' => date('Y-m-d', time()),
             'username' => 'root',
