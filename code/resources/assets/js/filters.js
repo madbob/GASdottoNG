@@ -288,34 +288,40 @@ class Filters {
                 node.closest('.dropdown-menu').siblings('.dropdown-toggle').addClass('active');
             }
 
-            let c = node.find('i').attr('class');
-            let count_hidden = 0;
+            if (node.hasClass('show-all')) {
+                iterables.toggleClass('hidden', false);
+                this.compactFilter(master_selector, child_selector, true);
+            }
+            else {
+                let c = node.find('i').attr('class');
+                let count_hidden = 0;
 
-            iterables.each(function() {
-                let show = false;
+                iterables.each(function() {
+                    let show = false;
 
-                $(this).find('i').each(function() {
-                    let icons = $(this).attr('class');
-                    show = (icons == c);
-                    if (show) {
-                        return false;
+                    $(this).find('i').each(function() {
+                        let icons = $(this).attr('class');
+                        show = (icons == c);
+                        if (show) {
+                            return false;
+                        }
+                    });
+
+                    $(this).toggleClass('hidden', show === false);
+
+                    if (show === false) {
+                        count_hidden++;
                     }
                 });
 
-                $(this).toggleClass('hidden', show === false);
+                this.compactFilter(master_selector, child_selector, false);
 
-                if (show === false) {
-                    count_hidden++;
+                if (count_hidden == 0) {
+                    $(master_selector).trigger('inactive-filter');
                 }
-            });
-
-            this.compactFilter(master_selector, child_selector, false);
-
-            if (count_hidden == 0) {
-                $(master_selector).trigger('inactive-filter');
-            }
-            else {
-                $(master_selector).trigger('active-filter');
+                else {
+                    $(master_selector).trigger('active-filter');
+                }
             }
         }
     }

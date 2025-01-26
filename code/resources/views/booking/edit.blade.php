@@ -69,6 +69,8 @@ $form_buttons = [
                 </div>
             @else
                 <div class="table-icons-legend" data-list-target=".booking-editor">
+                    <a href="#" class="btn btn-info mb-1 d-block show-all">Vedi tutti</i></a>
+
                     @foreach($sorted_filter_categories as $cat_id => $cat_data)
                         @if(empty($cat_data->children))
                             <a href="#" class="btn btn-info mb-1 d-block">{{ $cat_data->label }}<i class="bi-hidden-cat-{{ $cat_id }}"></i></a>
