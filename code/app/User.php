@@ -245,6 +245,37 @@ class User extends Authenticatable
         return null;
     }
 
+    public function anonymizeUserData(): string
+    {
+        $uniqid = uniqid('d_');
+
+        $this->forceFill([
+            'updated_by' => $uniqid,
+            'id' => $uniqid,
+            'username' => $uniqid,
+            'firstname' => 'fxxx',
+            'lastname' => 'lxxx',
+            'birthday' => '1900-01-01',
+            'birthplace' => '',
+            'card_number' => '',
+        ])->save();
+
+        return $this->id;
+    }
+
+    public function deleteProfilePicture()
+    {
+
+        if ($this->picture) {
+            $picture = gas_storage_path($this->picture);
+            if (\File::exists($picture)) {
+                \File::delete($picture);
+
+                $this->forceFill(['picture' => ''])->save();
+            }
+        }
+    }
+
     /************************************************************ SluggableID */
 
     public function getSlugID()
