@@ -85,7 +85,7 @@ function humanSizeToBytes($size)
             $val *= 1024;
             break;
         default:
-            throw new \UnexpectedValueException("Unità non prevista per dimensione file");
+            throw new \UnexpectedValueException('Unità non prevista per dimensione file');
     }
 
     return (int) $val;

@@ -52,11 +52,11 @@ function guessDecimal($value)
     if ($has_dot === false && $has_comma === false) {
         $ret = (int) $value;
     }
-    else if ($has_dot && $has_comma === false) {
+    elseif ($has_dot && $has_comma === false) {
         $ret = (float) $value;
     }
     // @phpstan-ignore-next-line
-    else if ($has_dot === false && $has_comma) {
+    elseif ($has_dot === false && $has_comma) {
         $ret = (float) strtr($value, ',', '.');
     }
     else {
