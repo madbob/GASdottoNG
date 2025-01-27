@@ -53,11 +53,9 @@ if ($user->isFriend() && $admin_editable) {
         @endif
 
         @if(auth()->user()->id === $user->id || auth()->user()->can('users.admin'))
-            <div class="mb-2">
-                <x-larastrap::form method="DELETE" :action="route('user.destroy', ['id' => $user->id])"  :buttons="[['label' => _i('Elimina profilo'), 'color' => 'danger', 'type' => 'submit']]">
-                </x-larastrap::form>
-            </div>
-
+            <x-larastrap::iform classes="mb-2" method="DELETE" :action="route('user.destroy', ['id' => $user->id])" id="user-destroy-modal" :buttons="[['type' => 'submit', 'color' => 'danger', 'label' => _i('Elimina profilo')]]">
+                <input type="hidden" name="pre-saved-function" value="passwordProtected">
+            </x-larastrap::iform>
          @endif
 
         <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :classes="$display_page ? 'inner-form' : ''" :nodelete="$display_page || $user->isFriend() == false" :nosave="$readonly" :other_buttons="$friend_admin_buttons">
