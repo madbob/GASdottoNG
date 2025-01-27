@@ -47,6 +47,4 @@ class GraphicInitServiceProvider extends ServiceProvider
 
         Paginator::useBootstrap();
     }
-
-    public function register() {}
 }

@@ -147,6 +147,9 @@ class Date extends Model implements Datable
                     ];
 
                     break;
+
+                default:
+                    throw \UnexpectedValueException('Tipo di azione non valido per ordine ricorrente');
             }
 
             if ($node) {

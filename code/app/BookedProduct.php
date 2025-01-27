@@ -270,34 +270,44 @@ class BookedProduct extends Model
 
     private function getPendingValue($type)
     {
+        $ret = 0;
+
         switch ($type) {
             case 'delivered':
-                return $this->fixQuantity('delivered', false);
+                $ret = $this->fixQuantity('delivered', false);
+                break;
 
             case 'effective':
-                return $this->fixQuantity('quantity', true) + $this->getValue('modifier:all');
+                $ret = $this->fixQuantity('quantity', true) + $this->getValue('modifier:all');
+                break;
 
             case 'weight':
-                return $this->fixWeight('quantity');
+                $ret = $this->fixWeight('quantity');
+                break;
         }
 
-        return 0;
+        return $ret;
     }
 
     private function getShippedValue($type)
     {
+        $ret = 0;
+
         switch ($type) {
             case 'delivered':
-                return $this->final_price;
+                $ret = $this->final_price;
+                break;
 
             case 'effective':
-                return $this->final_price + $this->getValue('modifier:all');
+                $ret = $this->final_price + $this->getValue('modifier:all');
+                break;
 
             case 'weight':
-                return $this->fixWeight('delivered');
+                $ret = $this->fixWeight('delivered');
+                break;
         }
 
-        return 0;
+        return $ret;
     }
 
     public function getValue($type)

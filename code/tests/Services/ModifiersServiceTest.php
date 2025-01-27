@@ -13,11 +13,6 @@ class ModifiersServiceTest extends TestCase
 {
     use DatabaseTransactions;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     private function localInitOrder()
     {
         $this->order = $this->initOrder(null);

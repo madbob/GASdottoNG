@@ -7,11 +7,6 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 
 class SingletonsProvider extends ServiceProvider implements DeferrableProvider
 {
-    public function boot(): void
-    {
-        //
-    }
-
     private function singletons(): array
     {
         /*

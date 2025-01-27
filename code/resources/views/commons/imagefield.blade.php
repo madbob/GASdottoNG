@@ -13,7 +13,7 @@ $url = $obj && $valuefrom ? $obj->$valuefrom : '';
         <x-larastrap::file :name="$name" :attributes="['data-max-size' => serverMaxUpload()]" squeeze="true" />
 
         @if(!empty($url))
-            <img src="{{ $url }}" class="img-fluid">
+            <img src="{{ $url }}" class="img-fluid" alt="{{ $label }}">
             <x-larastrap::check :name="sprintf('delete_image_%s', $name)" :label="_i('Elimina immagine')" />
         @endif
     </div>

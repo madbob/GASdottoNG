@@ -239,7 +239,6 @@ trait ReducibleTrait
         ];
 
         $target_priority = -1;
-        $aggregate_data = null;
         $faster = true;
 
         foreach ($modifiers as $mod) {
@@ -267,7 +266,7 @@ trait ReducibleTrait
             $redux_filters['orders'] = [$order];
         }
 
-        return $aggregate_data = $aggregate->reduxData($redux_filters);
+        return $aggregate->reduxData($redux_filters);
     }
 
     /*

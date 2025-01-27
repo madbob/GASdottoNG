@@ -87,7 +87,7 @@ class Deliveries extends CSVImporter
 
                 if ($p) {
                     if ($target_order && $target_order->id != $order->id) {
-                        throw new \Exception(_i('Operazione fallita: nel documento importato sono presenti prodotti di diversi ordini'), 1);
+                        throw new \InvalidArgumentException(_i('Operazione fallita: nel documento importato sono presenti prodotti di diversi ordini'));
                     }
 
                     $target_order = $order;

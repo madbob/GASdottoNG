@@ -7,11 +7,6 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 
 class ServicesProvider extends ServiceProvider implements DeferrableProvider
 {
-    public function boot(): void
-    {
-        //
-    }
-
     private function services(): array
     {
         /*

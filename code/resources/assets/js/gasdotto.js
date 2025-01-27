@@ -219,9 +219,10 @@ function miscInnerCallbacks(form, data) {
         return false;
 	}
 
+    let test = false;
     locker = true;
 
-    var test = form.find('input[name=test-feedback]');
+    test = form.find('input[name=test-feedback]');
     if (test.length != 0) {
         if (data.status == 'error') {
             utils.displayServerError(form, data);
@@ -232,7 +233,7 @@ function miscInnerCallbacks(form, data) {
 
     Lists.innerCallbacks(form, data);
 
-    var test = form.find('input[name=update-select]');
+    test = form.find('input[name=update-select]');
     if (test.length != 0) {
         var selectname = test.val();
         $('select[name=' + selectname + ']').each(function() {
@@ -266,7 +267,7 @@ function miscInnerCallbacks(form, data) {
         });
     }
 
-    var test = form.find('input[name=update-field]');
+    test = form.find('input[name=update-field]');
     if (test.length != 0) {
         test.each(function() {
             var identifier_holder = utils.sanitizeId($(this).val());
@@ -285,7 +286,7 @@ function miscInnerCallbacks(form, data) {
         });
     }
 
-    var test = form.find('input[name=post-saved-refetch]');
+    test = form.find('input[name=post-saved-refetch]');
     if (test.length != 0) {
         test.each(function() {
             var target = utils.sanitizeId($(this).val());
@@ -300,7 +301,7 @@ function miscInnerCallbacks(form, data) {
         });
     }
 
-    var test = form.find('input[name^=post-saved-function]');
+    test = form.find('input[name^=post-saved-function]');
     if (test.length != 0) {
         test.each(function() {
             var function_name = $(this).val();
@@ -312,7 +313,7 @@ function miscInnerCallbacks(form, data) {
         });
     }
 
-    var test = form.find('input[name^=reload-portion]');
+    test = form.find('input[name^=reload-portion]');
     if (test.length != 0) {
         test.each(function() {
             var identifier = $(this).val();
@@ -322,7 +323,7 @@ function miscInnerCallbacks(form, data) {
         });
     }
 
-    var test = form.find('input[name=void-form]');
+    test = form.find('input[name=void-form]');
     if (test.length != 0) {
         test.each(function() {
 			form.find('input[type!=hidden]').val('');
@@ -332,7 +333,7 @@ function miscInnerCallbacks(form, data) {
         });
     }
 
-    var test = form.find('input[name=close-modal]');
+    test = form.find('input[name=close-modal]');
     if (test.length != 0) {
 		test.each(function() {
 			var id = $(this).val();
@@ -348,12 +349,12 @@ function miscInnerCallbacks(form, data) {
 		});
     }
 
-    var test = form.find('input[name=close-all-modal]');
+    test = form.find('input[name=close-all-modal]');
     if (test.length != 0) {
         $('.modal.fade.show').modal('hide');
     }
 
-    var test = form.find('input[name=reload-whole-page]');
+    test = form.find('input[name=reload-whole-page]');
     if (test.length != 0) {
         location.reload();
     }

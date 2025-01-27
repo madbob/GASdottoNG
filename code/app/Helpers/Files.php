@@ -84,6 +84,8 @@ function humanSizeToBytes($size)
         case 'K':
             $val *= 1024;
             break;
+        default:
+            throw new \UnexpectedValueException("Unità non prevista per dimensione file");
     }
 
     return (int) $val;

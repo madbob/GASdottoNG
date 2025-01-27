@@ -100,19 +100,21 @@ class Lists {
 
     static innerCallbacks(form, data)
     {
-        var test = form.find('input[name=update-list]');
+        let test = false;
+
+        test = form.find('input[name=update-list]');
         if (test.length != 0) {
-            var list = $('#' + test.val());
+            let list = $('#' + test.val());
             Lists.appendToLoadableList(list, data, true);
         }
 
-        var test = form.find('input[name=append-list]');
+        test = form.find('input[name=append-list]');
         if (test.length != 0) {
-            var list = $('#' + test.val());
+            let list = $('#' + test.val());
             Lists.appendToLoadableList(list, data, false);
         }
 
-        var test = form.find('input[name=reload-loadable]');
+        test = form.find('input[name=reload-loadable]');
         if (test.length != 0) {
             Lists.reloadCurrentLoadable(test.val());
         }

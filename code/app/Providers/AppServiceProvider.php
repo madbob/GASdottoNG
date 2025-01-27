@@ -105,6 +105,4 @@ class AppServiceProvider extends ServiceProvider
         $this->initMailing();
         $this->initCollectionMacros();
     }
-
-    public function register() {}
 }
