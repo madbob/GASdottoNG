@@ -320,18 +320,13 @@ class UsersController extends BackedController
         return view('user.change_password');
     }
 
-    public function delete($id, $softDeleted = true)
+    public function delete($id)
     {
         $user = User::findOrFail($id);
 
-        if ($softDeleted) {
-            $user->delete();
-        } 
-        else {
-            $user->anonymizeUserData();
+        $user->anonymizeUserData();
 
-            $user->delete();
-        }
+        $user->delete();
 
         return redirect('/');
     }
