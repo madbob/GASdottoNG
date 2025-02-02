@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('users/{id}/accounting', 'UsersController@accounting')->name('users.accounting');
         Route::get('users/{id}/friends', 'UsersController@friends')->name('users.friends');
 
-        Route::delete('user/{id}', 'UsersController@destroy')->name('user.destroy');
+        Route::post('user/{id}', 'UsersController@delete')->name('user.delete');
 
         Route::get('users/tour/start', 'TourController@startTour')->name('users.tour.start');
         Route::get('users/tour/finish', 'TourController@finishTour')->name('users.tour.finish');

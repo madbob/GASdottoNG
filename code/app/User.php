@@ -245,22 +245,20 @@ class User extends Authenticatable
         return null;
     }
 
-    public function anonymizeUserData(): string
+    public function anonymizeUserData()
     {
-        $uniqid = uniqid('d_');
+        $this->contacts()->each(fn ($contact) => $contact->delete());
+
+        $this->deleteProfilePicture();
 
         $this->forceFill([
-            'updated_by' => $uniqid,
-            'id' => $uniqid,
-            'username' => $uniqid,
-            'firstname' => 'fxxx',
-            'lastname' => 'lxxx',
+
+            'firstname' => 'Utente',
+            'lastname' => 'Rimosso',
             'birthday' => '1900-01-01',
             'birthplace' => '',
             'card_number' => '',
         ])->save();
-
-        return $this->id;
     }
 
     public function deleteProfilePicture()
