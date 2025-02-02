@@ -152,7 +152,7 @@ if ($user->isFriend() && $admin_editable) {
                         <x-larastrap::datepicker name="member_since" :label="_i('Membro da')" readonly disabled />
                         <x-larastrap::datepicker name="last_login" :label="_i('Ultimo Accesso')" readonly disabled />
                         <x-larastrap::datepicker name="last_booking" :label="_i('Ultima Prenotazione')" readonly disabled />
-                    @endif      
+                    @endif
                 </div>
             </div>
 

@@ -247,31 +247,21 @@ class User extends Authenticatable
 
     public function anonymizeUserData()
     {
-        $this->contacts()->each(fn ($contact) => $contact->delete());
+        $this->contacts()->each(fn($contact) => $contact->delete());
 
-        $this->deleteProfilePicture();
+        if ($this->picture) {
+            $picture = gas_storage_path($this->picture);
+            \File::exists($picture) ?? \File::delete($picture);
+        }
 
         $this->forceFill([
-
             'firstname' => 'Utente',
             'lastname' => 'Rimosso',
             'birthday' => '1900-01-01',
             'birthplace' => '',
+            'picture' => '',
             'card_number' => '',
         ])->save();
-    }
-
-    public function deleteProfilePicture()
-    {
-
-        if ($this->picture) {
-            $picture = gas_storage_path($this->picture);
-            if (\File::exists($picture)) {
-                \File::delete($picture);
-
-                $this->forceFill(['picture' => ''])->save();
-            }
-        }
     }
 
     /************************************************************ SluggableID */
