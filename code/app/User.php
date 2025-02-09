@@ -85,7 +85,7 @@ class User extends Authenticatable
     {
         $user = Auth::user();
         if ($user->can('users.admin', $user->gas)) {
-            return $query->withTrashed();
+            return $query->withTrashed()->whereNull('deleted_at')->orWhereNull('suspended_at');
         }
         else {
             return $query;
