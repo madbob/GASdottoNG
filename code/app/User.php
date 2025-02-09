@@ -257,6 +257,7 @@ class User extends Authenticatable
         $this->forceFill([
             'firstname' => 'Utente',
             'lastname' => 'Rimosso',
+            'suspended_at' => now(),
             'birthday' => '1900-01-01',
             'birthplace' => '',
             'picture' => '',
