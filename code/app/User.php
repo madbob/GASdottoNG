@@ -81,7 +81,7 @@ class User extends Authenticatable
     {
         $user = Auth::user();
         if ($user->can('users.admin', $user->gas)) {
-            return $query->withTrashed();
+            return $query->withTrashed()->whereNull('deleted_at')->orWhereNull('suspended_at');
         }
         else {
             return $query;
@@ -120,6 +120,10 @@ class User extends Authenticatable
 
     public function printableName()
     {
+        if ($this->plainStatus() == 'removed') {
+            return _i('Utente Rimosso');
+        }
+
         $ret = $this->lastname . ' ' . $this->firstname;
 
         if (empty(trim($ret))) {
@@ -238,6 +242,33 @@ class User extends Authenticatable
         }
 
         return null;
+    }
+
+    public function anonymizeUserData()
+    {
+        /*
+            Deliberatamente non vengono rimosse informazioni sul credito, in
+            quanto ci si aspetta un esplicito movimento contabile di
+            restituzione del credito rimanente all'utente
+        */
+
+        $this->contacts()->each(fn($contact) => $contact->delete());
+
+        if ($this->picture) {
+            $picture = gas_storage_path($this->picture);
+            \File::exists($picture) ?? \File::delete($picture);
+        }
+
+        $this->forceFill([
+            'firstname' => _i('Utente'),
+            'lastname' => _i('Rimosso'),
+            'suspended_at' => now(),
+            'birthday' => '1900-01-01',
+            'birthplace' => '',
+            'picture' => '',
+            'card_number' => '',
+            'username' => Str::random(20),
+        ])->save();
     }
 
     /************************************************************ SluggableID */

@@ -158,6 +158,29 @@ if ($user->isFriend() && $admin_editable) {
             <hr/>
         </x-larastrap::mform>
 
+        @if($user->isFriend() == false && $currentuser->id === $user->id && $currentuser->can('users.selfdestroy'))
+            @php
+            $removeModalId = sprintf('remove-account-%s', sanitizeId($user->id));
+            @endphp
+
+            <x-larastrap::link color="danger" classes="float-end mt-2" :triggers_modal="$removeModalId" :label="_i('Elimina profilo')" />
+
+            <x-larastrap::modal :id="$removeModalId">
+                <x-larastrap::iform method="DELETE" :action="route('users.destroy', $user->id)" id="user-destroy-modal" :buttons="[['type' => 'submit', 'color' => 'danger', 'label' => _i('Elimina profilo')]]">
+                    <p>
+                        {{ _i('Vuoi davvero eliminare questo account? Tutti i dati personali saranno anonimizzati, benché sarà preservato lo storico delle prenotazioni.') }}
+                    </p>
+
+                    @if($user->currentBalanceAmount() != 0)
+                        <p>
+                            {{ _i("Prima di procedere, è consigliato contattare i referenti del GAS per regolare i conti sul credito.") }}
+                        </p>
+                    @endif
+                    <input type="hidden" name="pre-saved-function" value="passwordProtected">
+                </x-larastrap::iform>
+            </x-larastrap::modal>
+        @endif
+
         @if($user->isFriend() && $admin_editable)
             @push('postponed')
                 <x-larastrap::modal :id="sprintf('change_friend_%s', $user->id)">

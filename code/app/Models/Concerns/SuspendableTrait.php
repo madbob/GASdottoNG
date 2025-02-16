@@ -11,6 +11,10 @@ trait SuspendableTrait
                 $this->suspended_at = null;
                 $this->deleted_at = null;
                 break;
+            case 'removed':
+                $this->suspended_at = decodeDate($suspended_at) ?: date('Y-m-d');
+                $this->deleted_at = decodeDate($deleted_at) ?: date('Y-m-d');
+                break;
             case 'suspended':
                 $this->suspended_at = decodeDate($suspended_at) ?: date('Y-m-d');
                 $this->deleted_at = null;
@@ -26,6 +30,9 @@ trait SuspendableTrait
     {
         if (is_null($this->suspended_at) && is_null($this->deleted_at)) {
             return 'active';
+        }
+        elseif (is_null($this->suspended_at) == false && is_null($this->deleted_at) == false) {
+            return 'removed';
         }
         elseif (is_null($this->suspended_at) == false) {
             return 'suspended';
@@ -44,6 +51,8 @@ trait SuspendableTrait
                 return _i('Sospeso');
             case 'deleted':
                 return _i('Cessato');
+            case 'removed':
+                return _i('Rimosso');
         }
     }
 

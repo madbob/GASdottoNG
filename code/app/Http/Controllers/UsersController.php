@@ -319,4 +319,22 @@ class UsersController extends BackedController
 
         return view('user.change_password');
     }
+
+    public function destroy($id)
+    {
+        return $this->easyExecute(function () use ($id) {
+            $myself = false;
+            if (request()->user()->id == $id) {
+                $myself = true;
+            }
+
+            $subject = $this->service->destroy($id);
+
+            if ($myself) {
+                return redirect()->route('dashboard');
+            }
+
+            return $this->commonSuccessResponse($subject);
+        });
+    }
 }
