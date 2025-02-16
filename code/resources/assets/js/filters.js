@@ -14,7 +14,19 @@ class Filters {
         */
         $('.table-icons-legend button, .table-icons-legend a', container).click((e) => {
             e.preventDefault();
-            this.iconsLegendTrigger($(e.currentTarget), '.table-icons-legend');
+
+            let button = $(e.currentTarget);
+            if (button.attr('data-bs-toggle')) {
+                let expanded = button.attr('aria-expanded') == 'true';
+                button.toggleClass('active', expanded);
+                if (expanded === false) {
+                    let collapse_id = button.attr('href');
+                    $(collapse_id).find('.active').click();
+                }
+            }
+            else {
+                this.iconsLegendTrigger(button, '.table-icons-legend');
+            }
         });
 
         $('.table-text-filter', container).keyup((e) => {
@@ -35,17 +47,17 @@ class Filters {
 
         $('.table-sorter a', container).click(function(e) {
     		e.preventDefault();
-    		var target = $($(this).closest('.table-sorter').attr('data-table-target'));
-    		var attribute = $(this).attr('data-sort-by');
-            var is_numeric = $(this).attr('data-numeric-sorting') ? true : false;
+            let target = $($(this).closest('.table-sorter').attr('data-table-target'));
+            let attribute = $(this).attr('data-sort-by');
+            let is_numeric = $(this).attr('data-numeric-sorting') ? true : false;
 
             target.each(function() {
-                var target_body = $(this).find('tbody');
+                let target_body = $(this).find('tbody');
                 target_body.find('> .table-sorting-header').addClass('d-none').filter('[data-sorting-' + attribute + ']').removeClass('d-none');
 
                 target_body.find('> tr[data-sorting-' + attribute + '], .table-sorting-header:visible').sort(function(a, b) {
-                    var attr_a = $(a).attr('data-sorting-' + attribute);
-                    var attr_b = $(b).attr('data-sorting-' + attribute);
+                    let attr_a = $(a).attr('data-sorting-' + attribute);
+                    let attr_b = $(b).attr('data-sorting-' + attribute);
 
                     if (is_numeric) {
                         return parseFloat(attr_a) - parseFloat(attr_b);
@@ -66,13 +78,13 @@ class Filters {
         $('.form-filler button[type=submit]', container).click(function(event) {
             event.preventDefault();
 
-			var button = $(this);
+            let button = $(this);
 			button.addClass('disabled');
-            var form = button.closest('.form-filler');
-            var target = $(form.attr('data-fill-target'));
-            var data = form.find('input, select').serialize();
+            let form = button.closest('.form-filler');
+            let target = $(form.attr('data-fill-target'));
+            let data = form.find('input, select').serialize();
 
-			var url = button.attr('data-action');
+            let url = button.attr('data-action');
 			if (url == null) {
 				url = form.attr('data-action');
 			}
@@ -135,13 +147,13 @@ class Filters {
 
     static tableFilters(table_id)
     {
-        var filters = $('[data-table-target="' + table_id + '"]');
-        var table = $('table' + table_id);
-        var elements = table.find('tbody tr');
+        let filters = $('[data-table-target="' + table_id + '"]');
+        let table = $('table' + table_id);
+        let elements = table.find('tbody tr');
 
         elements.each(function() {
-            var display = true;
-            var row = $(this);
+            let display = true;
+            let row = $(this);
 
             filters.each(function() {
                 if ($(this).hasClass('table-number-filters')) {
@@ -213,12 +225,12 @@ class Filters {
                     non deve essere visualizzato, evito di valutare le altre ed
                     esco subito dal ciclo each()
                 */
-                if (display == false) {
+                if (display === false) {
                     return false;
                 }
             });
 
-            row.toggleClass('hidden', (display == false));
+            row.toggleClass('hidden', (display === false));
         });
 
         this.compactFilter('table' + table_id, 'tbody tr', false);
@@ -250,6 +262,7 @@ class Filters {
         }
 
         let iter_selector = master_selector + ' ' + child_selector;
+        let iterables = $(iter_selector).filter(':not(.do-not-sort)');
 
         if (node.hasClass('active')) {
             node.removeClass('active');
@@ -257,7 +270,7 @@ class Filters {
                 node.closest('.dropdown-menu').siblings('.dropdown-toggle').removeClass('active');
             }
 
-            $(iter_selector).toggleClass('hidden', false);
+            iterables.toggleClass('hidden', false);
             this.compactFilter(master_selector, child_selector, true);
             $(master_selector).trigger('inactive-filter');
         }
@@ -275,34 +288,40 @@ class Filters {
                 node.closest('.dropdown-menu').siblings('.dropdown-toggle').addClass('active');
             }
 
-            var c = node.find('i').attr('class');
-            var count_hidden = 0;
+            if (node.hasClass('show-all')) {
+                iterables.toggleClass('hidden', false);
+                this.compactFilter(master_selector, child_selector, true);
+            }
+            else {
+                let c = node.find('i').attr('class');
+                let count_hidden = 0;
 
-            $(iter_selector).each(function() {
-                var show = false;
+                iterables.each(function() {
+                    let show = false;
 
-                $(this).find('i').each(function() {
-                    var icons = $(this).attr('class');
-                    show = (icons == c);
-                    if (show) {
-                        return false;
+                    $(this).find('i').each(function() {
+                        let icons = $(this).attr('class');
+                        show = (icons == c);
+                        if (show) {
+                            return false;
+                        }
+                    });
+
+                    $(this).toggleClass('hidden', show === false);
+
+                    if (show === false) {
+                        count_hidden++;
                     }
                 });
 
-                $(this).toggleClass('hidden', show == false);
+                this.compactFilter(master_selector, child_selector, false);
 
-                if (show == false) {
-                    count_hidden++;
+                if (count_hidden == 0) {
+                    $(master_selector).trigger('inactive-filter');
                 }
-            });
-
-            this.compactFilter(master_selector, child_selector, false);
-
-            if (count_hidden == 0) {
-                $(master_selector).trigger('inactive-filter');
-            }
-            else {
-                $(master_selector).trigger('active-filter');
+                else {
+                    $(master_selector).trigger('active-filter');
+                }
             }
         }
     }

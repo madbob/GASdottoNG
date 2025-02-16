@@ -16,11 +16,11 @@ foreach ($orders as $order) {
     $order->angryBookings();
 
     if ($currentuser->can('supplier.shippings', $order->supplier)) {
-        $controllable = true || $controllable;
+        $controllable = true;
     }
 
     if ($order->supplier->fast_shipping_enabled) {
-        $fast_shipping_enabled = true || $fast_shipping_enabled;
+        $fast_shipping_enabled = true;
     }
 }
 

@@ -13,7 +13,6 @@
         "barryvdh/laravel-dompdf": "^2.0.0",
         "debril/feed-io": "^5.0",
         "doctrine/dbal": "^3.9",
-        "dotworkers/laravel-gettext": "^7.6.2",
         "eluceo/ical": "^2.0",
         "genealabs/laravel-model-caching": "^0.13.4",
         "haydenpierce/class-finder": "^0.5.3",
@@ -29,7 +28,7 @@
         "symfony/http-client": "^6.2",
         "symfony/psr-http-message-bridge": "^2.1",
         "symfony/scaleway-mailer": "^7.0",
-        "symfony/sendinblue-mailer": "^6.2",
+        "vadikv/laravel-gettext": "^8.2",
         "zetacomponents/archive": "dev-master"
     },
     "require-dev": {
@@ -37,6 +36,7 @@
         "fakerphp/faker": "^1.23",
         "laracraft-tech/laravel-xhprof": "^1.0",
         "larastan/larastan": "^2.9",
+        "laravel/pint": "^1.20",
         "laravel/sail": "^1.23",
         "mockery/mockery": "~1.0",
         "nunomaduro/collision": "^7.0",

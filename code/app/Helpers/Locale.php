@@ -49,20 +49,21 @@ function guessDecimal($value)
     $has_dot = (strpos($value, '.') !== false);
     $has_comma = (strpos($value, ',') !== false);
 
-    if ($has_dot == false && $has_comma == false) {
-        return (int) $value;
+    if ($has_dot === false && $has_comma === false) {
+        $ret = (int) $value;
     }
-
-    if ($has_dot && $has_comma == false) {
-        return (float) $value;
+    elseif ($has_dot && $has_comma === false) {
+        $ret = (float) $value;
     }
-
     // @phpstan-ignore-next-line
-    if ($has_dot == false && $has_comma) {
-        return (float) strtr($value, ',', '.');
+    elseif ($has_dot === false && $has_comma) {
+        $ret = (float) strtr($value, ',', '.');
+    }
+    else {
+        $ret = translateNumberFormat($value);
     }
 
-    return translateNumberFormat($value);
+    return $ret;
 }
 
 /*

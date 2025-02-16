@@ -61,15 +61,15 @@ trait Iconable
             $user = Auth::user();
             $obj = $this;
 
-            $ret = array_keys(array_filter($box->commons($user), function ($condition, $icon) use ($obj, $group) {
-                if (is_null($group) == false && (isset($condition->group) == false || $condition->group != $group)) {
+            $ret = array_keys(array_filter($box->commons($user), function ($condition) use ($obj, $group) {
+                if (is_null($group) === false && (isset($condition->group) === false || $condition->group != $group)) {
                     return false;
                 }
 
                 $t = $condition->test;
 
                 return $t($obj);
-            }, ARRAY_FILTER_USE_BOTH));
+            }));
 
             $ret = array_reduce($box->selective(), function ($ret, $condition) use ($obj) {
                 $assign = $condition->assign;
@@ -86,7 +86,7 @@ trait Iconable
         $ret = [];
 
         $box = self::myIconsBox();
-        if (is_null($box) == false) {
+        if (is_null($box) === false) {
             $user = Auth::user();
 
             $ret = array_map(function ($condition) {
@@ -109,5 +109,24 @@ trait Iconable
         }
 
         return $ret;
+    }
+
+    public static function selectiveIconsGroup($contents, $group)
+    {
+        $box = self::myIconsBox();
+
+        foreach ($box->selective() as $icon => $condition) {
+            if ($icon == $group) {
+                $options = $condition->options;
+                $options = $options($contents);
+
+                return (object) [
+                    'label' => $condition->text,
+                    'items' => $options,
+                ];
+            }
+        }
+
+        return null;
     }
 }

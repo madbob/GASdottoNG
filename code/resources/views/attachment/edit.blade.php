@@ -19,7 +19,7 @@
 
             <x-larastrap::field :label="_i('Visualizza o Scarica')">
                 @if($attachment->isImage())
-                    <img src="{{ $attachment->download_url }}" class="img-fluid mb-2">
+                    <img src="{{ $attachment->download_url }}" class="img-fluid mb-2" alt="{{ $attachment->name }}">
                 @endif
 
                 <a class="btn btn-light" href="{{ $attachment->download_url }}">{{ _i('Clicca Qui') }} <i class="bi-download"></i></a>

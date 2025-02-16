@@ -50,7 +50,7 @@ abstract class CSVImporter
         $target_separator = $separators[array_search(max($lenghts), $lenghts)] ?? null;
         // @phpstan-ignore-next-line
         if (is_null($target_separator)) {
-            throw new \Exception(_i('Impossibile interpretare il file'), 1);
+            throw new \InvalidArgumentException(_i('Impossibile interpretare il file'));
         }
 
         return $target_separator;
@@ -103,7 +103,7 @@ abstract class CSVImporter
         try {
             $f = $request->file('file', null);
             if (is_null($f) || $f->isValid() == false) {
-                throw new \Exception(_i('File non caricato correttamente, possibili problemi con la dimensione'), 1);
+                throw new \InvalidArgumentException(_i('File non caricato correttamente, possibili problemi con la dimensione'));
             }
 
             $filepath = sys_get_temp_dir();
@@ -131,7 +131,7 @@ abstract class CSVImporter
         }
         catch (\Exception $e) {
             Log::error('Unable to load file to import: ' . $e->getMessage());
-            throw new \Exception(_i('Errore nel salvataggio del file'), 1);
+            throw new \RuntimeException(_i('Errore nel salvataggio del file'));
         }
     }
 

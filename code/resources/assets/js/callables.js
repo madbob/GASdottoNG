@@ -318,9 +318,9 @@ class Callables {
     */
     static removeTargetListItem(form, data)
     {
-        var form = lists.formByElementId(data.id);
-        var upper = lists.closeParent(form);
-        var list = upper.closest('.loadable-list');
+        let realform = lists.formByElementId(data.id);
+        let upper = lists.closeParent(realform);
+        let list = upper.closest('.loadable-list');
         upper.remove();
         lists.testListsEmptiness(list);
     }
@@ -345,14 +345,14 @@ class Callables {
     */
     static reloadLoadableHeaders(form, data)
     {
-        var n = $('.accordion-item[data-element-id="' + form.find('input[name=sender_id]').val() + '"]').filter(':visible');
-        if (n.length != 0) {
-            lists.reloadLoadableHead(n);
+        var n_sender = $('.accordion-item[data-element-id="' + form.find('input[name=sender_id]').val() + '"]').filter(':visible');
+        if (n_sender.length != 0) {
+            lists.reloadLoadableHead(n_sender);
         }
 
-        var n = $('.accordion-item[data-element-id="' + form.find('input[name=target_id]').val() + '"]').filter(':visible');
-        if (n.length != 0) {
-            lists.reloadLoadableHead(n);
+        var n_target = $('.accordion-item[data-element-id="' + form.find('input[name=target_id]').val() + '"]').filter(':visible');
+        if (n_target.length != 0) {
+            lists.reloadLoadableHead(n_target);
         }
     }
 

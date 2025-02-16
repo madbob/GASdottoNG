@@ -155,7 +155,7 @@ class AggregatesController extends Controller
             ripartizione effettuata in base al prenotato non è coerente con
             quella reale, si attiva la funzione di revisione dei modificatori
         */
-        if ($aggregate->isActive() == false) {
+        if ($aggregate->isActive() === false) {
             foreach ($aggregate->orders as $order) {
                 $modifiers = $order->involvedModifiers(true);
 

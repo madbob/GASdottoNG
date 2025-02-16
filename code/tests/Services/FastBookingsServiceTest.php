@@ -67,9 +67,11 @@ class FastBookingsServiceTest extends TestCase
 
         $this->nextRound();
         $order = app()->make('OrdersService')->show($this->sample_order->id);
+        $found = false;
 
         foreach ($order->bookings as $booking) {
             if (in_array($booking->user_id, $users)) {
+                $found = true;
                 $this->assertEquals($booking->status, 'shipped');
                 $this->assertNotNull($booking->payment);
 
@@ -85,6 +87,8 @@ class FastBookingsServiceTest extends TestCase
                 $this->assertNull($booking->payment);
             }
         }
+
+        $this->assertTrue($found);
     }
 
     /*

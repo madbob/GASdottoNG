@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 use App\User;
 
@@ -27,9 +29,9 @@ class UserFactory extends Factory
             'username' => $username,
             'firstname' => $firstname,
             'lastname' => $lastname,
-            'password' => bcrypt(str_random(10)),
+            'password' => Hash::make(Str::random(10)),
             'member_since' => date('Y-m-d H:i:s'),
-            'card_number' => str_random(20),
+            'card_number' => Str::random(20),
         ];
     }
 }

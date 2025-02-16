@@ -115,7 +115,7 @@ function formatObjectsToComponent($component, $params)
 
 function formatPriceToComponent($component, $params)
 {
-    if (isset($params['currency']) == false) {
+    if (isset($params['currency']) === false) {
         $currency = defaultCurrency()->symbol;
     }
     else {
@@ -278,7 +278,7 @@ function formatMainFormButtons($component, $params)
 function formatTabLabel($component, $params)
 {
     if (isset($params['attributes']['icon'])) {
-        if (strstr($params['attributes']['icon'], 'i class') == false) {
+        if (strstr($params['attributes']['icon'], 'i class') === false) {
             $params['label'] = sprintf('<span class="d-none d-md-inline-block">%s</span><i class="%s d-block d-md-none"></i>', $params['label'], $params['attributes']['icon']);
         }
         else {

@@ -24,7 +24,7 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        if ($user->can('supplier.book', null) == false) {
+        if ($user->can('supplier.book', null) === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
@@ -63,7 +63,7 @@ class BookingController extends Controller
         $user = $request->user();
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) == false) {
+        if ($user->id != $user_id && $user->can('supplier.shippings', $aggregate) === false) {
             abort(503);
         }
 

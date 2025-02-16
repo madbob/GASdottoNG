@@ -50,7 +50,7 @@ class Product extends Formatter
 
     protected static function children($obj)
     {
-        if ($obj->variant_combos->isEmpty() == false) {
+        if ($obj->variant_combos->isEmpty() === false) {
             return (object) [
                 'formatter' => VariantCombo::class,
                 'children' => $obj->variant_combos,

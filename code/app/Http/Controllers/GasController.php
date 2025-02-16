@@ -31,9 +31,7 @@ class GasController extends Controller
 
     public function show()
     {
-        $user = Auth::user();
-
-        return redirect()->route('gas.edit', $user->gas->id);
+        return $this->index();
     }
 
     public function getLogo($id)
@@ -47,7 +45,7 @@ class GasController extends Controller
     {
         $user = Auth::user();
         $gas = Gas::findOrFail($id);
-        if ($user->can('gas.config', $gas) == false) {
+        if ($user->can('gas.config', $gas) === false) {
             abort(503);
         }
 
@@ -80,6 +78,7 @@ class GasController extends Controller
             'annual_fee_amount',
             'deposit_amount',
             'auto_fee',
+            'credit_home',
             'rid',
             'satispay',
             'integralces',
@@ -153,7 +152,7 @@ class GasController extends Controller
         $user = Auth::user();
         $gas = Gas::findOrFail($id);
 
-        if ($user->can('gas.config', $gas) == false) {
+        if ($user->can('gas.config', $gas) === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
@@ -172,7 +171,7 @@ class GasController extends Controller
     public function databaseDump(Request $request)
     {
         $user = $request->user();
-        if ($user->can('gas.config', $user->gas) == false) {
+        if ($user->can('gas.config', $user->gas) === false) {
             abort(503);
         }
 

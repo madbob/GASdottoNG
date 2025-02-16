@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\Mailer\Bridge\Sendinblue\Transport\SendinblueTransportFactory;
 use Symfony\Component\Mailer\Bridge\Scaleway\Transport\ScalewayTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
 
@@ -20,12 +19,6 @@ class AppServiceProvider extends ServiceProvider
     */
     private function initMailing()
     {
-        Mail::extend('sendinblue', function () {
-            return (new SendinblueTransportFactory())->create(
-                new Dsn('sendinblue+api', 'default', config('services.sendinblue.key'))
-            );
-        });
-
         Mail::extend('scaleway', function () {
             return (new ScalewayTransportFactory())->create(
                 new Dsn('scaleway+api', 'default', config('mail.mailers.scaleway.username'), config('mail.mailers.scaleway.password'))
@@ -112,6 +105,4 @@ class AppServiceProvider extends ServiceProvider
         $this->initMailing();
         $this->initCollectionMacros();
     }
-
-    public function register() {}
 }

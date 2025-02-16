@@ -147,13 +147,14 @@ class Date extends Model implements Datable
                     ];
 
                     break;
+
+                default:
+                    throw new \UnexpectedValueException('Tipo di azione non valido per ordine ricorrente');
             }
 
-            if ($node) {
-                $node->target = $this->target;
-                $node->comment = $this->comment;
-                $ret[] = $node;
-            }
+            $node->target = $this->target;
+            $node->comment = $this->comment;
+            $ret[] = $node;
         }
 
         return $ret;

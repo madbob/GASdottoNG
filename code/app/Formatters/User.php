@@ -64,7 +64,7 @@ class User extends Formatter
             dell'istanza (cfr. middleware ActIntoGas), permetto di filtrare gli
             utenti anche in base del GAS di appartenenza
         */
-        if (App::make('GlobalScopeHub')->enabled() == false) {
+        if (App::make('GlobalScopeHub')->enabled() === false) {
             $ret['gas'] = (object) [
                 'name' => _i('GAS'),
                 'format' => function ($obj, $context) {

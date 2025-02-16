@@ -26,10 +26,11 @@ class Aggregate extends Printer
         $fields = splitFields($required_fields);
         $status = $request['status'] ?? 'pending';
         $circles = new CirclesFilter($obj, $request);
+        $isolate_friends = $request['isolate_friends'] ?? 0;
 
         $temp_data = [];
         foreach ($obj->orders as $order) {
-            $temp_data[] = $this->formatShipping($order, $fields, $status, false, $circles, true);
+            $temp_data[] = $this->formatShipping($order, $fields, $status, $isolate_friends, $circles, true);
         }
 
         if (empty($temp_data)) {

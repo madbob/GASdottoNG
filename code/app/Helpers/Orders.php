@@ -23,15 +23,15 @@ function easyFilterOrders($supplier, $startdate, $enddate, $statuses = null)
     */
 
     $orders = App\Aggregate::with('orders')->whereHas('orders', function ($query) use ($supplier_id, $startdate, $enddate, $statuses) {
-        if (empty($supplier_id) == false) {
+        if (empty($supplier_id) === false) {
             $query->whereIn('supplier_id', Arr::wrap($supplier_id));
         }
 
-        if (empty($startdate) == false) {
+        if (empty($startdate) === false) {
             $query->where('start', '>=', $startdate);
         }
 
-        if (empty($enddate) == false) {
+        if (empty($enddate) === false) {
             $query->where('end', '<=', $enddate);
         }
 

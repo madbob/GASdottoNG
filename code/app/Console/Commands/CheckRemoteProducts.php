@@ -57,7 +57,7 @@ class CheckRemoteProducts extends Command
     {
         $suppliers = Supplier::whereNotNull('remote_lastimport')->get();
 
-        if ($suppliers->isEmpty() == false) {
+        if ($suppliers->isEmpty() === false) {
             $entries = App::make('RemoteRepository')->getList();
 
             foreach ($suppliers as $supplier) {

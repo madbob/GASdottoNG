@@ -65,7 +65,7 @@ function env_file()
 
 function fixUrl($url)
 {
-    if (Illuminate\Support\Str::startsWith($url, 'http') == false) {
+    if (str_starts_with($url, 'http') === false) {
         $url = 'http://' . $url;
     }
 

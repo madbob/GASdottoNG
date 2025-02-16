@@ -53,41 +53,9 @@ class MailController extends Controller
         }
     }
 
-    public function postStatusSendinblue(Request $request)
-    {
-        if (env('MAIL_MAILER') == 'sendinblue') {
-            /*
-                Nota bene: qui arrivano tutte le segnalazioni webhook generate
-                da SendInBlue, incluse quelle non generate da GASdotto.
-                Il tag "gasdotto" viene aggiunto dal listener CustomMailTag
-            */
-            $tags = $request->input('tags');
-            if (is_null($tags) || empty($tags)) {
-                return;
-            }
-
-            if (in_array('gasdotto', $tags)) {
-                $event = $request->input('event', '');
-
-                if (in_array($event, ['hard_bounce', 'soft_bounce', 'complaint', 'blocked', 'error'])) {
-                    try {
-                        $email = $request->input('email');
-                        $message = $request->input('reason', '???');
-                        $this->registerBounce($event, $email, $message);
-                    }
-                    catch (\Exception $e) {
-                        Log::error('Notifica SendInBlue illeggibile: ' . $e->getMessage() . ' - ' . print_r($request->all(), true));
-                    }
-                }
-            }
-        }
-    }
-
     public function postStatusScaleway(Request $request)
     {
         if (env('MAIL_MAILER') == 'scaleway') {
-            $api_endpoint = 'https://api.scaleway.com/transactional-email/v1alpha1/regions/fr-par/webhooks';
-
             $message = Message::fromRawPostData();
             $validator = new MessageValidator();
 

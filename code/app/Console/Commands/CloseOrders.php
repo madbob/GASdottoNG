@@ -26,7 +26,7 @@ class CloseOrders extends Command
                 $order->save();
 
                 foreach ($order->aggregate->gas as $gas) {
-                    if (isset($notifications[$gas->id]) == false) {
+                    if (isset($notifications[$gas->id]) === false) {
                         $notifications[$gas->id] = [];
                     }
 
