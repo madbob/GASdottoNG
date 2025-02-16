@@ -320,14 +320,21 @@ class UsersController extends BackedController
         return view('user.change_password');
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
-        $user = User::findOrFail($id);
+        return $this->easyExecute(function () use ($id) {
+            $myself = false;
+            if (request()->user()->id == $id) {
+                $myself = true;
+            }
 
-        $user->anonymizeUserData();
+            $subject = $this->service->destroy($id);
 
-        $user->delete();
+            if ($myself) {
+                return redirect()->route('dashboard');
+            }
 
-        return redirect('/');
+            return $this->commonSuccessResponse($subject);
+        });
     }
 }

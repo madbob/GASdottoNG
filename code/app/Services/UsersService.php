@@ -368,6 +368,7 @@ class UsersService extends BaseService
             $user->forceDelete();
         }
         else {
+            $user->anonymizeUserData();
             $user->delete();
         }
 

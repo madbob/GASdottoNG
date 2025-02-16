@@ -124,6 +124,10 @@ class User extends Authenticatable
 
     public function printableName()
     {
+        if ($this->plainStatus() == 'removed') {
+            return _i('Utente Rimosso');
+        }
+
         $ret = $this->lastname . ' ' . $this->firstname;
 
         if (empty(trim($ret))) {
@@ -247,6 +251,12 @@ class User extends Authenticatable
 
     public function anonymizeUserData()
     {
+        /*
+            Deliberatamente non vengono rimosse informazioni sul credito, in
+            quanto ci si aspetta un esplicito movimento contabile di
+            restituzione del credito rimanente all'utente
+        */
+
         $this->contacts()->each(fn($contact) => $contact->delete());
 
         if ($this->picture) {
@@ -255,13 +265,14 @@ class User extends Authenticatable
         }
 
         $this->forceFill([
-            'firstname' => 'Utente',
-            'lastname' => 'Rimosso',
+            'firstname' => _i('Utente'),
+            'lastname' => _i('Rimosso'),
             'suspended_at' => now(),
             'birthday' => '1900-01-01',
             'birthplace' => '',
             'picture' => '',
             'card_number' => '',
+            'username' => Str::random(20),
         ])->save();
     }
 

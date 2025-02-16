@@ -52,13 +52,6 @@ if ($user->isFriend() && $admin_editable) {
             @endif
         @endif
 
-        @if( !$user->roles->contains('identifier', 'admin') &&
-                (auth()->user()->id === $user->id || auth()->user()->can('users.admin')))
-            <x-larastrap::iform classes="mb-2" method="POST" :action="route('user.delete', ['id' => $user->id])" id="user-destroy-modal" :buttons="[['type' => 'submit', 'color' => 'danger', 'label' => _i('Elimina profilo')]]">
-                <input type="hidden" name="pre-saved-function" value="passwordProtected">
-            </x-larastrap::iform>
-        @endif
-
         <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :classes="$display_page ? 'inner-form' : ''" :nodelete="$display_page || $user->isFriend() == false" :nosave="$readonly" :other_buttons="$friend_admin_buttons">
             <div class="row">
                 <div class="col-12 col-md-6">
@@ -159,6 +152,29 @@ if ($user->isFriend() && $admin_editable) {
 
             <hr/>
         </x-larastrap::mform>
+
+        @if($user->isFriend() == false && $currentuser->id === $user->id && $currentuser->can('users.selfdestroy'))
+            @php
+            $removeModalId = sprintf('remove-account-%s', sanitizeId($user->id));
+            @endphp
+
+            <x-larastrap::link color="danger" classes="float-end mt-2" :triggers_modal="$removeModalId" :label="_i('Elimina profilo')" />
+
+            <x-larastrap::modal :id="$removeModalId">
+                <x-larastrap::iform method="DELETE" :action="route('users.destroy', $user->id)" id="user-destroy-modal" :buttons="[['type' => 'submit', 'color' => 'danger', 'label' => _i('Elimina profilo')]]">
+                    <p>
+                        {{ _i('Vuoi davvero eliminare questo account? Tutti i dati personali saranno anonimizzati, benché sarà preservato lo storico delle prenotazioni.') }}
+                    </p>
+
+                    @if($user->currentBalanceAmount() != 0)
+                        <p>
+                            {{ _i("Prima di procedere, è consigliato contattare i referenti del GAS per regolare i conti sul credito.") }}
+                        </p>
+                    @endif
+                    <input type="hidden" name="pre-saved-function" value="passwordProtected">
+                </x-larastrap::iform>
+            </x-larastrap::modal>
+        @endif
 
         @if($user->isFriend() && $admin_editable)
             @push('postponed')
