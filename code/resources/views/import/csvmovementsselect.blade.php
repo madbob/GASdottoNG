@@ -45,20 +45,20 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
             <table class="table">
                 <thead>
                     <tr>
-                        <th>{{ _i('Importa') }}</th>
-                        <th>{{ _i('Data') }}</th>
-                        <th>{{ _i('Utente') }}</th>
-                        <th>{{ _i('Fornitore') }}</th>
-						<th>{{ _i('Identificativo') }}</th>
-                        <th>{{ _i('Note') }}</th>
-                        <th>
+                        <th scope="col">{{ _i('Importa') }}</th>
+                        <th scope="col">{{ _i('Data') }}</th>
+                        <th scope="col">{{ _i('Utente') }}</th>
+                        <th scope="col">{{ _i('Fornitore') }}</th>
+                        <th scope="col">{{ _i('Identificativo') }}</th>
+                        <th scope="col">{{ _i('Note') }}</th>
+                        <th scope="col">
                             <x-larastrap::select name="type" nprefix="skip" squeeze :options="$types" classes="triggers-all-selects csv_movement_type_select" data-target-class="csv_movement_type_select" />
                         </th>
-                        <th>
+                        <th scope="col">
                             <x-larastrap::select name="method" nprefix="skip" squeeze :options="$payments" classes="triggers-all-selects csv_movement_method_select" data-target-class="csv_movement_method_select" value="bank" />
                         </th>
-                        <th>{{ _i('Valore') }}</th>
-                        <th>
+                        <th scope="col">{{ _i('Valore') }}</th>
+                        <th scope="col">
                             <x-larastrap::selectobj name="currency_id" nprefix="skip" squeeze :options="$currencies" classes="triggers-all-selects csv_movement_currency_select" data-target-class="csv_movement_currency_select" :value="defaultCurrency()->id" />
                         </th>
                     </tr>

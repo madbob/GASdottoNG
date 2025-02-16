@@ -102,10 +102,10 @@
         </tbody>
         <tfoot>
             <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th scope="row" class="text-end">{{ _i('Totale') }}:<br><span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ defaultCurrency()->symbol }}</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-end fw-bold">{{ _i('Totale') }}:<br><span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ defaultCurrency()->symbol }}</td>
             </tr>
         </tfoot>
     </table>

@@ -42,11 +42,11 @@ $grand_total = 0;
         <table class="table">
             <tfoot>
                 <tr>
-                    <th>
+                    <td>
                         <div class="float-end">
                             <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}</strong>
                         </div>
-                    </th>
+                    </td>
                 </tr>
             </tfoot>
         </table>

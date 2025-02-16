@@ -9,21 +9,21 @@
     </head>
 
     <body>
-        <h3>Esportazione Movimenti del GAS ad {{ date('d/m/Y') }}</h3>
+        <h3>{{ _i('Esportazione Movimenti del GAS al %s', [date('d/m/Y')]) }}</h3>
 
         <hr/>
 
         <table border="1" style="width: 100%" cellpadding="5">
             <thead>
                 <tr>
-                    <th>Data Registrazione</th>
-                    <th>Data Movimento</th>
-                    <th>Tipo</th>
-                    <th>Pagamento</th>
-                    <th>Pagante</th>
-                    <th>Pagato</th>
-                    <th>Valore</th>
-                    <th>Note</th>
+                    <th scope="col">{{ _i('Data Registrazione') }}</th>
+                    <th scope="col">{{ _i('Data Movimento') }}</th>
+                    <th scope="col">{{ _i('Tipo') }}</th>
+                    <th scope="col">{{ _i('Pagamento') }}</th>
+                    <th scope="col">{{ _i('Pagante') }}</th>
+                    <th scope="col">{{ _i('Pagato') }}</th>
+                    <th scope="col">{{ _i('Valore') }}</th>
+                    <th scope="col">{{ _i('Note') }}</th>
                 </tr>
             </thead>
             <tbody>

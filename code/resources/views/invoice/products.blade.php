@@ -29,12 +29,12 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
-                            <th>{{ printablePriceCurrency($summaries[$order->id]->total_taxable) }}</th>
-                            <th>{{ printablePriceCurrency($summaries[$order->id]->total_tax) }}</th>
-                            <th>{{ printablePriceCurrency($summaries[$order->id]->total) }}</th>
+                            <th scope="col">&nbsp;</th>
+                            <th scope="col">&nbsp;</th>
+                            <th scope="col">&nbsp;</th>
+                            <th scope="col">{{ printablePriceCurrency($summaries[$order->id]->total_taxable) }}</th>
+                            <th scope="col">{{ printablePriceCurrency($summaries[$order->id]->total_tax) }}</th>
+                            <th scope="col">{{ printablePriceCurrency($summaries[$order->id]->total) }}</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -70,12 +70,12 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
-                            <th>{{ printablePriceCurrency($global_summary->total_taxable) }}</th>
-                            <th>{{ printablePriceCurrency($global_summary->total_tax) }}</th>
-                            <th>{{ printablePriceCurrency($global_summary->total) }}</th>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td class="fw-bold">{{ printablePriceCurrency($global_summary->total_taxable) }}</td>
+                            <td class="fw-bold">{{ printablePriceCurrency($global_summary->total_tax) }}</td>
+                            <td class="fw-bold">{{ printablePriceCurrency($global_summary->total) }}</td>
                         </tr>
                     </tfoot>
                 </table>

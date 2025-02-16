@@ -49,12 +49,10 @@
                 <table class="table multigas-editor">
                     <thead>
                         <tr>
-                            <th></th>
+                            <th scope="col"></th>
 
                             @foreach($groups as $gas)
-                                <th>
-                                    {{ $gas->name }}
-                                </th>
+                                <th scope="col">{{ $gas->name }}</th>
                             @endforeach
                         </tr>
                     </thead>
@@ -82,12 +80,10 @@
                 <table class="table multigas-editor">
                     <thead>
                         <tr>
-                            <th></th>
+                            <th scope="col"></th>
 
                             @foreach($groups as $gas)
-                                <th>
-                                    {{ $gas->name }}
-                                </th>
+                                <th scope="col">{{ $gas->name }}</th>
                             @endforeach
                         </tr>
                     </thead>

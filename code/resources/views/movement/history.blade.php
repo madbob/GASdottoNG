@@ -4,13 +4,13 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Data</th>
+                <th scope="col">Data</th>
                 @foreach($obj->balanceFields() as $identifier => $name)
-                    <th>{{ $name }}</th>
+                    <th scope="col">{{ $name }}</th>
                 @endforeach
 
                 @if($can_edit)
-                    <th></th>
+                    <th scope="col"></th>
                 @endif
             </tr>
         </thead>

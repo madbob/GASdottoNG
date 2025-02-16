@@ -283,11 +283,11 @@ $form_buttons = [
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th scope="row" class="text-end">Totale:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-end fw-bold">{{ _i('Totale') }}:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -307,11 +307,11 @@ $form_buttons = [
                 <table class="table">
                     <tfoot>
                         <tr>
-                            <th>
+                            <td>
                                 <div class="float-end text-end">
-                                    <strong>Totale Complessivo:<br><span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}</strong>
+                                    <strong>{{ _i('Totale Complessivo') }}:<br><span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}</strong>
                                 </div>
-                            </th>
+                            </td>
                         </tr>
                     </tfoot>
                 </table>

@@ -6,13 +6,13 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th>{{ _i('Tipo Movimento Contabile') }}</th>
-				<th>{{ _i('Metodo') }}</th>
-				<th>{{ _i('Data') }}</th>
-				<th>{{ _i('Valore') }}</th>
-				<th>{{ _i('Pagante') }}</th>
-				<th>{{ _i('Pagato') }}</th>
-                <th>{{ _i('Identificativo') }}</th>
+				<th scope="col">{{ _i('Tipo Movimento Contabile') }}</th>
+				<th scope="col">{{ _i('Metodo') }}</th>
+				<th scope="col">{{ _i('Data') }}</th>
+				<th scope="col">{{ _i('Valore') }}</th>
+				<th scope="col">{{ _i('Pagante') }}</th>
+				<th scope="col">{{ _i('Pagato') }}</th>
+                <th scope="col">{{ _i('Identificativo') }}</th>
 			</tr>
 		</thead>
 		<tbody>

@@ -16,10 +16,10 @@ $total = 0;
 <table class="table">
     <thead>
         <tr>
-            <th>Fornitore</th>
-            <th>Utente</th>
-            <th>Data</th>
-            <th>Valore</th>
+            <th scope="col">{{ _i('Fornitore') }}</th>
+            <th scope="col">{{ _i('Utente') }}</th>
+            <th scope="col">{{ _i('Data') }}</th>
+            <th scope="col">{{ _i('Valore') }}</th>
         </tr>
     </thead>
 
@@ -43,10 +43,10 @@ $total = 0;
         </tbody>
         <thead>
             <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>{{ printablePriceCurrency($total) }}</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="fw-bold">{{ printablePriceCurrency($total) }}</td>
             </tr>
         </thead>
     @else
