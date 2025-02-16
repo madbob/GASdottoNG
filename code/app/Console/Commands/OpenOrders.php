@@ -19,7 +19,7 @@ class OpenOrders extends Command
     private function getDates()
     {
         $dates = Date::where('type', 'order')->get();
-        $today = date('Y-m-d');
+        $today = Carbon::today()->format('Y-m-d');
         $aggregable = [];
 
         foreach ($dates as $date) {
@@ -27,11 +27,7 @@ class OpenOrders extends Command
                 $all_previous = true;
 
                 foreach ($date->order_dates as $d) {
-                    if ($d->start < $today) {
-                        // @phpstan-ignore-next-line
-                        $all_previous = $all_previous && true;
-                    }
-                    elseif ($d->start > $today) {
+                    if ($d->start > $today) {
                         $all_previous = false;
                     }
                     elseif ($d->start == $today) {
@@ -81,6 +77,14 @@ class OpenOrders extends Command
     private function openByDates($aggregable)
     {
         foreach ($aggregable as $aggr) {
+            /*
+                Reminder: qui l'Aggregate viene creato ma non viene associato a
+                nessun GAS. Se il comando viene eseguito nel contesto di una
+                sessione utente, in AttachToGas prendo il GAS dell'utente
+                corrente; altrimenti questo viene determinato a posteriori, in
+                fase di creazione di un ordine associato all'aggregato (cfr.
+                OrderObserver::checkGas())
+            */
             $aggregate = new Aggregate();
             $aggregate->save();
 
