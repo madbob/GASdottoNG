@@ -319,4 +319,15 @@ class UsersController extends BackedController
 
         return view('user.change_password');
     }
+
+    public function delete($id)
+    {
+        $user = User::findOrFail($id);
+
+        $user->anonymizeUserData();
+
+        $user->delete();
+
+        return redirect('/');
+    }
 }

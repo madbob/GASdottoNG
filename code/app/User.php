@@ -85,7 +85,7 @@ class User extends Authenticatable
     {
         $user = Auth::user();
         if ($user->can('users.admin', $user->gas)) {
-            return $query->withTrashed();
+            return $query->withTrashed()->whereNull('deleted_at')->orWhereNull('suspended_at');
         }
         else {
             return $query;
@@ -243,6 +243,26 @@ class User extends Authenticatable
         }
 
         return null;
+    }
+
+    public function anonymizeUserData()
+    {
+        $this->contacts()->each(fn($contact) => $contact->delete());
+
+        if ($this->picture) {
+            $picture = gas_storage_path($this->picture);
+            \File::exists($picture) ?? \File::delete($picture);
+        }
+
+        $this->forceFill([
+            'firstname' => 'Utente',
+            'lastname' => 'Rimosso',
+            'suspended_at' => now(),
+            'birthday' => '1900-01-01',
+            'birthplace' => '',
+            'picture' => '',
+            'card_number' => '',
+        ])->save();
     }
 
     /************************************************************ SluggableID */
