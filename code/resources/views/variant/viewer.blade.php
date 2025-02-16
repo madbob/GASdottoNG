@@ -9,13 +9,13 @@
                 <thead>
                     <tr>
                         @foreach($combos->first()->values as $value)
-                            <th>{{ $value->variant->name }}</th>
+                            <th scope="col">{{ $value->variant->name }}</th>
                         @endforeach
 
-                        <th width="25%">Differenza Prezzo</th>
+                        <th scope="col" width="25%">Differenza Prezzo</th>
 
                         @if ($product->measure->discrete)
-                            <th width="25%">Differenza Peso</th>
+                            <th scope="col" width="25%">Differenza Peso</th>
                         @endif
                     </tr>
                 </thead>

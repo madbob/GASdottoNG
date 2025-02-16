@@ -55,9 +55,9 @@ foreach($invoice->orders as $o) {
     <table class="table table-borderless">
         <thead>
             <tr>
-                <th width="30%"></th>
-                <th width="35%">{{ _i('Fattura') }}</th>
-                <th width="35%">{{ _i('Ordini Coinvolti') }}</th>
+                <th scope="col" width="30%"></th>
+                <th scope="col" width="35%">{{ _i('Fattura') }}</th>
+                <th scope="col" width="35%">{{ _i('Ordini Coinvolti') }}</th>
             </tr>
         </thead>
         <tbody>

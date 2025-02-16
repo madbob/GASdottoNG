@@ -12,10 +12,10 @@
                     <table class="table inline-cells">
                         <thead>
                             <tr>
-                                <th width="20%">&nbsp;</th>
-                                <th width="20%">{{ _i('Aperto') }}</th>
-                                <th width="40%">{{ _i('In Chiusura') }}</th>
-                                <th width="20%">{{ _i('Chiuso') }}</th>
+                                <th scope="col" width="20%">&nbsp;</th>
+                                <th scope="col" width="20%">{{ _i('Aperto') }}</th>
+                                <th scope="col" width="40%">{{ _i('In Chiusura') }}</th>
+                                <th scope="col" width="20%">{{ _i('Chiuso') }}</th>
                             </tr>
                         </thead>
                         <tbody>

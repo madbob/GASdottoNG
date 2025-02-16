@@ -10,8 +10,8 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th width="20%">Utente</th>
-                        <th width="80%">Note</th>
+                        <th scope="col" width="20%">Utente</th>
+                        <th scope="col" width="80%">Note</th>
                     </tr>
                 </thead>
                 <tbody>

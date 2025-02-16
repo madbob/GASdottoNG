@@ -19,15 +19,15 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th width="5%">
+                                <th scope="col" width="5%">
                                     <x-larastrap::check classes="triggers-all-checkbox skip-on-submit" data-target-class="booking-select" squeeze switch="false" checked="true" />
                                 </th>
-                                <th width="35%"></th>
-                                <th width="20%"></th>
-                                <th width="20%">
+                                <th scope="col" width="35%"></th>
+                                <th scope="col" width="20%"></th>
+                                <th scope="col" width="20%">
                                     <x-larastrap::datepicker :value="date('Y-m-d')" squeeze classes="toggleall" />
                                 </th>
-                                <th width="20%">
+                                <th scope="col" width="20%">
                                     <div class="btn-group float-end" data-toggle="buttons">
                                         @foreach($payments as $method_id => $name)
                                             <label class="btn btn-light">

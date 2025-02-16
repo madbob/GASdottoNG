@@ -287,7 +287,7 @@ $form_buttons = [
                                     <th></th>
                                     <th></th>
                                     <th></th>
-                                    <th class="text-end">Totale:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</th>
+                                    <th scope="row" class="text-end">Totale:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</th>
                                 </tr>
                             </tfoot>
                         </table>

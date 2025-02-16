@@ -5,12 +5,12 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th width="20%">{{ _i('Prodotto') }}</th>
-                            <th width="15%">{{ _i('Aliquota IVA') }}</th>
-                            <th width="15%">{{ _i('Quantità Consegnata') }}</th>
-                            <th width="15%">{{ _i('Totale Imponibile') }}</th>
-                            <th width="15%">{{ _i('Totale IVA') }}</th>
-                            <th width="20%">{{ _i('Totale') }}</th>
+                            <th scope="col" width="20%">{{ _i('Prodotto') }}</th>
+                            <th scope="col" width="15%">{{ _i('Aliquota IVA') }}</th>
+                            <th scope="col" width="15%">{{ _i('Quantità Consegnata') }}</th>
+                            <th scope="col" width="15%">{{ _i('Totale Imponibile') }}</th>
+                            <th scope="col" width="15%">{{ _i('Totale IVA') }}</th>
+                            <th scope="col" width="20%">{{ _i('Totale') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,12 +46,12 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th width="20%">{{ _i('Prodotto') }}</th>
-                            <th width="15%">{{ _i('Aliquota IVA') }}</th>
-                            <th width="15%">{{ _i('Quantità Consegnata') }}</th>
-                            <th width="15%">{{ _i('Totale Imponibile') }}</th>
-                            <th width="15%">{{ _i('Totale IVA') }}</th>
-                            <th width="20%">{{ _i('Totale') }}</th>
+                            <th scope="col" width="20%">{{ _i('Prodotto') }}</th>
+                            <th scope="col" width="15%">{{ _i('Aliquota IVA') }}</th>
+                            <th scope="col" width="15%">{{ _i('Quantità Consegnata') }}</th>
+                            <th scope="col" width="15%">{{ _i('Totale Imponibile') }}</th>
+                            <th scope="col" width="15%">{{ _i('Totale IVA') }}</th>
+                            <th scope="col" width="20%">{{ _i('Totale') }}</th>
                         </tr>
                     </thead>
                     <tbody>

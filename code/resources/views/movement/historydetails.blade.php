@@ -15,9 +15,9 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th width="70%">{{ _i('Nome') }}</th>
+							<th scope="col" width="70%">{{ _i('Nome') }}</th>
 							@foreach($currencies as $curr)
-								<th width="{{ round(30 / $currencies->count(), 2) }}%">{{ _i('Credito') }}</th>
+								<th scope="col" width="{{ round(30 / $currencies->count(), 2) }}%">{{ _i('Credito') }}</th>
 							@endforeach
 						</tr>
 					</thead>
@@ -53,10 +53,10 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th width="70%">{{ _i('Nome') }}</th>
+							<th scope="col" width="70%">{{ _i('Nome') }}</th>
 
 							@foreach($currencies as $curr)
-								<th width="{{ round(30 / $currencies->count(), 2) }}%">{{ _i('Saldo') }}</th>
+								<th scope="col" width="{{ round(30 / $currencies->count(), 2) }}%">{{ _i('Saldo') }}</th>
 							@endforeach
 						</tr>
 					</thead>

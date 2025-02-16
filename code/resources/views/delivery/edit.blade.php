@@ -131,11 +131,11 @@ app()->make('AggregationSwitch')->setEnforced(true);
 
                             <thead>
                                 <tr>
-                                    <th width="30%"></th>
-                                    <th width="10%"></th>
-                                    <th width="20%"></th>
-                                    <th width="25%"></th>
-                                    <th width="15%"></th>
+                                    <th scope="col" width="30%"></th>
+                                    <th scope="col" width="10%"></th>
+                                    <th scope="col" width="20%"></th>
+                                    <th scope="col" width="25%"></th>
+                                    <th scope="col" width="15%"></th>
                                 </tr>
                             </thead>
 
@@ -281,9 +281,9 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                     <th></th>
 
                                     @if($currentgas->unmanaged_shipping == '1' && $order->supplier->unmanaged_shipping_enabled)
-                                        <th class="text-end"><x-larastrap::price :label="_i('Totale Manuale')" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" data-manual-change="0" /></th>
+                                        <th scope="row" class="text-end"><x-larastrap::price :label="_i('Totale Manuale')" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" data-manual-change="0" /></th>
                                     @else
-                                        <th class="text-end">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</th>
+                                        <th scope="row" class="text-end">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</th>
                                     @endif
                                 </tr>
                             </tfoot>

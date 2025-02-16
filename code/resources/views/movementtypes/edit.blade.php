@@ -97,10 +97,10 @@ foreach($classes as $class => $name) {
             <table class="table">
                 <thead>
                     <tr>
-                        <th width="{{ $width }}%">Saldo</th>
+                        <th scope="col" width="{{ $width }}%">Saldo</th>
 
                         @foreach(paymentTypes() as $pay_id => $pay)
-                            <th width="{{ $width }}%">
+                            <th scope="col" width="{{ $width }}%">
                                 {{ $pay->name }}
                                 <div class="form-check form-switch">
                                     <input type="checkbox" name="{{ $pay_id }}" class="form-check-input" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}>

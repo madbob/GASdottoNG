@@ -62,9 +62,9 @@
                 <table class="table table-striped fixes-table">
                     <thead>
                         <tr>
-                            <th width="35%">{{ _i('Utente') }}</th>
-                            <th width="35%">{{ _i('Data Prenotazione') }}</th>
-                            <th width="30%">{{ _i('Quantità Prenotata') }}</th>
+                            <th scope="col" width="35%">{{ _i('Utente') }}</th>
+                            <th scope="col" width="35%">{{ _i('Data Prenotazione') }}</th>
+                            <th scope="col" width="30%">{{ _i('Quantità Prenotata') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -114,9 +114,9 @@
                             <table class="table table-striped fixes-table">
                                 <thead>
                                     <tr>
-                                        <th width="35%">{{ _i('Utente') }}</th>
-                                        <th width="35%">{{ _i('Data Prenotazione') }}</th>
-                                        <th width="30%">{{ _i('Quantità Prenotata') }}</th>
+                                        <th scope="col" width="35%">{{ _i('Utente') }}</th>
+                                        <th scope="col" width="35%">{{ _i('Data Prenotazione') }}</th>
+                                        <th scope="col" width="30%">{{ _i('Quantità Prenotata') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
