@@ -1,28 +1,31 @@
 <?php
 
+use Carbon\Carbon;
+
 function printableDate($value, $short = false)
 {
     if (is_null($value) || empty($value)) {
-        return _i('Mai');
+        $ret = _i('Mai');
     }
     else {
         if (is_numeric($value)) {
-            $t = $value;
+            $date = Carbon::createFromTimestamp($value);
         }
         else {
-            $t = strtotime($value);
-            if (empty($t)) {
-                $t = $value;
-            }
+            $date = Carbon::parse($value);
         }
 
+        $date->startOfDay();
+
         if ($short) {
-            return ucwords(\Carbon\Carbon::createFromTimestamp($t)->isoFormat('DD/MM/YYYY'));
+            $ret = ucwords($date->isoFormat('DD/MM/YYYY'));
         }
         else {
-            return ucwords(\Carbon\Carbon::createFromTimestamp($t)->isoFormat('dddd D MMMM YYYY'));
+            $ret = ucwords($date->isoFormat('dddd D MMMM YYYY'));
         }
     }
+
+    return $ret;
 }
 
 function readDate($date)

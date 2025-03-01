@@ -193,6 +193,13 @@ class AggregateBooking extends Model
         return $this->user->printableName() . $this->headerIcons();
     }
 
+    /*************************************************************** GASModel */
+
+    public function printableName()
+    {
+        return $this->aggregate->printableName();
+    }
+
     /********************************************************** TracksUpdater */
 
     public function getPrintableUpdaterAttribute()

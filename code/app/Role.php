@@ -168,7 +168,7 @@ class Role extends Model
             $applies_cache = [];
             $applies_only_cache = [];
 
-            $rules = DB::table('attached_role_user')->where('role_user_id', $this->pivot->id)->get();
+            $rules = DB::table('attached_role_user')->where('role_user_id', $this->getRelationValue('pivot')->id)->get();
             foreach ($rules as $r) {
                 $class = $r->target_type;
                 if (isset($applies_cache[$class]) == false) {
@@ -263,7 +263,7 @@ class Role extends Model
         }
         else {
             return DB::table('attached_role_user')
-                ->where('role_user_id', $this->pivot->id)
+                ->where('role_user_id', $this->getRelationValue('pivot')->id)
                 ->where('target_type', $class)
                 ->where('target_id', '*')
                 ->count();
@@ -338,7 +338,7 @@ class Role extends Model
         }
 
         DB::table('attached_role_user')->insert([
-            'role_user_id' => $this->pivot->id,
+            'role_user_id' => $this->getRelationValue('pivot')->id,
             'target_id' => $obj_id,
             'target_type' => $obj_class,
             'created_at' => $now,
@@ -362,7 +362,7 @@ class Role extends Model
     {
         if (is_string($obj)) {
             DB::table('attached_role_user')
-                ->where('role_user_id', $this->pivot->id)
+                ->where('role_user_id', $this->getRelationValue('pivot')->id)
                 ->where('target_id', '*')
                 ->where('target_type', $obj)
                 ->delete();
@@ -373,7 +373,7 @@ class Role extends Model
             }
 
             DB::table('attached_role_user')
-                ->where('role_user_id', $this->pivot->id)
+                ->where('role_user_id', $this->getRelationValue('pivot')->id)
                 ->where('target_id', $obj->id)
                 ->where('target_type', get_class($obj))
                 ->delete();

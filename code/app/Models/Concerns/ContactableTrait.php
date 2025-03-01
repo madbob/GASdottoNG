@@ -124,7 +124,6 @@ trait ContactableTrait
             return ['', '', ''];
         }
 
-        // @phpstan-ignore-next-line
         return $address->asAddress();
     }
 

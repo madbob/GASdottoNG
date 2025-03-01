@@ -49,7 +49,6 @@ class Aggregate extends Printer
                 foreach ($td_row->contents as $td) {
                     $found = false;
 
-                    // @phpstan-ignore-next-line
                     foreach ($data->contents as $d) {
                         if ($d->user_id == $td->user_id) {
                             $d->products = array_merge($d->products, $td->products);
@@ -68,7 +67,6 @@ class Aggregate extends Printer
                         }
                     }
 
-                    // @phpstan-ignore-next-line
                     if ($found == false) {
                         $data->contents[] = $td;
                     }
@@ -108,7 +106,6 @@ class Aggregate extends Printer
         elseif ($subtype == 'csv') {
             $flat_contents = [];
 
-            // @phpstan-ignore-next-line
             foreach ($data->contents as $c) {
                 foreach ($c->products as $p) {
                     $flat_contents[] = array_merge($c->user, $p);

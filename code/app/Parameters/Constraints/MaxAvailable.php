@@ -43,7 +43,6 @@ class MaxAvailable extends Constraint
             // L'attributo is_pending_package non fa parte del model Product,
             // viene valorizzato staticamente da Order::pendingPackages() ai
             // prodotti per i quali si devono completare le confezioni
-            // @phpstan-ignore-next-line
             if ($product->is_pending_package ?? false) {
                 return _i('%s Disponibile: %.02f', [
                     sprintf('<span class="badge rounded-pill bg-primary" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="%s" data-bs-original-title="" title="">?</span>', _i('Mancano %s %s per completare la confezione per questo ordine', [$still_available, $product->printableMeasure(true)])),

@@ -44,9 +44,6 @@ class SupplierOrderShipping extends ManyMailNotification
         foreach ($users as $referent) {
             if (! empty($referent->email)) {
                 $message = $message->cc($referent->email);
-                // Segnalazione PHPStan invalida: $referent è sempre uno User,
-                // che usa ContactableTrait
-                // @phpstan-ignore-next-line
                 $referent->messageAll($message);
             }
         }

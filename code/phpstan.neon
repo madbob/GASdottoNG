@@ -6,18 +6,7 @@ parameters:
     paths:
         - app
 
-    ignoreErrors:
-        - '#Access to an undefined property#'
-        - '#Method .* has no return type specified#'
-        - '#Method .* has parameter .* with no type specified#'
-        - '#Property .* has no type specified#'
-        - '#Function .* has parameter .* with no type specified#'
-        - '#Function .* has no return type specified#'
-        - identifier: missingType.iterableValue
-        - identifier: missingType.generics
-
-    # The level 8 is the highest level
-    level: 6
+    level: 1
     checkModelProperties: true
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false

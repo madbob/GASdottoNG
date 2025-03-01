@@ -450,7 +450,7 @@ class MovementsController extends BackedController
                 $data[] = array_merge([$name], $row);
             }
 
-            $filename = sanitizeFilename(_i('Storico Saldi al %s.csv', Carbon::parse()->format('d/m/Y')));
+            $filename = sanitizeFilename(_i('Storico Saldi al %s.csv', Carbon::now()->format('d/m/Y')));
 
             return output_csv($filename, null, $data, null);
         }

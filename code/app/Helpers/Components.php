@@ -55,7 +55,6 @@ function formatObjectsToComponentRec($options)
     foreach ($options as $option) {
         if (is_a($option, \App\Models\Concerns\HasChildren::class) && $option->children->count() != 0) {
             $ret[$option->id] = (object) [
-                // @phpstan-ignore-next-line
                 'label' => $option->printableName(),
                 'children' => formatObjectsToComponentRec($option->children),
             ];

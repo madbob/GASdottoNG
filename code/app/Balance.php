@@ -15,7 +15,6 @@ class Balance extends Model
 
     public function target(): MorphTo
     {
-        // @phpstan-ignore-next-line
         return $this->morphTo()->withTrashed();
     }
 }

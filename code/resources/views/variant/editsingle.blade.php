@@ -8,6 +8,10 @@
 
         <div class="row">
             <div class="col">
+                <x-larastrap::text name="name" :label="_i('Nome')" :value="$product->variants->first()->name" />
+
+                <hr />
+
                 <table class="table table-borderless table-sm dynamic-table">
 					@include('variant.matrixhead', [
                         'combos' => $combos,
@@ -38,7 +42,7 @@
 
                                     @if ($product->measure->discrete)
                                         <td>
-                                            <x-larastrap::number name="weight_offset" squeeze npostfix="[]" :textappend="_i('Chili')" />
+                                            <x-larastrap::number name="weight_offset" squeeze npostfix="[]" :textappend="_i('Chili')" step="0.01" />
                                         </td>
                                     @endif
 
@@ -79,7 +83,7 @@
 
 								@if ($product->measure->discrete)
 									<td>
-										<x-larastrap::number name="weight_offset" squeeze npostfix="[]" :textappend="_i('Chili')" />
+										<x-larastrap::number name="weight_offset" squeeze npostfix="[]" :textappend="_i('Chili')" step="0.01" />
 									</td>
 								@endif
 

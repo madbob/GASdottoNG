@@ -186,14 +186,14 @@ class Date extends Model implements Datable
         return $this->internalAttribute('action');
     }
 
-    public function getFirstOffsetAttribute()
+    public function getFirstOffsetAttribute(): int
     {
-        return $this->internalAttribute('offset1');
+        return (int) $this->internalAttribute('offset1');
     }
 
-    public function getSecondOffsetAttribute()
+    public function getSecondOffsetAttribute(): int
     {
-        return $this->internalAttribute('offset2');
+        return (int) $this->internalAttribute('offset2');
     }
 
     public function getCommentAttribute()

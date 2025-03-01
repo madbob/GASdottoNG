@@ -21,11 +21,9 @@ class Attachment extends Model
     public function attached(): MorphTo
     {
         if ($this->target_type && hasTrait($this->target_type, SoftDeletes::class)) {
-            // @phpstan-ignore-next-line
             return $this->morphTo('target')->withoutGlobalScopes()->withTrashed();
         }
         else {
-            // @phpstan-ignore-next-line
             return $this->morphTo('target')->withoutGlobalScopes();
         }
     }

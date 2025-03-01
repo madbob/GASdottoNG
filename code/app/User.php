@@ -252,7 +252,7 @@ class User extends Authenticatable
             restituzione del credito rimanente all'utente
         */
 
-        $this->contacts()->each(fn($contact) => $contact->delete());
+        $this->contacts()->each(fn ($contact) => $contact->delete());
 
         if ($this->picture) {
             $picture = gas_storage_path($this->picture);
