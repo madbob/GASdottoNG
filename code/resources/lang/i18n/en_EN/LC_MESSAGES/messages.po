@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GASdotto\n"
 "POT-Creation-Date: 2023-12-01 17:00+0100\n"
-"PO-Revision-Date: 2023-12-01 17:29+0100\n"
-"Last-Translator: Roberto Guido <bob@linux.it>\n"
-"Language-Team: Roberto Guido <bob@linux.it>\n"
+"PO-Revision-Date: 2024-02-23 12:01+0000\n"
+"Last-Translator: Pixel-Tux <luis.pardus@gmail.com>\n"
+"Language-Team: English <https://hosted.weblate.org/projects/gasdottong/"
+"translations/en/>\n"
 "Language: en_EN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.5-dev\n"
 "X-Poedit-KeywordsList: _;__;_i;_s;gettext;_n:1,2;ngettext:1,2;dgettext:2\n"
 "X-Poedit-Basepath: ../../../../../app\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -28,7 +30,9 @@ msgstr "Unchanged"
 msgid ""
 "Ho letto e accetto l'<a href=\"%s\" target=\"_blank\">Informativa sulla "
 "Privacy</a>."
-msgstr "I accept the <a href=\"%s\" target=\"_blank\">Privacy Policy</a>."
+msgstr ""
+"I have read and agree to the <a href=\"%s\" target=\"_blank\">Privacy "
+"Policy</a>."
 
 #: ../resources/views/auth/register.blade.php:28
 #: ../storage/framework/messages/5c411b5a664d834302cf76d20d338812.php:174
@@ -36,7 +40,8 @@ msgstr "I accept the <a href=\"%s\" target=\"_blank\">Privacy Policy</a>."
 msgid ""
 "Ho letto e accetto le <a href=\"%s\" target=\"_blank\">Condizioni d'Uso</a>."
 msgstr ""
-"I accept the <a href=\"%s\" target=\"_blank\">Terms and Conditions</a>."
+"I have read and agree to the <a href=\"%s\" target=\"_blank\">Terms and "
+"Conditions</a>."
 
 #: ../resources/views/booking/edit.blade.php:13
 #: ../storage/framework/messages/e31b9bb847d456ca965f094f45b46a7c.php:13
@@ -76,7 +81,7 @@ msgstr "New %s"
 #: ../storage/framework/messages/a7ab9e64315eee0a61a0fa8cb1108afe.php:12
 #: ../storage/framework/messages/b4fce7fcfe560206f9de9f4289a3cd37.php:10
 msgid "Non ci sono elementi da visualizzare."
-msgstr "No elements to show."
+msgstr "There are no items to show."
 
 #: ../resources/views/commons/manyrows.blade.php:4
 #: ../storage/framework/messages/15e104fa8353f14dc8ef654722fb8e1d.php:155
@@ -714,6 +719,11 @@ msgid ""
 "pagine sia più veloce. Gli ordini archiviati possono comunque essere sempre "
 "recuperati con la funzione di ricerca."
 msgstr ""
+"There are orders that have been closed for over a year but have not been "
+"archived. You can search for them using the search function below. It is "
+"recommended to archive old orders so that they are no longer displayed in "
+"the dashboard and page loading is faster. Archived orders can still be "
+"retrieved using the search function."
 
 #: ../storage/framework/messages/061b6f883946dd123974691ab0786237.php:20
 #: ../storage/framework/messages/c4b747c9897526a112f25901f0d460a5.php:47
@@ -832,7 +842,7 @@ msgstr "Personal Informations"
 
 #: ../storage/framework/messages/0770a85b3b7fd3acd522ff62e7749785.php:55
 msgid "Questo utente è in attesa di approvazione!"
-msgstr ""
+msgstr "This user is waiting for approval!"
 
 #: ../storage/framework/messages/0770a85b3b7fd3acd522ff62e7749785.php:67
 msgid "Approva"
@@ -954,6 +964,8 @@ msgid ""
 "Dove l'utente preferisce avere i propri prodotti recapitati. Permette di "
 "organizzare le consegne in luoghi diversi."
 msgstr ""
+"The user can choose where they want their products delivered. It allows you "
+"to organise deliveries to different locations."
 
 #: ../storage/framework/messages/0770a85b3b7fd3acd522ff62e7749785.php:581
 #: ../storage/framework/messages/5291f35e24ab3a714501dd55139aa882.php:143
@@ -975,6 +987,9 @@ msgid ""
 "gli utenti per i quali questi campi non sono stati compilati non sarà "
 "possibile generare alcun RID."
 msgstr ""
+"Please specify the parameters for generating RIDs for this user here. RIDs "
+"will not be generated for users for whom these fields have not been "
+"completed."
 
 #: ../storage/framework/messages/0770a85b3b7fd3acd522ff62e7749785.php:607
 #: ../storage/framework/messages/5291f35e24ab3a714501dd55139aa882.php:53
@@ -1005,12 +1020,16 @@ msgid ""
 "amministrato da %s. Sarà preservato lo storico delle sue prenotazioni, ma "
 "tutti i suoi pagamenti pregressi resteranno addebitati a %s."
 msgstr ""
+"By clicking \"Save\", this user will become a regular user. They will be "
+"assigned the role of %s, will have their own accounting, and will no longer "
+"be managed by %s. Their booking history will be preserved, but all of their "
+"previous payments will remain charged to %s."
 
 #: ../storage/framework/messages/0770a85b3b7fd3acd522ff62e7749785.php:813
 msgid ""
 "È necessario specificare almeno un indirizzo email di contatto del nuovo "
 "utente"
-msgstr ""
+msgstr "You must specify at least one contact email address of the new user"
 
 #: ../storage/framework/messages/0770a85b3b7fd3acd522ff62e7749785.php:841
 msgid "Cambia assegnazione"
@@ -1022,6 +1041,8 @@ msgid ""
 "Da qui è possibile riassegnare un amico ad un altro utente. Tutti i "
 "pagamenti pregressi resteranno addebitati a %s."
 msgstr ""
+"From here, you can assign a friend to another user. All previous payments "
+"will remain charged to %s."
 
 #: ../storage/framework/messages/0770a85b3b7fd3acd522ff62e7749785.php:895
 msgid "Nuovo assegnatario"
@@ -1225,7 +1246,7 @@ msgstr "Delivery details"
 #: ../storage/framework/messages/0f9c11c445c806c569c970f5d7ce1803.php:210
 #: Printers/Aggregate.php:210
 msgid "Prodotti Ordini"
-msgstr "Products"
+msgstr "Products Orders"
 
 #: ../storage/framework/messages/0f9c11c445c806c569c970f5d7ce1803.php:290
 #: Printers/Aggregate.php:290
@@ -1322,6 +1343,9 @@ msgid ""
 "sarà marcata come pagata, ad essi sarà aggiunto il riferimento al movimento "
 "contabile di pagamento e saranno automaticamente archiviati"
 msgstr ""
+"Choose the orders that are associated with this invoice. When the invoice is "
+"marked as paid, the reference to the payment accounting transaction will be "
+"added to them and they will be automatically archived"
 
 #: ../storage/framework/messages/14d30e961e687258e91754a8670ef5a7.php:208
 #: ../storage/framework/messages/f5ee16f2010fddc2cc4237875b63b998.php:9
@@ -1362,7 +1386,7 @@ msgstr "VAT Total"
 
 #: ../storage/framework/messages/14d30e961e687258e91754a8670ef5a7.php:447
 msgid "Altri modificatori non destinati a questa fattura:"
-msgstr ""
+msgstr "Other modifiers not applicable to this invoice:"
 
 #: ../storage/framework/messages/14d30e961e687258e91754a8670ef5a7.php:555
 msgid "Registra Pagamento"
@@ -1385,6 +1409,9 @@ msgid ""
 "notifiche saranno spedite a tutti gli indirizzi e-mail indicati. Si "
 "raccomanda di specificare un solo contatto per riga."
 msgstr ""
+"You can specify an arbitrary number of contacts for the subject. "
+"Notifications will be sent to all the email addresses provided. It is "
+"recommended to specify one contact per line."
 
 #: ../storage/framework/messages/1573aaed809ce2025e4b72b46e2ca1a5.php:15
 #: ../storage/framework/messages/3b3cf77ac28e6f07900bfb0019868535.php:37
@@ -1748,6 +1775,7 @@ msgstr ""
 msgid ""
 "Da qui puoi modificare lo stato di tutti gli ordini inclusi nell'aggregato"
 msgstr ""
+"From here, you can change the status of all orders included in the aggregate"
 
 #: ../storage/framework/messages/1afe41ceed31f9c9fceae5fd98a1fd54.php:47
 #: ../storage/framework/messages/3b3cf77ac28e6f07900bfb0019868535.php:86
@@ -1766,6 +1794,8 @@ msgid ""
 "Da qui è possibile modificare la data di apertura, chiusura a consegna di "
 "tutti gli ordini inclusi nell'aggregato"
 msgstr ""
+"From here, you can change the opening, closing, and delivery dates for all "
+"orders included in the aggregate"
 
 #: ../storage/framework/messages/1afe41ceed31f9c9fceae5fd98a1fd54.php:87
 #: ../storage/framework/messages/c6e050ab7750b18ae2c2c36e43fb460e.php:81
@@ -1806,8 +1836,9 @@ msgid ""
 "Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" "
 "href=\"http://it.libreoffice.org/\">LibreOffice</a>."
 msgstr ""
-"We suggest <a target=\"_blank\" href=\"http://www.libreoffice.org/"
-"\">LibreOffice</a> to handle CSV files."
+"For viewing and editing CSV (<i> Comma-Separated Values</i>) files, we "
+"recommended <a target=\"_blank\" href=\"http://it.libreoffice.org/\""
+">LibreOffice</a> ."
 
 #: ../storage/framework/messages/1bc0c1923cabadefb5794a40354aab3b.php:41
 #: ../storage/framework/messages/20076dac15c402e6bad4145cb0300997.php:66
@@ -1908,7 +1939,7 @@ msgstr "Ceased"
 #: AggregateBooking.php:223 Models/Concerns/TracksUpdater.php:20
 #, php-format
 msgid "Ultima Modifica: <br class=\"d-block d-md-none\">%s - %s"
-msgstr ""
+msgstr "Last Updated: <br class=\"d-block d-md-none\">%s - %s"
 
 #: ../storage/framework/messages/21cc17fbe2edd8f9663b3c15fdd91fec.php:31
 #: Notifications/RemindOrderNotification.php:31
@@ -1946,6 +1977,9 @@ msgid ""
 "> Tipi Movimenti, o non sarà possibile salvare correttamente questo "
 "movimento!"
 msgstr ""
+"Warning! No payment method is active for this type of transaction (%s)! It "
+"is recommended to modify the settings in the Accounting -> Transaction Types "
+"panel, otherwise this transaction will not be able to be saved correctly!"
 
 #: ../storage/framework/messages/226649edfdfd8869f5c254d127444dc5.php:238
 #: ../storage/framework/messages/271dc481fcf18803ac6d0451ee8840d6.php:77
@@ -2099,6 +2133,8 @@ msgid ""
 "Se disabilitato, impedisce di immettere un ammontare negativo per il "
 "movimento contabile"
 msgstr ""
+"If disabled, prevents the entry of negative amounts for accounting "
+"transactions"
 
 #: ../storage/framework/messages/2c95d493f86f70f4873783933851196d.php:52
 #: ../storage/framework/messages/33f65f9fc3e4ba275e3f07d7dd5767e2.php:91
@@ -2109,7 +2145,7 @@ msgstr "Fixed Value"
 msgid ""
 "Se diverso da 0, non sarà possibile modificare il valore dei nuovi movimenti "
 "di questo tipo"
-msgstr ""
+msgstr "A value other than 0 will prevent changes to new movements of this type"
 
 #: ../storage/framework/messages/2c95d493f86f70f4873783933851196d.php:67
 msgid ""
@@ -2117,6 +2153,8 @@ msgid ""
 "selezionare l'entità all'interno del pannello di creazione di un nuovo "
 "movimento"
 msgstr ""
+"The type of entity making the payment. If selected, it will be possible to "
+"choose the entity within the new transaction creation panel"
 
 #: ../storage/framework/messages/2c95d493f86f70f4873783933851196d.php:82
 msgid ""
@@ -2124,6 +2162,8 @@ msgid ""
 "selezionare l'entità all'interno del pannello di creazione di un nuovo "
 "movimento"
 msgstr ""
+"The type of entity that receives the payment. If selected, it will be "
+"possible to choose the entity within the creation panel of a new transaction"
 
 #: ../storage/framework/messages/2ca289532e8ef0619349789f2bb5b766.php:17
 #: Observers/UserObserver.php:17
@@ -2240,6 +2280,11 @@ msgid ""
 "riepilogo viene automaticamente inviato alla chiusura dell'ordine, "
 "automatica o manuale che sia, se configurato dal pannello Configurazioni."
 msgstr ""
+"Send a summary email of their reservation to all users who have participated "
+"in the order. It is possible to add a message to be attached to all for any "
+"additional comments. The summary message is automatically sent upon order "
+"closure, whether automatic or manual, if configured from the Configuration "
+"panel."
 
 #: ../storage/framework/messages/30ed929c472a3fef2516888dd7b5e7b7.php:65
 #: ../storage/framework/messages/e407dfd5e131a7753e89b92e045f5405.php:168
@@ -2282,6 +2327,8 @@ msgid ""
 "del sistema: non può essere eliminato e può essere modificato solo "
 "parzialmente."
 msgstr ""
+"This accounting transaction is crucial for the system's operation; it is "
+"irrevocable and can only be modified to a limited extent."
 
 #: ../storage/framework/messages/33f65f9fc3e4ba275e3f07d7dd5767e2.php:141
 msgid "Note di Default"
@@ -2341,6 +2388,10 @@ msgid ""
 "venga applicato il nuovo prezzo (del prodotto e/o le differenze prezzi delle "
 "eventuali varianti)."
 msgstr ""
+"There are pending orders and archived ones where the product whose price you "
+"just modified is listed. Please choose those in which you want the new price "
+"to be applied (for the product and/or any price differences in potential "
+"variants)."
 
 #: ../storage/framework/messages/3a8673e2ccda6fd1094b29185a324078.php:26
 msgid ""
@@ -2348,6 +2399,9 @@ msgid ""
 "consegnate, dovrai manualmente salvare nuovamente tali consegne affinché "
 "vengano rigenerati i nuovi movimenti contabili aggiornati."
 msgstr ""
+"If you modify the prices and there are reservations in the order that have "
+"already been delivered, you will need to manually re-save those deliveries "
+"to regenerate the updated accounting transactions."
 
 #: ../storage/framework/messages/3b3cf77ac28e6f07900bfb0019868535.php:12
 msgid ""
@@ -2357,6 +2411,11 @@ msgid ""
 "aggregati. Quando una ricorrenza è esaurita (tutte le sue occorrenza sono "
 "date passate) viene rimossa da questo elenco."
 msgstr ""
+"With this tool, you can manage the automatic opening and closing of orders. "
+"Orders that are opened and closed together (i.e., they have the same "
+"recurrence, close, and delivery parameters) will be automatically "
+"aggregated. When a recurrence is exhausted (all of its occurrences are past "
+"dates), it will be removed from this list."
 
 #: ../storage/framework/messages/3b3cf77ac28e6f07900bfb0019868535.php:59
 #: ../storage/framework/messages/b5e0292a6e86aeb64f4f73704d32fc5b.php:63
@@ -2381,6 +2440,8 @@ msgid ""
 "ignorate. Usa questa opzione per gestire i periodi di inattività del GAS, ad "
 "esempio durante le festività."
 msgstr ""
+"If an automatic order is suspended, the next openings will be skipped. Use "
+"this option to manage periods when GAS is not active, such as holidays."
 
 #: ../storage/framework/messages/3fd6c930987c85f7d359415cb846b4e5.php:15
 #: ../storage/framework/messages/3fd6c930987c85f7d359415cb846b4e5.php:41
@@ -2393,6 +2454,9 @@ msgid ""
 "Prodotti\" dell'ordine, dopo averlo manualmente elaborato con le quantità "
 "consegnate per ogni utente."
 msgstr ""
+"From here, you can re-import a CSV file generated by the \"Order Summary "
+"Table\" function, after manually processing it with the quantities delivered "
+"for each user."
 
 #: ../storage/framework/messages/3fd6c930987c85f7d359415cb846b4e5.php:73
 msgid ""
@@ -2401,10 +2465,14 @@ msgid ""
 "necessario rieseguire le consegne coinvolte per consolidare i nuovi totali e "
 "rielaborare i relativi movimenti contabili."
 msgstr ""
+"Warning: Some items have been modified after delivery within this order. In "
+"case of price adjustments, it is essential to rerun the affected deliveries "
+"to consolidate the updated totals and reprocess the corresponding accounting "
+"transactions."
 
 #: ../storage/framework/messages/3fd6c930987c85f7d359415cb846b4e5.php:94
 msgid "Questo pannello sarà attivo quando tutte le prenotazioni saranno chiuse"
-msgstr "This panel will be active when all reservations will be closed"
+msgstr "This panel will be active once all the bookings have been closed"
 
 #: ../storage/framework/messages/3fd6c930987c85f7d359415cb846b4e5.php:105
 msgid "Data Creazione"
@@ -2466,6 +2534,8 @@ msgid ""
 "Questo è l'unico ruolo abilitato a questo permesso speciale: se lo revochi "
 "rischi di perdere il controllo dell'istanza."
 msgstr ""
+"This is the only role authorised for this special permission: if you revoke "
+"it, you risk losing control of the instance."
 
 #: ../storage/framework/messages/42ca7887bcd8d65fb99d6837fa78b8e7.php:85
 msgid "Cerca e Aggiungi Nuovo Utente"
@@ -2501,7 +2571,7 @@ msgstr "Login page link"
 
 #: ../storage/framework/messages/4390a58ed2e85d4ca0814d3f40aba86f.php:24
 msgid "Aliquota"
-msgstr "VAT"
+msgstr "Rate"
 
 #: ../storage/framework/messages/439359a34b587761de212820fd60cb2c.php:9
 msgid "Nome del nuovo GAS"
@@ -2513,6 +2583,9 @@ msgid ""
 "utente del nuovo GAS. Gli verrà assegnato il \"Ruolo Amministratore Multi-"
 "GAS\" definito nel pannello delle configurazioni dei permessi."
 msgstr ""
+"Each GAS has its own set of users, and here you can set up credentials for "
+"the first user of the new GAS. They will be given the \"Multi-GAS "
+"Administrator Role\" as specified in the permissions configuration panel."
 
 #: ../storage/framework/messages/454197ced8ea26940f301c4273d9b340.php:13
 #: Parameters/MailTypes/SupplierSummary.php:13
@@ -2605,11 +2678,15 @@ msgid ""
 "proporzionalmente, ma le quantità effettivamente consegnate non "
 "corrispondono a quelle prenotate e possono esserci delle discrepanze."
 msgstr ""
+"Order %s has modifiers whose value must be distributed among reservations. "
+"During delivery, this value was assigned proportionally, but the actual "
+"quantities delivered do not match the booked quantities and there may be "
+"some discrepancies."
 
 #: ../storage/framework/messages/47999a2b279d1f78a7b0b95b2036c8c7.php:34
 #, php-format
 msgid "%s - valore definito: %s / valore distribuito: %s"
-msgstr ""
+msgstr "%s - defined value: %s / distributed value: %s"
 
 #: ../storage/framework/messages/47999a2b279d1f78a7b0b95b2036c8c7.php:38
 msgid "Come vuoi procedere?"
@@ -2621,6 +2698,9 @@ msgid ""
 "relativi addebiti ai singoli utenti, anche se la loro somma non corrisponde "
 "al valore finale atteso."
 msgstr ""
+"Do nothing: leave unchanged the values calculated for the modifiers and the "
+"corresponding charges to individual users, even if their sum does not match "
+"the expected final value."
 
 #: ../storage/framework/messages/47999a2b279d1f78a7b0b95b2036c8c7.php:53
 msgid ""
@@ -2631,6 +2711,11 @@ msgid ""
 "inalterati, ed eventuali aggiustamenti saranno consolidati nel saldo "
 "corrente di ciascun utente."
 msgstr ""
+"Recalculate the modifiers and redistribute them based on actual deliveries. "
+"Payments made with user credit will be adjusted, and the corresponding "
+"balances will be updated. Payments made with other methods (cash, bank "
+"transfer, etc.) will remain the same, and any adjustments will be added to "
+"the current balance of each user."
 
 #: ../storage/framework/messages/486fafac6ab6f08a14ca8856a0c08119.php:9
 #: ../storage/framework/messages/66c39d0532625e10c546742aa7997920.php:9
@@ -2670,7 +2755,7 @@ msgstr "The new assignee has not permission to manage sub-users"
 #: ../storage/framework/messages/48c933b38c7937396771101e260f8c83.php:325
 #: Services/UsersService.php:325
 msgid "Un utente regolare non può essere retrocesso ad amico"
-msgstr ""
+msgstr "You can't demote a regular user to a friend status"
 
 #: ../storage/framework/messages/49e5024a57babae030de6b8db408152c.php:18
 #: Rules/Captcha.php:18
@@ -2727,10 +2812,13 @@ msgid ""
 "esistenti. Si consiglia di creare un ruolo dedicato, con permessi limitati "
 "alle sole prenotazioni"
 msgstr ""
+"This role will be automatically assigned to all friends of existing users. "
+"It is suggested to create a dedicated role with permissions limited to "
+"reservations only"
 
 #: ../storage/framework/messages/4d131d49bc2115a503c8ccfdfd5c8685.php:63
 msgid "Ruolo Amministratore GAS Secondario"
-msgstr "Secondary GAS Administrator"
+msgstr "Secondary GAS Administrator Role"
 
 #: ../storage/framework/messages/4d131d49bc2115a503c8ccfdfd5c8685.php:63
 msgid ""
@@ -2754,7 +2842,7 @@ msgstr "Per communications about this order it is suggested to contact:"
 #: ../storage/framework/messages/4e8d81b23f2dd907cbed2ac80126e34b.php:69
 #: ../storage/framework/messages/7e89c0eddb657758f9afda5d92b954a0.php:338
 msgid "Totale Complessivo"
-msgstr "Total"
+msgstr "Grand Total"
 
 #: ../storage/framework/messages/4f20818bb69c3fbde98db2ae7d684bbe.php:20
 #: Parameters/Config/MailOrderReminder.php:20
@@ -2784,7 +2872,7 @@ msgstr ""
 #: Formatters/GenericProductFormat.php:28 Product.php:350
 #: View/Icons/Product.php:22
 msgid "Ordinabile"
-msgstr "Available"
+msgstr "Available to order"
 
 #: ../storage/framework/messages/4f6ed72ceb8dc482053483b816dffc8f.php:37
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:81
@@ -3141,6 +3229,11 @@ msgid ""
 "o <a href=\"https://sociale.network/@gasdottonet\" target=\"_blank\">su "
 "Mastodon</a> per aggiornamenti periodici."
 msgstr ""
+"Feel free to visit the <a href=\"https://gasdotto.net/\" target=\"_blank\""
+">GASdotto website</a> for documentation, or stay in the loop by following us "
+"on <a href=\"https://twitter.com/GASdottoNet\" target=\"_blank\">Twitter</a> "
+"or <a href=\"https://sociale.network/@gasdottonet\" target=\"_blank\""
+">Mastodon</a> for regular updates."
 
 #: ../storage/framework/messages/5e784b761c2413b6a1db6a3f0cc1ed41.php:117
 msgid ""
@@ -3209,6 +3302,9 @@ msgid ""
 "GASdotto, utile per comunicazioni speciali verso i membri del GAS o come "
 "messaggio di benvenuto"
 msgstr ""
+"A customisation message for the GASdotto authentication page, offering a "
+"platform for special communications to GAS members or functioning as a warm "
+"welcome message"
 
 #: ../storage/framework/messages/6349b34e92ea5e915d178e7dae0bc1c1.php:78
 msgid "Lingua"
@@ -3218,7 +3314,7 @@ msgstr "Language"
 msgid ""
 "Simbolo della valuta in uso. Verrà usato in tutte le visualizzazioni in cui "
 "sono espressi dei prezzi"
-msgstr ""
+msgstr "The current currency symbol will be used wherever prices are shown"
 
 #: ../storage/framework/messages/6349b34e92ea5e915d178e7dae0bc1c1.php:110
 msgid "Modalità Manutenzione"
@@ -3229,6 +3325,8 @@ msgid ""
 "Se abilitato, il login sarà inibito a tutti gli utenti che non hanno il "
 "permesso Accesso consentito anche in manutenzione"
 msgstr ""
+"When enabled, users without the permission \"Access allowed even in "
+"maintenance\" will be unable to log in"
 
 #: ../storage/framework/messages/635107401cca95b95bce9d0fd342004b.php:13
 msgid "Per procedere devi settare una nuova password per il tuo profilo."
@@ -3308,7 +3406,7 @@ msgstr "You are not authorized to manage any role."
 
 #: ../storage/framework/messages/67beb7523843e364c953975d99c0720f.php:36
 msgid "Aggiungi Nuovo Utente"
-msgstr "Add User"
+msgstr "Add New User"
 
 #: ../storage/framework/messages/686662696c11fa7f334decfd0c0f33b0.php:20
 #: Parameters/PaymentType/Sepa.php:20
@@ -3381,13 +3479,15 @@ msgstr "Behavior"
 
 #: ../storage/framework/messages/6c7691720c6b0043531433705c703b80.php:32
 msgid "Assegna le quantità come salvate ma non chiudere le consegne"
-msgstr ""
+msgstr "Apply the amounts as saved, but keep the deliveries open"
 
 #: ../storage/framework/messages/6c7691720c6b0043531433705c703b80.php:32
 msgid ""
 "Marca le prenotazioni come consegnate e genera i movimenti contabili di "
 "pagamento"
 msgstr ""
+"Flag the bookings as completed and generate the financial records for "
+"payments"
 
 #: ../storage/framework/messages/6cd20dffc46bf28d96fbeec6087c3352.php:37
 msgid "GRUPPO DI ACQUISTO SOLIDALE"
@@ -3538,7 +3638,7 @@ msgstr "Select"
 #: ../storage/framework/messages/75bc57c659a312516d46dd1d718dc73f.php:321
 #: Product.php:321
 msgid "Per selezionare il prodotto e compiere operazioni di gruppo"
-msgstr ""
+msgstr "To select the product and perform group actions"
 
 #: ../storage/framework/messages/75bc57c659a312516d46dd1d718dc73f.php:326
 #: Product.php:326
@@ -3566,6 +3666,7 @@ msgid ""
 "Quantità massima di prodotto che complessivamente può essere prenotata in un "
 "ordine"
 msgstr ""
+"The maximum amount of product that can be collectively booked in one order"
 
 #: ../storage/framework/messages/75bc57c659a312516d46dd1d718dc73f.php:351
 #: Product.php:351
@@ -3573,6 +3674,8 @@ msgid ""
 "Indica se il prodotto potrà essere ordinato o meno all'interno dei nuovi "
 "ordini per il fornitore"
 msgstr ""
+"Specifies if the product is available for ordering within the upcoming "
+"supplier orders"
 
 #: ../storage/framework/messages/76d1fd9f090a1b4df1303301395031f2.php:6
 #, php-format
@@ -3612,10 +3715,14 @@ msgid ""
 "amministratori addetti agli utenti riceveranno una mail di notifica per ogni "
 "nuovo utente registrato"
 msgstr ""
+"When this option is enabled, anyone can register for the instance through "
+"the dedicated panel (accessible from the login screen). Administrators in "
+"charge of user management will receive a notification email for each newly "
+"registered user"
 
 #: ../storage/framework/messages/7ab0ba15db61acd8f41acc07039eb6e0.php:55
 msgid "Approvazione manuale nuovi utenti"
-msgstr ""
+msgstr "Manual authorisation of new users"
 
 #: ../storage/framework/messages/7ab0ba15db61acd8f41acc07039eb6e0.php:70
 msgid "Link Privacy Policy"
@@ -3634,6 +3741,8 @@ msgid ""
 "Hai selezionato una unità di misura discreta: per questo prodotto possono "
 "essere usate solo quantità intere."
 msgstr ""
+"You've chosen a discrete unit of measurement, meaning only whole quantities "
+"can be used for this product."
 
 #: ../storage/framework/messages/7abfec41ad729046119ec4c1fe89f83b.php:54
 msgid ""
@@ -3642,6 +3751,10 @@ msgid ""
 "Discreta nel pannello di amministrazione delle unità di misura (acessibile "
 "solo agli utenti abilitati)"
 msgstr ""
+"Assigned measurement unit for the product. Note: it may affect the "
+"activation of certain product variables. Please refer to the Discrete Unit "
+"parameter in the measurement unit administration panel (accessible only to "
+"authorised users)"
 
 #: ../storage/framework/messages/7d3006cc59ada65f05140203ae7b35ce.php:19
 msgid ""
@@ -3658,6 +3771,15 @@ msgid ""
 "appare nell'elenco degli ordini solo per gli utenti abilitati, e può essere "
 "modificato</li></ul>"
 msgstr ""
+"Current order status. Can take on the following values:<ul><li>open for "
+"bookings: all users can view the order and submit their bookings. When the "
+"order is in this state, announcement emails are also sent</li><li>closed for "
+"bookings: all users can see the order but can't add or change bookings. "
+"However, authorised users can still make adjustments</li><li>delivered: the "
+"order only appears in the list for authorised users, with no option to "
+"modify values or bookings</li><li>archived: the order is no longer listed "
+"but can be retrieved using the search function</li><li>pending: the order is "
+"visible in the list for authorised users and can be modified</li></ul>"
 
 #: ../storage/framework/messages/7e89c0eddb657758f9afda5d92b954a0.php:27
 msgid "Prenotato Da"
@@ -3673,11 +3795,16 @@ msgid ""
 "puoi scegliere quale prezzo adottare in caso di rettifica della consegna: "
 "quello applicato originariamente o quello nel listino attuale."
 msgstr ""
+"The prices of certain products have been updated since your reservation. You "
+"can now decide whether to stick with the originally applied price or opt for "
+"the current list price in case of any adjustments to the delivery."
 
 #: ../storage/framework/messages/7e89c0eddb657758f9afda5d92b954a0.php:214
 msgid ""
 "Nota bene: la variante selezionata in prenotazione non è più nel listino"
 msgstr ""
+"Please note: the variant you selected when making your reservation is no "
+"longer listed"
 
 #: ../storage/framework/messages/7e89c0eddb657758f9afda5d92b954a0.php:274
 msgid "Seleziona un Prodotto"
@@ -3755,7 +3882,7 @@ msgstr "Archived"
 #: ../storage/framework/messages/85a77e923a9dedb6c6ba07ba2a957d87.php:62
 #: Helpers/Status.php:62
 msgid "In Sospeso"
-msgstr "Suspended"
+msgstr "Pending"
 
 #: ../storage/framework/messages/85a77e923a9dedb6c6ba07ba2a957d87.php:77
 #: ../storage/framework/messages/c5741e3684b15c147067df3087b32261.php:14
@@ -3869,7 +3996,7 @@ msgstr "Permit bookings only within available credit"
 
 #: ../storage/framework/messages/877eb8f86010b25e5305af585273a51d.php:46
 msgid "Permetti consegne manuali senza quantità"
-msgstr ""
+msgstr "Allow manual deliveries without quantity"
 
 #: ../storage/framework/messages/877eb8f86010b25e5305af585273a51d.php:46
 msgid ""
@@ -3880,6 +4007,12 @@ msgid ""
 "statistiche precise sui prodotti consegnati, né una ripartizione equa dei "
 "modificatori basati sulle quantità e sui pesi dei prodotti consegnati."
 msgstr ""
+"Enabling this option will allow you to activate, for each supplier, the "
+"possibility of making deliveries by directly specifying the total value of "
+"the delivery instead of the quantities of each delivered product. Note: "
+"employing this function will not yield precise statistics on the delivered "
+"items or ensure a fair allocation of modifiers based on the quantities and "
+"weights of the delivered products."
 
 #: ../storage/framework/messages/877eb8f86010b25e5305af585273a51d.php:76
 msgid "Visualizza contatti in prenotazioni"
@@ -3896,6 +4029,9 @@ msgid ""
 "comunque sempre possibile modificare la visualizzazione dall'interno della "
 "griglia stessa per mezzo del selettore posto in alto a destra"
 msgstr ""
+"Default columns displayed in the summary grid of orders. However, you can "
+"always customise the view directly within the grid using the selector "
+"located at the top right"
 
 #: ../storage/framework/messages/877eb8f86010b25e5305af585273a51d.php:116
 msgid "Colonne Attive in Dettaglio Consegne"
@@ -3905,7 +4041,7 @@ msgstr "Active Columns in \"Shipping Details\""
 msgid ""
 "Attributi selezionati di default durante l'esportazione del Dettaglio "
 "Consegne degli ordini"
-msgstr ""
+msgstr "Default attributes selected during order Delivery Details export"
 
 #: ../storage/framework/messages/8a3c0f3ab0713bb9c93e2bd5379b1004.php:23
 msgid "Nessuna Immagine"
@@ -3968,10 +4104,16 @@ msgid ""
 "quelli avvenuti dopo l'ultima archiviazione. I movimenti archiviati saranno "
 "comunque sempre consultabili."
 msgstr ""
+"It is recommended to archive balances periodically, for example, at the end "
+"of the fiscal year, after verifying that they are all correct. This way, "
+"subsequent recalculation operations will be much faster, as it eliminates "
+"the need to process all historical accounting transactions each time, "
+"focusing solely on those occurring since the last archiving. The archived "
+"transactions will still be accessible at any time."
 
 #: ../storage/framework/messages/8bdce5c20a0e5f057c36d8d37f2a5c20.php:120
 msgid "Questa operazione può richiedere diversi minuti per essere completata."
-msgstr ""
+msgstr "This operation may take several minutes to complete."
 
 #: ../storage/framework/messages/8c95d266e38f9e5321ee5d95e5ba7324.php:24
 msgid "Prossime date in calendario:"
@@ -4022,6 +4164,9 @@ msgid ""
 "ordini per il fornitore. Lo stato dei singoli prodotti potrà comunque essere "
 "cambiato da parte dei referenti anche all'interno di un ordine aperto"
 msgstr ""
+"Specify whether the product can be included in new orders for the supplier. "
+"Keep in mind that coordinators retain the authority to adjust individual "
+"product statuses within active orders"
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:66
 msgid ""
@@ -4032,6 +4177,13 @@ msgid ""
 "gestire prodotti distribuiti in pezzi, prenotabili dagli utenti in numero di "
 "pezzi ma da ordinare e/o pagare presso il fornitore come quantità complessiva"
 msgstr ""
+"If different from 0, each unit is considered as expressed in this quantity. "
+"For example:<ul><li>unit of measurement: kilograms</li><li>quantity per unit:"
+" 0.3</li><li>unit price: 10 euros</li><li>reserved quantity: 1 (thus "
+"understood as 1 piece weighing 0.3 kilograms)</li><li>cost: 1 x 0.3 x 10 = 3 "
+"euros</li></ul>This is helpful for managing products sold by pieces, which "
+"users can reserve in specific quantities but need to be ordered and/or paid "
+"for in total quantity from the supplier"
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:81
 msgid ""
@@ -4042,6 +4194,12 @@ msgid ""
 "specifiche). Da usare per prodotti consegnati in pezzi non sempre uniformi, "
 "come il formaggio o la carne, che sono pesati al momento della consegna."
 msgstr ""
+"A variable product is ordered in pieces whose final size is not exactly "
+"known at the time of booking. These identified products will activate an "
+"additional panel during delivery, to calculate the price based on the "
+"quantity (see specific information). To be used for products delivered in "
+"not always uniform pieces, such as cheese or meat, which are weighed at the "
+"time of delivery."
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:96
 #: ../storage/framework/messages/968df05cc93a3ce597d3d6653f36eaed.php:116
@@ -4058,6 +4216,12 @@ msgid ""
 "di riassunto dell'ordine, da cui sarà possibile sistemare le quantità "
 "aggiungendo e togliendo ove opportuno."
 msgstr ""
+"If the product is distributed in packages of N pieces, enter the value of N "
+"here. Orders to the supplier must be expressed in the number of packages. "
+"The number of pieces ordered must be a multiple of N. If the total number of "
+"pieces ordered is not a multiple of N, the product will be marked with a red "
+"icon in the order summary panel. You can then adjust the quantities by "
+"adding or removing pieces as needed."
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:126
 msgid ""
@@ -4071,12 +4235,16 @@ msgid ""
 "Se diverso da 0, il prodotto è prenotabile solo per una quantità superiore a "
 "quella indicata"
 msgstr ""
+"If different from 0, reservations for the product are accepted only for "
+"quantities greater than the specified one"
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:156
 msgid ""
 "Se diverso da 0, se viene prenotata una quantità superiore di quella "
 "indicata viene mostrato un warning"
 msgstr ""
+"If different from 0, a warning is displayed when a quantity greater than the "
+"one indicated is booked"
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:171
 msgid ""
@@ -4109,6 +4277,9 @@ msgid ""
 "i capi di abbigliamento. In fase di prenotazione, gli utenti potranno "
 "indicare quantità diverse per ogni combinazione di varianti."
 msgstr ""
+"Every product can have variants, such as size or color for clothing items. "
+"During the booking phase, users will be able to specify different quantities "
+"for each variant combination."
 
 #: ../storage/framework/messages/8fcfe408df68e7cc1cc72e35efd8a7da.php:225
 msgid ""
@@ -4297,7 +4468,7 @@ msgstr "Stats %s.csv"
 
 #: ../storage/framework/messages/9607dbd43db2cb9c5120df0022174e55.php:9
 msgid "Riferimento su cui applicare il modificatore"
-msgstr ""
+msgstr "Reference on which to apply the modifier"
 
 #: ../storage/framework/messages/9607dbd43db2cb9c5120df0022174e55.php:26
 msgid "Distribuzione sulle prenotazioni in base a"
@@ -4336,7 +4507,7 @@ msgstr "Users' Data"
 #: ../storage/framework/messages/998abee3d3ff6581a89b79729bed58cd.php:58
 #: ../storage/framework/messages/c02037e8798cd9d2e49b0b15a107f61c.php:71
 msgid "Colonne Prodotti"
-msgstr "Columns"
+msgstr "Product Columns"
 
 #: ../storage/framework/messages/9a50c2f30a82726dc85aaf54c0037c39.php:46
 #: Contact.php:46
@@ -4380,7 +4551,7 @@ msgstr ""
 #: ../storage/framework/messages/9c9d64cba66823cbc79f64f9c48557f6.php:19
 #: Parameters/MailTypes/NewOrder.php:19
 msgid "Testo di commento dell'ordine"
-msgstr "Comment"
+msgstr "Order comment"
 
 #: ../storage/framework/messages/9c9d64cba66823cbc79f64f9c48557f6.php:20
 #: Parameters/MailTypes/NewOrder.php:20
@@ -4421,6 +4592,11 @@ msgid ""
 "assumono essere consegnate e viene tenuto traccia della differenza del "
 "valore teorico e di quello reale immesso a mano."
 msgstr ""
+"When this option is enabled, a field is activated in the delivery panel for "
+"this supplier, allowing direct input of the total delivery value instead of "
+"quantities for each delivered product. If this field is utilised, all "
+"quantities listed in the reservation are assumed to be delivered, and the "
+"variance between the theoretical and manually entered real value is tracked."
 
 #: ../storage/framework/messages/9ca1c9a87140dbeec9adda631672270a.php:86
 msgid ""
@@ -4436,6 +4612,9 @@ msgid ""
 "centralizzato: si raccomanda si modificarlo il meno possibile in modo che "
 "sia più semplice poi gestirne gli aggiornamenti futuri."
 msgstr ""
+"The price list from this supplier has been imported from the centralised "
+"archive: it is recommended to modify it as little as possible to simplify "
+"future updates."
 
 #: ../storage/framework/messages/9f3fd203917bc926f2fd56d03cb8135a.php:51
 #: ../storage/framework/messages/9f3fd203917bc926f2fd56d03cb8135a.php:66
@@ -4476,11 +4655,12 @@ msgid ""
 "Qui ti diamo qualche suggerimento per iniziare ad utilizzare questa nuova "
 "piattaforma..."
 msgstr ""
+"Here are a few tips to help you get started with using this new platform..."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:183
 #: Http/Controllers/UsersController.php:183
 msgid "I tuoi dati"
-msgstr ""
+msgstr "Your data"
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:184
 #: Http/Controllers/UsersController.php:184
@@ -4488,6 +4668,8 @@ msgid ""
 "Cliccando qui accedi al pannello dei tuoi dati personali, da cui poi "
 "cambiare il tuo indirizzo email, la tua password di accesso e molto altro."
 msgstr ""
+"Clicking here grants you access to your personal data dashboard, where you "
+"can easily modify your email address, update your login password, and more."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:190
 #: Http/Controllers/UsersController.php:190
@@ -4500,11 +4682,13 @@ msgid ""
 "Da qui consulti l'elenco degli utenti, ne modifichi i parametri, e ne puoi "
 "invitare di nuovi (o li puoi importare da un file CSV)."
 msgstr ""
+"From here, you can view the list of users, adjust their settings, and even "
+"invite new ones (or import them from a CSV file)."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:198
 #: Http/Controllers/UsersController.php:198
 msgid "I fornitori e i listini"
-msgstr ""
+msgstr "Suppliers and price lists"
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:199
 #: Http/Controllers/UsersController.php:199
@@ -4512,11 +4696,13 @@ msgid ""
 "Cliccando qui puoi consultare l'elenco dei fornitori, crearne di nuovi, "
 "modificarli, e per ciascuno caricare o modificare il relativo listino."
 msgstr ""
+"Clicking here grants access to the supplier list, where you can add new "
+"entries, make adjustments, and manage their associated price lists."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:206
 #: Http/Controllers/UsersController.php:206
 msgid "Gli ordini"
-msgstr "Orders"
+msgstr "The orders"
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:207
 #: Http/Controllers/UsersController.php:207
@@ -4526,6 +4712,9 @@ msgid ""
 "'Consegne' per tenere traccia delle consegne e generare i movimenti "
 "contabili di pagamento."
 msgstr ""
+"From this page, you can access the list of orders, where you can create and "
+"edit them. By clicking on each order, you can also find the 'Deliveries' tab "
+"to keep track of deliveries and generate payment accounting movements."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:214
 #: Http/Controllers/UsersController.php:214
@@ -4539,6 +4728,9 @@ msgid ""
 "tue prenotazioni: clicca su ciascun ordine, e specifica la quantità "
 "desiderata per ogni prodotto."
 msgstr ""
+"Here you'll find the list of current orders, where you can place your "
+"reservations: simply click on each order and specify the desired quantity "
+"for each product."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:222
 #: Http/Controllers/UsersController.php:222
@@ -4551,6 +4743,8 @@ msgid ""
 "In questa pagina trovi tutti i movimenti contabili ed i relativi strumenti "
 "di amministrazione."
 msgstr ""
+"This page provides a comprehensive overview of all financial movements and "
+"the associated administrative tools."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:230
 #: Http/Controllers/UsersController.php:230
@@ -4563,6 +4757,8 @@ msgid ""
 "Cliccando qui trovi una moltitudine di parametri per personalizare il "
 "comportamento di questa istanza GASdotto."
 msgstr ""
+"Clicking here will reveal numerous options for tailoring the behaviour of "
+"this GASdotto instance to your preferences."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:237
 #: Http/Controllers/UsersController.php:237
@@ -4577,6 +4773,10 @@ msgid ""
 "dito usando lo smartphone, ti viene mostrato un breve testo descrittivo che "
 "te ne illustra i dettagli."
 msgstr ""
+"Familiarising with various GASdotto panels; alongside numerous parameters, "
+"you'll encounter a blue icon: hovering the mouse cursor over it or tapping "
+"it with your finger on a smartphone will reveal a short descriptive text "
+"explaining its details."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:243
 #: Http/Controllers/UsersController.php:243
@@ -4589,6 +4789,8 @@ msgid ""
 "Se hai un dubbio sull'utilizzo di GASdotto, o una segnalazione, o una "
 "richiesta, cliccando qui trovi i nostri contatti."
 msgstr ""
+"Got any questions about using GASdotto, something to report or a request? "
+"Just click here for our contact info."
 
 #: ../storage/framework/messages/a31df716c203033a3ce020a9a26652f9.php:253
 #: Http/Controllers/UsersController.php:253
@@ -4633,7 +4835,7 @@ msgstr ""
 
 #: ../storage/framework/messages/a7ab9e64315eee0a61a0fa8cb1108afe.php:195
 msgid "Questo pannello sarà attivo quando le prenotazioni saranno chiuse"
-msgstr "This panel will be active when all reservations will be closed"
+msgstr "This panel will become active once bookings are closed"
 
 #: ../storage/framework/messages/a866841f8d018d5d7e8d515a0ee38488.php:160
 #: Gas.php:160
@@ -4643,7 +4845,7 @@ msgstr "Bank account"
 #: ../storage/framework/messages/a866841f8d018d5d7e8d515a0ee38488.php:161
 #: Gas.php:161
 msgid "Cassa Contanti"
-msgstr "Cash"
+msgstr "Cash Register"
 
 #: ../storage/framework/messages/a866841f8d018d5d7e8d515a0ee38488.php:163
 #: Gas.php:163
@@ -4660,10 +4862,12 @@ msgid ""
 "Il nuovo utente è in attesa di revisione: consulta il pannello di "
 "amministrazione per approvarlo o eliminarlo."
 msgstr ""
+"There's a new user awaiting review: just head to the admin panel to approve "
+"or delete."
 
 #: ../storage/framework/messages/aa9d03450d806f04dc475b92ad2999b2.php:65
 msgid "Il modificatore non è stato applicato in questo intervallo di date."
-msgstr ""
+msgstr "The modifier was not applied in this date range."
 
 #: ../storage/framework/messages/ab472bd370d348bf4d86818eaffa1dee.php:16
 #: ../storage/framework/messages/f926bf2fbf10a9051b6a3711f68e4c80.php:19
@@ -4677,6 +4881,8 @@ msgid ""
 "legate agli ordini, da inviare a diversi destinatari in base allo stato di "
 "ciascun ordine."
 msgstr ""
+"From this panel, you can enable specific email alerts for orders, to be sent "
+"to different people based on each order's status."
 
 #: ../storage/framework/messages/ab7c7b41742f226552370ca314376191.php:46
 msgid "Aperto"
@@ -4700,12 +4906,13 @@ msgstr ""
 
 #: ../storage/framework/messages/ab7c7b41742f226552370ca314376191.php:119
 msgid "Quanti giorni prima?"
-msgstr ""
+msgstr "How many days before?"
 
 #: ../storage/framework/messages/ab7c7b41742f226552370ca314376191.php:157
 msgid ""
 "La notifica viene inviata solo agli utenti che hanno partecipato all'ordine"
 msgstr ""
+"Only users who have taken part in the order will receive the notification"
 
 #: ../storage/framework/messages/ab7c7b41742f226552370ca314376191.php:167
 msgid "Referenti"
@@ -4716,6 +4923,8 @@ msgid ""
 "Ai fornitori viene inviato solo il Riassunto Prodotti, senza dettagli sulle "
 "persone che hanno prenotato"
 msgstr ""
+"Suppliers are only provided with a Product Summary, with no information "
+"about the people who have made bookings"
 
 #: ../storage/framework/messages/ab7c7b41742f226552370ca314376191.php:241
 msgid ""
@@ -4900,7 +5109,7 @@ msgstr "Require password recover"
 
 #: ../storage/framework/messages/b4e0e56eedc3b39713318faa43618c63.php:21
 msgid "Username o Indirizzo E-Mail"
-msgstr "Username or e-mail address"
+msgstr "Username or E-Mail Address"
 
 #: ../storage/framework/messages/b52595e52c2ccb24e6f5f225d86d4b29.php:16
 #: Parameters/MovementType/OrderPayment.php:16
@@ -4993,7 +5202,7 @@ msgstr "Last Fee"
 
 #: ../storage/framework/messages/bad9ab12d8a0cdafe98b0ad382b49c6b.php:72
 msgid "Non ci sono prenotazioni aperte."
-msgstr "No elements to show."
+msgstr "There are no open reservations."
 
 #: ../storage/framework/messages/bad9ab12d8a0cdafe98b0ad382b49c6b.php:88
 msgid "Ordini in Consegna"
@@ -5001,7 +5210,7 @@ msgstr "Orders in Delivery"
 
 #: ../storage/framework/messages/bad9ab12d8a0cdafe98b0ad382b49c6b.php:102
 msgid "Non ci sono ordini in consegna."
-msgstr "No elements to show."
+msgstr "There are no orders in delivery."
 
 #: ../storage/framework/messages/bad9ab12d8a0cdafe98b0ad382b49c6b.php:172
 msgid "Questo è il tuo saldo attuale nei confronti del GAS."
@@ -5087,7 +5296,7 @@ msgstr ""
 
 #: ../storage/framework/messages/c2b32362934c07f6fdbb7e1a5c2a3db5.php:24
 msgid "Amministra Categorie"
-msgstr "Categories administration"
+msgstr "Manage Categories"
 
 #: ../storage/framework/messages/c2b32362934c07f6fdbb7e1a5c2a3db5.php:42
 msgid "Amministra Unità di Misura"
@@ -5442,7 +5651,7 @@ msgstr ""
 
 #: ../storage/framework/messages/d9cbe0688eff033e88b702535e1b35ea.php:55
 msgid "Invia E-Mail"
-msgstr "Send e-mail"
+msgstr "Send E-Mail"
 
 #: ../storage/framework/messages/d9cbe0688eff033e88b702535e1b35ea.php:81
 msgid ""
@@ -5458,7 +5667,7 @@ msgstr "Duplicate"
 
 #: ../storage/framework/messages/dea8b053da62ccbcb4f27faf4af8c904.php:50
 msgid "Prodotti Esistenti"
-msgstr "Products"
+msgstr "Existing Products"
 
 #: ../storage/framework/messages/dea8b053da62ccbcb4f27faf4af8c904.php:50
 msgid "Ignora"
@@ -5502,6 +5711,8 @@ msgid ""
 "Eventuale nota sulle modalità di pagamento al fornitore. Visibile solo agli "
 "utenti abilitati alla modifica del fornitore"
 msgstr ""
+"Potential note about payment methods for the supplier. Restricted to "
+"authorised users with editing rights for supplier details"
 
 #: ../storage/framework/messages/e13d34b22039fa6f92baff616e10a694.php:99
 msgid "Modalità Avanzamento Ordini"
@@ -5624,7 +5835,7 @@ msgstr "Administer accounting movement types"
 #: ../storage/framework/messages/e547391bfcbf3ee55bb24536297d8ca8.php:22
 #: Helpers/Permissions.php:22
 msgid "Amministrare le categorie"
-msgstr "Categories administration"
+msgstr "Managing the categories"
 
 #: ../storage/framework/messages/e547391bfcbf3ee55bb24536297d8ca8.php:23
 #: Helpers/Permissions.php:23
@@ -5728,7 +5939,7 @@ msgstr ""
 
 #: ../storage/framework/messages/ea17972e50479a23452ef1936ad0bb95.php:143
 msgid "Misura su cui applicare le soglie"
-msgstr ""
+msgstr "The measure to which to apply the thresholds"
 
 #: ../storage/framework/messages/ea17972e50479a23452ef1936ad0bb95.php:175
 msgid "Operazione"
@@ -5764,7 +5975,7 @@ msgstr "Theshold"
 
 #: ../storage/framework/messages/ea17972e50479a23452ef1936ad0bb95.php:249
 msgid "Costo"
-msgstr "Price"
+msgstr "Cost"
 
 #: ../storage/framework/messages/eb286dbdc872d5daff072283612134b8.php:168
 #: AggregateBooking.php:168
@@ -5782,7 +5993,7 @@ msgstr "Forward"
 
 #: ../storage/framework/messages/ec2581441978a53f861fe00124827396.php:39
 msgid "Inoltra via E-Mail"
-msgstr "Forward e-mail"
+msgstr "Forward via E-Mail"
 
 #: ../storage/framework/messages/ecc207cd814de9f418f08a1a66ecf51b.php:28
 #, php-format
@@ -5963,7 +6174,7 @@ msgstr "Stats by supplier"
 
 #: ../storage/framework/messages/fba17aca91b27e16b88c4e92fe13dbb4.php:156
 msgid "Non ci sono dati da visualizzare"
-msgstr "No data to show"
+msgstr "There is no data to display"
 
 #: ../storage/framework/messages/fbf050f1cfcc721b57435d639ae3936e.php:13
 msgid "Non hai partecipato a quest'ordine."
@@ -5995,7 +6206,7 @@ msgstr ""
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:61
 msgid "Cauzione"
-msgstr "Deposit"
+msgstr "Security deposit"
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:61
 msgid ""
@@ -6005,7 +6216,7 @@ msgstr ""
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:76
 msgid "Addebita automaticamente quota alla scadenza dell'anno sociale"
-msgstr ""
+msgstr "Automatically bill a fee at the close of the financial year"
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:76
 msgid ""
@@ -6059,6 +6270,8 @@ msgid ""
 "L'integrazione Satispay risulta attualmente configurata. Disabilita Satispay "
 "e salva queste impostazioni per ricominciare la procedura di configurazione."
 msgstr ""
+"Your Satispay integration is currently set up. To start over with the "
+"configuration process, simply disable Satispay and save your settings."
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:196
 msgid "Codice di Attivazione"
@@ -6066,7 +6279,7 @@ msgstr "Activation Code"
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:196
 msgid "Puoi ottenere un codice di attivazione dalla tua dashboard Satispay"
-msgstr ""
+msgstr "You can retrieve an activation code from your Satispay dashboard"
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:219
 msgid "Abilita IntegralCES"
@@ -6078,6 +6291,9 @@ msgid ""
 "pagamenti, movimenti...) con una moneta complementare, ed accedere ad alcune "
 "funzioni di integrazione con IntegralCES"
 msgstr ""
+"Enabling this option allows you to handle your accounting tasks (balances, "
+"payments, transactions...) using a complementary currency, and also gain "
+"access to certain integration functions with IntegralCES"
 
 #: ../storage/framework/messages/feab6a37647d41d3f21d7457bc750764.php:258
 msgid "Identificativo conto del GAS"
@@ -6111,7 +6327,7 @@ msgstr "Import/Export"
 
 #: ../storage/framework/messages/feb70da6f5b3d2212ae6c4111ca1f6a4.php:33
 msgid "Integrazione Hub Economia Solidale"
-msgstr ""
+msgstr "Integration of Hub Economia Solidale"
 
 #: ../storage/framework/messages/feb70da6f5b3d2212ae6c4111ca1f6a4.php:33
 msgid ""
@@ -6119,10 +6335,13 @@ msgid ""
 "economiasolidale.net, tra cui l'aggiornamento automatico dei listini e "
 "l'aggregazione degli ordini con altri GAS."
 msgstr ""
+"Enable some (experimental!) features for integration with "
+"hub.economiasolidale.net, such as automatic updating of price lists and the "
+"aggregation of orders with other GAS."
 
 #: ../storage/framework/messages/feb70da6f5b3d2212ae6c4111ca1f6a4.php:51
 msgid "Separatore Files CSV Esportati"
-msgstr ""
+msgstr "Delimiter for Exported CSV Files"
 
 #: ../storage/framework/messages/feb70da6f5b3d2212ae6c4111ca1f6a4.php:76
 msgid "Importazione"
@@ -6133,6 +6352,8 @@ msgid ""
 "Da qui è possibile importare un file GDXP generato da un'altra istanza di "
 "GASdotto o da qualsiasi altra piattaforma che supporta il formato"
 msgstr ""
+"Here, you have the option to bring in a GDXP file created by another "
+"GASdotto instance or any platform that supports this format"
 
 #: ../storage/framework/messages/feb70da6f5b3d2212ae6c4111ca1f6a4.php:113
 msgid ""
@@ -6172,6 +6393,8 @@ msgid ""
 "Se specificato, deve contenere il nome di uno dei Luoghi di Consegna "
 "impostati nel pannello \"Configurazioni\""
 msgstr ""
+"If provided, make sure it contains the name of one of the designated "
+"Delivery Locations from the \"Configurations\" panel"
 
 #: ../storage/framework/messages/ff64546585734f31122c4fc28605c49c.php:103
 #: Importers/CSV/Users.php:103
