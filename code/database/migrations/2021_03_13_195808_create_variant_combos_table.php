@@ -13,9 +13,9 @@ class CreateVariantCombosTable extends Migration
 
             $table->boolean('active')->default(true);
             $table->string('code')->default('');
-            $table->decimal('max_available', 7, 3)->default(0);
-            $table->double('price_offset', 8, 3)->default(0);
-            $table->double('weight_offset', 7, 4)->default(0);
+            $table->decimal('max_available', total: 7, places: 3)->default(0);
+            $table->decimal('price_offset', total: 8, places: 3)->default(0);
+            $table->decimal('weight_offset', total: 7, places: 4)->default(0);
         });
 
         Schema::create('variant_combo_values', function (Blueprint $table) {
