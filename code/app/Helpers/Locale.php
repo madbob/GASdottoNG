@@ -55,7 +55,6 @@ function guessDecimal($value)
     elseif ($has_dot && $has_comma === false) {
         $ret = (float) $value;
     }
-    // @phpstan-ignore-next-line
     elseif ($has_dot === false && $has_comma) {
         $ret = (float) strtr($value, ',', '.');
     }

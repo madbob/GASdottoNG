@@ -44,7 +44,6 @@ class Movement extends Model
     public function sender(): MorphTo
     {
         if ($this->sender_type && hasTrait($this->sender_type, SoftDeletes::class)) {
-            // @phpstan-ignore-next-line
             return $this->morphTo()->withoutGlobalScopes()->withTrashed();
         }
         else {
@@ -55,7 +54,6 @@ class Movement extends Model
     public function target(): MorphTo
     {
         if ($this->target_type && hasTrait($this->target_type, SoftDeletes::class)) {
-            // @phpstan-ignore-next-line
             return $this->morphTo()->withoutGlobalScopes()->withTrashed();
         }
         else {

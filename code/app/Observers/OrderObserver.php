@@ -66,7 +66,7 @@ class OrderObserver
     private function checkGas($order)
     {
         if ($order->aggregate->gas->count() == 0) {
-            foreach($order->supplier->gas as $gas) {
+            foreach ($order->supplier->gas as $gas) {
                 $gas->aggregates()->attach($order->aggregate->id);
             }
         }

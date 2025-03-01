@@ -24,7 +24,6 @@ trait GASModel
         $class = get_called_class();
 
         if (hasTrait($class, SoftDeletes::class)) {
-            // @phpstan-ignore-next-line
             $ret = $class::where('id', $id)->withoutGlobalScopes()->withTrashed()->first();
         }
         else {
@@ -47,7 +46,6 @@ trait GASModel
         $class = get_called_class();
 
         if (hasTrait($class, SoftDeletes::class)) {
-            // @phpstan-ignore-next-line
             return $class::withTrashed()->get();
         }
         else {

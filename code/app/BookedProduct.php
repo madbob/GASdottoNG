@@ -348,6 +348,13 @@ class BookedProduct extends Model
         }
     }
 
+    /*************************************************************** GASModel */
+
+    public function printableName()
+    {
+        return $this->product->printableName();
+    }
+
     /********************************************************** ModifiedTrait */
 
     public function getModifiedRelations()

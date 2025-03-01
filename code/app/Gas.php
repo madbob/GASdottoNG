@@ -72,7 +72,7 @@ class Gas extends Model
 
     public function nextInvoiceNumber()
     {
-        $status = $this->extra_invoicing;
+        $status = $this->getAttribute('extra_invoicing');
         $now = date('Y');
         $year = $status['invoices_counter_year'] ?? $now;
 
