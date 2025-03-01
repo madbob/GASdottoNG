@@ -75,8 +75,12 @@ class Aggregate extends Printer
 
             $all_gas = (App::make('GlobalScopeHub')->enabled() == false);
 
+            /*
+                Attenzione: in $data->contents non ci sono istanze di Booking,
+                dunque non posso usare qui CirclesFilter::sortBookings()
+            */
             usort($data->contents, function ($a, $b) use ($circles, $all_gas) {
-                if ($circles->getMode() == 'all_by_place' && $a->circles_sorting != $b->circles_sorting) {
+                if ($circles->sortedByUser() == false && $a->circles_sorting != $b->circles_sorting) {
                     return $a->circles_sorting <=> $b->circles_sorting;
                 }
 

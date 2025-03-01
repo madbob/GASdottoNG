@@ -31,6 +31,10 @@ class CirclesFilter
                 $selected = null;
 
                 foreach ($all as $group_id => $circles) {
+                    if ($group_id == 'circles_master_sorting') {
+                        continue;
+                    }
+
                     $this->groups[$group_id] = [];
 
                     $key = sprintf('circles_%s', $group_id);
@@ -63,6 +67,11 @@ class CirclesFilter
         return $this->mode;
     }
 
+    public function sortedByUser()
+    {
+        return $this->mode == 'all_by_name';
+    }
+
     public function printableName()
     {
         return implode(' - ', array_map(fn ($c) => $c->name, $this->circles));
@@ -70,6 +79,8 @@ class CirclesFilter
 
     public function combinations()
     {
+        $ret = [];
+
         if ($this->mode == 'all_by_place') {
             $result = [[]];
 
@@ -86,8 +97,6 @@ class CirclesFilter
                 $result = $append;
             }
 
-            $ret = [];
-
             foreach ($result as $res) {
                 $c = new CirclesFilter(null, null);
                 $c->mode = $this->mode;
@@ -95,12 +104,21 @@ class CirclesFilter
                 $c->circles = array_reduce($res, fn ($carry, $circles) => array_merge($carry, $circles), []);
                 $ret[] = $c;
             }
+        }
+        else if (str_starts_with($this->mode, 'group_')) {
+            $group_id = substr($this->mode, strlen('group_'));
 
-            return $ret;
+            $c = new CirclesFilter(null, null);
+            $c->mode = $this->mode;
+            $c->groups = [$this->groups[$group_id]];
+            $c->circles = $this->groups[$group_id];
+            $ret[] = $c;
         }
         else {
             throw new \Exception('La combinazione di gruppi non dovrebbe essere usata se non quando si ordina per cerchie', 1);
         }
+
+        return $ret;
     }
 
     private function sortByUserName($bookings)
@@ -110,7 +128,22 @@ class CirclesFilter
 
     private function sortByCircle($bookings)
     {
-        return $bookings->sortBy(fn ($b) => $b->circles_sorting);
+        return $bookings->sortBy(fn ($b) => $this->bookingSorting($b));
+    }
+
+    public function bookingSorting($booking)
+    {
+        $circles = $booking->involvedCircles();
+
+        if (str_starts_with($this->mode, 'group_')) {
+            $group = substr($this->mode, strlen('group_'));
+            $circles = $circles->filter(fn($c) => $c->group_id == $group);
+        }
+        else {
+            $circles = $circles->sortBy('group_id');
+        }
+
+        return $circles->map(fn ($c) => $c->name)->join(' - ');
     }
 
     public function sortBookings($bookings)
@@ -137,7 +170,7 @@ class CirclesFilter
             }
         }
 
-        if ($this->mode == 'all_by_place') {
+        if ($this->mode == 'all_by_place' || str_starts_with($this->mode, 'group_')) {
             $bookings = $this->sortByCircle($tmp_bookings);
         }
         else {

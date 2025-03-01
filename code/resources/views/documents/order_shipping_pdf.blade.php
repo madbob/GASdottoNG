@@ -37,9 +37,18 @@ foreach($data->contents as $d) {
             }
 
             .cell {
-                border: 1px solid #000;
+                border-top: 1px solid #000;
+                border-left: 1px solid #000;
                 display: table-cell;
                 padding: 4px;
+            }
+
+            .cell.last-row {
+                border-bottom: 1px solid #000;
+            }
+
+            .cell.last-in-row {
+                border-right: 1px solid #000;
             }
 
             .extended {
@@ -83,7 +92,7 @@ foreach($data->contents as $d) {
         <div class="main-wrapper">
             <div class="row">
                 @foreach($fields->product_columns_names as $h)
-                    <div class="cell">{{ $h }}</div>
+                    <div class="cell last-row {{ $loop->last ? 'last-in-row' : '' }}">{{ $h }}</div>
                 @endforeach
             </div>
         </div>
@@ -99,7 +108,7 @@ foreach($data->contents as $d) {
         ?>
 
         @foreach($data->contents as $d)
-            @if($circles->getMode() == 'all_by_place' && $previous_shipping != $d->circles_sorting)
+            @if($circles->sortedByUser() === false && $previous_shipping != $d->circles_sorting)
                 <h4>{{ $d->circles_sorting }}</h4>
                 <?php $previous_shipping = $d->circles_sorting ?>
             @endif
@@ -138,7 +147,20 @@ foreach($data->contents as $d) {
                 @foreach($d->products as $product)
                     <div class="row">
                         @foreach($product as $p)
-                            <div class="cell">{{ $p }}</div>
+                            @php
+
+                            $extraclass = [];
+
+                            if ($loop->last) {
+                                $extraclass[] = 'last-in-row';
+                            }
+
+                            if ($loop->parent->last) {
+                                $extraclass[] = 'last-row';
+                            }
+
+                            @endphp
+                            <div class="cell {{ join(' ', $extraclass) }}">{{ $p }}</div>
                         @endforeach
                     </div>
                 @endforeach

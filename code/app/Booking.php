@@ -478,11 +478,6 @@ class Booking extends Model
         return $this->circles->merge($user_circles);
     }
 
-    public function getCirclesSortingAttribute()
-    {
-        return $this->involvedCircles()->sortBy('group_id')->map(fn ($c) => $c->name)->join(' - ');
-    }
-
     public function printableName()
     {
         return $this->order->printableName();

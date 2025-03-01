@@ -105,7 +105,7 @@ trait Shipping
                 */
                 'user_sorting' => $booking->user->lastname,
                 'gas_sorting' => $booking->user->gas_id,
-                'circles_sorting' => $booking->circles_sorting,
+                'circles_sorting' => $circles->bookingSorting($booking),
 
                 'user' => UserFormatter::format($booking->user, $fields->user_columns, $order->aggregate),
                 'products' => [],

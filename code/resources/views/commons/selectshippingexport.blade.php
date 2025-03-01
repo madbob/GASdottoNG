@@ -25,6 +25,14 @@ if (empty($all) == false) {
 				case 'all_by_place':
 					$options['all_by_place'] = _i('Gruppi/Cerchi');
 					break;
+                case 'specific':
+                    foreach($all as $meta) {
+                        if ($meta->group->context == 'user') {
+                            $options['group_' . $meta->group->id] = $meta->group->name;
+                        }
+                    }
+
+                    break;
 			}
 		}
 
