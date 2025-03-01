@@ -131,11 +131,11 @@ app()->make('AggregationSwitch')->setEnforced(true);
 
                             <thead>
                                 <tr>
-                                    <th width="30%"></th>
-                                    <th width="10%"></th>
-                                    <th width="20%"></th>
-                                    <th width="25%"></th>
-                                    <th width="15%"></th>
+                                    <th scope="col" width="30%"></th>
+                                    <th scope="col" width="10%"></th>
+                                    <th scope="col" width="20%"></th>
+                                    <th scope="col" width="25%"></th>
+                                    <th scope="col" width="15%"></th>
                                 </tr>
                             </thead>
 
@@ -271,19 +271,19 @@ app()->make('AggregationSwitch')->setEnforced(true);
 
                             <tfoot>
                                 <tr>
-                                    <th>
+                                    <td>
                                         @if($order->isActive())
                                             <button class="btn btn-warning add-booking-product">{{ _i('Aggiungi Prodotto') }}</button>
                                         @endif
-                                    </th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
 
                                     @if($currentgas->unmanaged_shipping == '1' && $order->supplier->unmanaged_shipping_enabled)
-                                        <th class="text-end"><x-larastrap::price :label="_i('Totale Manuale')" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" data-manual-change="0" /></th>
+                                        <td class="text-end fw-bold"><x-larastrap::price :label="_i('Totale Manuale')" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" data-manual-change="0" /></td>
                                     @else
-                                        <th class="text-end">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</th>
+                                        <td class="text-end fw-bold">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</td>
                                     @endif
                                 </tr>
                             </tfoot>
@@ -296,11 +296,11 @@ app()->make('AggregationSwitch')->setEnforced(true);
                 <table class="table">
                     <tfoot>
                         <tr>
-                            <th>
+                            <td>
                                 <div class="float-end">
                                     <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> {{ $currency_symbol }}</strong>
                                 </div>
-                            </th>
+                            </td>
                         </tr>
                     </tfoot>
                 </table>

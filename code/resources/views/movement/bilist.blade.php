@@ -6,15 +6,15 @@
     <table class="table">
         <thead>
             <tr>
-                <th>{{ _i('Data') }}</th>
-                <th>{{ _i('Tipo') }}</th>
-                <th>{{ _i('Pagamento') }}</th>
-                <th>{{ _i('Riferimento') }}</th>
-                <th>{{ _i('Credito') }}</th>
-                <th>{{ _i('Debito') }}</th>
-                <th>{{ _i('Note') }}</th>
+                <th scope="col">{{ _i('Data') }}</th>
+                <th scope="col">{{ _i('Tipo') }}</th>
+                <th scope="col">{{ _i('Pagamento') }}</th>
+                <th scope="col">{{ _i('Riferimento') }}</th>
+                <th scope="col">{{ _i('Credito') }}</th>
+                <th scope="col">{{ _i('Debito') }}</th>
+                <th scope="col">{{ _i('Note') }}</th>
                 @if(Gate::check('movements.admin', $currentgas))
-                    <th>{{ _i('Modifica') }}</th>
+                    <th scope="col">{{ _i('Modifica') }}</th>
                 @endif
             </tr>
         </thead>

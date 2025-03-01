@@ -71,10 +71,10 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>{{ _i('Utente') }}</th>
-                            <th>{{ _i('Data Creazione') }}</th>
-                            <th>{{ _i('Ultima Modifica') }}</th>
-                            <th>{{ _i('Totale Prenotato') }}</th>
+                            <th scope="col">{{ _i('Utente') }}</th>
+                            <th scope="col">{{ _i('Data Creazione') }}</th>
+                            <th scope="col">{{ _i('Ultima Modifica') }}</th>
+                            <th scope="col">{{ _i('Totale Prenotato') }}</th>
                         </tr>
                     </thead>
                     <tbody>

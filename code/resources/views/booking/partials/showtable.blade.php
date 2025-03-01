@@ -17,10 +17,10 @@
     <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
         <thead class="d-none d-md-table-header-group">
             <tr>
-                <th width="40%"></th>
-                <th width="27%"></th>
-                <th width="27%"></th>
-                <th width="5%"></th>
+                <th scope="col" width="40%"></th>
+                <th scope="col" width="27%"></th>
+                <th scope="col" width="27%"></th>
+                <th scope="col" width="5%"></th>
             </tr>
         </thead>
         <tbody>
@@ -102,10 +102,10 @@
         </tbody>
         <tfoot>
             <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th class="text-end">{{ _i('Totale') }}:<br><span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ defaultCurrency()->symbol }}</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-end fw-bold">{{ _i('Totale') }}:<br><span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ defaultCurrency()->symbol }}</td>
             </tr>
         </tfoot>
     </table>

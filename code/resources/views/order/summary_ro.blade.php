@@ -47,7 +47,7 @@ unset($display_columns['notes']);
             <thead>
                 <tr>
                     @foreach($display_columns as $identifier => $metadata)
-                        <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">{{ $metadata->label }}</th>
+                        <th scope="col" width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">{{ $metadata->label }}</th>
                     @endforeach
                 </tr>
             </thead>
@@ -141,7 +141,7 @@ unset($display_columns['notes']);
             <thead>
                 <tr>
                     @foreach($display_columns as $identifier => $metadata)
-                        <th class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
+                        <th scope="col" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
                             @switch($identifier)
                                 @case('total_price')
                                     <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>

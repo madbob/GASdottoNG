@@ -51,7 +51,7 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                         <thead>
                             <tr>
                                 @foreach($display_columns as $identifier => $metadata)
-                                    <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
+                                    <th scope="col" width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
                                         @if($identifier == 'selection')
                                             <x-larastrap::check classes="triggers-all-checkbox skip-on-submit" data-target-class="product-select" squeeze switch="false" />
                                         @else
@@ -63,35 +63,35 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                         </thead>
                         <thead class="massive-actions hidden">
                             <tr>
-                                <th class="order-cell-sorting {{ in_array('sorting', $columns) ? '' : 'hidden' }}">
+                                <th scope="col" class="order-cell-sorting {{ in_array('sorting', $columns) ? '' : 'hidden' }}">
                                     &nbsp;
                                 </th>
 
-                                <th class="order-cell-selection {{ in_array('selection', $columns) ? '' : 'hidden' }}">
+                                <th scope="col" class="order-cell-selection {{ in_array('selection', $columns) ? '' : 'hidden' }}">
                                     &nbsp;
                                 </th>
 
-                                <th class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
+                                <th scope="col" class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
                                     <x-larastrap::button classes="remove_all skip-on-submit" :label="_i('Elimina')" color="danger" />
                                 </th>
 
-                                <th class="order-cell-category {{ in_array('category', $columns) ? '' : 'hidden' }}">
+                                <th scope="col" class="order-cell-category {{ in_array('category', $columns) ? '' : 'hidden' }}">
                                     <x-larastrap::selectobj classes="skip-on-submit" name="category_id_all" :options="$categories" :extraitem="[0 => _i('Non Modificare')]" squeeze />
                                 </th>
 
-                                <th class="order-cell-measure {{ in_array('measure', $columns) ? '' : 'hidden' }}">
+                                <th scope="col" class="order-cell-measure {{ in_array('measure', $columns) ? '' : 'hidden' }}">
                                     <x-larastrap::selectobj classes="skip-on-submit" name="measure_id_all" :options="$measures" :extraitem="[0 => _i('Non Modificare')]" squeeze />
                                 </th>
 
-                                <th class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
+                                <th scope="col" class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
                                     &nbsp;
                                 </th>
 
-                                <th class="order-cell-max_available {{ in_array('max_available', $columns) ? '' : 'hidden' }}">
+                                <th scope="col" class="order-cell-max_available {{ in_array('max_available', $columns) ? '' : 'hidden' }}">
                                     &nbsp;
                                 </th>
 
-                                <th class="order-cell-active {{ in_array('active', $columns) ? '' : 'hidden' }}">
+                                <th scope="col" class="order-cell-active {{ in_array('active', $columns) ? '' : 'hidden' }}">
                                     <x-larastrap::check classes="skip-on-submit" name="active_all" squeeze />
                                 </th>
                             </tr>

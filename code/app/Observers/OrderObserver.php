@@ -9,15 +9,16 @@ use Log;
 use App\Aggregate;
 use App\Order;
 use App\Date;
+use App\Supplier;
 
 class OrderObserver
 {
     private function resetOlderDates($order)
     {
         $last_date = $order->shipping ? $order->shipping : $order->end;
-        Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '')->where('date', '<=', $last_date)->delete();
+        Date::where('target_type', Supplier::class)->where('target_id', $order->supplier_id)->where('recurring', '')->where('date', '<=', $last_date)->delete();
 
-        $recurrings = Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('recurring', '!=', '')->get();
+        $recurrings = Date::where('target_type', Supplier::class)->where('target_id', $order->supplier_id)->where('recurring', '!=', '')->get();
         foreach ($recurrings as $d) {
             $d->updateRecurringToDate($last_date);
         }
@@ -26,7 +27,7 @@ class OrderObserver
     private function attachModifiers($order)
     {
         foreach ($order->supplier->modifiers as $mod) {
-            if ($mod->active || $mod->always_on == true) {
+            if ($mod->active || $mod->always_on) {
                 $new_mod = $mod->replicate();
                 $new_mod->target_id = $order->id;
                 $new_mod->target_type = get_class($order);
@@ -55,6 +56,22 @@ class OrderObserver
         }
     }
 
+    /*
+        Per verificare l'associazione tra l'aggregato dell'ordine ed il GAS.
+        Particolarmente utile quando gli ordini vengono aperti in modo
+        automatico, dunque non nel contesto di una sessione utente (utilizzata
+        in AttachToGas come riferimento primario per determinare il GAS su cui
+        si sta operando)
+    */
+    private function checkGas($order)
+    {
+        if ($order->aggregate->gas->count() == 0) {
+            foreach($order->supplier->gas as $gas) {
+                $gas->aggregates()->attach($order->aggregate->id);
+            }
+        }
+    }
+
     public function created(Order $order)
     {
         $supplier = $order->supplier;
@@ -65,6 +82,7 @@ class OrderObserver
         $products = $supplier->products()->where('active', true)->get();
         $order->syncProducts($products, true);
 
+        $this->checkGas($order);
         $this->attachModifiers($order);
         $this->resetOlderDates($order);
         $this->dispatchNotifications($order);
@@ -77,7 +95,7 @@ class OrderObserver
         }
 
         if ($order->shipping) {
-            Date::where('target_type', 'App\Supplier')->where('target_id', $order->supplier_id)->where('date', '<=', $order->shipping)->delete();
+            Date::where('target_type', Supplier::class)->where('target_id', $order->supplier_id)->where('date', '<=', $order->shipping)->delete();
         }
     }
 

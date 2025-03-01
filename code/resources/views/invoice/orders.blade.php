@@ -19,11 +19,11 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th width="10%"></th>
-                        <th width="30%">Ordine</th>
-                        <th width="20%">Totale Imponibile</th>
-                        <th width="20%">Totale IVA</th>
-                        <th width="20%">Totale</th>
+                        <th scope="col" width="10%"></th>
+                        <th scope="col" width="30%">Ordine</th>
+                        <th scope="col" width="20%">Totale Imponibile</th>
+                        <th scope="col" width="20%">Totale IVA</th>
+                        <th scope="col" width="20%">Totale</th>
                     </tr>
                 </thead>
                 <tbody>

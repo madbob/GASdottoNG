@@ -13,10 +13,10 @@
                 <table class="table align-middle" id="usersStatusTable">
                     <thead>
                         <tr>
-                            <th width="20%">{{ _i('Nome') }}</th>
-                            <th width="30%">{{ _i('Ultima Quota Versata') }}</th>
-                            <th width="30%">{{ _i('Stato') }}</th>
-                            <th width="20%"></th>
+                            <th scope="col" width="20%">{{ _i('Nome') }}</th>
+                            <th scope="col" width="30%">{{ _i('Ultima Quota Versata') }}</th>
+                            <th scope="col" width="30%">{{ _i('Stato') }}</th>
+                            <th scope="col" width="20%"></th>
                         </tr>
                     </thead>
                     <tbody>

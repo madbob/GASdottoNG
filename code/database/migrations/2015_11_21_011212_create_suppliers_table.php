@@ -10,8 +10,9 @@ class CreateSuppliersTable extends Migration
         Schema::create('suppliers', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->timestamps();
-
+            $table->string('updated_by')->default('');
             $table->softDeletes();
+
             $table->date('suspended_at')->nullable()->default(null);
 
             $table->string('name');
@@ -24,6 +25,7 @@ class CreateSuppliersTable extends Migration
             $table->date('remote_lastimport')->nullable()->default(null);
             $table->boolean('fast_shipping_enabled')->default(false);
             $table->boolean('unmanaged_shipping_enabled')->default(false);
+            $table->string('notify_on_close_enabled')->default('none');
 
             $table->string('taxcode')->nullable();
             $table->string('vat')->nullable();

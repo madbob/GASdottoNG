@@ -48,9 +48,9 @@
 
 				<thead>
 					<tr>
-						<th>Ordine</th>
-						<th>Totale Prenotato</th>
-						<th>Totale Consegnato</th>
+						<th scope="col">Ordine</th>
+						<th scope="col">Totale Prenotato</th>
+						<th scope="col">Totale Consegnato</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -93,14 +93,14 @@
 				</tbody>
 				<thead>
 					<tr>
-						<th>&nbsp</th>
-						<th>
+						<th scope="col">&nbsp</th>
+						<th scope="col">
 							{{ printablePriceCurrency($grand_total_pending ?? 0) }}
 							@if($modifiers_pending != 0)
 								<br>+ {{ printablePrice($modifiers_pending) }}
 							@endif
 						</th>
-						<th>
+						<th scope="col">
 							{{ printablePriceCurrency($grand_total_delivered ?? 0) }}
 							@if($modifiers_delivered != 0)
 								<br>+ {{ printablePrice($modifiers_delivered) }}

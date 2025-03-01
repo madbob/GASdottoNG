@@ -5,12 +5,12 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th width="20%">{{ _i('Prodotto') }}</th>
-                            <th width="15%">{{ _i('Aliquota IVA') }}</th>
-                            <th width="15%">{{ _i('Quantità Consegnata') }}</th>
-                            <th width="15%">{{ _i('Totale Imponibile') }}</th>
-                            <th width="15%">{{ _i('Totale IVA') }}</th>
-                            <th width="20%">{{ _i('Totale') }}</th>
+                            <th scope="col" width="20%">{{ _i('Prodotto') }}</th>
+                            <th scope="col" width="15%">{{ _i('Aliquota IVA') }}</th>
+                            <th scope="col" width="15%">{{ _i('Quantità Consegnata') }}</th>
+                            <th scope="col" width="15%">{{ _i('Totale Imponibile') }}</th>
+                            <th scope="col" width="15%">{{ _i('Totale IVA') }}</th>
+                            <th scope="col" width="20%">{{ _i('Totale') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,12 +29,12 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
-                            <th>{{ printablePriceCurrency($summaries[$order->id]->total_taxable) }}</th>
-                            <th>{{ printablePriceCurrency($summaries[$order->id]->total_tax) }}</th>
-                            <th>{{ printablePriceCurrency($summaries[$order->id]->total) }}</th>
+                            <th scope="col">&nbsp;</th>
+                            <th scope="col">&nbsp;</th>
+                            <th scope="col">&nbsp;</th>
+                            <th scope="col">{{ printablePriceCurrency($summaries[$order->id]->total_taxable) }}</th>
+                            <th scope="col">{{ printablePriceCurrency($summaries[$order->id]->total_tax) }}</th>
+                            <th scope="col">{{ printablePriceCurrency($summaries[$order->id]->total) }}</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -46,12 +46,12 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th width="20%">{{ _i('Prodotto') }}</th>
-                            <th width="15%">{{ _i('Aliquota IVA') }}</th>
-                            <th width="15%">{{ _i('Quantità Consegnata') }}</th>
-                            <th width="15%">{{ _i('Totale Imponibile') }}</th>
-                            <th width="15%">{{ _i('Totale IVA') }}</th>
-                            <th width="20%">{{ _i('Totale') }}</th>
+                            <th scope="col" width="20%">{{ _i('Prodotto') }}</th>
+                            <th scope="col" width="15%">{{ _i('Aliquota IVA') }}</th>
+                            <th scope="col" width="15%">{{ _i('Quantità Consegnata') }}</th>
+                            <th scope="col" width="15%">{{ _i('Totale Imponibile') }}</th>
+                            <th scope="col" width="15%">{{ _i('Totale IVA') }}</th>
+                            <th scope="col" width="20%">{{ _i('Totale') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,12 +70,12 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
-                            <th>{{ printablePriceCurrency($global_summary->total_taxable) }}</th>
-                            <th>{{ printablePriceCurrency($global_summary->total_tax) }}</th>
-                            <th>{{ printablePriceCurrency($global_summary->total) }}</th>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td class="fw-bold">{{ printablePriceCurrency($global_summary->total_taxable) }}</td>
+                            <td class="fw-bold">{{ printablePriceCurrency($global_summary->total_tax) }}</td>
+                            <td class="fw-bold">{{ printablePriceCurrency($global_summary->total) }}</td>
                         </tr>
                     </tfoot>
                 </table>

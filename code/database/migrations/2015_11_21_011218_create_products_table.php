@@ -10,6 +10,7 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->timestamps();
+            $table->string('updated_by')->default('');
             $table->softDeletes();
 
             $table->string('supplier_id');
@@ -31,12 +32,14 @@ class CreateProductsTable extends Migration
             $table->integer('package_size')->unsigned()->default(0);
             $table->integer('multiple')->unsigned()->default(1);
             $table->decimal('min_quantity', 7, 3)->default(0);
+            $table->decimal('global_min', 7, 3)->default(0);
             $table->decimal('max_quantity', 7, 3)->default(0);
             $table->decimal('max_available', 7, 3)->default(0);
 
             $table->foreign('category_id')->references('id')->on('categories');
             $table->foreign('measure_id')->references('id')->on('measures');
             $table->foreign('supplier_id')->references('id')->on('suppliers');
+            $table->integer('sorting')->default(0);
         });
     }
 

@@ -17,7 +17,7 @@
             <thead>
                 <tr>
                     @foreach($headers as $head)
-                        <th><strong>{{ $head }}</strong></th>
+                        <th scope="col">{{ $head }}</th>
                     @endforeach
                 </tr>
             </thead>
