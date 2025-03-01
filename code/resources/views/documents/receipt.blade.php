@@ -11,7 +11,7 @@
     <body>
         <p>
             @if(localFilePath($receipt->user->gas, 'logo') != null)
-                <img src="{{ localFilePath($receipt->user->gas, 'logo') }}" style="width: 150px"><br>
+                <img src="{{ localFilePath($receipt->user->gas, 'logo') }}" style="width: 150px" alt="Logo"><br>
             @endif
 
             <?php $gas_data = $receipt->user->gas->extra_invoicing ?>
