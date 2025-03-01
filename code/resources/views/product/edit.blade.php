@@ -4,7 +4,7 @@ $buttons = [
     [
         'color' => 'light',
         'label' => _i('Duplica'),
-        'classes' => ['float-start', 'async-modal'],
+        'classes' => ['float-start', 'me-2', 'async-modal'],
         'attributes' => [
             'data-modal-url' => route('products.duplicate', $product->id)
         ],
