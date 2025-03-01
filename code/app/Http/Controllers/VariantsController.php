@@ -74,6 +74,7 @@ class VariantsController extends BackedController
 
         $variant = $product->variants()->first();
         $variant = $this->service->store([
+            'name' => $request->input('name'),
             'variant_id' => $variant->id,
             'id' => $ids,
             'value' => $values,

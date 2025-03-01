@@ -8,6 +8,10 @@
 
         <div class="row">
             <div class="col">
+                <x-larastrap::text name="name" :label="_i('Nome')" :value="$product->variants->first()->name" />
+
+                <hr />
+
                 <table class="table table-borderless table-sm dynamic-table">
 					@include('variant.matrixhead', [
                         'combos' => $combos,
