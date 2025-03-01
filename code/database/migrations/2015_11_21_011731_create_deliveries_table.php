@@ -10,6 +10,7 @@ class CreateDeliveriesTable extends Migration
         Schema::create('deliveries', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->timestamps();
+            $table->string('updated_by')->default('');
 
             $table->string('name');
             $table->string('address');

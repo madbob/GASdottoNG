@@ -11,8 +11,10 @@ class CreateNotificationsTable extends Migration
             $table->increments('id');
             $table->timestamps();
 
+            $table->string('gas_id')->default('');
             $table->string('creator_id');
             $table->text('content');
+            $table->string('mailtype')->nullable()->default(null);
             $table->boolean('mailed');
             $table->date('start_date')->useCurrent();
             $table->date('end_date')->nullable();

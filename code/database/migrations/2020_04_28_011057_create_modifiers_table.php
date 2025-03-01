@@ -10,6 +10,7 @@ class CreateModifiersTable extends Migration
         Schema::create('modifiers', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
+            $table->string('updated_by')->default('');
 
             $table->string('modifier_type_id');
             $table->string('target_type');

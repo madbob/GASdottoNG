@@ -10,6 +10,7 @@ class CreateBookingsTable extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->timestamps();
+            $table->string('updated_by')->default('');
 
             $table->string('order_id');
             $table->string('user_id');
