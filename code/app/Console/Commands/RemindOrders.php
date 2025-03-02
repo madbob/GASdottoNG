@@ -19,7 +19,9 @@ class RemindOrders extends Command
 
     public function handle()
     {
-        $orders = Order::where('status', 'open')->where('end', '>', Carbon::today()->format('Y-m-d'))->get();
+        $today = Carbon::today();
+        $today_formatted = $today->format('Y-m-d');
+        $orders = Order::where('status', 'open')->where('end', '>', $today)->get();
         $notifications = [];
 
         foreach ($orders as $order) {
@@ -28,14 +30,12 @@ class RemindOrders extends Command
                     continue;
                 }
 
-                $today = Carbon::today();
-
-                if ($gas->last_sent_order_reminder == $today->format('Y-m-d')) {
+                if ($gas->last_sent_order_reminder == $today_formatted) {
                     continue;
                 }
 
                 $days = $gas->send_order_reminder;
-                $expiration = $today->addDays($days);
+                $expiration = $today->copy()->addDays($days);
 
                 if ($order->end == $expiration->format('Y-m-d')) {
                     if (isset($notifications[$gas->id]) == false) {

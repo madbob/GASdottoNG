@@ -34,20 +34,20 @@ foreach(App\Currency::enabled() as $curr) {
         <table class="table" data-classes="table table-no-bordered">
             <thead>
                 <tr>
-                    <th>{{ _i('Data Registrazione') }}</th>
-                    <th>{{ _i('Data Movimento') }}</th>
-                    <th>{{ _i('Tipo') }}</th>
-                    <th>{{ _i('Pagamento') }}</th>
+                    <th scope="col">{{ _i('Data Registrazione') }}</th>
+                    <th scope="col">{{ _i('Data Movimento') }}</th>
+                    <th scope="col">{{ _i('Tipo') }}</th>
+                    <th scope="col">{{ _i('Pagamento') }}</th>
                     @if($exclude_sender == false)
-                        <th>{{ _i('Pagante') }}</th>
+                        <th scope="col">{{ _i('Pagante') }}</th>
                     @endif
                     @if($exclude_target == false)
-                        <th>{{ _i('Pagato') }}</th>
+                        <th scope="col">{{ _i('Pagato') }}</th>
                     @endif
-                    <th>{{ _i('Valore') }}</th>
-                    <th>{{ _i('Note') }}</th>
+                    <th scope="col">{{ _i('Valore') }}</th>
+                    <th scope="col">{{ _i('Note') }}</th>
                     @if(Gate::check('movements.admin', $currentgas))
-                        <th>{{ _i('Modifica') }}</th>
+                        <th scope="col">{{ _i('Modifica') }}</th>
                     @endif
                 </tr>
             </thead>
@@ -115,24 +115,24 @@ foreach(App\Currency::enabled() as $curr) {
 
             <tfoot>
                 <tr>
-                    <th>&nbsp;</th>
-                    <th>&nbsp;</th>
-                    <th>&nbsp;</th>
-                    <th>&nbsp;</th>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                     @if($exclude_sender == false)
-                        <th>&nbsp;</th>
+                        <td>&nbsp;</td>
                     @endif
                     @if($exclude_target == false)
-                        <th>&nbsp;</th>
+                        <td>&nbsp;</td>
                     @endif
-                    <th>
+                    <td class="fw-bold">
                         @foreach($total_amounts_on_screen as $data)
                             {{ printablePriceCurrency($data->total, '.', $data->currency) }}<br>
                         @endforeach
-                    </th>
-                    <th>&nbsp;</th>
+                    </td>
+                    <td>&nbsp;</td>
                     @if(Gate::check('movements.admin', $currentgas))
-                        <th>&nbsp;</th>
+                        <td>&nbsp;</td>
                     @endif
                 </tr>
             </tfoot>

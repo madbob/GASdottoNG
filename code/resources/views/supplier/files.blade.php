@@ -54,7 +54,7 @@
                     @foreach($images as $img)
                         <?php $size = $img->getSize() ?>
                         <span style="--w: {{ $size[0] }}; --h: {{ $size[1] }}">
-                            <img src="{{ $img->download_url }}">
+                            <img src="{{ $img->download_url }}" alt="{{ $supplier->printableName() }}">
                         </span>
                     @endforeach
                 </div>

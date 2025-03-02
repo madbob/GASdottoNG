@@ -10,6 +10,7 @@ class CreateBookedProductsTable extends Migration
         Schema::create('booked_products', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->timestamps();
+            $table->string('updated_by')->default('');
 
             $table->string('booking_id');
             $table->string('product_id');

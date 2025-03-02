@@ -147,13 +147,14 @@ class Date extends Model implements Datable
                     ];
 
                     break;
+
+                default:
+                    throw new \UnexpectedValueException('Tipo di azione non valido per ordine ricorrente');
             }
 
-            if ($node) {
-                $node->target = $this->target;
-                $node->comment = $this->comment;
-                $ret[] = $node;
-            }
+            $node->target = $this->target;
+            $node->comment = $this->comment;
+            $ret[] = $node;
         }
 
         return $ret;
@@ -185,14 +186,14 @@ class Date extends Model implements Datable
         return $this->internalAttribute('action');
     }
 
-    public function getFirstOffsetAttribute()
+    public function getFirstOffsetAttribute(): int
     {
-        return $this->internalAttribute('offset1');
+        return (int) $this->internalAttribute('offset1');
     }
 
-    public function getSecondOffsetAttribute()
+    public function getSecondOffsetAttribute(): int
     {
-        return $this->internalAttribute('offset2');
+        return (int) $this->internalAttribute('offset2');
     }
 
     public function getCommentAttribute()

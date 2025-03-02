@@ -10,9 +10,6 @@ use App\Role;
 
 trait RoleableTrait
 {
-    /**
-     * @phpstan-return BelongsToMany<Role>
-     */
     public function roles($target = null): BelongsToMany
     {
         return $this->belongsToMany(Role::class)->orderBy('name', 'asc')->withPivot('id');

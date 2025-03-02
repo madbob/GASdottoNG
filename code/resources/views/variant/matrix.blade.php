@@ -44,7 +44,7 @@
 
                                     @if ($product->measure->discrete)
                                         <td>
-                                            <x-larastrap::number name="weight_offset" squeeze npostfix="[]" :textappend="_i('Chili')" />
+                                            <x-larastrap::number name="weight_offset" squeeze npostfix="[]" :textappend="_i('Chili')" step="0.01" />
                                         </td>
                                     @endif
                                 </tr>

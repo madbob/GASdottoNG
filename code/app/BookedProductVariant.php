@@ -147,7 +147,7 @@ class BookedProductVariant extends Model
             Essendo la variante prenotata la foglia più estrema dell'albero di
             riduzione, questa funzione non dovrebbe mai essere chiamata
         */
-        throw new \Exception('Invocata funzione reduxBehaviour() su BookedProductVariant', 1);
+        throw new \BadMethodCallException('Invocata funzione reduxBehaviour() su BookedProductVariant', 1);
     }
 
     public function reduxData($filters = null)

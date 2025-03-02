@@ -33,15 +33,15 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
             <table class="table fixed-table">
                 <thead>
                     <tr>
-                        <th width="5%">{{ _i('Importa') }}</th>
-                        <th width="15%">{{ _i('Nome') }}</th>
-                        <th width="15%">{{ _i('Descrizione') }}</th>
-                        <th width="10%">{{ _i('Prezzo Unitario') }}</th>
-                        <th width="10%">{{ _i('Categoria') }}</th>
-                        <th width="10%">{{ _i('Unità di Misura') }}</th>
-                        <th width="10%">{{ _i('Aliquota IVA') }}</th>
-                        <th width="10%">{{ _i('Codice Fornitore') }}</th>
-                        <th width="15%">{{ _i('Aggiorna') }}</th>
+                        <th scope="col" width="5%">{{ _i('Importa') }}</th>
+                        <th scope="col" width="15%">{{ _i('Nome') }}</th>
+                        <th scope="col" width="15%">{{ _i('Descrizione') }}</th>
+                        <th scope="col" width="10%">{{ _i('Prezzo Unitario') }}</th>
+                        <th scope="col" width="10%">{{ _i('Categoria') }}</th>
+                        <th scope="col" width="10%">{{ _i('Unità di Misura') }}</th>
+                        <th scope="col" width="10%">{{ _i('Aliquota IVA') }}</th>
+                        <th scope="col" width="10%">{{ _i('Codice Fornitore') }}</th>
+                        <th scope="col" width="15%">{{ _i('Aggiorna') }}</th>
                     </tr>
                 </thead>
                 <tbody>

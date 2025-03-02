@@ -11,7 +11,7 @@
     <body>
         <p>
             @if(localFilePath($receipt->user->gas, 'logo') != null)
-                <img src="{{ localFilePath($receipt->user->gas, 'logo') }}" style="width: 150px"><br>
+                <img src="{{ localFilePath($receipt->user->gas, 'logo') }}" style="width: 150px" alt="Logo"><br>
             @endif
 
             <?php $gas_data = $receipt->user->gas->extra_invoicing ?>
@@ -46,10 +46,10 @@
         <table border="1" style="width: 100%" cellpadding="5">
             <thead>
                 <tr>
-                    <th width="55%"><strong>{{ _i('Prodotto') }}</strong></th>
-                    <th width="15%"><strong>{{ _i('Quantità') }}</strong></th>
-                    <th width="15%"><strong>{{ _i('Unità Misura') }}</strong></th>
-                    <th width="15%"><strong>{{ _i('Prezzo') }}</strong></th>
+                    <th scope="col" width="55%"><strong>{{ _i('Prodotto') }}</strong></th>
+                    <th scope="col" width="15%"><strong>{{ _i('Quantità') }}</strong></th>
+                    <th scope="col" width="15%"><strong>{{ _i('Unità Misura') }}</strong></th>
+                    <th scope="col" width="15%"><strong>{{ _i('Prezzo') }}</strong></th>
                 </tr>
             </thead>
             <tbody>

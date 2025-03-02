@@ -68,7 +68,7 @@
                         {{ _i('O facendo una donazione:') }}
                     </p>
                     <p>
-                        <a href="https://paypal.me/m4db0b" target="_blank"><img src="https://www.gasdotto.net/images/paypal.png" border="0"></a>
+                        <a href="https://paypal.me/m4db0b" target="_blank"><img src="https://www.gasdotto.net/images/paypal.png" border="0" alt="PayPal"></a>
                     </p>
                 </div>
                 <p>

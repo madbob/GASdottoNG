@@ -10,6 +10,7 @@ class CreateMovementsTable extends Migration
         Schema::create('movements', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
+            $table->string('updated_by')->default('');
 
             $table->date('date')->useCurrent();
             $table->date('registration_date')->useCurrent();

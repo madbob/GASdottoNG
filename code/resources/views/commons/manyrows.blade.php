@@ -21,7 +21,7 @@ if (isset($extra_class)) {
             <tr>
                 @foreach($columns as $column)
                     @if($column['type'] != 'hidden')
-                        <th {!! isset($column['width']) ? 'width="' .  $column['width']. '%"' : '' !!}>
+                        <th scope="col" {!! isset($column['width']) ? 'width="' .  $column['width']. '%"' : '' !!}>
                             {{ $column['label'] }}
 
                             @if(isset($column['help']))

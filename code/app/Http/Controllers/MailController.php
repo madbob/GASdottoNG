@@ -56,8 +56,6 @@ class MailController extends Controller
     public function postStatusScaleway(Request $request)
     {
         if (env('MAIL_MAILER') == 'scaleway') {
-            $api_endpoint = 'https://api.scaleway.com/transactional-email/v1alpha1/regions/fr-par/webhooks';
-
             $message = Message::fromRawPostData();
             $validator = new MessageValidator();
 

@@ -10,6 +10,7 @@ class CreateInvoicesTable extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->timestamps();
+            $table->string('updated_by')->default('');
 
             $table->string('gas_id');
             $table->string('supplier_id');

@@ -15,24 +15,24 @@ class NotifyNewOrder implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $order_id;
+    public $orderId;
 
     public function __construct($order_id)
     {
-        $this->order_id = $order_id;
+        $this->orderId = $order_id;
     }
 
     public function handle()
     {
-        $order = Order::find($this->order_id);
+        $order = Order::find($this->orderId);
 
         if (is_null($order)) {
-            \Log::warning('Richiesta notifica creazione ordine non esistente');
+            \Log::warning('Richiesta notifica creazione ordine non esistente: ' . $this->orderId);
 
             return;
         }
 
-        if (is_null($order->first_notify) == false) {
+        if ($order->first_notify) {
             \Log::warning('Richiesta notifica creazione ordine già inoltrata');
 
             return;

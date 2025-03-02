@@ -70,4 +70,11 @@ class Contact extends Model
 
         return $tokens;
     }
+
+    /*************************************************************** GASModel */
+
+    public function printableName()
+    {
+        return $this->value;
+    }
 }

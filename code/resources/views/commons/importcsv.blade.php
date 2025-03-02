@@ -31,7 +31,7 @@ $explain_extras = $importer->extraInformations();
             </p>
 
             <p class="text-center">
-                <img src="{{ url('images/csv_explain.png') }}" />
+                <img src="{{ url('images/csv_explain.png') }}" alt="Istruzioni formattazione CSV" />
             </p>
             <p>
                 {{ _i('Una volta caricato il file sarà possibile specificare quale attributo rappresenta ogni colonna trovata nel documento. Non è necessario specificare tutte le colonne previste, tranne quelle obbligatorie.') }}

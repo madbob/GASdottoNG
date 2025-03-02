@@ -69,6 +69,8 @@ $form_buttons = [
                 </div>
             @else
                 <div class="table-icons-legend" data-list-target=".booking-editor">
+                    <a href="#" class="btn btn-info mb-1 d-block show-all">Vedi tutti</i></a>
+
                     @foreach($sorted_filter_categories as $cat_id => $cat_data)
                         @if(empty($cat_data->children))
                             <a href="#" class="btn btn-info mb-1 d-block">{{ $cat_data->label }}<i class="bi-hidden-cat-{{ $cat_id }}"></i></a>
@@ -208,7 +210,7 @@ $form_buttons = [
                             </x-larastrap::suggestion>
                         @endif
 
-                        <table class="table table-striped user-booking-editor booking-editor" id="booking_{{ sanitizeId($order->id) }}" data-order-id="{{ $order->id }}">
+                        <table class="table align-middle table-striped user-booking-editor booking-editor" id="booking_{{ sanitizeId($order->id) }}" data-order-id="{{ $order->id }}">
                             <input type="hidden" name="booking_id" value="{{ $o->id }}" class="skip-on-submit">
 
                             <tbody>
@@ -241,7 +243,7 @@ $form_buttons = [
                                         <td>
                                             <?php $details = $product->printableDetails($order) ?>
                                             @if(filled($details))
-                                                <label class="static-label"><small>{!! $details !!}</small></label>
+                                                <small>{!! $details !!}</small>
                                             @endif
                                         </td>
 
@@ -249,10 +251,8 @@ $form_buttons = [
                                             @include('booking.pricerow', ['product' => $product, 'booked' => $p, 'order' => $order, 'populate' => true])
                                         </td>
 
-                                        <td>
-                                            <label class="static-label booking-product-price float-end">
-                                                <span>{{ printablePrice($p ? $p->getValue('effective') : 0) }}</span> {{ $currency_symbol }}
-                                            </label>
+                                        <td class="text-end">
+                                            <span class="booking-product-price">{{ printablePrice($p ? $p->getValue('effective') : 0) }}</span> {{ $currency_symbol }}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -271,21 +271,21 @@ $form_buttons = [
 
                                 @if($user->gas->hasFeature('restrict_booking_to_credit'))
                                     <tr class="do-not-sort">
-                                        <td><label class="static-label">{{ _i('Credito Disponibile') }}</label></td>
+                                        <td>{{ _i('Credito Disponibile') }}</td>
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
-                                        <td><label class="static-label float-end">{{ printablePriceCurrency($user->activeBalance()) }}</label></td>
+                                        <td class="text-end">{{ printablePriceCurrency($user->activeBalance()) }}</td>
                                     </tr>
                                 @endif
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th class="text-end">Totale:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-end fw-bold">{{ _i('Totale') }}:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -303,15 +303,13 @@ $form_buttons = [
 
             @if($more_orders)
                 <table class="table">
-                    <tfoot>
+                    <thead>
                         <tr>
-                            <th>
-                                <div class="float-end text-end">
-                                    <strong>Totale Complessivo:<br><span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}</strong>
-                                </div>
+                            <th class="text-end">
+                                {{ _i('Totale Complessivo') }}:<br><span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}
                             </th>
                         </tr>
-                    </tfoot>
+                    </thead>
                 </table>
             @endif
 

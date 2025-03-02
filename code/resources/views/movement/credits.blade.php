@@ -50,11 +50,11 @@
 
 								<thead>
 									<tr>
-										<th width="40%">{{ _i('Nome') }}</th>
+										<th scope="col" width="40%">{{ _i('Nome') }}</th>
 										@foreach($currencies as $curr)
-											<th width="{{ round(35 / $currencies->count(), 2) }}%">{{ _i('Credito Residuo') }}</th>
+											<th scope="col" width="{{ round(35 / $currencies->count(), 2) }}%">{{ _i('Credito Residuo') }}</th>
 										@endforeach
-										<th width="25%">{{ _i('Modalità Pagamento') }}</th>
+										<th scope="col" width="25%">{{ _i('Modalità Pagamento') }}</th>
 									</tr>
 								</thead>
 								<tbody>

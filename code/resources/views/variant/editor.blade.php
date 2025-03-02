@@ -11,18 +11,16 @@
 
     @if($product->variants->isEmpty() == false)
         <br>
-        <table class="table">
-            @foreach($product->variants as $variant)
-                <tr data-variant-id="{{ $variant->id }}">
-                    <td width="30%">{{ $variant->name }}</td>
-                    <td width="50%">{{ $variant->printableValues() }}</td>
+        @foreach($product->variants as $variant)
+            <div class="row" data-variant-id="{{ $variant->id }}">
+                <div class="col-3">{{ $variant->name }}</div>
+                <div class="col-6">{{ $variant->printableValues() }}</div>
 
-                    <td width="20%">
-                        <a class="btn btn-warning async-modal" data-modal-url="{{ route('variants.edit', $variant->id) }}"><i class="bi-pencil"></i></a>
-                        <div class="btn btn-danger delete-variant"><i class="bi-x-lg"></i></div>
-                    </td>
-                </tr>
-            @endforeach
-        </table>
+                <div class="col-3 text-end">
+                    <a class="btn btn-warning async-modal" data-modal-url="{{ route('variants.edit', $variant->id) }}"><i class="bi-pencil"></i></a>
+                    <div class="btn btn-danger delete-variant"><i class="bi-x-lg"></i></div>
+                </div>
+            </div>
+        @endforeach
     @endif
 </div>

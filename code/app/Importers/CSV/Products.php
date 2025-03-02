@@ -192,12 +192,10 @@ class Products extends CSVImporter
                     }
                 }
 
-                // @phpstan-ignore-next-line
                 if (! empty($package_price) && ! empty($p->package_size) && empty($p->price)) {
                     $p->price = $package_price / $p->package_size;
                 }
 
-                // @phpstan-ignore-next-line
                 if (! empty($price_without_vat) && ! empty($vat_rate)) {
                     $p->price = $price_without_vat + (($price_without_vat * $vat_rate) / 100);
                 }

@@ -78,13 +78,13 @@ foreach($display_columns as $identifier => $metadata) {
                 <tr>
                     @foreach($display_columns as $identifier => $metadata)
                         @if($identifier == 'selection')
-                            <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
+                            <th scope="col" width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
                                 @if($products->count() != $order_products->count())
                                     <button class="btn btn-light btn-sm toggle-product-abilitation" data-bs-toggle="button">{!! _i('Vedi Tutti') !!}</button>
                                 @endif
                             </th>
                         @else
-                            <th width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">{{ $metadata->label }}</th>
+                            <th scope="col" width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">{{ $metadata->label }}</th>
                         @endif
                     @endforeach
                 </tr>
@@ -259,7 +259,7 @@ foreach($display_columns as $identifier => $metadata) {
             <thead>
                 <tr>
                     @foreach($display_columns as $identifier => $metadata)
-                        <th class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
+                        <th scope="col" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
                             @switch($identifier)
                                 @case('total_price')
                                     <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>

@@ -123,7 +123,7 @@ class MovementTypesServiceTest extends TestCase
             $this->fail('should never run');
         }
         catch (ModelNotFoundException $e) {
-            //good boy
+            // good boy
         }
     }
 }

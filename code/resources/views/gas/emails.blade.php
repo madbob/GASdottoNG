@@ -12,15 +12,15 @@
                     <table class="table inline-cells">
                         <thead>
                             <tr>
-                                <th width="20%">&nbsp;</th>
-                                <th width="20%">{{ _i('Aperto') }}</th>
-                                <th width="40%">{{ _i('In Chiusura') }}</th>
-                                <th width="20%">{{ _i('Chiuso') }}</th>
+                                <th scope="col" width="20%">&nbsp;</th>
+                                <th scope="col" width="20%">{{ _i('Aperto') }}</th>
+                                <th scope="col" width="40%">{{ _i('In Chiusura') }}</th>
+                                <th scope="col" width="20%">{{ _i('Chiuso') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th>{{ _i('Utenti') }}</th>
+                                <th scope="row">{{ _i('Utenti') }}</th>
                                 <td>
                                     <x-larastrap::check name="notify_all_new_orders" squeeze />
                                     <x-larastrap::pophelp :text="_i('Se questa opzione non viene abilitata, gli utenti ricevono solo le notifiche email per gli ordini dei fornitori che hanno individualmente abilitato dal proprio pannello di configurazione personale. Se viene abilitata, tutti gli utenti ricevono una notifica email ogni volta che un ordine viene aperto')" />
@@ -37,7 +37,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>{{ _i('Referenti') }}</th>
+                                <th scope="row">{{ _i('Referenti') }}</th>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
                                 <td>

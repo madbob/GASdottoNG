@@ -72,7 +72,7 @@ class Gas extends Model
 
     public function nextInvoiceNumber()
     {
-        $status = $this->extra_invoicing;
+        $status = $this->getAttribute('extra_invoicing');
         $now = date('Y');
         $year = $status['invoices_counter_year'] ?? $now;
 
@@ -95,26 +95,38 @@ class Gas extends Model
         return $this->innerCache('feature_' . $name, function ($obj) use ($name) {
             switch ($name) {
                 case 'shipping_places':
-                    return $obj->deliveries->isEmpty() === false;
+                    $ret = $obj->deliveries->isEmpty() === false;
+                    break;
                 case 'rid':
-                    return ! empty($obj->rid['iban']);
+                    $ret = ! empty($obj->rid['iban']);
+                    break;
                 case 'satispay':
-                    return ! empty($obj->satispay['secret']);
+                    $ret = ! empty($obj->satispay['secret']);
+                    break;
                 case 'integralces':
-                    return $obj->integralces['enabled'];
+                    $ret = $obj->integralces['enabled'];
+                    break;
                 case 'extra_invoicing':
-                    return ! empty($obj->extra_invoicing['taxcode']) || ! empty($obj->extra_invoicing['vat']);
+                    $ret = ! empty($obj->extra_invoicing['taxcode']) || ! empty($obj->extra_invoicing['vat']);
+                    break;
                 case 'public_registrations':
-                    return $obj->public_registrations['enabled'];
+                    $ret = $obj->public_registrations['enabled'];
+                    break;
                 case 'restrict_booking_to_credit':
-                    return $obj->restrict_booking_to_credit['enabled'];
+                    $ret = $obj->restrict_booking_to_credit['enabled'];
+                    break;
                 case 'auto_aggregates':
-                    return Aggregate::has('orders', '>=', aggregatesConvenienceLimit())->count() > 3;
+                    $ret = Aggregate::has('orders', '>=', aggregatesConvenienceLimit())->count() > 3;
+                    break;
                 case 'send_order_reminder':
-                    return $obj->send_order_reminder > 0;
+                    $ret = $obj->send_order_reminder > 0;
+                    break;
+                default:
+                    $ret = false;
+                    break;
             }
 
-            return false;
+            return $ret;
         });
     }
 

@@ -126,16 +126,16 @@ app()->make('AggregationSwitch')->setEnforced(true);
 
                 <div class="row">
                     <div class="col">
-                        <table class="table table-striped booking-editor" data-booking-id="{{ $o->id }}" data-order-id="{{ $order->id }}">
+                        <table class="table align-middle table-striped booking-editor" data-booking-id="{{ $o->id }}" data-order-id="{{ $order->id }}">
                             <input type="hidden" name="booking_id" value="{{ $o->id }}" class="skip-on-submit">
 
                             <thead>
                                 <tr>
-                                    <th width="30%"></th>
-                                    <th width="10%"></th>
-                                    <th width="20%"></th>
-                                    <th width="25%"></th>
-                                    <th width="15%"></th>
+                                    <th scope="col" width="30%"></th>
+                                    <th scope="col" width="10%"></th>
+                                    <th scope="col" width="20%"></th>
+                                    <th scope="col" width="25%"></th>
+                                    <th scope="col" width="15%"></th>
                                 </tr>
                             </thead>
 
@@ -147,7 +147,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                         <tr class="booking-product">
                                             <td>
                                                 <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($product->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
-                                                <label class="static-label">{{ $product->product->name }}</label>
+                                                {{ $product->product->name }}
                                             </td>
 
                                             <td>
@@ -159,7 +159,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                             </td>
 
                                             <td>
-                                                <label class="static-label booking-product-booked">{{ printableQuantity($product->quantity, $discrete_quantity) }} {{ $product->product->printableMeasure(true) }}</label>
+                                                <span class="booking-product-booked">{{ printableQuantity($product->quantity, $discrete_quantity) }} {{ $product->product->printableMeasure(true) }}</span>
                                             </td>
 
                                             <td>
@@ -172,10 +172,8 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                                 </div>
                                             </td>
 
-                                            <td>
-                                                <label class="static-label booking-product-price float-end">
-                                                    <span>{{ printablePrice($product->getValue('delivered')) }}</span> {{ $currency_symbol }}
-                                                </label>
+                                            <td class="text-end">
+                                                <span class="booking-product-price">{{ printablePrice($product->getValue('delivered')) }}</span> {{ $currency_symbol }}
                                             </td>
                                         </tr>
                                     @else
@@ -186,12 +184,10 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                                 <td>
                                                     <input type="hidden" name="booking-product-real-booked" value="{{ printableQuantity($var->true_quantity, $discrete_quantity) }}" class="skip-on-submit" />
                                                     @if($combo)
-                                                        <label class="static-label">{{ $combo->printableName() }}</label>
+                                                        {{ $combo->printableName() }}
                                                     @else
-                                                        <label class="static-label">
-                                                            {{ $product->product->printableName() }}<br>
-                                                            <small>{{ _i('Nota bene: la variante selezionata in prenotazione non è più nel listino') }}</small>
-                                                        </label>
+                                                        {{ $product->product->printableName() }}<br>
+                                                        <small>{{ _i('Nota bene: la variante selezionata in prenotazione non è più nel listino') }}</small>
                                                     @endif
 
                                                     <input type="hidden" name="{{ $product->product->id }}" value="1" />
@@ -209,7 +205,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                                 </td>
 
                                                 <td>
-                                                    <label class="static-label booking-product-booked">{{ printableQuantity($var->quantity, $discrete_quantity) }} {{ $product->product->printableMeasure(true) }}</label>
+                                                    <span class="booking-product-booked">{{ printableQuantity($var->quantity, $discrete_quantity) }} {{ $product->product->printableMeasure(true) }}</span>
                                                 </td>
 
                                                 <td>
@@ -222,10 +218,8 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                                     </div>
                                                 </td>
 
-                                                <td>
-                                                    <label class="static-label booking-product-price float-end">
-                                                        <span>{{ printablePrice($var->deliveredValue()) }}</span> {{ $currency_symbol }}
-                                                    </label>
+                                                <td class="text-end">
+                                                    <span class="booking-product-price">{{ printablePrice($var->deliveredValue()) }}</span> {{ $currency_symbol }}
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -257,13 +251,12 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                         </td>
 
                                         <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
 
                                         <td class="bookable-target">&nbsp;</td>
 
-                                        <td>
-                                            <label class="static-label booking-product-price float-end">
-                                                <span>0.00</span> {{ $currency_symbol }}
-                                            </label>
+                                        <td class="text-end">
+                                            <span class="booking-product-price">0.00</span> {{ $currency_symbol }}
                                         </td>
                                     </tr>
                                 @endif
@@ -271,19 +264,19 @@ app()->make('AggregationSwitch')->setEnforced(true);
 
                             <tfoot>
                                 <tr>
-                                    <th>
+                                    <td>
                                         @if($order->isActive())
                                             <button class="btn btn-warning add-booking-product">{{ _i('Aggiungi Prodotto') }}</button>
                                         @endif
-                                    </th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
 
                                     @if($currentgas->unmanaged_shipping == '1' && $order->supplier->unmanaged_shipping_enabled)
-                                        <th class="text-end"><x-larastrap::price :label="_i('Totale Manuale')" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" data-manual-change="0" /></th>
+                                        <td class="text-end fw-bold"><x-larastrap::price :label="_i('Totale Manuale')" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" data-manual-change="0" /></td>
                                     @else
-                                        <th class="text-end">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</th>
+                                        <td class="text-end fw-bold">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</td>
                                     @endif
                                 </tr>
                             </tfoot>
@@ -296,11 +289,11 @@ app()->make('AggregationSwitch')->setEnforced(true);
                 <table class="table">
                     <tfoot>
                         <tr>
-                            <th>
+                            <td>
                                 <div class="float-end">
                                     <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> {{ $currency_symbol }}</strong>
                                 </div>
-                            </th>
+                            </td>
                         </tr>
                     </tfoot>
                 </table>

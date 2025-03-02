@@ -14,7 +14,7 @@ function categoryDescent($category, $toplevel)
         echo '<ul>';
 
         foreach($category->children as $c) {
-            echo categoryDescent($c, false);
+            categoryDescent($c, false);
         }
 
         echo '</ul>';

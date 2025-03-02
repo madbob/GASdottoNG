@@ -29,7 +29,7 @@
             <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                 <thead>
                     <tr>
-                        <th colspan="5">
+                        <th scope="col" colspan="5">
                             <strong>{{ $super_booking->user->printableName() }}</strong>
                         </th>
                     </tr>
@@ -94,15 +94,15 @@
 
                     @foreach($booking->aggregatedModifiers() as $am)
                         <tr>
-                            <th colspan="5"><strong>{{ $am->name }}: {{ printablePriceCurrency($am->amount, ',') }}</th>
+                            <th scope="row" colspan="5"><strong>{{ $am->name }}: {{ printablePriceCurrency($am->amount, ',') }}</th>
                         </tr>
                     @endforeach
 
                     <tr>
-                        <th colspan="5"><strong>{{ _i('Totale Prenotato') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
+                        <th scope="row" colspan="5"><strong>{{ _i('Totale Prenotato') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
                     </tr>
                     <tr>
-                        <th colspan="5"><strong>{{ _i('Totale Consegnato') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
+                        <th scope="row" colspan="5"><strong>{{ _i('Totale Consegnato') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
                     </tr>
                 </tbody>
             </table>
@@ -121,7 +121,7 @@
                 <table border="1" style="width: 100%" cellpadding="5" nobr="true">
                     <thead>
                         <tr>
-                            <th colspan="5">
+                            <th scope="col" colspan="5">
                                 <strong>{{ _i('Totale') }}</strong>
                             </th>
                         </tr>
@@ -180,15 +180,15 @@
 
                         @foreach($booking->aggregatedModifiers() as $am)
                             <tr>
-                                <th colspan="5"><strong>{{ $am->name }}: {{ printablePriceCurrency($am->amount, ',') }}</th>
+                                <th scope="row" colspan="5"><strong>{{ $am->name }}: {{ printablePriceCurrency($am->amount, ',') }}</th>
                             </tr>
                         @endforeach
 
                         <tr>
-                            <th colspan="5"><strong>{{ _i('Totale Prenotato') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
+                            <th scope="row" colspan="5"><strong>{{ _i('Totale Prenotato') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
                         </tr>
                         <tr>
-                            <th colspan="5"><strong>{{ _i('Totale Consegnato') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
+                            <th scope="row" colspan="5"><strong>{{ _i('Totale Consegnato') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
                         </tr>
                     </tbody>
                 </table>

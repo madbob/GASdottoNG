@@ -25,9 +25,9 @@
                 <table class="table" id="broken_balances">
                     <thead>
                         <tr>
-                            <th>{{ _i('Soggetto') }}</th>
-                            <th>{{ _i('Prima') }}</th>
-                            <th>{{ _i('Dopo') }}</th>
+                            <th scope="col">{{ _i('Soggetto') }}</th>
+                            <th scope="col">{{ _i('Prima') }}</th>
+                            <th scope="col">{{ _i('Dopo') }}</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -120,6 +120,13 @@ class User extends Formatter
         }
 
         if ($type == 'shipping' || $type == 'all') {
+            $ret['credit'] = (object) [
+                'name' => _i('Credito Attuale'),
+                'format' => function ($obj, $context) {
+                    return printablePriceCurrency($obj->currentBalanceAmount());
+                },
+            ];
+
             $ret['other_shippings'] = (object) [
                 'name' => _i('Altre Prenotazioni'),
                 'format' => function ($obj, $context) {

@@ -251,7 +251,6 @@ class Users extends CSVImporter
                         $address[$index] = $value;
                     }
                     elseif ($field == 'preferred_delivery_id') {
-                        $value = $value;
                         $shipping = Delivery::where('name', $value)->first();
                         if ($shipping) {
                             $u->$field = $shipping->id;

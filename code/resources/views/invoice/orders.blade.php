@@ -19,11 +19,11 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th width="10%"></th>
-                        <th width="30%">Ordine</th>
-                        <th width="20%">Totale Imponibile</th>
-                        <th width="20%">Totale IVA</th>
-                        <th width="20%">Totale</th>
+                        <th scope="col" width="10%"></th>
+                        <th scope="col" width="30%">{{ _i('Ordine') }}</th>
+                        <th scope="col" width="20%">{{ _i('Totale Imponibile') }}</th>
+                        <th scope="col" width="20%">{{ _i('Totale IVA') }}</th>
+                        <th scope="col" width="20%">{{ _i('Totale') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,14 +36,14 @@
                                     {{ $o->printableName() }}<br>
                                     <small>{{ $o->printableDates() }}</small>
                                 </td>
-                                <td class="taxable">
-                                    <label>{{ $summary->total_taxable }}</label> {{ currentAbsoluteGas()->currency }}
+                                <td>
+                                    <span class="taxable">{{ $summary->total_taxable }}</span> {{ currentAbsoluteGas()->currency }}
                                 </td>
-                                <td class="tax">
-                                    <label>{{ $summary->total_tax }}</label> {{ currentAbsoluteGas()->currency }}
+                                <td>
+                                    <span class="tax">{{ $summary->total_tax }}</span> {{ currentAbsoluteGas()->currency }}
                                 </td>
-                                <td class="total">
-                                    <label>{{ $summary->total }}</label> {{ currentAbsoluteGas()->currency }}
+                                <td>
+                                    <span class="total">{{ $summary->total }}</span> {{ currentAbsoluteGas()->currency }}
                                 </td>
                             </tr>
                         @endif
@@ -52,15 +52,15 @@
 
                 <tr class="orders-in-invoice-total">
                     <td>&nbsp;</td>
-                    <td>Totale Selezionato</td>
-                    <td class="taxable">
-                        <label>0</label> {{ currentAbsoluteGas()->currency }}
+                    <td>{{ _i('Totale Selezionato') }}</td>
+                    <td>
+                        <span class="taxable">0</span> {{ currentAbsoluteGas()->currency }}
                     </td>
-                    <td class="tax">
-                        <label>0</label> {{ currentAbsoluteGas()->currency }}
+                    <td>
+                        <span class="tax">0</span> {{ currentAbsoluteGas()->currency }}
                     </td>
-                    <td class="total">
-                        <label>0</label> {{ currentAbsoluteGas()->currency }}
+                    <td>
+                        <span class="total">0</span> {{ currentAbsoluteGas()->currency }}
                     </td>
                 </tr>
 
@@ -68,13 +68,13 @@
                     <td>&nbsp;</td>
                     <td>{{ _i('Fattura') }}</td>
                     <td>
-                        <label>{{ $invoice->total }}</label> {{ currentAbsoluteGas()->currency }}
+                        <span>{{ $invoice->total }}</span> {{ currentAbsoluteGas()->currency }}
                     </td>
                     <td>
-                        <label>{{ $invoice->total_vat }}</label> {{ currentAbsoluteGas()->currency }}
+                        <span>{{ $invoice->total_vat }}</span> {{ currentAbsoluteGas()->currency }}
                     </td>
                     <td>
-                        <label>{{ $invoice->total + $invoice->total_vat }}</label> {{ currentAbsoluteGas()->currency }}
+                        <span>{{ $invoice->total + $invoice->total_vat }}</span> {{ currentAbsoluteGas()->currency }}
                     </td>
                 </tr>
             </tbody>

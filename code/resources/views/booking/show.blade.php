@@ -40,15 +40,13 @@ $grand_total = 0;
 
     @if($more_orders)
         <table class="table">
-            <tfoot>
+            <thead>
                 <tr>
-                    <th>
-                        <div class="float-end">
-                            <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}</strong>
-                        </div>
+                    <th class="text-end">
+                        {{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}
                     </th>
                 </tr>
-            </tfoot>
+            </thead>
         </table>
     @endif
 </x-larastrap::mform>

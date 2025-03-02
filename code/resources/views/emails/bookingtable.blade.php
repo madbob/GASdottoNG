@@ -1,8 +1,8 @@
 <table style="width:100%" border="1" cellpadding="5px">
 	<thead>
-		<th style="width:50%; text-align: left">{{ _i('Prodotto') }}</th>
-		<th style="width:25%; text-align: left">{{ _i('Quantità') }}</th>
-		<th style="width:25%; text-align: left">{{ _i('Prezzo') }}</th>
+		<th scope="col" style="width:50%; text-align: left">{{ _i('Prodotto') }}</th>
+		<th scope="col" style="width:25%; text-align: left">{{ _i('Quantità') }}</th>
+		<th scope="col" style="width:25%; text-align: left">{{ _i('Prezzo') }}</th>
 	</thead>
 
 	<tbody>

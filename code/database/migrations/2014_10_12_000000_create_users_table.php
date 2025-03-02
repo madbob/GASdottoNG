@@ -10,9 +10,11 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->timestamps();
-
+            $table->string('updated_by')->default('');
             $table->softDeletes();
+
             $table->date('suspended_at')->nullable()->default(null);
+            $table->boolean('pending')->default(false);
 
             $table->string('gas_id');
             $table->string('parent_id')->nullable();
@@ -21,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('lastname');
             $table->string('password');
             $table->boolean('enforce_password_change')->default(false);
+            $table->string('access_token')->default('');
             $table->date('birthday')->nullable();
             $table->integer('family_members')->unsigned()->nullable();
             $table->string('picture')->default('');
@@ -31,6 +34,7 @@ class CreateUsersTable extends Migration
             $table->string('preferred_delivery_id')->default('0');
             $table->string('payment_method_id')->default('none');
             $table->text('rid')->nullable();
+            $table->boolean('tour')->default(false);
 
             $table->integer('fee_id')->nullable()->default(null);
             $table->integer('deposit_id')->nullable()->default(null);

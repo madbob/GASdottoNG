@@ -110,8 +110,8 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th width="30%">{{ _i('Data') }}</th>
-                                <th width="70%">{{ _i('Messaggio') }}</th>
+                                <th scope="col" width="30%">{{ _i('Data') }}</th>
+                                <th scope="col" width="70%">{{ _i('Messaggio') }}</th>
                             </tr>
                         </thead>
                         <tbody>

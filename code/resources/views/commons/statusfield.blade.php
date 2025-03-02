@@ -3,25 +3,19 @@
 $hide_delete = true;
 $hide_suspend = true;
 
-if ($target) {
-    if (!is_null($target->deleted_at)) {
-        $status = 'deleted';
-        $hide_delete = false;
-    }
-    else if (!is_null($target->suspended_at)) {
-        $status = 'suspended';
-        $hide_suspend = false;
-    }
-    else {
-        $status = 'active';
-    }
+$status = $target->plainStatus() ?? 'active';
 
-    if (is_a($target, 'App\User')) {
-        $help_popover = _i('Gli utenti Sospesi e Cessati non possono accedere alla piattaforma, pur restando registrati. È necessario specificare una data di cessazione/sospensione.');
-    }
+switch ($status) {
+    case 'suspended':
+        $hide_suspend = false;
+        break;
+    case 'deleted':
+        $hide_delete = false;
+        break;
 }
-else {
-    $status = 'active';
+
+if (is_a($target, 'App\User')) {
+    $help_popover = _i('Gli utenti Sospesi e Cessati non possono accedere alla piattaforma, pur restando registrati. È necessario specificare una data di cessazione/sospensione.');
 }
 
 $postfix = $postfix ?? false;

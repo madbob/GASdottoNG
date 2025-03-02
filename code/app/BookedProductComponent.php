@@ -19,4 +19,11 @@ class BookedProductComponent extends Model
     {
         return $this->belongsTo('App\VariantValue');
     }
+
+    /*************************************************************** GASModel */
+
+    public function printableName()
+    {
+        return $this->value->printableName();
+    }
 }

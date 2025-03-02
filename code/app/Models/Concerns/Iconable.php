@@ -119,6 +119,7 @@ trait Iconable
             if ($icon == $group) {
                 $options = $condition->options;
                 $options = $options($contents);
+
                 return (object) [
                     'label' => $condition->text,
                     'items' => $options,

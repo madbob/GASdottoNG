@@ -25,6 +25,8 @@ class CloseOrders extends Command
                 $order->status = 'closed';
                 $order->save();
 
+                \Log::debug('Chiudo automaticamente ordine per ' . $order->supplier->name);
+
                 foreach ($order->aggregate->gas as $gas) {
                     if (isset($notifications[$gas->id]) === false) {
                         $notifications[$gas->id] = [];

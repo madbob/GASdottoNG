@@ -39,4 +39,11 @@ class VariantValue extends Model
         */
         return sprintf('%s::%s', $this->variant_id, Str::slug(substr($this->value, 0, 50)));
     }
+
+    /*************************************************************** GASModel */
+
+    public function printableName()
+    {
+        return $this->value;
+    }
 }

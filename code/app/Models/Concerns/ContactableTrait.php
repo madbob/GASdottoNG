@@ -124,7 +124,6 @@ trait ContactableTrait
             return ['', '', ''];
         }
 
-        // @phpstan-ignore-next-line
         return $address->asAddress();
     }
 
@@ -149,12 +148,8 @@ trait ContactableTrait
             sia sufficiente quello). Se qui vengono chieste le mail, e non ne
             vengono trovate, provo dunque a vedere se posso usare lo username
         */
-        if (in_array('email', $type) and empty($ret)) {
-            if (is_a($this, User::class)) {
-                if (filter_var($this->username, FILTER_VALIDATE_EMAIL)) {
-                    $ret[] = $this->username;
-                }
-            }
+        if (in_array('email', $type) && empty($ret) && is_a($this, User::class) && filter_var($this->username, FILTER_VALIDATE_EMAIL)) {
+            $ret[] = $this->username;
         }
 
         return $ret;
