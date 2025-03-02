@@ -1,6 +1,3 @@
-window.$ = window.jQuery = global.$ = global.jQuery = require('jquery');
-require('bootstrap');
-
 import utils from "./utils";
 
 class Modifiers {
@@ -26,15 +23,15 @@ class Modifiers {
                     L'ordine degli elementi usati per costruire l'indice delle stringhe
                     deve combaciare con quello in modifier/edit.blade.php
                 */
-                var container = $(this).closest('.modifier-modal');
-                var model_type = container.attr('data-target-type');
-                var arithmetic = container.find('input:radio[name=arithmetic]:checked').val();
-                var value = container.find('input:radio[name=value]:checked').val();
-                var applies_type = container.find('input:radio[name=applies_type]:checked').val();
-                var scale = container.find('input:radio[name=scale]:checked').val();
-                var applies_target = container.find('input:radio[name=applies_target]:checked').first().val();
-                var distribution_type = container.find('input:radio[name=distribution_type]:checked').val();
-                var distribution_type_selection = container.find('.distribution_type_selection');
+                let container = $(this).closest('.modifier-modal');
+                let model_type = container.attr('data-target-type');
+                let arithmetic = container.find('input:radio[name=arithmetic]:checked').val();
+                let value = container.find('input:radio[name=value]:checked').val();
+                let applies_type = container.find('input:radio[name=applies_type]:checked').val();
+                let scale = container.find('input:radio[name=scale]:checked').val();
+                let applies_target = container.find('input:radio[name=applies_target]:checked').first().val();
+                let distribution_type = container.find('input:radio[name=distribution_type]:checked').val();
+                let distribution_type_selection = container.find('.distribution_type_selection');
 
                 if (model_type == 'product') {
                     if (applies_type == 'none') {
@@ -70,17 +67,17 @@ class Modifiers {
                     }
                 }
 
-                var key = applies_type + ',' + model_type + ',' + applies_target + ',' + scale + ',' + applies_type + ',' + arithmetic + ',' + applies_target + ',' + value + ',' + distribution_type;
-                var labels = Modifiers.modifiers_strings[key];
+                let key = applies_type + ',' + model_type + ',' + applies_target + ',' + scale + ',' + applies_type + ',' + arithmetic + ',' + applies_target + ',' + value + ',' + distribution_type;
+                let labels = Modifiers.modifiers_strings[key];
 
-                var simplified = container.find('.simplified_input');
-                var advanced = container.find('.advanced_input');
+                let simplified = container.find('.simplified_input');
+                let advanced = container.find('.advanced_input');
                 simplified.toggleClass('d-none', applies_type != 'none');
                 advanced.toggleClass('d-none', applies_type == 'none');
 
                 if (applies_type != 'none') {
                     container.find('input:radio[name=value][value=price]').next('label').removeClass('disabled');
-                    var table = advanced.find('.dynamic-table');
+                    let table = advanced.find('.dynamic-table');
 
                     table.find('tr').each(function() {
                         if ($(this).find('.add-row').length != 0) {
@@ -99,7 +96,7 @@ class Modifiers {
                     }
                 }
                 else {
-                    var value_price_selection = container.find('input:radio[name=value][value=price]');
+                    let value_price_selection = container.find('input:radio[name=value][value=price]');
                     value_price_selection.next('label').addClass('disabled');
                     if (value_price_selection.prop('checked')) {
                         container.find('input:radio[name=value][value=absolute]').click();
@@ -133,17 +130,17 @@ class Modifiers {
         });
 
         for (let [modifier_id, modifier_meta] of Object.entries(dynamic_modifiers)) {
-            var template = $('.modifier-row.hidden', container);
-            var new_row = template.clone();
+            let template = $('.modifier-row.hidden', container);
+            let new_row = template.clone();
 
-            new_row.removeClass('hidden').find('.static-label .name').text(modifier_meta.label);
+            new_row.removeClass('hidden').find('.name').text(modifier_meta.label);
 
             if (modifier_meta.variable) {
-                new_row.find('.static-label .mutable').removeClass('hidden');
+                new_row.find('.mutable').removeClass('hidden');
             }
 
             if (modifier_meta.url != '') {
-                new_row.find('.static-label').siblings('.float-end').append(utils.detailsButton(modifier_meta.url));
+                new_row.find('.details-button-wrapper').empty().append(utils.detailsButton(modifier_meta.url));
             }
 
             new_row.find('input[name="modifier-0"]').attr('name', 'modifier-' + modifier_id).parent().find('span').text(utils.priceRound(modifier_meta.amount));

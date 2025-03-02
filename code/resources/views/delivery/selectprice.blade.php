@@ -48,5 +48,5 @@ else {
     ?>
     <x-larastrap::radios :name="$key" :options="$price_options" classes="alt_price_selector" :value="$actual_price" squeeze />
 @else
-    <label class="static-label">{{ printablePriceCurrency($now_price) }}</label>
+    {{ printablePriceCurrency($now_price) }}
 @endif

@@ -6,9 +6,9 @@ class Bookings
     static init(container)
     {
         $('.bookingSearch', container).each((index, item) => {
-            var input = $(item);
+            let input = $(item);
 
-            var appendTo = 'body';
+            let appendTo = 'body';
             if (input.closest('.modal').length != 0) {
                 appendTo = input.closest('.modal');
             }
@@ -17,18 +17,18 @@ class Bookings
                 source: utils.absoluteUrl() + '/users/search',
                 appendTo: appendTo,
                 select: function(event, ui) {
-                    var aggregate_id = input.attr('data-aggregate');
-                    var while_shipping = (input.closest('.modal.add-booking-while-shipping').length != 0);
-                    var fill_target = input.closest('.fillable-booking-space').find('.other-booking');
+                    let aggregate_id = input.attr('data-aggregate');
+                    let while_shipping = (input.closest('.modal.add-booking-while-shipping').length != 0);
+                    let fill_target = input.closest('.fillable-booking-space').find('.other-booking');
                     fill_target.empty().append(utils.j().makeSpinner());
 
-                    var data = {};
-                    var mode = input.attr('data-enforce-booking-mode');
+                    let data = {};
+                    let mode = input.attr('data-enforce-booking-mode');
                     if (mode != null) {
                         data.enforce = mode;
                     }
 
-                    var url = while_shipping ? ('delivery/' + aggregate_id + '/user/' + ui.item.id) : ('booking/' + aggregate_id + '/user/' + ui.item.id + '?extended=true');
+                    let url = while_shipping ? ('delivery/' + aggregate_id + '/user/' + ui.item.id) : ('booking/' + aggregate_id + '/user/' + ui.item.id + '?extended=true');
 
                     utils.postAjax({
                         url: url,
@@ -39,7 +39,7 @@ class Bookings
                             data = $(data);
 
                             if (while_shipping) {
-                                var test = data.find('.booking-product:not(.fit-add-product)');
+                                let test = data.find('.booking-product:not(.fit-add-product)');
                                 if (test.length != 0) {
                                     data = $('<div class="alert alert-danger">' + _('Questa prenotazione esiste già e non può essere ricreata.') + '</div>');
                                 }
@@ -62,12 +62,12 @@ class Bookings
                 visualizzazione
             */
 
-            var row = $(e.currentTarget).closest('.inline-variant-selector');
-            var editor = row.closest('.booking-editor');
-            var quantity = utils.parseFloatC(row.find('.booking-product-quantity input').val());
+            let row = $(e.currentTarget).closest('.inline-variant-selector');
+            let editor = row.closest('.booking-editor');
+            let quantity = utils.parseFloatC(row.find('.booking-product-quantity input').val());
 
             if (quantity == 0) {
-                var variant = [];
+                let variant = [];
 
                 row.find('.form-select').each(function() {
                     variant.push($(this).find(':selected').val());
@@ -83,9 +83,9 @@ class Bookings
                         variant: variant,
                     },
                     success: function(data) {
-                        var index = row.index();
-                        var block = row.closest('tr').find('.prices_block');
-                        var newrow = block.find('.row').first().clone();
+                        let index = row.index();
+                        let block = row.closest('tr').find('.prices_block');
+                        let newrow = block.find('.row').first().clone();
                         newrow.find('small').text(data.price);
 
                         if (block.find('.row').length > index) {
@@ -95,7 +95,7 @@ class Bookings
                             block.append(newrow);
                         }
                     }
-                })
+                });
             }
             else {
                 this.bookingTotal(editor);
@@ -104,26 +104,26 @@ class Bookings
 
         $('.add-booking-product', container).click(function(e) {
             e.preventDefault();
-            var table = $(this).closest('table');
-            var row = table.find('.fit-add-product').first().clone().removeClass('hidden');
+            let table = $(this).closest('table');
+            let row = table.find('.fit-add-product').first().clone().removeClass('hidden');
             utils.j().initElements(row);
             row.appendTo(table.find('tbody'));
             return false;
         });
 
         $('.alt_price_selector input', container).change((e) => {
-            var radio = $(e.currentTarget);
+            let radio = $(e.currentTarget);
             if (radio.prop('checked')) {
-                var editor = radio.closest('.booking-editor');
+                let editor = radio.closest('.booking-editor');
                 this.bookingTotal(editor);
             }
         });
 
         $('.fit-add-product-select', container).change((e) => {
-            var select = $(e.currentTarget);
-            var id = select.find('option:selected').val();
-            var row = select.closest('tr');
-            var editor = row.closest('.booking-editor');
+            let select = $(e.currentTarget);
+            let id = select.find('option:selected').val();
+            let row = select.closest('tr');
+            let editor = row.closest('.booking-editor');
 
             if (id == -1) {
                 row.find('.bookable-target').empty();
@@ -151,7 +151,7 @@ class Bookings
 
         $('.preload-quantities', container).click((e) => {
             e.preventDefault();
-            var editors = $(e.currentTarget).closest('form').find('.booking-editor');
+            let editors = $(e.currentTarget).closest('form').find('.booking-editor');
 
             editors.each((index, item) => {
                 this.preloadQuantities($(item), false);
@@ -182,11 +182,11 @@ class Bookings
 
         $('.inline-calculator button[type=submit]', container).click((e) => {
             e.preventDefault();
-            var modal = $(e.currentTarget).closest('.modal');
-            var quantity = 0;
+            let modal = $(e.currentTarget).closest('.modal');
+            let quantity = 0;
 
             modal.find('input.number').each(function() {
-                var v = $(this).val();
+                let v = $(this).val();
                 if (v != '') {
                     quantity += utils.parseFloatC(v);
                 }
@@ -198,7 +198,7 @@ class Bookings
                 Il trigger blur() alla fine serve a forzare il ricalcolo del
                 totale della consegna quando il modale viene chiuso
             */
-            var identifier = modal.attr('id');
+            let identifier = modal.attr('id');
             $('[data-bs-target="#' + identifier + '"]').closest('.booking-product-quantity').find('input.number').first().val(quantity.toFixed(3)).blur();
             modal.modal('hide');
         });
@@ -206,7 +206,7 @@ class Bookings
         $('.delete-booking', container).click((e) => {
             e.preventDefault();
 
-            var form = $(e.currentTarget).closest('.inner-form');
+            let form = $(e.currentTarget).closest('.inner-form');
 
             if (confirm(_('Sei sicuro di voler annullare questa prenotazione?'))) {
                 form.find('button').prop('disabled', true);
@@ -216,7 +216,7 @@ class Bookings
                     url: form.attr('action'),
                     dataType: 'json',
 
-                    success: (data) => {
+                    success: () => {
                         form.find('button').prop('disabled', false);
                         form.find('.booking-product-quantity input').val('0');
                         form.find('.variants-selector').each(function() {
@@ -238,7 +238,7 @@ class Bookings
         */
         $('.booking-form .info-button', container).click((e) => {
             e.preventDefault();
-            var form = $(e.currentTarget).closest('form');
+            let form = $(e.currentTarget).closest('form');
             form.find('input:hidden[name=action]').val('saved');
             form.submit();
         });
@@ -259,7 +259,7 @@ class Bookings
             agganciati
         */
         $('body').on('blur', '.booking-product-quantity input', (e) => {
-            var editor = $(e.currentTarget).closest('.booking-editor');
+            let editor = $(e.currentTarget).closest('.booking-editor');
             this.bookingTotal(editor);
         })
         .on('focus', '.booking-product-quantity input', (e) => {
@@ -267,9 +267,9 @@ class Bookings
         })
         .on('click', '.booking-product .add-variant', (e) => {
             e.preventDefault();
-            var variant_selector = $(e.currentTarget).closest('.variants-selector');
-            var template = variant_selector.find('.master-variant-selector');
-            var master = template.clone().removeClass('master-variant-selector');
+            let variant_selector = $(e.currentTarget).closest('.variants-selector');
+            let template = variant_selector.find('.master-variant-selector');
+            let master = template.clone().removeClass('master-variant-selector');
             master.find('.skip-on-submit').removeClass('skip-on-submit');
             template.before(master);
 
@@ -286,7 +286,7 @@ class Bookings
     static preloadQuantities(container, reload)
     {
         container.find('.booking-product').each(function() {
-            var booked = $(this).find('input:hidden[name=booking-product-real-booked]');
+            let booked = $(this).find('input:hidden[name=booking-product-real-booked]');
             if (booked.length != 0) {
                 $(this).find('.booking-product-quantity input').val(booked.val());
             }
@@ -340,7 +340,7 @@ class Bookings
             }
         }
 
-    	var data = form.find(':not(.skip-on-submit)').serialize();
+    	let data = form.find(':not(.skip-on-submit)').serialize();
         form.find('.restore-after-serialize').removeClass('skip-on-submit restore-after-serialize');
         return data;
     }
@@ -362,14 +362,14 @@ class Bookings
 
     static priceRow(value)
     {
-        return '<div class="row"><div class="col"><label class="static-label form-control-plaintext"><small>' + value + '</small></label></div></div>';
+        return '<div class="row"><div class="col"><small>' + value + '</small></div></div>';
     }
 
     static updateBookingQuantities(dynamic_data, container, action)
     {
         for (let [product_id, product_meta] of Object.entries(dynamic_data)) {
-            var inputbox = $('input[name="' + product_id + '"]', container);
-            inputbox.closest('tr').find('.booking-product-price span').text(utils.priceRound(product_meta.total));
+            let inputbox = $('input[name="' + product_id + '"]', container);
+            inputbox.closest('tr').find('.booking-product-price').text(utils.priceRound(product_meta.total));
 
             if (product_meta.variants.length != 0) {
                 /*
@@ -397,7 +397,7 @@ class Bookings
                         }
 
                         varinputbox.val(variant.quantity);
-                        varinputbox.closest('tr').find('.booking-product-price span').text(variant.total.toFixed(2));
+                        varinputbox.closest('tr').find('.booking-product-price').text(variant.total.toFixed(2));
                     }
 
                     let total_rows = $('input[name="variant_quantity_' + product_id + '[]"]', container);
@@ -405,7 +405,7 @@ class Bookings
                         for (let i = product_meta.variants.length; i < total_rows.length; i++) {
                             let varinputbox = total_rows.eq(i);
                             varinputbox.val(0);
-                            varinputbox.closest('tr').find('.booking-product-price span').text('0.00');
+                            varinputbox.closest('tr').find('.booking-product-price').text('0.00');
                         }
                     }
                 }
@@ -414,9 +414,9 @@ class Bookings
                     let populated_index = 0;
 
                     for (let i = 0; i < product_meta.variants.length; i++) {
-                        var variant = product_meta.variants[i];
-                        var varinputbox = null;
-                        var varinputboxvalue = 0;
+                        let variant = product_meta.variants[i];
+                        let varinputbox = null;
+                        let varinputboxvalue = 0;
 
                         do {
                             varinputbox = $('input[name="variant_quantity_' + product_id + '[]"]', container).filter(':not(.skip-on-submit)').eq(populated_index);
@@ -452,7 +452,7 @@ class Bookings
             che non sia stato raggiunto e nel caso disabilito il
             pulsante di invio
         */
-        var max_bookable = form.find('input:hidden[name="max-bookable"]');
+        let max_bookable = form.find('input:hidden[name="max-bookable"]');
         if (max_bookable.length != 0) {
             max_bookable = parseFloat(max_bookable.val());
             utils.j().submitButton(form).each(function() {
@@ -467,8 +467,8 @@ class Bookings
             Qui aggiorno il valore totale della prenotazione nel (eventuale)
             modale per il pagamento
         */
-        var payment_modal_id = form.attr('data-reference-modal');
-        var payment_modal = $('#' + payment_modal_id);
+        let payment_modal_id = form.attr('data-reference-modal');
+        let payment_modal = $('#' + payment_modal_id);
 
         if (payment_modal.length != 0) {
             payment_modal.find('input[name=amount]').val(grand_total.toFixed(2)).change();
@@ -486,7 +486,7 @@ class Bookings
             quantomeno una approssimazione
         */
         if (data.products.length == 0) {
-            var manual = $('input.manual-total', container);
+            let manual = $('input.manual-total', container);
             if (manual.length != 0 && manual.val() != 0) {
                 this.preloadQuantities(container, true);
             }
@@ -494,12 +494,13 @@ class Bookings
     }
 
     static bookingTotal(editor) {
-    	var form = $(editor).closest('form');
-        var data = this.serializeBooking(form);
-    	var url = form.attr('data-dynamic-url');
+    	let form = $(editor).closest('form');
+        let data = this.serializeBooking(form);
+    	let url = form.attr('data-dynamic-url');
 
         if (this.dynamicBookingRequest) {
             this.dynamicBookingRequest.abort();
+            this.dynamicBookingRequest = null;
         }
 
     	this.dynamicBookingRequest = $.ajax({
@@ -508,19 +509,21 @@ class Bookings
     		data: data,
     		dataType: 'JSON',
     		success: (data) => {
+                this.dynamicBookingRequest = null;
+
                 if (data.hasOwnProperty('status') && data.status == 'error') {
                     utils.displayServerError(null, data);
                     return;
                 }
 
     			if (Object.entries(data.bookings).length == 0) {
-    				$('.booking-product-price span', form).text(utils.priceRound(0));
-    				$('.booking-modifier, .booking-total', container).textVal(utils.priceRound(0));
+    				$('.booking-product-price', form).text(utils.priceRound(0));
+                    $('.booking-modifier, .booking-total').textVal(utils.priceRound(0));
                     $('.all-bookings-total', form).text(utils.priceRound(0));
     			}
     			else {
-                    var action = $('input:hidden[name=action]', form).val();
-    				var grand_total = 0;
+                    let action = $('input:hidden[name=action]', form).val();
+    				let grand_total = 0;
 
     				/*
     					Questa variabile contiene i totali di ogni prenotazione
@@ -529,18 +532,18 @@ class Bookings
     					Viene usata in MovementType per gestire i movimenti
     					contabili
     				*/
-    				var status = {};
+    				let status = {};
 
-                    $('.booking-bottom-helper', container).removeClass('bg-success').addClass('bg-danger');
+                    $('.booking-bottom-helper').removeClass('bg-success').addClass('bg-danger');
 
     				for (let [booking_id, booking_data] of Object.entries(data.bookings)) {
-    					var container = $('input[value="' + booking_id + '"]').closest('table').first();
-    					$('.booking-product-price span', container).text(utils.priceRound(0));
+    					let container = $('input[value="' + booking_id + '"]').closest('table').first();
+    					$('.booking-product-price', container).text(utils.priceRound(0));
 
                         this.updateBookingQuantities(booking_data.products, container, action);
                         Modifiers.updateBookingModifiers(booking_data.modifiers, container);
 
-    					var t = utils.priceRound(booking_data.total);
+    					let t = utils.priceRound(booking_data.total);
     					$('.booking-total', container).textVal(t);
     					grand_total += parseFloat(t);
     					status[booking_id] = booking_data.total;
@@ -557,6 +560,7 @@ class Bookings
     		},
             error: function(data) {
                 utils.displayServerError(null, data.responseJSON);
+                this.dynamicBookingRequest = null;
             }
     	});
     }

@@ -8,20 +8,29 @@ function printableDate($value, $short = false)
         $ret = _i('Mai');
     }
     else {
+        $date = null;
+
         if (is_numeric($value)) {
             $date = Carbon::createFromTimestamp($value);
         }
         else {
-            $date = Carbon::parse($value);
+            try {
+                $date = Carbon::parse($value);
+            }
+            catch(\Exception $e) {
+                $ret = _i('Mai');
+            }
         }
 
-        $date->startOfDay();
+        if ($date) {
+            $date->startOfDay();
 
-        if ($short) {
-            $ret = ucwords($date->isoFormat('DD/MM/YYYY'));
-        }
-        else {
-            $ret = ucwords($date->isoFormat('dddd D MMMM YYYY'));
+            if ($short) {
+                $ret = ucwords($date->isoFormat('DD/MM/YYYY'));
+            }
+            else {
+                $ret = ucwords($date->isoFormat('dddd D MMMM YYYY'));
+            }
         }
     }
 

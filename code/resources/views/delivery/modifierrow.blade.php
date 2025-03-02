@@ -13,17 +13,13 @@ if (!isset($final_value)) {
 <tr class="modifier-row do-not-sort {{ $mod_value ? '' : 'hidden' }}">
     <td>
         @if($mod_value && $mod_value->modifier->modifierType->id == 'arrotondamento-consegna')
-            <label class="static-label">
-                <span class="name">{{ $mod_value->modifier->modifierType->name }}</span>
-            </label>
+            <span class="name">{{ $mod_value->modifier->modifierType->name }}</span>
         @else
-            <label class="static-label">
-                <span class="name">{{ $mod_value ? $mod_value->descriptive_name : '' }}</span>
-                <span class="mutable {{ (is_null($mod_value) || $mod_value->is_variable == false || $final_value == true) ? 'hidden' : '' }}">
-                    <br><small>{{ _i("Il valore qui indicato è una stima, sarà finalizzato alla chiusura dell'ordine") }}</small>
-                </span>
-            </label>
-            <div class="float-end">
+            <span class="name">{{ $mod_value ? $mod_value->descriptive_name : '' }}</span>
+            <span class="mutable {{ (is_null($mod_value) || $mod_value->is_variable == false || $final_value == true) ? 'hidden' : '' }}">
+                <br><small>{{ _i("Il valore qui indicato è una stima, sarà finalizzato alla chiusura dell'ordine") }}</small>
+            </span>
+            <div class="float-end details-button-wrapper">
                 @include('commons.detailsbutton', ['obj' => $mod_value ? $mod_value->modifier : null])
             </div>
         @endif
@@ -33,10 +29,10 @@ if (!isset($final_value)) {
         <td>&nbsp;</td>
     @endfor
 
-    <td>
+    <td class="text-end">
         <input type="hidden" name="modifier-{{ $mod_value ? $mod_value->modifier->id : '0' }}" class="skip-on-submit">
-        <label class="float-end">
+        <span>
             <span class="booking-modifier">{{ $mod_value ? printablePrice($mod_value->effective_amount) : '' }}</span> {{ defaultCurrency()->symbol }}
-        </label>
+        </span>
     </td>
 </tr>

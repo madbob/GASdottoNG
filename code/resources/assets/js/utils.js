@@ -6,8 +6,8 @@ import Lists from "./lists";
 class Utils {
     static init(container)
     {
-        $('.reloader', container).click(function(e) {
-            var listid = $(this).attr('data-reload-target');
+        $('.reloader', container).click(function() {
+            let listid = $(this).attr('data-reload-target');
 
             if (listid == null) {
                 location.reload();
@@ -18,7 +18,7 @@ class Utils {
                     chiusura (che non e' implicita, se questo non viene fatto resta
                     l'overlay grigio in sovraimpressione)
                 */
-                var modal = $(this).closest('.modal').first();
+                let modal = $(this).closest('.modal').first();
                 if (modal != null) {
                     modal.on('hidden.bs.modal', function() {
                         Lists.reloadCurrentLoadable(listid);
@@ -32,13 +32,13 @@ class Utils {
         });
 
         $('.select-fetcher', container).change((e) => {
-            var fetcher = $(e.currentTarget);
-            var targetid = fetcher.attr('data-fetcher-target');
-            var target = fetcher.parent().find(targetid);
+            let fetcher = $(e.currentTarget);
+            let targetid = fetcher.attr('data-fetcher-target');
+            let target = fetcher.parent().find(targetid);
             target.empty().append(this.j().makeSpinner());
 
-            var id = fetcher.find('option:selected').val();
-            var url = fetcher.attr('data-fetcher-url').replace('XXX', id);
+            let id = fetcher.find('option:selected').val();
+            let url = fetcher.attr('data-fetcher-url').replace('XXX', id);
 
             $.get(url, function(data) {
                 target.empty().append(data);
@@ -46,8 +46,8 @@ class Utils {
         });
 
         $('.object-details', container).click((e) => {
-            var url = $(e.currentTarget).attr('data-show-url');
-            var modal = $('#service-modal');
+            let url = $(e.currentTarget).attr('data-show-url');
+            let modal = $('#service-modal');
             this.j().fetchNode(url, modal.find('.modal-body'));
             modal.modal('show');
         });
@@ -62,7 +62,7 @@ class Utils {
 
         $('.link-button', container).click(function(e) {
             e.preventDefault();
-            var url = $(this).attr('data-link');
+            let url = $(this).attr('data-link');
             window.open(url, '_blank');
         });
 
@@ -105,7 +105,7 @@ class Utils {
         */
         $('.collapse', container).on('show.bs.collapse hide.bs.collapse', function(e) {
             e.stopPropagation();
-		}).on('shown.bs.collapse hidden.bs.collapse', function(e) {
+		}).on('shown.bs.collapse hidden.bs.collapse', function() {
             $(this).find('.required_when_triggered').each(function() {
 				let target = $(this);
 				let active = $(this).closest('.collapse').hasClass('show');
@@ -155,7 +155,7 @@ class Utils {
         let submit_button = this.j().submitButton(form);
 
         submit_button.each(function() {
-            var idle_text = $(this).text();
+            let idle_text = $(this).text();
             $(this).attr('data-idle-text', idle_text).empty().append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop('disabled', true);
         });
     }
@@ -173,7 +173,7 @@ class Utils {
 
     static inlineFeedback(button, feedback_text)
     {
-        var idle_text = button.attr('data-idle-text');
+        let idle_text = button.attr('data-idle-text');
         if (!idle_text) {
             idle_text = button.html();
         }
@@ -186,19 +186,21 @@ class Utils {
 
     static displayServerError(form, data)
     {
-        if (data.target != '') {
-            Utils.j().submitButton(form).each(function() {
-                Utils.inlineFeedback($(this), _('ERRORE!'));
-            });
+        if (data) {
+            if (data.target != '') {
+                Utils.j().submitButton(form).each(function() {
+                    Utils.inlineFeedback($(this), _('ERRORE!'));
+                });
 
-            form.find('.is-invalid').removeClass('is-invalid');
-            form.find('.help-block.error-message').remove();
+                form.find('.is-invalid').removeClass('is-invalid');
+                form.find('.help-block.error-message').remove();
 
-            let input = form.find('[name=' + data.target + ']');
-            Utils.setInputErrorText(input, data.message);
-        }
-        else {
-            alert(data.message);
+                let input = form.find('[name=' + data.target + ']');
+                Utils.setInputErrorText(input, data.message);
+            }
+            else {
+                alert(data.message);
+            }
         }
     }
 
@@ -225,21 +227,21 @@ class Utils {
 
     static randomString(total)
     {
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let text = "";
+        let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        for( var i = 0; i < total; i++ )
+        for( let i = 0; i < total; i++ ) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
 
         return text;
     }
 
     static parseFullDate(string)
     {
-        var components = string.split(' ');
-
-        var month = 0;
-        var months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+        let components = string.split(' ');
+        let month = 0;
+        let months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
         for(month = 0; month < months.length; month++) {
             if (components[2] == months[month]) {
                 month++;
@@ -247,25 +249,27 @@ class Utils {
             }
         }
 
-        var date = components[3] + '-' + month + '-' + components[1];
+        let date = components[3] + '-' + month + '-' + components[1];
         return Date.parse(date);
     }
 
     static parseFloatC(value)
     {
-        if (typeof value === 'undefined')
+        if (typeof value === 'undefined') {
             return 0;
+        }
 
-        var ret = parseFloat(value.replace(/,/, '.'));
-        if (isNaN(ret))
+        let ret = parseFloat(value.replace(/,/, '.'));
+        if (isNaN(ret)) {
             ret = 0;
+        }
 
         return ret;
     }
 
     static sel(selector, container)
     {
-        var classes = selector.split(' ');
+        let classes = selector.split(' ');
         if (container.is(classes[0])) {
             return container.find(classes.slice(1).join(' '));
         }
@@ -316,10 +320,10 @@ class Utils {
 
     static formByButton(button)
     {
-        var parent_form = button.closest('form');
+        let parent_form = button.closest('form');
 
         if (parent_form.length == 0) {
-            var id = button.attr('form');
+            let id = button.attr('form');
             if (id) {
                 parent_form = $('#' + id);
             }
@@ -342,9 +346,9 @@ class Utils {
     static reviewRequired(panel)
     {
         panel.find('input[data-alternative-required]').each(function() {
-            var alternative = $(this).attr('data-alternative-required');
+            let alternative = $(this).attr('data-alternative-required');
             if (alternative) {
-                var alt = panel.find('[name="' + alternative + '"]');
+                let alt = panel.find('[name="' + alternative + '"]');
                 if (alt.val() != '') {
                     $(this).prop('required', false);
                 }
@@ -376,11 +380,10 @@ $.fn.textVal = function(value) {
 };
 
 $.fn.attrBegins = function(s) {
-    var matched = [];
+    let matched = [];
 
-    this.each(function(index) {
-        var elem = this;
-        $.each(this.attributes, function(index, attr) {
+    this.each(function(index, elem) {
+        $.each(elem.attributes, function(index, attr) {
             if (attr.name.indexOf(s) === 0) {
                matched.push(elem);
             }

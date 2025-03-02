@@ -62,12 +62,3 @@ function env_file()
 
     return '.env';
 }
-
-function fixUrl($url)
-{
-    if (str_starts_with($url, 'http') === false) {
-        $url = 'http://' . $url;
-    }
-
-    return $url;
-}

@@ -20,7 +20,7 @@ class PublicRegistrations extends Config
     {
         return (object) [
             'enabled' => false,
-            'privacy_link' => 'http://gasdotto.net/privacy',
+            'privacy_link' => 'https://gasdotto.net/privacy',
             'terms_link' => '',
             'mandatory_fields' => ['firstname', 'lastname', 'email', 'phone'],
             'manual' => false,

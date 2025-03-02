@@ -26,23 +26,23 @@ $(document).ready(function() {
 
     $('body').on('focus', 'input.address', function() {
         complexPopover($(this), 'address', function(input) {
-            var ret = $('<div>\
-                <div class="row mb-2">\
-                    <label for="street" class="col-4 col-form-label">' + _('Indirizzo') + '</label>\
-                    <div class="col-8"><input type="text" class="form-control" name="street" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="city" class="col-4 col-form-label">' + _('Città') + '</label>\
-                    <div class="col-sm-8"><input type="text" class="form-control" name="city" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="cap" class="col-4 col-form-label">' + _('CAP') + '</label>\
-                    <div class="col-sm-8"><input type="text" class="form-control" name="cap" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <div class="col-8 offset-4"><button class="btn btn-light">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
-                </div>\
-            </div>');
+            var ret = $(`<div>
+                <div class="row mb-2">
+                    <label for="street" class="col-4 col-form-label">${_('Indirizzo')}</label>
+                    <div class="col-8"><input type="text" class="form-control" name="street" value="" autocomplete="off"></div>
+                </div>
+                <div class="row mb-2">
+                    <label for="city" class="col-4 col-form-label">${_('Città')}</label>
+                    <div class="col-sm-8"><input type="text" class="form-control" name="city" value="" autocomplete="off"></div>
+                </div>
+                <div class="row mb-2">
+                    <label for="cap" class="col-4 col-form-label">${_('CAP')}</label>
+                    <div class="col-sm-8"><input type="text" class="form-control" name="cap" value="" autocomplete="off"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-8 offset-4"><button class="btn btn-light">${_('Annulla')}</button> <button class="btn btn-success">${_('Salva')}</button></div>
+                </div>
+            </div>`);
 
             var value = input.val();
             if (value != '') {
@@ -90,47 +90,47 @@ $(document).ready(function() {
 
     $('body').on('focus', 'input.periodic', function() {
         complexPopover($(this), 'periodic', function(input) {
-            var ret = $('<div>\
-                <div class="row mb-2">\
-                    <label for="day" class="col-4 col-form-label">' + _('Giorno') + '</label>\
-                    <div class="col-8">\
-                        <select class="form-select" name="day" value="" autocomplete="off">\
-                            <option value="monday">' + _('Lunedì') + '</option>\
-                            <option value="tuesday">' + _('Martedì') + '</option>\
-                            <option value="wednesday">' + _('Mercoledì') + '</option>\
-                            <option value="thursday">' + _('Giovedì') + '</option>\
-                            <option value="friday">' + _('Venerdì') + '</option>\
-                            <option value="saturday">' + _('Sabato') + '</option>\
-                            <option value="sunday">' + _('Domenica') + '</option>\
-                        </select>\
-                    </div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="cycle" class="col-4 col-form-label">' + _('Periodicità') + '</label>\
-                    <div class="col-8">\
-                        <select class="form-select" name="cycle" value="" autocomplete="off">\
-                            <option value="all">' + _('Tutti') + '</option>\
-                            <option value="biweekly">' + _('Ogni due Settimane') + '</option>\
-                            <option value="month_first">' + _('Primo del Mese') + '</option>\
-                            <option value="month_second">' + _('Secondo del Mese') + '</option>\
-                            <option value="month_third">' + _('Terzo del Mese') + '</option>\
-                            <option value="month_fourth">' + _('Quarto del Mese') + '</option>\
-                            <option value="month_last">' + _('Ultimo del Mese') + '</option>\
-                        </select>\
-                    </div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="day" class="col-4 col-form-label">' + _('Dal') + '</label>\
-                    <div class="col-8"><input type="text" class="date form-control" name="from" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <label for="day" class="col-4 col-form-label">' + _('Al') + '</label>\
-                    <div class="col-8"><input type="text" class="date form-control" name="to" value="" autocomplete="off"></div>\
-                </div>\
-                <div class="row mb-2">\
-                    <div class="col-8 offset-4"><button class="btn btn-light">' + _('Annulla') + '</button> <button class="btn btn-success">' + _('Salva') + '</button></div>\
-                </div>\
-            </div>');
+            var ret = $(`<div>
+                <div class="row mb-2">
+                    <label for="day" class="col-4 col-form-label">${_('Giorno')}</label>
+                    <div class="col-8">
+                        <select class="form-select" name="day" value="" autocomplete="off">
+                            <option value="monday">${_('Lunedì')}</option>
+                            <option value="tuesday">${_('Martedì')}</option>
+                            <option value="wednesday">${_('Mercoledì')}</option>
+                            <option value="thursday">${_('Giovedì')}</option>
+                            <option value="friday">${_('Venerdì')}</option>
+                            <option value="saturday">${_('Sabato')}</option>
+                            <option value="sunday">${_('Domenica')}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="cycle" class="col-4 col-form-label">${_('Periodicità')}</label>
+                    <div class="col-8">
+                        <select class="form-select" name="cycle" value="" autocomplete="off">
+                            <option value="all">${_('Tutti')}</option>
+                            <option value="biweekly">${_('Ogni due Settimane')}</option>
+                            <option value="month_first">${_('Primo del Mese')}</option>
+                            <option value="month_second">${_('Secondo del Mese')}</option>
+                            <option value="month_third">${_('Terzo del Mese')}</option>
+                            <option value="month_fourth">${_('Quarto del Mese')}</option>
+                            <option value="month_last">${_('Ultimo del Mese')}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="day" class="col-4 col-form-label">${_('Dal')}</label>
+                    <div class="col-8"><input type="text" class="date form-control" name="from" value="" autocomplete="off"></div>
+                </div>
+                <div class="row mb-2">
+                    <label for="day" class="col-4 col-form-label">${_('Al')}</label>
+                    <div class="col-8"><input type="text" class="date form-control" name="to" value="" autocomplete="off"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-8 offset-4"><button class="btn btn-light">${_('Annulla')}</button> <button class="btn btn-success">${_('Salva')}</button></div>
+                </div>
+            </div>`);
 
             $('input.date', ret).datepicker({
                 format: 'DD dd MM yyyy',

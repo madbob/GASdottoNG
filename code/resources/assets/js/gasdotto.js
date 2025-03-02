@@ -2,8 +2,7 @@
 	Varie ed eventuali
 */
 
-window.$ = window.jQuery = global.$ = global.jQuery = require('jquery');
-require('bootstrap');
+import './boot';
 
 require('jquery-ui/ui/widgets/draggable');
 require('jquery-ui/ui/widgets/droppable');
@@ -42,7 +41,7 @@ const localCallables = {
         callables.js, perché va a modificare la variabile globale
         measure_discrete
     */
-    reloadMeasureDiscrete: function(form, data) {
+    reloadMeasureDiscrete: function() {
         utils.postAjax({
             method: 'GET',
             url: 'measures/discretes',
@@ -69,7 +68,7 @@ function generalInit(container) {
     });
 
     $('input:file.immediate-run', container).each(function() {
-        var i = $(this);
+        let i = $(this);
         i.fileupload({
             done: function(e, data) {
                 wizardLoadPage($(e.target), data.result);
@@ -97,12 +96,12 @@ function generalInit(container) {
     function listenMeasureSelectors(mselectors) {
         mselectors.each(function() {
             enforceMeasureDiscrete($(this));
-        }).on('change', function(event) {
+        }).on('change', function() {
             enforceMeasureDiscrete($(this));
         });
     }
 
-    var mselectors = $('.measure-selector', container);
+    let mselectors = $('.measure-selector', container);
     if (mselectors.length != 0) {
         if (measure_discrete == null) {
             utils.postAjax({
@@ -165,8 +164,8 @@ function wizardLoadPage(node, contents) {
         next.modal('show');
     }
     catch(error) {
-        var json = JSON.parse(contents);
-        var modal = $('#service-modal');
+        let json = JSON.parse(contents);
+        let modal = $('#service-modal');
         modal.find('.modal-body').empty().append('<p>' + json.message + '</p>');
         modal.modal('show');
     }
@@ -178,17 +177,17 @@ function completionRowsInit(node) {
             return;
         }
 
-        var source = $(this).closest('.completion-rows').attr('data-completion-source');
+        let source = $(this).closest('.completion-rows').attr('data-completion-source');
 
         $(this).autocomplete({
             source: source,
             appendTo: $(this).closest('.completion-rows'),
             select: function(event, ui) {
-                var row = $(this).closest('li');
+                let row = $(this).closest('li');
                 row.before('<li class="list-group-item" data-object-id="' + ui.item.id + '">' + ui.item.label + '<div class="btn btn-xs btn-danger float-end"><i class="bi-x-lg"></i></div></li>');
 
-                var container = row.closest('.completion-rows');
-                var fn = Callables[container.attr('data-callback-add')];
+                let container = row.closest('.completion-rows');
+                let fn = Callables[container.attr('data-callback-add')];
                 if (typeof fn === 'function') {
                     fn(container, ui.item.id);
                 }
@@ -197,10 +196,9 @@ function completionRowsInit(node) {
     });
 
     $(node).on('click', '.btn-danger', function() {
-        var row = $(this).closest('li');
-
-        var container = row.closest('.completion-rows');
-        var fn = Callables[container.attr('data-callback-remove')];
+        let row = $(this).closest('li');
+        let container = row.closest('.completion-rows');
+        let fn = Callables[container.attr('data-callback-remove')];
         if (typeof fn === 'function') {
             fn(container, row.attr('data-object-id'));
         }
@@ -235,34 +233,40 @@ function miscInnerCallbacks(form, data) {
 
     test = form.find('input[name=update-select]');
     if (test.length != 0) {
-        var selectname = test.val();
+        let selectname = test.val();
         $('select[name=' + selectname + ']').each(function() {
-            var o = $('<option value="' + data.id + '" selected="selected">' + data.name + '</option>');
+            let o = $('<option value="' + data.id + '" selected="selected">' + data.name + '</option>');
             if (data.hasOwnProperty('parent') && data.parent != null) {
-                var parent = $(this).find('option[value=' + data.parent + ']').first();
-                var pname = parent.text().replace(/&nbsp;/g, ' ');
-                var indent = '&nbsp;&nbsp;';
+                let parent = $(this).find('option[value=' + data.parent + ']').first();
+                let pname = parent.text().replace(/&nbsp;/g, ' ');
+                let indent = '&nbsp;&nbsp;';
 
-                for (var i = 0; i < pname.length; i++) {
-                    if (pname[i] == ' ')
+                for (let i = 0; i < pname.length; i++) {
+                    if (pname[i] == ' ') {
                         indent += '&nbsp;';
-                    else
+                    }
+                    else {
                         break;
+                    }
                 }
 
                 o.prepend(indent);
                 parent.after(o);
             } else {
-                var reserved = ['id', 'name', 'status'];
-                for (var property in data)
-                    if (data.hasOwnProperty(property) && reserved.indexOf(property) < 0)
+                let reserved = ['id', 'name', 'status'];
+                for (let property in data) {
+                    if (data.hasOwnProperty(property) && reserved.indexOf(property) < 0) {
                         o.attr('data-' + property, data[property]);
+                    }
+                }
 
-                var trigger = $(this).find('option[value=run_modal]');
-                if (trigger.length != 0)
+                let trigger = $(this).find('option[value=run_modal]');
+                if (trigger.length != 0) {
                     trigger.before(o);
-                else
+                }
+                else {
                     $(this).append(0);
+                }
             }
         });
     }
@@ -270,29 +274,32 @@ function miscInnerCallbacks(form, data) {
     test = form.find('input[name=update-field]');
     if (test.length != 0) {
         test.each(function() {
-            var identifier_holder = utils.sanitizeId($(this).val());
+            let identifier_holder = utils.sanitizeId($(this).val());
+            let node = $('[data-updatable-name=' + identifier_holder + ']');
 
-            var node = $('[data-updatable-name=' + identifier_holder + ']');
-            var field = node.attr('data-updatable-field');
-            if (field == null)
+            let field = node.attr('data-updatable-field');
+            if (field == null) {
                 field = identifier_holder;
+            }
 
-            var value = data[field];
+            let value = data[field];
 
-            if (node.is('input:hidden'))
+            if (node.is('input:hidden')) {
                 node.val(value);
-            else
+            }
+            else {
                 node.html(value);
+            }
         });
     }
 
     test = form.find('input[name=post-saved-refetch]');
     if (test.length != 0) {
         test.each(function() {
-            var target = utils.sanitizeId($(this).val());
-            var box = $(target);
+            let target = utils.sanitizeId($(this).val());
+            let box = $(target);
 
-            var url = box.attr('data-fetch-url');
+            let url = box.attr('data-fetch-url');
             if (url == null) {
                 url = $(this).attr('data-fetch-url');
             }
@@ -304,9 +311,9 @@ function miscInnerCallbacks(form, data) {
     test = form.find('input[name^=post-saved-function]');
     if (test.length != 0) {
         test.each(function() {
-            var function_name = $(this).val();
+            let function_name = $(this).val();
 
-            var fn = localCallables[function_name] || Callables[function_name];
+            let fn = localCallables[function_name] || Callables[function_name];
             if (typeof fn === 'function') {
                 fn(form, data);
             }
@@ -316,7 +323,7 @@ function miscInnerCallbacks(form, data) {
     test = form.find('input[name^=reload-portion]');
     if (test.length != 0) {
         test.each(function() {
-            var identifier = $(this).val();
+            let identifier = $(this).val();
             $(identifier).each(function() {
             	utils.j().reloadNode($(this));
             });
@@ -336,9 +343,9 @@ function miscInnerCallbacks(form, data) {
     test = form.find('input[name=close-modal]');
     if (test.length != 0) {
 		test.each(function() {
-			var id = $(this).val();
+			let id = $(this).val();
 
-			var modal = $(id);
+			let modal = $(id);
 			if (modal.length == 0) {
 	        	modal = form.parents('.modal');
 			}
@@ -364,12 +371,12 @@ function miscInnerCallbacks(form, data) {
 }
 
 function preSaveForm(form) {
-    var proceed = true;
+    let proceed = true;
 
-    var test = form.find('input[name^=pre-saved-function]');
+    let test = form.find('input[name^=pre-saved-function]');
     if (test.length != 0) {
         test.each(function() {
-            var fn = Callables[$(this).val()];
+            let fn = Callables[$(this).val()];
             if (typeof fn === 'function') {
                 /*
                     Se una pre-saved-function solleva una eccezione, il form
@@ -389,10 +396,10 @@ function preSaveForm(form) {
 }
 
 function miscInnerModalCallbacks(modal) {
-    var test = modal.find('input[name=reload-portion]');
+    let test = modal.find('input[name=reload-portion]');
     if (test.length != 0) {
         test.each(function() {
-            var identifier = $(this).val();
+            let identifier = $(this).val();
             utils.j().reloadNode($(identifier));
         });
     }
@@ -403,14 +410,14 @@ function miscInnerModalCallbacks(modal) {
 */
 
 function enforceMeasureDiscrete(node) {
-    var form = node.closest('form');
-    var selected = node.find('option:selected').val();
-    var discrete = measure_discrete[selected];
-    var disabled = (discrete == '1');
+    let form = node.closest('form');
+    let selected = node.find('option:selected').val();
+    let discrete = measure_discrete[selected];
+    let disabled = (discrete == '1');
 
     form.find('input[name=portion_quantity]').prop('disabled', disabled);
-	var multiple_widget = form.find('input[name=multiple]');
-    var widgets = form.find('input[name=min_quantity], input[name=max_quantity], input[name=max_available]');
+	let multiple_widget = form.find('input[name=multiple]');
+    let widgets = form.find('input[name=min_quantity], input[name=max_quantity], input[name=max_available]');
 
 	if (disabled) {
 		form.find('input[name=portion_quantity]').val('0.000');
@@ -453,7 +460,7 @@ $(document).ready(function() {
 		funzioni abilitate, calcolo lo spazio da lasciare sopra al body in modo
 		dinamico
 	*/
-	var navbar = $('.navbar').first();
+	let navbar = $('.navbar').first();
 	$('body').css('padding-top', (navbar.height() * 2) + 'px');
 
     $('#preloader').hide();
@@ -475,7 +482,7 @@ $(document).ready(function() {
     */
     if (location.hash != '') {
         setTimeout(function() {
-            var id = location.hash;
+            let id = location.hash;
             if (id.charAt(0) === '#')
                 id = id.substr(1);
             $('.accordion-item[data-element-id=' + id + ']').find('.accordion-button').first().click();
@@ -485,7 +492,7 @@ $(document).ready(function() {
     $('#prompt-message-modal').modal('show');
 
     $('#home-notifications .alert').on('closed.bs.alert', function() {
-        var id = $(this).find('input:hidden[name=notification_id]').val();
+        let id = $(this).find('input:hidden[name=notification_id]').val();
         $.post('notifications/markread/' + id);
 
         if ($('#home-notifications .alert').length == 0) {
@@ -494,8 +501,8 @@ $(document).ready(function() {
     });
 
 	$('.remember-checkbox').each(function() {
-		var attr = $(this).attr('data-attribute');
-		var value = Cookies.get(attr);
+		let attr = $(this).attr('data-attribute');
+		let value = Cookies.get(attr);
 
 		if (typeof value !== 'undefined') {
 			$(this).prop('checked', value == 'true');
@@ -504,17 +511,17 @@ $(document).ready(function() {
 			$(this).prop('checked', $(this).attr('data-attribute-default') == 'true');
 		}
 	}).change(function() {
-		var attr = $(this).attr('data-attribute');
-		var value = $(this).prop('checked') ? 'true' : 'false';
+		let attr = $(this).attr('data-attribute');
+		let value = $(this).prop('checked') ? 'true' : 'false';
 		Cookies.set(attr, value);
 	});
 
     $('body').on('submit', '.main-form', function(event) {
         event.preventDefault();
 
-        var form = $(this);
+        let form = $(this);
 
-        var proceed = preSaveForm(form);
+        let proceed = preSaveForm(form);
         if (proceed == false) {
             return;
         }
@@ -544,7 +551,7 @@ $(document).ready(function() {
 
     $('body').on('click', '.main-form .delete-button', function(event) {
         event.preventDefault();
-        var form = $(this).closest('.main-form');
+        let form = $(this).closest('.main-form');
 
         if (confirm(_('Sei sicuro di voler eliminare questo elemento?'))) {
             form.find('button').prop('disabled', true);
@@ -554,9 +561,9 @@ $(document).ready(function() {
                 url: form.attr('action'),
                 dataType: 'json',
 
-                success: function(data) {
-                    var upper = Lists.closeParent(form);
-                    var list = upper.closest('.loadable-list');
+                success: function() {
+                    let upper = Lists.closeParent(form);
+                    let list = upper.closest('.loadable-list');
                     upper.remove();
                     Lists.testListsEmptiness(list);
                 }
@@ -566,16 +573,16 @@ $(document).ready(function() {
 
     $('body').on('submit', '.inner-form', function(event) {
         event.preventDefault();
-        var form = $(this);
+        let form = $(this);
 
-        var proceed = preSaveForm(form);
+        let proceed = preSaveForm(form);
         if (proceed == false) {
             return;
         }
 
 		utils.spinSubmitButton(form);
 
-        var params = {
+        let params = {
             method: form.attr('method'),
             url: form.attr('action'),
             dataType: 'JSON',
@@ -591,7 +598,7 @@ $(document).ready(function() {
 				}
             },
 
-            error: function(data) {
+            error: function() {
                 utils.formErrorFeedback(form);
             }
         };
@@ -608,15 +615,15 @@ $(document).ready(function() {
         utils.postAjax(params);
     });
 
-    $('body').on('hide.bs.modal', '.inner-modal', function(event) {
+    $('body').on('hide.bs.modal', '.inner-modal', function() {
         miscInnerModalCallbacks($(this));
     });
 
-    $('body').on('change', '.auto-submit select', function(event) {
-        var form = $(this).closest('form');
+    $('body').on('change', '.auto-submit select', function() {
+        let form = $(this).closest('form');
 
-        var data = new FormData(form.get(0));
-        var method = form.attr('method').toUpperCase();
+        let data = new FormData(form.get(0));
+        let method = form.attr('method').toUpperCase();
         if (method == 'PUT') {
             method = 'POST';
             data.append('_method', 'PUT');
@@ -640,9 +647,10 @@ $(document).ready(function() {
         Gestione fornitori
     */
 
-    $('body').on('click', '.variants-editor .delete-variant', function() {
-        var editor = $(this).closest('.variants-editor');
-        var id = $(this).closest('tr').attr('data-variant-id');
+    $('body').on('click', '.variants-editor .delete-variant', function(e) {
+        $(e.currentTarget).prop('disabled', true);
+        let editor = $(this).closest('.variants-editor');
+        let id = $(this).closest('[data-variant-id]').attr('data-variant-id');
 
         utils.postAjax({
             method: 'DELETE',
@@ -660,10 +668,10 @@ $(document).ready(function() {
     $('body').on('click', '.send-order-notifications', function(e) {
         e.preventDefault();
 
-        var button = $(this);
+        let button = $(this);
         button.prop('disabled', true);
-        var id = button.attr('data-aggregate-id');
-        var date = button.closest('form').find('.last-date');
+        let id = button.attr('data-aggregate-id');
+        let date = button.closest('form').find('.last-date');
 
         utils.postAjax({
             url: 'aggregates/notify/' + id,
@@ -682,23 +690,23 @@ $(document).ready(function() {
     */
 
     $('body').on('change', '.orders-in-invoice-candidate input:checkbox', function() {
-        var table = $(this).closest('table');
-        var total_taxable = 0;
-        var total_tax = 0;
-        var grand_total = 0;
+        let table = $(this).closest('table');
+        let total_taxable = 0;
+        let total_tax = 0;
+        let grand_total = 0;
 
         table.find('.orders-in-invoice-candidate').each(function() {
             if ($(this).find('input:checkbox').prop('checked')) {
-                total_taxable += utils.parseFloatC($(this).find('.taxable label').text());
-                total_tax += utils.parseFloatC($(this).find('.tax label').text());
-                grand_total += utils.parseFloatC($(this).find('.total label').text());
+                total_taxable += utils.parseFloatC($(this).find('.taxable').text());
+                total_tax += utils.parseFloatC($(this).find('.tax').text());
+                grand_total += utils.parseFloatC($(this).find('.total').text());
             }
         });
 
-        var totals_row = table.find('.orders-in-invoice-total');
-        totals_row.find('.taxable label').text(utils.priceRound(total_taxable));
-        totals_row.find('.tax label').text(utils.priceRound(total_tax));
-        totals_row.find('.total label').text(utils.priceRound(grand_total));
+        let totals_row = table.find('.orders-in-invoice-total');
+        totals_row.find('.taxable').text(utils.priceRound(total_taxable));
+        totals_row.find('.tax').text(utils.priceRound(total_tax));
+        totals_row.find('.total').text(utils.priceRound(grand_total));
     });
 
     /*
@@ -710,7 +718,7 @@ $(document).ready(function() {
             return;
         }
 
-        var form = $(this).closest('form');
+        let form = $(this).closest('form');
         form.find('[name^=users]').closest('.row').toggle();
         form.find('[name=end_date]').closest('.row').toggle();
         form.find('[name=mailed]').closest('.row').toggle();
@@ -721,7 +729,7 @@ $(document).ready(function() {
         Widget generico wizard
     */
 
-    $('body').on('show.bs.modal', '.modal.wizard', function(e) {
+    $('body').on('show.bs.modal', '.modal.wizard', function() {
         $(this).find('.wizard_page:not(:first)').hide();
         $(this).find('.wizard_page:first').show();
 
@@ -729,8 +737,8 @@ $(document).ready(function() {
         e.preventDefault();
         e.stopPropagation();
 
-        var form = $(this);
-        var data = form.serializeArray();
+        let form = $(this);
+        let data = form.serializeArray();
 
 		utils.spinSubmitButton(form);
 
@@ -744,7 +752,7 @@ $(document).ready(function() {
                 wizardLoadPage(form, data);
             },
 
-			error: function(data) {
+			error: function() {
                 utils.formErrorFeedback(form);
             }
         });
@@ -752,7 +760,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $('body').on('submit', '.modal.close-on-submit form', function(event) {
+    $('body').on('submit', '.modal.close-on-submit form', function() {
         $(this).closest('.modal').modal('hide');
     });
 
