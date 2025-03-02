@@ -64,7 +64,7 @@ class Roles {
             }
         });
 
-        $('.role-editor', container).on('change', 'input:checkbox[data-role]', function(e) {
+        $('.role-editor', container).on('change', 'input:checkbox[data-role]', function() {
             var check = $(this);
             check.removeClass('saved-checkbox saved-left-feedback');
             var url = check.is(':checked') ? 'roles/attach' : 'roles/detach';

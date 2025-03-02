@@ -1,8 +1,6 @@
 require('jquery-ui/ui/widgets/draggable');
 require('jquery-ui/ui/widgets/droppable');
 
-import utils from "./utils";
-
 class Exports {
     static init(container)
     {
@@ -14,10 +12,10 @@ class Exports {
         });
 
         $('#import_csv_sorter .im_droppable', container).droppable({
-			over: function(event, ui) {
+			over: function() {
 				$(this).addClass('bg-success text-white');
 			},
-			out: function(event, ui) {
+			out: function() {
 				$(this).removeClass('bg-success text-white');
 			},
             drop: function(event, ui) {

@@ -1,6 +1,3 @@
-window.$ = window.jQuery = global.$ = global.jQuery = require('jquery');
-require('bootstrap');
-
 import utils from "./utils";
 import lists from "./lists";
 
@@ -337,7 +334,7 @@ class Callables {
         pagina.
         Usato primariamente per aggiornare la grafica delle consegne dopo il pagamento
     */
-    static reloadLoadableHeaders(form, data)
+    static reloadLoadableHeaders(form)
     {
         var n_sender = $('.accordion-item[data-element-id="' + form.find('input[name=sender_id]').val() + '"]').filter(':visible');
         if (n_sender.length != 0) {
@@ -350,7 +347,7 @@ class Callables {
         }
     }
 
-    static closeMainForm(form, data)
+    static closeMainForm(form)
     {
         lists.closeParent(form);
     }

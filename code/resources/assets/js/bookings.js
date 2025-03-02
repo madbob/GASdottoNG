@@ -95,7 +95,7 @@ class Bookings
                             block.append(newrow);
                         }
                     }
-                })
+                });
             }
             else {
                 this.bookingTotal(editor);
@@ -216,7 +216,7 @@ class Bookings
                     url: form.attr('action'),
                     dataType: 'json',
 
-                    success: (data) => {
+                    success: () => {
                         form.find('button').prop('disabled', false);
                         form.find('.booking-product-quantity input').val('0');
                         form.find('.variants-selector').each(function() {
@@ -518,7 +518,7 @@ class Bookings
 
     			if (Object.entries(data.bookings).length == 0) {
     				$('.booking-product-price', form).text(utils.priceRound(0));
-    				$('.booking-modifier, .booking-total', container).textVal(utils.priceRound(0));
+                    $('.booking-modifier, .booking-total').textVal(utils.priceRound(0));
                     $('.all-bookings-total', form).text(utils.priceRound(0));
     			}
     			else {
@@ -534,7 +534,7 @@ class Bookings
     				*/
     				let status = {};
 
-                    $('.booking-bottom-helper', container).removeClass('bg-success').addClass('bg-danger');
+                    $('.booking-bottom-helper').removeClass('bg-success').addClass('bg-danger');
 
     				for (let [booking_id, booking_data] of Object.entries(data.bookings)) {
     					let container = $('input[value="' + booking_id + '"]').closest('table').first();

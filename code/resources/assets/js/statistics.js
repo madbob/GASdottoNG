@@ -100,6 +100,6 @@ class Statistics {
             this.doGraphs('products', data);
         });
     }
-};
+}
 
 export default Statistics;

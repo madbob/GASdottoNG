@@ -22,9 +22,9 @@ $(document).ready(function() {
         var input = $(this);
         input.popover({
             content: function() {
-                var ret = '<div>\
-                    <div class="row mb-2"><label for="password" class="col-4 col-form-label">' + _('Nuova Password') + '</label><div class="col-8"><input type="password" class="form-control" name="password" value="" autocomplete="off" minlength="8"></div></div>\
-                    <div class="row mb-2"><label for="password_confirm" class="col-4 col-form-label">' + _('Conferma Password') + '</label><div class="col-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off" minlength="8"></div></div>';
+                var ret = `<div>
+                    <div class="row mb-2"><label for="password" class="col-4 col-form-label">${_('Nuova Password')}</label><div class="col-8"><input type="password" class="form-control" name="password" value="" autocomplete="off" minlength="8"></div></div>
+                    <div class="row mb-2"><label for="password_confirm" class="col-4 col-form-label">${_('Conferma Password')}</label><div class="col-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off" minlength="8"></div></div>`;
 
                 if (input.hasClass('enforcable_change')) {
                     ret += '<div class="checkbox"><label><input type="checkbox" name="enforce_change"> ' + _('Forza cambio password al prossimo login') + '</label></div><br>';
@@ -95,7 +95,7 @@ $(document).ready(function() {
                     form.submit();
                 }
                 else {
-                    var save_button = form.find('button:submit')
+                    var save_button = form.find('button:submit');
                     utils.inlineFeedback(save_button, _('Password errata!'));
                 }
             }

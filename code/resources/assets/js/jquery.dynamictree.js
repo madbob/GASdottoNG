@@ -81,12 +81,12 @@ require('jquery-ui/ui/widgets/sortable');
             var input = box.find('input[name=new_category]');
             var name = input.val();
             var tree = box.find('.dynamic-tree');
-            var new_node = $('<li class="list-group-item ui-sortable-handle"> \
-                <div> \
-                    <div class="btn btn-danger float-end dynamic-tree-remove"><i class="bi-x-lg"></i></div> \
-                    <input name="names[]" class="form-control" value="' + name + '"> \
-                </div> \
-            </li>');
+            var new_node = $(`<li class="list-group-item ui-sortable-handle">
+                <div>
+                    <div class="btn btn-danger float-end dynamic-tree-remove"><i class="bi-x-lg"></i></div>
+                    <input name="names[]" class="form-control" value="${name}">
+                </div>
+            </li>`);
 
             tree.append(new_node);
             tree.sortable('refresh');

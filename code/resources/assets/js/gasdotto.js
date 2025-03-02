@@ -2,8 +2,7 @@
 	Varie ed eventuali
 */
 
-window.$ = window.jQuery = global.$ = global.jQuery = require('jquery');
-require('bootstrap');
+import './boot';
 
 require('jquery-ui/ui/widgets/draggable');
 require('jquery-ui/ui/widgets/droppable');
@@ -42,7 +41,7 @@ const localCallables = {
         callables.js, perché va a modificare la variabile globale
         measure_discrete
     */
-    reloadMeasureDiscrete: function(form, data) {
+    reloadMeasureDiscrete: function() {
         utils.postAjax({
             method: 'GET',
             url: 'measures/discretes',
@@ -97,7 +96,7 @@ function generalInit(container) {
     function listenMeasureSelectors(mselectors) {
         mselectors.each(function() {
             enforceMeasureDiscrete($(this));
-        }).on('change', function(event) {
+        }).on('change', function() {
             enforceMeasureDiscrete($(this));
         });
     }
@@ -562,7 +561,7 @@ $(document).ready(function() {
                 url: form.attr('action'),
                 dataType: 'json',
 
-                success: function(data) {
+                success: function() {
                     let upper = Lists.closeParent(form);
                     let list = upper.closest('.loadable-list');
                     upper.remove();
@@ -599,7 +598,7 @@ $(document).ready(function() {
 				}
             },
 
-            error: function(data) {
+            error: function() {
                 utils.formErrorFeedback(form);
             }
         };
@@ -616,11 +615,11 @@ $(document).ready(function() {
         utils.postAjax(params);
     });
 
-    $('body').on('hide.bs.modal', '.inner-modal', function(event) {
+    $('body').on('hide.bs.modal', '.inner-modal', function() {
         miscInnerModalCallbacks($(this));
     });
 
-    $('body').on('change', '.auto-submit select', function(event) {
+    $('body').on('change', '.auto-submit select', function() {
         let form = $(this).closest('form');
 
         let data = new FormData(form.get(0));
@@ -730,7 +729,7 @@ $(document).ready(function() {
         Widget generico wizard
     */
 
-    $('body').on('show.bs.modal', '.modal.wizard', function(e) {
+    $('body').on('show.bs.modal', '.modal.wizard', function() {
         $(this).find('.wizard_page:not(:first)').hide();
         $(this).find('.wizard_page:first').show();
 
@@ -753,7 +752,7 @@ $(document).ready(function() {
                 wizardLoadPage(form, data);
             },
 
-			error: function(data) {
+			error: function() {
                 utils.formErrorFeedback(form);
             }
         });
@@ -761,7 +760,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $('body').on('submit', '.modal.close-on-submit form', function(event) {
+    $('body').on('submit', '.modal.close-on-submit form', function() {
         $(this).closest('.modal').modal('hide');
     });
 
