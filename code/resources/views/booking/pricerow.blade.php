@@ -23,9 +23,7 @@ else {
 	@foreach($prices as $price)
 		<div class="row">
 			<div class="col">
-				<label class="static-label form-control-plaintext">
-					<small>{!! $price !!}</small>
-				</label>
+				<small>{!! $price !!}</small>
 			</div>
 		</div>
 	@endforeach

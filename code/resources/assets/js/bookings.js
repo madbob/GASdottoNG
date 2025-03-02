@@ -534,7 +534,7 @@ class Bookings
     				*/
     				let status = {};
 
-                    $('.booking-bottom-helper', container).removeClass('bg-success').addClass('bg-danger');
+                    $('.booking-bottom-helper').removeClass('bg-success').addClass('bg-danger');
 
     				for (let [booking_id, booking_data] of Object.entries(data.bookings)) {
     					let container = $('input[value="' + booking_id + '"]').closest('table').first();
