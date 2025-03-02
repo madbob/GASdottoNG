@@ -21,7 +21,7 @@ class ContactObserver
                 break;
 
             case 'website':
-                $contact->value = fixUrl($contact->value);
+                $contact->value = normalizeUrl($contact->value);
                 break;
         }
 
