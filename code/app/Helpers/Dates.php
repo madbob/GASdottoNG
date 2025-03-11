@@ -4,12 +4,10 @@ use Carbon\Carbon;
 
 function printableDate($value, $short = false)
 {
-    if (is_null($value) || empty($value)) {
+    if (blank($value)) {
         $ret = _i('Mai');
     }
     else {
-        $date = null;
-
         if (is_numeric($value)) {
             $date = Carbon::createFromTimestamp($value);
         }
@@ -18,7 +16,7 @@ function printableDate($value, $short = false)
                 $date = Carbon::parse($value);
             }
             catch(\Exception $e) {
-                $ret = _i('Mai');
+                $date = null;
             }
         }
 
@@ -31,6 +29,9 @@ function printableDate($value, $short = false)
             else {
                 $ret = ucwords($date->isoFormat('dddd D MMMM YYYY'));
             }
+        }
+        else {
+            $ret = _i('Mai');
         }
     }
 
