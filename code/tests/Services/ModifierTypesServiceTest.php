@@ -2,11 +2,12 @@
 
 namespace Tests\Services;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-
-
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+use MadBob\Larastrap\Integrations\LarastrapStack;
+
+use Tests\TestCase;
 use App\Exceptions\AuthException;
 
 class ModifierTypesServiceTest extends TestCase
@@ -32,11 +33,20 @@ class ModifierTypesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        $type = app()->make('ModifierTypesService')->store([
+        $request = LarastrapStack::autoreadRender('commons.addingbutton', [
+            'template' => 'modifiertype.base-edit',
+            'typename' => 'modtype',
+            'typename_readable' => _i('Modificatore'),
+            'targeturl' => 'modtypes',
+            'autoread' => true,
+        ]);
+
+        $request = array_merge($request, [
             'name' => 'Donazione',
             'classes' => ['App\Booking'],
         ]);
 
+        $type = app()->make('ModifierTypesService')->store($request);
         $this->assertTrue($type->exists);
 
         $found = false;
@@ -58,7 +68,13 @@ class ModifierTypesServiceTest extends TestCase
     {
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
-        app()->make('ModifierTypesService')->update($this->sample_type->id, []);
+
+        $request = LarastrapStack::autoreadRender('modifiertype.edit', ['modtype' => $this->sample_type]);
+        $request = array_merge($request, [
+            'name' => 'Donazioni',
+        ]);
+
+        app()->make('ModifierTypesService')->store($request);
     }
 
     /*
@@ -68,9 +84,12 @@ class ModifierTypesServiceTest extends TestCase
     {
         $this->actingAs($this->userWithAdminPerm);
 
-        app()->make('ModifierTypesService')->update($this->sample_type->id, [
+        $request = LarastrapStack::autoreadRender('modifiertype.edit', ['modtype' => $this->sample_type]);
+        $request = array_merge($request, [
             'name' => 'Donazioni',
         ]);
+
+        app()->make('ModifierTypesService')->store($request);
 
         $type = app()->make('ModifierTypesService')->show($this->sample_type->id);
         $this->assertEquals('Donazioni', $type->name);

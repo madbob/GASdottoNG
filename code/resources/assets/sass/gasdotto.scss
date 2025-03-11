@@ -381,6 +381,13 @@ table {
         }
     }
 
+    .booking-product-quantity {
+        .input-group-text {
+            border-bottom-right-radius: var(--bs-border-radius) !important;
+            border-top-right-radius: var(--bs-border-radius) !important;
+        }
+    }
+
     @include media-breakpoint-up(md) {
         &.user-booking-editor {
             tr {
@@ -750,6 +757,19 @@ i[class^='bi-hidden-'] {
                     border-bottom-width: 0;
                     padding: 0;
                 }
+            }
+        }
+
+        /*
+            Negli input group delle quantità delle varianti, nascondo l'unità di
+            misura per risparmiare spazio a video. Ma l'input box resta con i
+            bordi non arrotondati, per via del CSS di Bootstrap. Questo è per
+            forzare l'arrotondamento dei bordi in tale caso
+        */
+        .booking-variant-quantity {
+            input {
+                border-bottom-right-radius: var(--bs-border-radius) !important;
+                border-top-right-radius: var(--bs-border-radius) !important;
             }
         }
 

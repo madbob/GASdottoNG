@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use DB;
+use Illuminate\Support\Facades\DB;
+use MadBob\Larastrap\Integrations\LarastrapStack;
 
 use App\VatRate;
 
@@ -18,22 +19,7 @@ class VatRatesService extends BaseService
     public function store(array $request)
     {
         $this->ensureAuth(['gas.config' => 'gas']);
-
-        $vr = new VatRate();
-        $this->setIfSet($vr, $request, 'name');
-        $this->setIfSet($vr, $request, 'percentage');
-        $vr->save();
-
-        return $vr;
-    }
-
-    public function update($id, array $request)
-    {
-        $this->ensureAuth(['gas.config' => 'gas']);
-
-        $vr = VatRate::findOrFail($id);
-        $this->setIfSet($vr, $request, 'name');
-        $this->setIfSet($vr, $request, 'percentage');
+        $vr = LarastrapStack::autoreadSave($request, VatRate::class);
         $vr->save();
 
         return $vr;

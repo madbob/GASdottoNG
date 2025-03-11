@@ -43,10 +43,16 @@ class BackedController extends Controller
         }
     }
 
+    private function normalizeRequest($request)
+    {
+        return $request->except('_method', '_token');
+    }
+
     public function store(Request $request)
     {
         return $this->easyExecute(function () use ($request) {
-            $subject = $this->service->store($request->all());
+            $req = $this->normalizeRequest($request);
+            $subject = $this->service->store($req);
 
             return $this->commonSuccessResponse($subject);
         });
@@ -55,7 +61,14 @@ class BackedController extends Controller
     public function update(Request $request, $id)
     {
         return $this->easyExecute(function () use ($request, $id) {
-            $subject = $this->service->update($id, $request->except('_method', '_token'));
+            $req = $this->normalizeRequest($request);
+
+            if (method_exists($this->service, 'update')) {
+                $subject = $this->service->update($id, $req);
+            }
+            else {
+                $subject = $this->service->store($req);
+            }
 
             return $this->commonSuccessResponse($subject);
         });

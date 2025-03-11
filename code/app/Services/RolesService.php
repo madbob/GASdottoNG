@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
+use MadBob\Larastrap\Integrations\LarastrapStack;
 
 use App\Role;
 use App\User;
@@ -14,23 +15,7 @@ class RolesService extends BaseService
     public function store(array $request)
     {
         $this->ensureAuth(['gas.permissions' => 'gas']);
-
-        $role = new Role();
-        $this->setIfSet($role, $request, 'name');
-        $this->setIfSet($role, $request, 'parent_id');
-        $role->actions = implode(',', $request['actions'] ?? []);
-        $role->save();
-
-        return $role;
-    }
-
-    public function update($id, array $request)
-    {
-        $this->ensureAuth(['gas.permissions' => 'gas']);
-
-        $role = Role::findOrFail($id);
-        $this->setIfSet($role, $request, 'name');
-        $this->setIfSet($role, $request, 'parent_id');
+        $role = LarastrapStack::autoreadSave($request, Role::class);
         $role->save();
 
         return $role;

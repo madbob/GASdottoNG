@@ -2,11 +2,14 @@
 
 namespace Tests\Services;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+use MadBob\Larastrap\Integrations\LarastrapStack;
+
+use Tests\TestCase;
 use App\Exceptions\AuthException;
+use App\VatRate;
 
 class VatRateServiceTest extends TestCase
 {
@@ -37,12 +40,24 @@ class VatRateServiceTest extends TestCase
     public function test_store()
     {
         $this->actingAs($this->userAdmin);
+        $initial_count = VatRate::count();
 
-        $newVat = app()->make('VatRatesService')->store([
+        $request = LarastrapStack::autoreadRender('commons.addingbutton', [
+            'template' => 'vatrates.base-edit',
+            'typename' => 'vatrate',
+            'typename_readable' => _i('Aliquota IVA'),
+            'targeturl' => 'vatrates',
+            'autoread' => true,
+        ]);
+
+        $request = array_merge($request, [
             'name' => '22%',
             'percentage' => 22,
         ]);
 
+        $newVat = app()->make('VatRatesService')->store($request);
+
+        $this->assertEquals($initial_count + 1, VatRate::count());
         $this->assertEquals('22%', $newVat->name);
         $this->assertEquals(22, $newVat->percentage);
     }
@@ -53,12 +68,17 @@ class VatRateServiceTest extends TestCase
     public function test_update()
     {
         $this->actingAs($this->userAdmin);
+        $initial_count = VatRate::count();
 
-        $vat = app()->make('VatRatesService')->update($this->vat_rate->id, [
+        $request = LarastrapStack::autoreadRender('vatrates.edit', ['vatrate' => $this->vat_rate]);
+        $request = array_merge($request, [
             'name' => 'pippo',
             'percentage' => 22,
         ]);
 
+        $vat = app()->make('VatRatesService')->store($request);
+
+        $this->assertEquals($initial_count, VatRate::count());
         $this->assertEquals('pippo', $vat->name);
         $this->assertEquals(22, $vat->percentage);
     }

@@ -46,7 +46,7 @@
 				foreach(\App\Helpers\Status::orders() as $identifier => $meta) {
 					$statuses[$identifier] = (object) [
 						'label' => sprintf('<i class="bi-%s"></i>', $meta->icon),
-						'button_attributes' => ['title' => $meta->label],
+						'attributes' => ['title' => $meta->label],
 					];
 				}
 
