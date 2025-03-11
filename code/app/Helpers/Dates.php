@@ -4,7 +4,7 @@ use Carbon\Carbon;
 
 function printableDate($value, $short = false)
 {
-    if (is_null($value) || empty($value)) {
+    if (blank($value)) {
         $ret = _i('Mai');
     }
     else {
@@ -12,16 +12,26 @@ function printableDate($value, $short = false)
             $date = Carbon::createFromTimestamp($value);
         }
         else {
-            $date = Carbon::parse($value);
+            try {
+                $date = Carbon::parse($value);
+            }
+            catch(\Exception $e) {
+                $date = null;
+            }
         }
 
-        $date->startOfDay();
+        if ($date) {
+            $date->startOfDay();
 
-        if ($short) {
-            $ret = ucwords($date->isoFormat('DD/MM/YYYY'));
+            if ($short) {
+                $ret = ucwords($date->isoFormat('DD/MM/YYYY'));
+            }
+            else {
+                $ret = ucwords($date->isoFormat('dddd D MMMM YYYY'));
+            }
         }
         else {
-            $ret = ucwords($date->isoFormat('dddd D MMMM YYYY'));
+            $ret = _i('Mai');
         }
     }
 

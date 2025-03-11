@@ -19,12 +19,12 @@
                 var form = $(this);
                 form.find('button[type=submit]').prop('disabled', false);
 
-                var data = new Array();
+                var data = [];
 
                 form.find('.card').each(function() {
                     var a = {
                         id: $(this).attr('data-aggregate-id'),
-                        orders: new Array()
+                        orders: []
                     };
 
                     $(this).find('li').each(function() {
@@ -42,7 +42,7 @@
                     },
                     dataType: 'json',
 
-                    success: function(data) {
+                    success: function() {
                         location.reload();
                     }
                 });
@@ -86,5 +86,5 @@
                 }
             });
         }
-    }
+    };
 }(jQuery));

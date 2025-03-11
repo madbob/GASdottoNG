@@ -79,7 +79,7 @@ class Widgets {
                 return val;
             });
         })
-        .focus(function(e) {
+        .focus(function() {
             var v = utils.parseFloatC($(this).val());
             if (v == 0) {
                 var minimum = $(this).attr('data-enforce-minimum');
@@ -89,7 +89,7 @@ class Widgets {
                     $(this).val('0');
             }
         })
-        .blur(function(e) {
+        .blur(function() {
             $(this).val(function(index, value) {
                 var v = utils.parseFloatC(value);
 
@@ -303,7 +303,7 @@ class Widgets {
 
             reader.onload = function (e) {
                 img.attr('src', e.target.result);
-            }
+            };
 
             reader.readAsDataURL(input.files[0]);
         }

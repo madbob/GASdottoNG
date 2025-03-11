@@ -30,7 +30,7 @@ class Forms {
             it.attr('data-original-value', value);
         });
 
-        form.on('change', 'input, select', (e) => {
+        form.on('change', 'input, select', () => {
             let changed = false;
 
             form.find('input, select').each((index, item) => {

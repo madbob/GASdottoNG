@@ -1,6 +1,3 @@
-window.$ = window.jQuery = global.$ = global.jQuery = require('jquery');
-require('bootstrap');
-
 import utils from "./utils";
 import callables from "./callables";
 
@@ -124,6 +121,7 @@ class Lists {
     {
         var domid = Math.random().toString(36).substring(2);
 
+        /*
         return $('<div class="async-accordion accordion-item" data-accordion-url="' + url + '" data-element-id="' + id + '"> \
             <h2 class="accordion-header" id="head-accordionitem-' + domid +'"> \
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordionitem-' + domid +'" aria-expanded="false" aria-controls="accordionitem-4P3rexIa1E">' + header + '</button> \
@@ -132,6 +130,16 @@ class Lists {
                 <div class="accordion-body"></div> \
             </div> \
         </div>');
+        */
+
+        return $(`<div class="async-accordion accordion-item" data-accordion-url="${url}" data-element-id="${id}">
+            <h2 class="accordion-header" id="head-accordionitem-${domid}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordionitem-${domid}" aria-expanded="false" aria-controls="accordionitem-${domid}">${header}</button>
+            </h2>
+            <div id="accordionitem-${domid}" class="accordion-collapse collapse" aria-labelledby="head-accordionitem-${domid}" data-bs-parent="#${list.attr('id')}">
+                <div class="accordion-body"></div>
+            </div>
+        </div>`);
     }
 
     static appendToLoadableList(list, data, open)

@@ -1,8 +1,3 @@
-window.$ = window.jQuery = global.$ = global.jQuery = require('jquery');
-require('bootstrap');
-
-import utils from "./utils";
-
 class Products {
     static init(container)
     {
@@ -12,7 +7,7 @@ class Products {
             rapida
         */
         if (container.hasClass('products-grid')) {
-            container.on('change', '.product-select', (e) => {
+            container.on('change', '.product-select', () => {
                 let count = container.find('.product-select').filter(':checked').length;
                 container.find('.massive-actions').toggleClass('hidden', count == 0);
             });

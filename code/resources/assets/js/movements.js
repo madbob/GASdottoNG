@@ -50,7 +50,7 @@ class Movements {
 
     static movementTypeEditor(container)
     {
-        $('select[name=sender_type], select[name=target_type]', container).change(function(e) {
+        $('select[name=sender_type], select[name=target_type]', container).change(function() {
             var editor = $(this).closest('.movement-type-editor');
             var sender = editor.find('select[name=sender_type] option:selected').val();
             var target = editor.find('select[name=target_type] option:selected').val();

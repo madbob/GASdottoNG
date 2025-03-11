@@ -6,7 +6,7 @@ import Lists from "./lists";
 class Utils {
     static init(container)
     {
-        $('.reloader', container).click(function(e) {
+        $('.reloader', container).click(function() {
             let listid = $(this).attr('data-reload-target');
 
             if (listid == null) {
@@ -105,7 +105,7 @@ class Utils {
         */
         $('.collapse', container).on('show.bs.collapse hide.bs.collapse', function(e) {
             e.stopPropagation();
-		}).on('shown.bs.collapse hidden.bs.collapse', function(e) {
+		}).on('shown.bs.collapse hidden.bs.collapse', function() {
             $(this).find('.required_when_triggered').each(function() {
 				let target = $(this);
 				let active = $(this).closest('.collapse').hasClass('show');
@@ -382,9 +382,8 @@ $.fn.textVal = function(value) {
 $.fn.attrBegins = function(s) {
     let matched = [];
 
-    this.each(function(index) {
-        let elem = this;
-        $.each(this.attributes, function(index, attr) {
+    this.each(function(index, elem) {
+        $.each(elem.attributes, function(index, attr) {
             if (attr.name.indexOf(s) === 0) {
                matched.push(elem);
             }

@@ -151,6 +151,7 @@
                                 'field' => 'amount',
                                 'type' => 'number',
                                 'extra' => [
+                                    'step' => 0.01,
                                     'textappend' => $labels[$actual_strings_combination][3],
                                 ],
                             ],
