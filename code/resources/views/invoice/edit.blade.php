@@ -9,7 +9,7 @@
                     <x-larastrap::text name="number" :label="_i('Numero')" disabled readonly />
                     <x-larastrap::datepicker name="date" :label="_i('Data')" disabled readonly />
                 @else
-                    <x-larastrap::selectobj
+                    <x-larastrap::select-model
                         name="supplier_id"
                         :label="_i('Fornitore')"
                         classes="select-fetcher"

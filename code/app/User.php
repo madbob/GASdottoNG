@@ -133,6 +133,11 @@ class User extends Authenticatable
         return $ret;
     }
 
+    public function getNameAttribute()
+    {
+        return $this->printableName();
+    }
+
     public function printableHeader()
     {
         $ret = $this->printableName();

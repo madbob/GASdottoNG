@@ -32,7 +32,7 @@
                         [
                             'label' => _i('Fornitore'),
                             'field' => 'target_id',
-                            'type' => 'selectobj',
+                            'type' => 'select-model',
                             'width' => 15,
                             'extra' => [
                                 'options' => $currentuser->targetsByAction('supplier.orders')

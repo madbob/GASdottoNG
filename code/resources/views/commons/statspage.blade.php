@@ -63,7 +63,7 @@ else {
         <div class="row">
             <div class="col-12 col-lg-6">
                 <form id="stats-supplier-form" class="form-horizontal">
-                    <x-larastrap::selectobj name="supplier" :label="_i('Fornitore')" :options="$currentgas->suppliers" />
+                    <x-larastrap::select-model name="supplier" :label="_i('Fornitore')" :options="$currentgas->suppliers" />
                     @include('commons.genericdaterange')
                     <x-larastrap::select name="type" :label="_i('Tipo')" :options="['all' => _i('Tutto'), 'shipped' => _i('Consegnato')]" :value="$default_type" />
                     <input type="hidden" name="target" value="{{ inlineId($target) }}">

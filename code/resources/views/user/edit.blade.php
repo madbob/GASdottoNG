@@ -210,7 +210,7 @@ if ($user->isFriend() && $admin_editable) {
                                     {{ _i('Da qui è possibile riassegnare un amico ad un altro utente. Tutti i pagamenti pregressi resteranno addebitati a %s.', $user->parent->printableName()) }}
                                 </p>
 
-								<x-larastrap::selectobj :label="_i('Nuovo assegnatario')" name="parent_id" :options="App\User::where('id', '!=', $user->parent_id)->with(['gas'])->topLevel()->sorted()->get()->filter(fn($u) => $u->can('users.subusers', $u->gas))" />
+								<x-larastrap::select-model :label="_i('Nuovo assegnatario')" name="parent_id" :options="App\User::where('id', '!=', $user->parent_id)->with(['gas'])->topLevel()->sorted()->get()->filter(fn($u) => $u->can('users.subusers', $u->gas))" />
                             </x-larastrap::mform>
                         </x-larastrap::accordionitem>
                     </x-larastrap::accordion>

@@ -23,7 +23,7 @@
                         <label>
                             <input type="radio" name="supplier_source" value="update" {{ $existing ? 'checked' : '' }}> {{ _i('Aggiorna fornitore esistente') }}
                         </label>
-                        <x-larastrap::selectobj name="supplier_update" squeeze :options="$currentgas->suppliers" :extraitem="_i('Seleziona un fornitore')" :value="$existing ? $existing->id : 0" />
+                        <x-larastrap::select-model name="supplier_update" squeeze :options="$currentgas->suppliers" :extra_options="[0 => _i('Seleziona un Fornitore')]" :value="$existing ? $existing->id : 0" />
                     </div>
                 </x-larastrap::field>
 
