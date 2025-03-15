@@ -100,6 +100,16 @@ class MovementsService extends BaseService
             $query->where('method', $request['method']);
         }
 
+        if (isset($request['identifier']) && filled($request['identifier'])) {
+            $identifier = sprintf('%%%s%%', $request['identifier']);
+            $query->where('identifier', 'like', $identifier);
+        }
+
+        if (isset($request['notes']) && filled($request['notes'])) {
+            $notes = sprintf('%%%s%%', $request['notes']);
+            $query->where('notes', 'like', $notes);
+        }
+
         if (isset($request['user_id']) && ! empty($request['user_id']) && $request['user_id'] != '0') {
             $user_id = $request['user_id'];
             if ($user_id == $currentuser->id) {
