@@ -13,7 +13,10 @@ $categories = array_unique($categories);
 $categories = App\Category::whereIn('id', $categories)->orderBy('name', 'asc')->get()->pluck('name')->toArray();
 
 $pending_modifiers = $order->applyModifiers($master_summary, 'pending');
-$shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
+
+if (isset($shipped_modifiers) == false) {
+    $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
+}
 
 $products_modifiers = [];
 App\ModifiedValue::organizeForProducts($products_modifiers, $pending_modifiers, 'pending');

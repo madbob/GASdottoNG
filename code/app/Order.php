@@ -800,6 +800,37 @@ class Order extends Model
     }
 
     /*
+        Questo restituisce l'ammontare totale dovuto al fornitore, includendo
+        sia il valore delle prenotazioni consegnate che quello degli eventuali
+        modificatori che coinvolgono il fornitore stesso.
+        Nota bene: un diverso approccio sarebbe quello di fare la somma diretta
+        del totale dei movimenti che fanno riferimento alle prenotazioni
+        dell'ordine, ma ci sarebbero comunque da considerare i movimenti
+        innescati dai modificatori con uno specifico tipo (che a volte impattano
+        sul saldo del fornitore, ma a volte no)
+    */
+    public function fullSupplierValue()
+    {
+        $total = $aggregate_data->price_delivered;
+
+        foreach($modifiers as $value) {
+            if ($value->activeMath()) {
+                $movement_type = $value->modifier->movementType;
+                if (is_null($movement_type)) {
+                    $total += $value->effective_amount;
+                }
+                else {
+                    if ($movement_type->target_type == Supplier::class || $movement_type->sender_type == Supplier::class) {
+                        $total += $value->effective_amount;
+                    }
+                }
+            }
+        }
+
+        return $total;
+    }
+
+    /*
         Se l'ordine non è più attivo, confronta i valori dei modificatori
         trasversalmente applicati tra le prenotazioni e restituisce quelli il
         cui valore assoluto definito non corrisponde al valore effettivamente

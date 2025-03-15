@@ -95,9 +95,18 @@ class ModifiedValue extends Model
         }, []);
     }
 
+    /*
+        Un valore "passivo" o con valore a 0 non implica nessuna operazione nel
+        calcolo di totali e somme
+    */
+    public function activeMath()
+    {
+        return $this->modifier->arithmetic != 'passive' && $this->effective_amount != 0;
+    }
+
     public function sumAmount($value)
     {
-        if ($this->modifier->arithmetic != 'passive') {
+        if ($this->activeMath()) {
             return $value + $this->effective_amount;
         }
         else {
@@ -134,7 +143,7 @@ class ModifiedValue extends Model
 
     public function generateMovement($master_movement)
     {
-        if ($this->modifier->arithmetic == 'passive' || $this->effective_amount == 0) {
+        if ($this->activeMath() === false) {
             return;
         }
 

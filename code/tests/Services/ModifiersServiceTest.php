@@ -602,7 +602,7 @@ class ModifiersServiceTest extends TestCase
         $movements = \App\Movement::all();
         $this->assertEquals(0, $movements->count());
 
-        [$user, $data, $total] = $this->initModifierWithMovement();
+        [$user, $data, $total] = $this->initModifierWithMovement('donation-to-gas');
         $this->assertEquals($this->order->supplier->currentBalanceAmount(), 0);
         $this->assertEquals($this->gas->currentBalanceAmount(), 0);
 
@@ -1105,7 +1105,7 @@ class ModifiersServiceTest extends TestCase
         $this->assertEquals($shipping_cost_found, true);
     }
 
-    private function initModifierWithMovement()
+    private function initModifierWithMovement($type)
     {
         $this->order = $this->initOrder(null);
 
@@ -1124,7 +1124,7 @@ class ModifiersServiceTest extends TestCase
                     'applies_type' => 'none',
                     'applies_target' => 'booking',
                     'simplified_amount' => 10,
-                    'movement_type_id' => 'donation-to-gas',
+                    'movement_type_id' => $type,
                 ]);
 
                 break;
@@ -1153,7 +1153,7 @@ class ModifiersServiceTest extends TestCase
     */
     public function test_modifier_with_movement()
     {
-        [$user, $data, $total] = $this->initModifierWithMovement();
+        [$user, $data, $total] = $this->initModifierWithMovement('donation-to-gas');
 
         $this->nextRound();
 
@@ -1178,6 +1178,11 @@ class ModifiersServiceTest extends TestCase
         $this->order = app()->make('OrdersService')->show($this->order->id);
         $currency = defaultCurrency();
         $this->assertEquals(round($this->order->supplier->currentBalanceAmount($currency), 2), round($total, 2));
+
+        $summary = $this->order->aggregate->reduxData();
+        $mods = $this->order->applyModifiers($summary, 'shipped');
+        $this->assertEquals(round($this->order->fullSupplierValue($summary, $mods), 2), round($total, 2));
+
         $this->assertEquals(round($this->gas->currentBalance($currency)->gas, 2), round($total * 0.1, 2));
 
         $movements = \App\Movement::all();
@@ -1202,12 +1207,36 @@ class ModifiersServiceTest extends TestCase
     }
 
     /*
+        Consegna prenotazione con modificatore che genera movimento contabile
+        destinato al fornitore
+    */
+    public function test_modifier_with_movement_to_supplier()
+    {
+        [$user, $data, $total] = $this->initModifierWithMovement('supplier-rounding');
+
+        $this->nextRound();
+
+        $this->actingAs($this->userWithShippingPerms);
+        $data['action'] = 'shipped';
+        app()->make('BookingsService')->bookingUpdate($data, $this->order->aggregate, $user, true);
+
+        $this->nextRound();
+
+        $this->actingAs($this->userReferrer);
+        $this->order = app()->make('OrdersService')->show($this->order->id);
+        $summary = $this->order->aggregate->reduxData();
+        $mods = $this->order->applyModifiers($summary, 'shipped');
+        $this->assertEquals(round($summary->price_delivered, 2), round($total, 2));
+        $this->assertEquals(round($this->order->fullSupplierValue($summary, $mods), 2), round($total + $total * 0.1, 2));
+    }
+
+    /*
         Consegna prenotazione senza quantità con modificatore che genera
         movimento contabile
     */
     public function test_manual_shipping_modifier_with_movement()
     {
-        [$user, $data, $total] = $this->initModifierWithMovement();
+        [$user, $data, $total] = $this->initModifierWithMovement('donation-to-gas');
 
         $this->nextRound();
 

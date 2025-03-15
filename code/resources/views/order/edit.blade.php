@@ -26,6 +26,8 @@ else {
     $nodelete = false;
 }
 
+$shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
+
 ?>
 
 <x-larastrap::mform :obj="$order" classes="order-editor" method="PUT" :action="route('orders.update', $order->id)" :nodelete="$nodelete" :other_buttons="$custom_buttons">
@@ -114,7 +116,7 @@ else {
                     'obj' => $order->payment,
                     'name' => 'payment_id',
                     'label' => _i('Pagamento'),
-                    'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered ?? 0),
+                    'default' => \App\Movement::generate('order-payment', $currentgas, $order, $order->fullSupplierValue($summary, $shipped_modifiers) ?? 0),
                     'to_modal' => [
                         'amount_editable' => true,
                         'extra' => [
@@ -137,6 +139,13 @@ else {
 
     <hr>
 
-    @include('order.summary', ['order' => $order, 'master_summary' => $master_summary])
-    @include('order.annotations', ['order' => $order])
+    @include('order.summary', [
+        'order' => $order,
+        'master_summary' => $master_summary,
+        'shipped_modifiers' => $shipped_modifiers,
+    ])
+
+    @include('order.annotations', [
+        'order' => $order
+    ])
 </x-larastrap::mform>
