@@ -41,7 +41,7 @@ class User extends IconsMap
             if ($user->gas->getConfig('annual_fee_amount') != 0) {
                 $ret['currency-euro'] = (object) [
                     'test' => function ($obj) {
-                        return $obj->fee_id == 0;
+                        return $obj->expiredFee();
                     },
                     'text' => _i('Quota non Pagata'),
                 ];

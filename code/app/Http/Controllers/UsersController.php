@@ -26,6 +26,7 @@ class UsersController extends BackedController
         return $this->easyExecute(function () use ($request) {
             $user = $request->user();
             $users = $this->service->list('', $user->can('users.admin', $user->gas));
+            $users->loadMissing(['fee', 'roles']);
 
             return view('pages.users', ['users' => $users]);
         });
