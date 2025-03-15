@@ -39,7 +39,7 @@ class OrdersServiceTest extends TestCase
 
         $this->actingAs($this->userWithNoPerms);
         app()->make('OrdersService')->store([
-            'supplier_id' => $this->order->supplier_id,
+            'supplier' => $this->order->supplier_id,
         ]);
     }
 
@@ -62,7 +62,7 @@ class OrdersServiceTest extends TestCase
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
         $aggregate = app()->make('OrdersService')->store([
-            'supplier_id' => $this->order->supplier_id,
+            'supplier' => $this->order->supplier_id,
             'comment' => 'Commento di prova',
             'start' => printableDate($start),
             'end' => printableDate($end),
@@ -332,7 +332,7 @@ class OrdersServiceTest extends TestCase
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
         $aggregate = app()->make('OrdersService')->store([
-            'supplier_id' => $this->order->supplier_id,
+            'supplier' => $this->order->supplier_id,
             'start' => printableDate($start),
             'end' => printableDate($end),
             'shipping' => printableDate($shipping),
@@ -348,7 +348,7 @@ class OrdersServiceTest extends TestCase
         }
 
         $second_aggregate = app()->make('OrdersService')->store([
-            'supplier_id' => $this->order->supplier_id,
+            'supplier' => $this->order->supplier_id,
             'start' => printableDate(date('Y-m-d', strtotime($start . ' +1 year'))),
             'end' => printableDate(date('Y-m-d', strtotime($end . ' +1 year'))),
             'status' => 'closed',
@@ -395,7 +395,7 @@ class OrdersServiceTest extends TestCase
         $this->nextRound();
 
         $aggregate = app()->make('OrdersService')->store([
-            'supplier_id' => $this->order->supplier_id,
+            'supplier' => $this->order->supplier_id,
             'start' => printableDate($start),
             'end' => printableDate($end),
             'shipping' => printableDate($shipping),
@@ -447,7 +447,7 @@ class OrdersServiceTest extends TestCase
         $this->actingAs($this->userReferrer);
 
         app()->make('OrdersService')->update($this->order->id, [
-            'supplier_id' => $this->order->supplier_id,
+            'supplier' => $this->order->supplier_id,
             'start' => printableDate($this->order->start),
             'end' => printableDate($this->order->end),
             'shipping' => printableDate($this->order->shipping),
@@ -463,7 +463,7 @@ class OrdersServiceTest extends TestCase
         $this->assertEquals($this->order->bookings()->count(), 1);
 
         app()->make('OrdersService')->update($this->order->id, [
-            'supplier_id' => $this->order->supplier_id,
+            'supplier' => $this->order->supplier_id,
             'start' => printableDate($this->order->start),
             'end' => printableDate($this->order->end),
             'shipping' => printableDate($this->order->shipping),
@@ -508,7 +508,7 @@ class OrdersServiceTest extends TestCase
         $this->nextRound();
 
         app()->make('OrdersService')->update($this->order->id, [
-            'supplier_id' => $this->order->supplier_id,
+            'supplier' => $this->order->supplier_id,
             'start' => printableDate($this->order->start),
             'end' => printableDate($this->order->end),
             'shipping' => printableDate($this->order->shipping),
@@ -616,7 +616,7 @@ class OrdersServiceTest extends TestCase
         $this->nextRound();
 
         $aggregate = app()->make('OrdersService')->update($this->order->id, [
-            'supplier_id' => $this->order->supplier_id,
+            'supplier' => $this->order->supplier_id,
             'start' => printableDate($this->order->start),
             'end' => printableDate($this->order->end),
             'shipping' => printableDate($this->order->shipping),
@@ -660,7 +660,7 @@ class OrdersServiceTest extends TestCase
         $shipping = date('Y-m-d', strtotime('+30 days'));
 
         $aggregate = app()->make('OrdersService')->store([
-            'supplier_id' => $this->order->supplier_id,
+            'supplier' => $this->order->supplier_id,
             'start' => printableDate($start),
             'end' => printableDate($end),
             'shipping' => printableDate($shipping),

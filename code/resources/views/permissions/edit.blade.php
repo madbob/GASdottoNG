@@ -6,7 +6,7 @@
 
                 <?php $super_candidates = App\Role::whereNotIn('id', $role->children->pluck('id')->toArray())->where('id', '!=', $role->id)->orderBy('name')->get() ?>
                 @if($super_candidates->count() != 0)
-                    <x-larastrap::select-model name="parent_id" :label="_i('Ruolo Superiore')" :options="$super_candidates" :extra_options="[0 => _i('Nessuno')]" />
+                    <x-larastrap::select-model name="parent" :label="_i('Ruolo Superiore')" :options="$super_candidates" :extra_options="[0 => _i('Nessuno')]" />
                 @endif
             </div>
         </div>

@@ -26,6 +26,7 @@ class UsersController extends BackedController
         return $this->easyExecute(function () use ($request) {
             $user = $request->user();
             $users = $this->service->list('', $user->can('users.admin', $user->gas));
+            $users->loadMissing(['fee', 'roles']);
 
             return view('pages.users', ['users' => $users]);
         });
@@ -37,7 +38,7 @@ class UsersController extends BackedController
     */
     public function blocked(Request $request)
     {
-        if ($request->user()->pending == false) {
+        if (!$request->user()->pending) {
             return redirect()->route('dashboard');
         }
         else {
@@ -88,7 +89,7 @@ class UsersController extends BackedController
     public function export(Request $request)
     {
         $user = $request->user();
-        if ($user->can('users.admin', $user->gas) == false) {
+        if ($user->can('users.admin', $user->gas) === false) {
             abort(503);
         }
 
@@ -178,19 +179,16 @@ class UsersController extends BackedController
         $admin_editable = $requester->can('users.admin', $target->gas);
         $access = ($admin_editable || $requester->id == $target->id || $target->parent_id == $requester->id);
 
-        if ($access == false) {
-            switch ($type) {
-                case 'accounting':
-                    $access = $requester->can('movements.admin', $target->gas) || $requester->can('movements.view', $target->gas);
-                    break;
-
-                case 'friends':
-                    $access = $target->can('users.subusers', $target->gas);
-                    break;
+        if ($access === false) {
+            if ($type == 'accounting') {
+                $access = $requester->can('movements.admin', $target->gas) || $requester->can('movements.view', $target->gas);
+            }
+            else if ($type == 'friends') {
+                $access = $target->can('users.subusers', $target->gas);
             }
         }
 
-        if ($access == false) {
+        if ($access === false) {
             throw new AuthException(403);
         }
     }
@@ -313,7 +311,7 @@ class UsersController extends BackedController
 
     public function changePassword(Request $request)
     {
-        if ($request->user()->enforce_password_change == false) {
+        if (!$request->user()->enforce_password_change) {
             return redirect()->route('dashboard');
         }
 

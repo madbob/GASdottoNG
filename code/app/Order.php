@@ -278,7 +278,7 @@ class Order extends Model
         all'ordine stesso, per poter accedere ai valori nella tabella
         pivot
     */
-    public function hasProduct(&$product)
+    public function hasProduct(&$product): bool
     {
         /*
             Non usare qui una query diretta
@@ -801,6 +801,37 @@ class Order extends Model
         }
 
         return $modifiers;
+    }
+
+    /*
+        Questo restituisce l'ammontare totale dovuto al fornitore, includendo
+        sia il valore delle prenotazioni consegnate che quello degli eventuali
+        modificatori che coinvolgono il fornitore stesso.
+        Nota bene: un diverso approccio sarebbe quello di fare la somma diretta
+        del totale dei movimenti che fanno riferimento alle prenotazioni
+        dell'ordine, ma ci sarebbero comunque da considerare i movimenti
+        innescati dai modificatori con uno specifico tipo (che a volte impattano
+        sul saldo del fornitore, ma a volte no)
+    */
+    public function fullSupplierValue($aggregate_data, $modifiers)
+    {
+        $total = $aggregate_data->price_delivered;
+
+        foreach($modifiers as $value) {
+            if ($value->activeMath()) {
+                $movement_type = $value->modifier->movementType;
+                if (is_null($movement_type)) {
+                    $total += $value->effective_amount;
+                }
+                else {
+                    if ($movement_type->target_type == Supplier::class || $movement_type->sender_type == Supplier::class) {
+                        $total += $value->effective_amount;
+                    }
+                }
+            }
+        }
+
+        return $total;
     }
 
     /*

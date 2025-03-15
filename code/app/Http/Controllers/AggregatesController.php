@@ -182,7 +182,7 @@ class AggregatesController extends Controller
     public function multiGAS(Request $request, $id)
     {
         $aggregate = Aggregate::findOrFail($id);
-        if ($request->user()->can('supplier.shippings', $aggregate) == false) {
+        if ($request->user()->can('supplier.shippings', $aggregate) === false) {
             abort(503);
         }
 

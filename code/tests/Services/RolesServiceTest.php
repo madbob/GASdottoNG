@@ -45,7 +45,7 @@ class RolesServiceTest extends TestCase
 
         $request = array_merge($request, [
             'name' => 'Pippo',
-            'parent_id' => 0,
+            'parent' => 0,
             'actions' => ['supplier.view', 'users.view'],
         ]);
 
@@ -113,6 +113,7 @@ class RolesServiceTest extends TestCase
         $request = LarastrapStack::autoreadRender('permissions.edit', ['role' => $role]);
         $request = array_merge($request, [
             'name' => 'Mario',
+            'parent' => $role->parent_id,
         ]);
 
         $role = app()->make('RolesService')->store($request);

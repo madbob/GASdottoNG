@@ -5,6 +5,10 @@ namespace Tests\Services;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use MadBob\Larastrap\Integrations\LarastrapStack;
+
+use App\ModifierType;
+
 class AggregationsTest extends TestCase
 {
     use DatabaseTransactions;
@@ -56,9 +60,13 @@ class AggregationsTest extends TestCase
     {
         $this->actingAs($this->userAdmin);
 
-        app()->make('ModifierTypesService')->update('spese-trasporto', [
+        $mod = ModifierType::find('spese-trasporto');
+        $request = LarastrapStack::autoreadRender('modifiertype.edit', ['modtype' => $mod]);
+        $request = array_merge($request, [
             'classes' => ['App\Booking', 'App\Product', 'App\Circle'],
         ]);
+
+        app()->make('ModifierTypesService')->store($request);
 
         $this->nextRound();
 

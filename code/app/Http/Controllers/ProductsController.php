@@ -31,18 +31,19 @@ class ProductsController extends BackedController
 
         $format = $request->input('format', 'html');
         $product = $this->service->show($id);
+        $ret = null;
 
         if ($format == 'html') {
             if ($user->can('supplier.modify', $product->supplier)) {
-                return view('product.edit', ['product' => $product]);
+                $ret = view('product.edit', ['product' => $product]);
             }
             else {
-                return view('product.show', ['product' => $product]);
+                $ret = view('product.show', ['product' => $product]);
             }
         }
         elseif ($format == 'modal') {
             if ($user->can('supplier.modify', $product->supplier)) {
-                return view('product.editmodal', ['product' => $product]);
+                $ret = view('product.editmodal', ['product' => $product]);
             }
             else {
                 abort(503);
@@ -53,12 +54,16 @@ class ProductsController extends BackedController
             $ret = json_decode($ret);
             $ret->printableMeasure = $product->printableMeasure();
 
-            return json_encode($ret);
+            $ret = json_encode($ret);
         }
         elseif ($format == 'bookable') {
             $order = Order::find($request->input('order_id'));
 
-            return view('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => false, 'while_shipping' => true]);
+            $ret = view('booking.quantityselectrow', ['product' => $product, 'order' => $order, 'populate' => false, 'while_shipping' => true]);
+        }
+
+        if ($ret) {
+            return $ret;
         }
         else {
             abort(404);
@@ -166,10 +171,8 @@ class ProductsController extends BackedController
         foreach ($orders as $order) {
             $existing_product = $order->products()->where('product_id', $product->id)->first();
 
-            if ($existing_product) {
-                if ($product->comparePrices($existing_product) == false) {
-                    $to_change[] = $order;
-                }
+            if ($existing_product && $product->comparePrices($existing_product) === false) {
+                $to_change[] = $order;
             }
         }
 
@@ -182,7 +185,7 @@ class ProductsController extends BackedController
         $product = Product::findOrFail($id);
 
         $to_change = $this->unalignedPrices($product);
-        if (empty($to_change) == false) {
+        if (empty($to_change) === false) {
             $ret[] = route('products.askupdateprices', $product->id);
         }
 

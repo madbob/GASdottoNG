@@ -262,7 +262,7 @@ class Product extends Model
         }
     }
 
-    public function hasWarningWithinOrder($summary)
+    public function hasWarningWithinOrder($summary): bool
     {
         if (isset($summary->products[$this->id])) {
             $quantity = $summary->products[$this->id]->quantity;
@@ -283,7 +283,7 @@ class Product extends Model
         return false;
     }
 
-    public function comparePrices($other)
+    public function comparePrices($other): bool
     {
         if ($this->getPrice(false) != $other->getPrice(false)) {
             return false;

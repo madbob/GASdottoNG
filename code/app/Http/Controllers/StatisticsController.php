@@ -120,7 +120,7 @@ class StatisticsController extends Controller
 
         $orders = [];
         foreach ($bookings as $booking) {
-            if (isset($orders[$booking->order_id]) == false) {
+            if (isset($orders[$booking->order_id]) === false) {
                 $orders[$booking->order_id] = [];
             }
 
@@ -132,7 +132,7 @@ class StatisticsController extends Controller
             $summary = $order->reduxData(['bookings' => $bookings]);
 
             $name = $order->supplier_id;
-            if (isset($data[$name]) == false) {
+            if (isset($data[$name]) === false) {
                 $data[$name] = (object) [
                     'users' => 0,
                     'value' => 0,
@@ -156,7 +156,7 @@ class StatisticsController extends Controller
 
         foreach ($data_for_suppliers as $dfs) {
             $name = $dfs->supplier_id;
-            if (isset($data[$name]) == false) {
+            if (isset($data[$name]) === false) {
                 $data[$name] = (object) [
                     'users' => 0,
                     'value' => 0,
@@ -233,7 +233,7 @@ class StatisticsController extends Controller
             foreach ($booking->products as $product) {
                 $name = $product->product_id;
 
-                if (isset($data[$name]) == false) {
+                if (isset($data[$name]) === false) {
                     $data[$name] = (object) [
                         'users' => [],
                         'value' => 0,
@@ -277,17 +277,14 @@ class StatisticsController extends Controller
         $type = $request->input('type') ?: 'shipped';
         $csv_headers = [];
 
-        switch ($id) {
-            case 'summary':
-                [$data, $categories] = $this->getSummary($start, $end, $type, $target);
-                $csv_headers = [_i('Fornitore'), _i('Valore Ordini'), _i('Utenti Coinvolti')];
-                break;
-
-            case 'supplier':
-                $supplier = $request->input('supplier');
-                [$data, $categories] = $this->getSupplier($start, $end, $type, $target, $supplier);
-                $csv_headers = [_i('Prodotto'), _i('Valore Ordini'), _i('Utenti Coinvolti')];
-                break;
+        if ($id == 'summary') {
+            [$data, $categories] = $this->getSummary($start, $end, $type, $target);
+            $csv_headers = [_i('Fornitore'), _i('Valore Ordini'), _i('Utenti Coinvolti')];
+        }
+        else {
+            $supplier = $request->input('supplier');
+            [$data, $categories] = $this->getSupplier($start, $end, $type, $target, $supplier);
+            $csv_headers = [_i('Prodotto'), _i('Valore Ordini'), _i('Utenti Coinvolti')];
         }
 
         $this->sortData($data, $categories);

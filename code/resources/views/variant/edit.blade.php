@@ -12,6 +12,7 @@
         <x-larastrap::field :label="_i('Valori')">
             @include('commons.manyrows', [
                 'contents' => $variant ? $variant->values : [],
+                'removable_check' => fn($v) => $v->hasBookings(),
                 'columns' => [
                     [
                         'label' => _i('ID'),

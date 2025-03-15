@@ -47,7 +47,7 @@
                                     @endif
 
 									<td>
-										<div class="btn btn-danger remove-row float-end">
+										<div class="btn btn-danger remove-row float-end {{ $combo->hasBookings() ? 'disabled' : '' }}">
 											<i class="bi-x-lg"></i>
 										</div>
 									</td>

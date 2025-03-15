@@ -36,7 +36,7 @@ class MovementsController extends BackedController
     {
         $user = Auth::user();
 
-        if ($user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false && $user->can('supplier.movements', null) == false && $user->can('supplier.invoices', null) == false) {
+        if ($user->can('movements.admin', $user->gas) === false && $user->can('movements.view', $user->gas) === false && $user->can('supplier.movements', null) === false && $user->can('supplier.invoices', null) === false) {
             abort(503);
         }
 
@@ -49,7 +49,7 @@ class MovementsController extends BackedController
             $data['movements'] = $this->service->list($request->all());
             $ret = null;
 
-            if ($request->has('startdate') == false) {
+            if ($request->has('startdate') === false) {
                 /*
                     Qui si finisce quando si accede alla pagina principale della
                     contabilità
@@ -282,131 +282,127 @@ class MovementsController extends BackedController
     {
         $user = $this->checkAuth();
 
-        switch ($type) {
-            case 'credits':
-                $users = User::sorted()->topLevel()->get();
+        if ($type == 'credits') {
+            $users = User::sorted()->topLevel()->get();
 
-                $filtered_users = $this->collectedFilteredUsers($request);
-                if (! empty($filtered_users)) {
-                    $users = $users->filter(function ($u) use ($filtered_users) {
-                        return in_array($u->id, $filtered_users);
-                    });
+            $filtered_users = $this->collectedFilteredUsers($request);
+            if (! empty($filtered_users)) {
+                $users = $users->filter(function ($u) use ($filtered_users) {
+                    return in_array($u->id, $filtered_users);
+                });
+            }
+
+            if ($subtype == 'csv') {
+                /*
+                    Qui effettuo un controllo extra sulle quote pagate, per
+                    aggiornare i dati che andranno nel CSV
+                */
+                Artisan::call('check:fees');
+
+                $has_fee = ($user->gas->getConfig('annual_fee_amount') != 0);
+                $has_shipping_place = $user->gas->hasFeature('shipping_places');
+                $filename = sanitizeFilename(_i('Crediti al %s.csv', date('d/m/Y')));
+
+                $headers = [_i('ID'), _i('Nome'), _i('E-Mail')];
+
+                $currencies = Currency::enabled();
+                foreach ($currencies as $curr) {
+                    $headers[] = _i('Credito Residuo %s', $curr->symbol);
                 }
 
-                if ($subtype == 'csv') {
-                    /*
-                        Qui effettuo un controllo extra sulle quote pagate, per
-                        aggiornare i dati che andranno nel CSV
-                    */
-                    Artisan::call('check:fees');
+                if ($has_fee) {
+                    $headers[] = _i('Quota Pagata');
+                }
 
-                    $has_fee = ($user->gas->getConfig('annual_fee_amount') != 0);
-                    $filename = sanitizeFilename(_i('Crediti al %s.csv', date('d/m/Y')));
+                $groups = Group::where('context', 'user')->get();
+                foreach ($groups as $group) {
+                    $headers[] = $group->name;
+                }
 
-                    $headers = [_i('ID'), _i('Nome'), _i('E-Mail')];
+                return output_csv($filename, $headers, $users, function ($user) use ($currencies, $has_fee, $groups) {
+                    $row = [];
+                    $row[] = $user->username;
+                    $row[] = $user->printableName();
+                    $row[] = $user->email;
 
-                    $currencies = Currency::enabled();
                     foreach ($currencies as $curr) {
-                        $headers[] = _i('Credito Residuo %s', $curr->symbol);
+                        $row[] = printablePrice($user->currentBalanceAmount($curr));
                     }
 
                     if ($has_fee) {
-                        $headers[] = _i('Quota Pagata');
+                        $row[] = $user->fee != null ? _i('SI') : _i('NO');
                     }
 
-                    $groups = Group::where('context', 'user')->get();
                     foreach ($groups as $group) {
-                        $headers[] = $group->name;
+                        $row[] = implode(' - ', $user->circlesByGroup($group)->circles);
                     }
 
-                    return output_csv($filename, $headers, $users, function ($user) use ($currencies, $has_fee, $groups) {
-                        $row = [];
-                        $row[] = $user->username;
-                        $row[] = $user->printableName();
-                        $row[] = $user->email;
+                    return $row;
+                });
+            }
+            elseif ($subtype == 'rid') {
+                $date = decodeDate($request->input('date'));
+                $body = strtoupper($request->input('body'));
+                $filename = sanitizeFilename(_i('SEPA del %s.xml', date('d/m/Y', strtotime($date))));
 
-                        foreach ($currencies as $curr) {
-                            $row[] = printablePrice($user->currentBalanceAmount($curr));
-                        }
+                $headers = [
+                    'Content-type' => 'text/xml',
+                    'Content-Disposition' => 'attachment; filename=' . $filename,
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Expires' => '0',
+                    'Pragma' => 'no-cache',
+                ];
 
-                        if ($has_fee) {
-                            $row[] = $user->fee != null ? _i('SI') : _i('NO');
-                        }
+                return Response::stream(function () use ($users, $date, $body) {
+                    $stream = fopen('php://output', 'w');
 
-                        foreach ($groups as $group) {
-                            $row[] = implode(' - ', $user->circlesByGroup($group)->circles);
-                        }
+                    $contents = view('documents.credits_rid', [
+                        'users' => $users,
+                        'date' => $date,
+                        'body' => $body,
+                    ])->render();
 
-                        return $row;
-                    });
-                }
-                elseif ($subtype == 'rid') {
-                    $date = decodeDate($request->input('date'));
-                    $body = strtoupper($request->input('body'));
-                    $filename = sanitizeFilename(_i('SEPA del %s.xml', date('d/m/Y', strtotime($date))));
+                    fwrite($stream, $contents);
+                    fclose($stream);
+                }, 200, $headers);
+            }
+            elseif ($subtype == 'integralces') {
+                $body = strtoupper($request->input('body'));
+                $filename = sanitizeFilename(_i('IntegralCES Utenti.csv'));
 
-                    $headers = [
-                        'Content-type' => 'text/xml',
-                        'Content-Disposition' => 'attachment; filename=' . $filename,
-                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
-                        'Expires' => '0',
-                        'Pragma' => 'no-cache',
-                    ];
+                return $this->exportIntegralCES($user->gas, $users, $filename, $body);
+            }
+        }
+        else if ($type == 'suppliers') {
+            $suppliers = $user->gas->suppliers;
 
-                    return Response::stream(function () use ($users, $date, $body) {
-                        $FH = fopen('php://output', 'w');
+            if ($subtype == 'csv') {
+                $filename = sanitizeFilename(_i('Saldi Fornitori al %s.csv', date('d/m/Y')));
+                $headers = [_i('ID'), _i('Nome')];
 
-                        $contents = view('documents.credits_rid', [
-                            'users' => $users,
-                            'date' => $date,
-                            'body' => $body,
-                        ])->render();
-
-                        fwrite($FH, $contents);
-                        fclose($FH);
-                    }, 200, $headers);
-                }
-                elseif ($subtype == 'integralces') {
-                    $body = strtoupper($request->input('body'));
-                    $filename = sanitizeFilename(_i('IntegralCES Utenti.csv'));
-
-                    return $this->exportIntegralCES($user->gas, $users, $filename, $body);
+                $currencies = Currency::enabled();
+                foreach ($currencies as $curr) {
+                    $headers[] = _i('Saldo %s', $curr->symbol);
                 }
 
-                break;
+                return output_csv($filename, $headers, $suppliers, function ($supplier) use ($currencies) {
+                    $row = [];
+                    $row[] = $supplier->id;
+                    $row[] = $supplier->printableName();
 
-            case 'suppliers':
-                $suppliers = $user->gas->suppliers;
-
-                if ($subtype == 'csv') {
-                    $filename = sanitizeFilename(_i('Saldi Fornitori al %s.csv', date('d/m/Y')));
-                    $headers = [_i('ID'), _i('Nome')];
-
-                    $currencies = Currency::enabled();
                     foreach ($currencies as $curr) {
-                        $headers[] = _i('Saldo %s', $curr->symbol);
+                        $row[] = printablePrice($supplier->currentBalanceAmount($curr));
                     }
 
-                    return output_csv($filename, $headers, $suppliers, function ($supplier) use ($currencies) {
-                        $row = [];
-                        $row[] = $supplier->id;
-                        $row[] = $supplier->printableName();
+                    return $row;
+                });
+            }
+            elseif ($subtype == 'integralces') {
+                $body = strtoupper($request->input('body'));
+                $filename = sanitizeFilename(_i('IntegralCES Fornitori.csv'));
 
-                        foreach ($currencies as $curr) {
-                            $row[] = printablePrice($supplier->currentBalanceAmount($curr));
-                        }
-
-                        return $row;
-                    });
-                }
-                elseif ($subtype == 'integralces') {
-                    $body = strtoupper($request->input('body'));
-                    $filename = sanitizeFilename(_i('IntegralCES Fornitori.csv'));
-
-                    return $this->exportIntegralCES($user->gas, $suppliers, $filename, $body);
-                }
-
-                break;
+                return $this->exportIntegralCES($user->gas, $suppliers, $filename, $body);
+            }
         }
     }
 
