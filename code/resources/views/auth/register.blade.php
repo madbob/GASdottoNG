@@ -14,7 +14,7 @@
         <x-larastrap::text name="verify" :label="$captcha" required />
 
         @if(App\Gas::count() > 1)
-            <x-larastrap::selectobj name="gas_id" :label="_('GAS')" required :options="App\Gas::orderBy('name', 'asc')->get()" />
+            <x-larastrap::select-model name="gas_id" :label="_('GAS')" required :options="App\Gas::orderBy('name', 'asc')->get()" />
         @else
             <input type="hidden" name="gas_id" value="{{ currentAbsoluteGas()->id }}">
         @endif

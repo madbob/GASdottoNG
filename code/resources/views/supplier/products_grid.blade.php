@@ -76,11 +76,11 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                 </th>
 
                                 <th scope="col" class="order-cell-category {{ in_array('category', $columns) ? '' : 'hidden' }}">
-                                    <x-larastrap::selectobj classes="skip-on-submit" name="category_id_all" :options="$categories" :extraitem="[0 => _i('Non Modificare')]" squeeze />
+                                    <x-larastrap::select-model classes="skip-on-submit" name="category_id_all" :options="$categories" :extra_options="[0 => _i('Non Modificare')]" squeeze />
                                 </th>
 
                                 <th scope="col" class="order-cell-measure {{ in_array('measure', $columns) ? '' : 'hidden' }}">
-                                    <x-larastrap::selectobj classes="skip-on-submit" name="measure_id_all" :options="$measures" :extraitem="[0 => _i('Non Modificare')]" squeeze />
+                                    <x-larastrap::select-model classes="skip-on-submit" name="measure_id_all" :options="$measures" :extra_options="[0 => _i('Non Modificare')]" squeeze />
                                 </th>
 
                                 <th scope="col" class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
@@ -121,11 +121,11 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                         </td>
 
                                         <td class="order-cell-category {{ in_array('category', $columns) ? '' : 'hidden' }}">
-                                            <x-larastrap::selectobj name="category_id" :label="_i('Categoria')" :options="$categories" squeeze :nprefix="$product->id . '-'" />
+                                            <x-larastrap::select-model name="category_id" :label="_i('Categoria')" :options="$categories" squeeze :nprefix="$product->id . '-'" />
                                         </td>
 
                                         <td class="order-cell-measure {{ in_array('measure', $columns) ? '' : 'hidden' }}">
-                                            <x-larastrap::selectobj name="measure_id" :label="_i('Unità di Misura')" :options="$measures" squeeze :nprefix="$product->id . '-'" />
+                                            <x-larastrap::select-model name="measure_id" :label="_i('Unità di Misura')" :options="$measures" squeeze :nprefix="$product->id . '-'" />
                                         </td>
 
                                         <td class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">

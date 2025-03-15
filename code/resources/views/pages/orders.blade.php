@@ -38,7 +38,7 @@
                     'end_date' => strtotime('+6 months'),
                 ])
 
-                <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$currentgas->suppliers" :extraitem="_i('Tutti')" />
+                <x-larastrap::select-model name="supplier_id" :label="_i('Fornitore')" :options="$currentgas->suppliers" :extra_options="[0 => _i('Tutti')]" />
 
                 @php
 

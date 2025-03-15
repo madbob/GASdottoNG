@@ -5,7 +5,7 @@
     @if($senders->count() == 1)
         <input type="hidden" name="sender_id" value="{{ $senders->first()->id }}">
     @else
-        <x-larastrap::selectobj name="sender_id" :label="$sender_type::commonClassName()" :options="$senders" />
+        <x-larastrap::select-model name="sender_id" :label="$sender_type::commonClassName()" :options="$senders" />
     @endif
 @endif
 
@@ -13,7 +13,7 @@
     @if($targets->count() == 1)
         <input type="hidden" name="target_id" value="{{ $targets->first()->id }}">
     @else
-        <x-larastrap::selectobj name="target_id" :label="$target_type::commonClassName()" :options="$targets" />
+        <x-larastrap::select-model name="target_id" :label="$target_type::commonClassName()" :options="$targets" />
     @endif
 @endif
 
