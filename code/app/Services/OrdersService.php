@@ -40,7 +40,7 @@ class OrdersService extends BaseService
         DB::beginTransaction();
 
         $a = new Aggregate();
-        $suppliers = Arr::wrap($request['supplier_id']);
+        $suppliers = Arr::wrap($request['supplier']);
 
         if (count($suppliers) > 1) {
             $a->comment = $request['comment'] ?? '';
