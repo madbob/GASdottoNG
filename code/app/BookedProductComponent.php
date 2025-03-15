@@ -12,12 +12,12 @@ class BookedProductComponent extends Model
 
     public function variant(): BelongsTo
     {
-        return $this->belongsTo('App\Variant');
+        return $this->belongsTo(Variant::class);
     }
 
     public function value(): BelongsTo
     {
-        return $this->belongsTo('App\VariantValue');
+        return $this->belongsTo(VariantValue::class);
     }
 
     /*************************************************************** GASModel */

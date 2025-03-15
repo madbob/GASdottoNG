@@ -15,15 +15,15 @@ use App\Aggregate;
 
 class BookingUserController extends Controller
 {
-    private $booking_service;
+    private $bookingService;
 
-    private $dynamic_service;
+    private $dynamicService;
 
     public function __construct(BookingsService $booking_service, DynamicBookingsService $dynamic_service)
     {
         $this->middleware('auth');
-        $this->booking_service = $booking_service;
-        $this->dynamic_service = $dynamic_service;
+        $this->bookingService = $booking_service;
+        $this->dynamicService = $dynamic_service;
     }
 
     /*
@@ -82,7 +82,7 @@ class BookingUserController extends Controller
         $target_user = User::find($user_id);
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
-        $this->booking_service->bookingUpdate($request->all(), $aggregate, $target_user, false);
+        $this->bookingService->bookingUpdate($request->all(), $aggregate, $target_user, false);
 
         $user = $request->user();
 
@@ -116,7 +116,7 @@ class BookingUserController extends Controller
     {
         $user = User::find($user_id);
         $aggregate = Aggregate::findOrFail($aggregate_id);
-        $ret = $this->dynamic_service->dynamicModifiers($request->all(), $aggregate, $user);
+        $ret = $this->dynamicService->dynamicModifiers($request->all(), $aggregate, $user);
 
         return response()->json($ret);
     }

@@ -15,11 +15,11 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    private $reference_class;
+    private $referenceClass;
 
     protected function commonInit($parameters)
     {
-        $this->reference_class = $parameters['reference_class'];
+        $this->referenceClass = $parameters['reference_class'];
     }
 
     protected function errorResponse($message, $target = '')
@@ -63,7 +63,7 @@ class Controller extends BaseController
     public function objhead(Request $request, $id)
     {
         try {
-            $class = $this->reference_class;
+            $class = $this->referenceClass;
             $subject = $class::tFind($id);
 
             if ($subject) {
@@ -75,7 +75,7 @@ class Controller extends BaseController
             }
         }
         catch (\Exception $e) {
-            Log::error('Unable to generate object header: ' . $this->reference_class . ' / ' . $id);
+            Log::error('Unable to generate object header: ' . $this->referenceClass . ' / ' . $id);
         }
 
         abort(404);

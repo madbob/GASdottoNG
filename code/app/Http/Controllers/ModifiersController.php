@@ -67,7 +67,7 @@ class ModifiersController extends BackedController
                     $to_be_attached = true;
 
                     foreach ($order->modifiers()->where('modifier_type_id', $modifier->modifier_type_id)->get() as $m) {
-                        $to_be_attached = ($m->active == false) && $to_be_attached;
+                        $to_be_attached = (!$m->active) && $to_be_attached;
                     }
 
                     if ($to_be_attached) {

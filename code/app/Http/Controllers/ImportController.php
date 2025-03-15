@@ -29,7 +29,7 @@ class ImportController extends Controller
 
         $importer = CSVImporter::getImporter($type);
 
-        if ($importer->testAccess($request) == false) {
+        if ($importer->testAccess($request) === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
@@ -153,7 +153,7 @@ class ImportController extends Controller
 
         if ($step == 'read') {
             $file = $request->file('file');
-            if (is_null($file) || $file->isValid() == false) {
+            if (is_null($file) || $file->isValid() === false) {
                 $url = $request->input('url');
                 $file = file_get_contents($url);
                 $archivepath = tempnam($working_dir, 'gdxp_remote_file');

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
@@ -24,6 +25,16 @@ class VariantValue extends Model
     public function variant(): BelongsTo
     {
         return $this->belongsTo(Variant::class);
+    }
+
+    public function booked(): HasMany
+    {
+        return $this->hasMany(BookedProductComponent::class, 'value_id');
+    }
+
+    public function hasBookings()
+    {
+        return $this->booked()->count() != 0;
     }
 
     public function getSlugID()

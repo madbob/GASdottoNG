@@ -12,13 +12,13 @@
     @if($product->variants->isEmpty() == false)
         <br>
         @foreach($product->variants as $variant)
-            <div class="row" data-variant-id="{{ $variant->id }}">
+            <div class="row mb-1" data-variant-id="{{ $variant->id }}">
                 <div class="col-3">{{ $variant->name }}</div>
                 <div class="col-6">{{ $variant->printableValues() }}</div>
 
                 <div class="col-3 text-end">
                     <a class="btn btn-warning async-modal" data-modal-url="{{ route('variants.edit', $variant->id) }}"><i class="bi-pencil"></i></a>
-                    <div class="btn btn-danger delete-variant"><i class="bi-x-lg"></i></div>
+                    <div class="btn btn-danger delete-variant {{ $variant->hasBookings() ? 'disabled' : '' }}"><i class="bi-x-lg"></i></div>
                 </div>
             </div>
         @endforeach

@@ -120,7 +120,7 @@ class StatisticsController extends Controller
 
         $orders = [];
         foreach ($bookings as $booking) {
-            if (isset($orders[$booking->order_id]) == false) {
+            if (isset($orders[$booking->order_id]) === false) {
                 $orders[$booking->order_id] = [];
             }
 
@@ -132,7 +132,7 @@ class StatisticsController extends Controller
             $summary = $order->reduxData(['bookings' => $bookings]);
 
             $name = $order->supplier_id;
-            if (isset($data[$name]) == false) {
+            if (isset($data[$name]) === false) {
                 $data[$name] = (object) [
                     'users' => 0,
                     'value' => 0,
@@ -156,7 +156,7 @@ class StatisticsController extends Controller
 
         foreach ($data_for_suppliers as $dfs) {
             $name = $dfs->supplier_id;
-            if (isset($data[$name]) == false) {
+            if (isset($data[$name]) === false) {
                 $data[$name] = (object) [
                     'users' => 0,
                     'value' => 0,
@@ -233,7 +233,7 @@ class StatisticsController extends Controller
             foreach ($booking->products as $product) {
                 $name = $product->product_id;
 
-                if (isset($data[$name]) == false) {
+                if (isset($data[$name]) === false) {
                     $data[$name] = (object) [
                         'users' => [],
                         'value' => 0,

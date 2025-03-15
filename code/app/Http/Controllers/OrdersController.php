@@ -77,7 +77,7 @@ class OrdersController extends BackedController
         $feed->setDescription(_i('Ordini Aperti'));
         $feed->setLink($request->url());
 
-        if ($aggregates->isEmpty() == false) {
+        if ($aggregates->isEmpty() === false) {
             $feed->setLastModified(new \DateTime());
         }
 
@@ -206,7 +206,7 @@ class OrdersController extends BackedController
         $order = $this->service->show($id, true);
 
         $product = Product::withTrashed()->findOrFail($product_id);
-        if ($order->hasProduct($product) == false) {
+        if ($order->hasProduct($product) === false) {
             abort(404);
         }
 

@@ -32,6 +32,16 @@ class Variant extends Model
         return $this->hasMany(VariantValue::class)->orderBy('value', 'asc');
     }
 
+    public function booked(): HasMany
+    {
+        return $this->hasMany(BookedProductComponent::class);
+    }
+
+    public function hasBookings()
+    {
+        return $this->booked()->count() != 0;
+    }
+
     public function printableValues()
     {
         return $this->values->pluck('value')->join(', ');

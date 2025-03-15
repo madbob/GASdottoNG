@@ -8,6 +8,10 @@ if (isset($show_columns) == false) {
     $show_columns = false;
 }
 
+if (isset($removable_check) == false) {
+    $removable_check = fn($c) => false;
+}
+
 $class = 'table table-borderless table-sm dynamic-table';
 if (isset($extra_class)) {
     $class .= ' ' . $extra_class;
@@ -104,7 +108,7 @@ if (isset($extra_class)) {
                     @endforeach
 
                     <td>
-                        <div class="btn btn-danger remove-row float-end">
+                        <div class="btn btn-danger remove-row float-end {{ $removable_check($content) ? 'disabled' : '' }}">
                             <i class="bi-x-lg"></i>
                         </div>
                     </td>

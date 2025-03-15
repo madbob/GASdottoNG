@@ -30,7 +30,7 @@ class Booking extends Model
 
     protected $keyType = 'string';
 
-    public $enforced_total = null;
+    public $enforcedTotal = null;
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
@@ -264,7 +264,7 @@ class Booking extends Model
             salvato se e quando sarà necessario (quando sarà accertato che la
             quantità prenotata o consegnata non è 0)
         */
-        if (is_null($p) && $fallback == true) {
+        if (is_null($p) && $fallback === true) {
             $p = new BookedProduct();
             $p->booking_id = $this->id;
             $p->product_id = $product_id;
@@ -399,7 +399,7 @@ class Booking extends Model
                         $products->push($sub_p);
                     }
                     else {
-                        if ($sub_p->product->canAggregateQuantities() == false) {
+                        if ($sub_p->product->canAggregateQuantities() === false) {
                             $products->push($sub_p);
                         }
                         else {
@@ -573,7 +573,7 @@ class Booking extends Model
     */
     public function enforceTotal($total)
     {
-        $this->enforced_total = $total;
+        $this->enforcedTotal = $total;
     }
 
     public function fixPayment()
@@ -627,11 +627,11 @@ class Booking extends Model
                 dei modificatori. In questo modo, questi ultimi saranno
                 calcolati in base al totale manuale anziché quello teorico
             */
-            if ($this->enforced_total) {
-                $aggregate_data->orders[$this->order_id]->bookings[$this->id]->price_delivered = $this->enforced_total;
+            if ($this->enforcedTotal) {
+                $aggregate_data->orders[$this->order_id]->bookings[$this->id]->price_delivered = $this->enforcedTotal;
             }
 
-            if ($real == false) {
+            if ($real === false) {
                 DB::beginTransaction();
             }
 
@@ -644,7 +644,7 @@ class Booking extends Model
                 }
             }
 
-            if ($real == false) {
+            if ($real === false) {
                 DB::rollback();
             }
         }

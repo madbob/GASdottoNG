@@ -22,7 +22,7 @@ class MeasuresController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if ($user->can('measures.admin', $user->gas) == false) {
+        if ($user->can('measures.admin', $user->gas) === false) {
             abort(503);
         }
 
@@ -36,7 +36,7 @@ class MeasuresController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->can('measures.admin', $user->gas) == false) {
+        if ($user->can('measures.admin', $user->gas) === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 
@@ -57,7 +57,7 @@ class MeasuresController extends Controller
         DB::beginTransaction();
 
         $user = Auth::user();
-        if ($user->can('measures.admin', $user->gas) == false) {
+        if ($user->can('measures.admin', $user->gas) === false) {
             return $this->errorResponse(_i('Non autorizzato'));
         }
 

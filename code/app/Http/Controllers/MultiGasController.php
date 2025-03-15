@@ -101,7 +101,7 @@ class MultiGasController extends Controller
         $user = Auth::user();
         $gas = Gas::findOrFail($id);
 
-        if ($user->can('gas.multi', $gas) == false) {
+        if ($user->can('gas.multi', $gas) === false) {
             abort(503);
         }
 

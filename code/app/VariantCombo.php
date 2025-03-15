@@ -58,6 +58,19 @@ class VariantCombo extends Model
         return sprintf('%s - %s', $this->product->printableName(), $this->printableShortName());
     }
 
+    public function hasBookings()
+    {
+        $myself = $this;
+
+        $test = BookedProductVariant::whereHas('components', function($query) use ($myself) {
+            foreach($myself->values as $value) {
+                $query->where('value_id', $value->id);
+            }
+        })->count();
+
+        return $test != 0;
+    }
+
     public static function byValues($values)
     {
         $query = self::orderBy('id', 'asc');

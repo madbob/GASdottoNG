@@ -278,7 +278,7 @@ class Order extends Model
         all'ordine stesso, per poter accedere ai valori nella tabella
         pivot
     */
-    public function hasProduct(&$product)
+    public function hasProduct(&$product): bool
     {
         /*
             Non usare qui una query diretta

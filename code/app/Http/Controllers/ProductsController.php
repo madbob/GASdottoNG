@@ -167,7 +167,7 @@ class ProductsController extends BackedController
             $existing_product = $order->products()->where('product_id', $product->id)->first();
 
             if ($existing_product) {
-                if ($product->comparePrices($existing_product) == false) {
+                if ($product->comparePrices($existing_product) === false) {
                     $to_change[] = $order;
                 }
             }
@@ -182,7 +182,7 @@ class ProductsController extends BackedController
         $product = Product::findOrFail($id);
 
         $to_change = $this->unalignedPrices($product);
-        if (empty($to_change) == false) {
+        if (empty($to_change) === false) {
             $ret[] = route('products.askupdateprices', $product->id);
         }
 
