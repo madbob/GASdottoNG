@@ -91,21 +91,19 @@ function translateValueInComponent($params, $extraitem)
 
 function formatObjectsToComponent($component, $params)
 {
-    $translated = [];
-
     $extraitem = $params['attributes']['extraitem'] ?? false;
     if ($extraitem) {
         if (is_array($extraitem)) {
-            $translated = $extraitem;
+            $params['extra_options'] = $extraitem;
         }
         else {
-            $translated['0'] = $extraitem;
+            $params['extra_options'] = [0 => $extraitem];
         }
 
         unset($params['attributes']['extraitem']);
     }
 
-    $params['options'] = $translated + formatObjectsToComponentRec($params['options']);
+    $params['options'] = formatObjectsToComponentRec($params['options']);
 
     $params['value'] = translateValueInComponent($params, $extraitem);
 

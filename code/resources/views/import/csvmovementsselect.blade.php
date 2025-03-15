@@ -59,7 +59,7 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                         </th>
                         <th scope="col">{{ _i('Valore') }}</th>
                         <th scope="col">
-                            <x-larastrap::selectobj name="currency_id" nprefix="skip" squeeze :options="$currencies" classes="triggers-all-selects csv_movement_currency_select" data-target-class="csv_movement_currency_select" :value="defaultCurrency()->id" />
+                            <x-larastrap::select-model name="currency_id" nprefix="skip" squeeze :options="$currencies" classes="triggers-all-selects csv_movement_currency_select" data-target-class="csv_movement_currency_select" :value="defaultCurrency()->id" />
                         </th>
                     </tr>
                 </thead>
@@ -75,10 +75,10 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                                     <x-larastrap::hidden name="date" npostfix="[]" />
                                 </td>
                                 <td>
-                                    <x-larastrap::selectobj name="sender_id" npostfix="[]" squeeze :options="$users" :extraitem="_i('Nessuno')" />
+                                    <x-larastrap::select-model name="sender_id" npostfix="[]" squeeze :options="$users" :extra_options="[0 => _i('Nessuno')]" />
                                 </td>
                                 <td>
-                                    <x-larastrap::selectobj name="target_id" npostfix="[]" squeeze :options="$suppliers" :extraitem="_i('Nessuno')" />
+                                    <x-larastrap::select-model name="target_id" npostfix="[]" squeeze :options="$suppliers" :extra_options="[0 => _i('Nessuno')]" />
                                 </td>
 								<td>
 									<x-larastrap::text name="identifier" npostfix="[]" squeeze />
@@ -97,7 +97,7 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                                     <x-larastrap::hidden name="amount" npostfix="[]" />
                                 </td>
                                 <td>
-                                    <x-larastrap::selectobj name="currency_id" npostfix="[]" squeeze :options="$currencies" classes="csv_movement_currency_select" />
+                                    <x-larastrap::select-model name="currency_id" npostfix="[]" squeeze :options="$currencies" classes="csv_movement_currency_select" />
                                 </td>
                             </tr>
                         </x-larastrap::enclose>

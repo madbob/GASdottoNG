@@ -9,14 +9,14 @@
             <x-larastrap::form classes="auto-submit" method="PUT" :action="route('gas.update', $gas->id)" :buttons="[]">
                 <input type="hidden" name="group" value="roles">
 
-                <x-larastrap::selectobj name="roles->user" :label="_i('Ruolo Utente non Privilegiato')" :options="$existing_roles" :value="roleByFunction('user')->id" :pophelp="_i('Questo ruolo sarà automaticamete assegnato ad ogni nuovo utente')" />
+                <x-larastrap::select-model name="roles->user" :label="_i('Ruolo Utente non Privilegiato')" :options="$existing_roles" :value="roleByFunction('user')->id" :pophelp="_i('Questo ruolo sarà automaticamete assegnato ad ogni nuovo utente')" />
 
                 @if(someoneCan('users.subusers'))
-                    <x-larastrap::selectobj name="roles->friend" :label="_i('Ruolo Sotto-Utente')" :options="$existing_roles" :value="roleByFunction('friend')->id" :pophelp="_i('Questo ruolo sarà automaticamente assegnato ad ogni amico degli utenti esistenti. Si consiglia di creare un ruolo dedicato, con permessi limitati alle sole prenotazioni')" />
+                    <x-larastrap::select-model name="roles->friend" :label="_i('Ruolo Sotto-Utente')" :options="$existing_roles" :value="roleByFunction('friend')->id" :pophelp="_i('Questo ruolo sarà automaticamente assegnato ad ogni amico degli utenti esistenti. Si consiglia di creare un ruolo dedicato, con permessi limitati alle sole prenotazioni')" />
                 @endif
 
                 @if($currentgas->multigas)
-                    <x-larastrap::selectobj name="roles->multigas" :label="_i('Ruolo Amministratore GAS Secondario')" :options="$existing_roles" :value="roleByFunction('multigas')->id" :pophelp="_i('Questo ruolo sarà automaticamente assegnato al primo utente di ogni nuovo GAS creato nel pannello Multi-GAS')" />
+                    <x-larastrap::select-model name="roles->multigas" :label="_i('Ruolo Amministratore GAS Secondario')" :options="$existing_roles" :value="roleByFunction('multigas')->id" :pophelp="_i('Questo ruolo sarà automaticamente assegnato al primo utente di ogni nuovo GAS creato nel pannello Multi-GAS')" />
                 @endif
             </x-larastrap::form>
         </div>

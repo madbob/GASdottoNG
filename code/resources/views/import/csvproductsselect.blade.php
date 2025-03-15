@@ -75,16 +75,16 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                 </td>
                                 <td>
                                     @if(isset($product->temp_measure_name))
-                                        <x-larastrap::selectobj name="measure_id" squeeze npostfix="[]" :options="$measures" :extraitem="['new:' . $product->temp_measure_name => $product->temp_measure_name]" :value="sprintf('new:%s', $product->temp_measure_name)" />
+                                        <x-larastrap::select-model name="measure_id" squeeze npostfix="[]" :options="$measures" :extra_options="['new:' . $product->temp_measure_name => $product->temp_measure_name]" :value="sprintf('new:%s', $product->temp_measure_name)" />
                                     @else
-                                        <x-larastrap::selectobj name="measure_id" squeeze npostfix="[]" :options="$measures" />
+                                        <x-larastrap::select-model name="measure_id" squeeze npostfix="[]" :options="$measures" />
                                     @endif
                                 </td>
                                 <td>
                                     @if(isset($product->temp_vat_rate_name))
-                                        <x-larastrap::selectobj name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" :extraitem="['new:' . $product->temp_vat_rate_name => $product->temp_vat_rate_name]" />
+                                        <x-larastrap::select-model name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" :extra_options="['new:' . $product->temp_vat_rate_name => $product->temp_vat_rate_name]" />
                                     @else
-                                        <x-larastrap::selectobj name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" :extraitem="['0' => _i('Nessuna')]" />
+                                        <x-larastrap::select-model name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" :extra_options="[0 => _i('Nessuna')]" />
                                     @endif
                                 </td>
                                 <td>

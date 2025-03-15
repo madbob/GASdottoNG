@@ -34,8 +34,8 @@
                             @include('commons.genericdaterange', ['start_date' => strtotime('-1 weeks')])
                             @include('commons.selectmovementtypefield', ['show_all' => true])
                             <x-larastrap::radios name="method" :label="_i('Pagamento')" :options="paymentsSimple()" value="none" />
-                            <x-larastrap::selectobj name="user_id" :label="_i('Utente')" :options="$currentgas->users" :extraitem="_i('Nessuno')" />
-                            <x-larastrap::selectobj name="supplier_id" :label="_i('Fornitore')" :options="$currentuser->targetsByAction('movements.admin,supplier.orders,supplier.movements')" :extraitem="_i('Nessuno')" />
+                            <x-larastrap::select-model name="user_id" :label="_i('Utente')" :options="$currentgas->users" :extra_options="[0 => _i('Nessuno')]" />
+                            <x-larastrap::select-model name="supplier_id" :label="_i('Fornitore')" :options="$currentuser->targetsByAction('movements.admin,supplier.orders,supplier.movements')" :extra_options="[0 => _i('Nessuno')]" />
 
                             <x-larastrap::field :label="_i('Importo')">
                                 <div class="input-group">
@@ -48,7 +48,7 @@
 
                             <?php $currencies = App\Currency::enabled() ?>
                             @if($currencies->count() > 1)
-                                <x-larastrap::selectobj name="currency_id" :label="_i('Valuta')" :options="$currencies" :extraitem="_i('Tutte')" />
+                                <x-larastrap::select-model name="currency_id" :label="_i('Valuta')" :options="$currencies" :extra_options="[0 => _i('Tutte')]" />
                             @endif
                         </x-filler>
                     </div>
