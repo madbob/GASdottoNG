@@ -66,6 +66,13 @@ trait TranslatesBookings
             [$final_variant_quantity, $variant_message] = $this->handleQuantity($delivering, $product, $variant, $variant);
             $combo = $variant->variantsCombo();
 
+            /*
+                Qui potrei testare l'esistenza di $combo, per contenere i casi
+                sporadici in cui una variante prenotata è stata successivamente
+                rimossa, ma forse è preferibile generare un errore ed abortire
+                l'operazione
+            */
+
             $varcarry[] = (object) [
                 'components' => $variant->components->reduce(function ($componentcarry, $component) {
                     $componentcarry[] = $component->value->id;

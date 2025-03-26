@@ -338,7 +338,7 @@ class Order extends Model
 
         foreach ($booked_products as $bp) {
             if (in_array($bp->product_id, $products_ids) === false) {
-                throw new \Exception("Un prodotto già prenotato non è nell'elenco dei nuovi prodotti per l'ordine! Ordine: " . $this->id . ', prodotto: ' . $bp->product_id, 1);
+                throw new \DomainException("Un prodotto già prenotato non è nell'elenco dei nuovi prodotti per l'ordine! Ordine: " . $this->id . ', prodotto: ' . $bp->product_id, 1);
             }
         }
     }
@@ -525,7 +525,7 @@ class Order extends Model
         return ($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages != 'no' && $this->pendingPackages()->isEmpty() === false);
     }
 
-    public function pendingPackages()
+    public function pendingPackages(): Collection
     {
         return $this->innerCache('pending_packages', function ($obj) {
             $ret = new Collection();
@@ -743,7 +743,7 @@ class Order extends Model
         });
     }
 
-    public function applyModifiers($aggregate_data = null, $enforce_status = false)
+    public function applyModifiers($aggregate_data = null, $enforce_status = false): Collection
     {
         $modifiers = new Collection();
         $order_modifiers = $this->involvedModifiers(true);
@@ -809,7 +809,7 @@ class Order extends Model
         innescati dai modificatori con uno specifico tipo (che a volte impattano
         sul saldo del fornitore, ma a volte no)
     */
-    public function fullSupplierValue()
+    public function fullSupplierValue($aggregate_data, $modifiers)
     {
         $total = $aggregate_data->price_delivered;
 

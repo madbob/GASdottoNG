@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Collection;
 use Carbon\Carbon;
 
 /**
@@ -42,6 +43,9 @@ class ModifiedValue extends Model
             case 'apply':
             case 'sub':
                 return $this->amount * -1;
+
+            default:
+                throw new \DomainException("Unexpected arithmetic for modifier: " . $this->modifier->arithmetic);
         }
     }
 
@@ -96,6 +100,20 @@ class ModifiedValue extends Model
     }
 
     /*
+        Per formattare il valore di un oggetto generato con
+        self::aggregateByType()
+    */
+    public static function printAggregated($am)
+    {
+        if ($am->passive_amount) {
+            return printablePriceCurrency($am->passive_amount, ',');
+        }
+        else {
+            return printablePriceCurrency($am->amount, ',');
+        }
+    }
+
+    /*
         Un valore "passivo" o con valore a 0 non implica nessuna operazione nel
         calcolo di totali e somme
     */
@@ -127,18 +145,24 @@ class ModifiedValue extends Model
 
         switch ($class_type) {
             case 'App\Gas':
-                return $rel->user->gas;
+                $ret = $rel->user->gas;
+                break;
 
             case 'App\User':
-                return $rel->user;
+                $ret = $rel->user;
+                break;
 
             case null:
             case '':
-                return null;
+                $ret = null;
+                break;
 
             default:
-                return $rel->supplier;
+                $ret = $rel->supplier;
+                break;
         }
+
+        return $ret;
     }
 
     public function generateMovement($master_movement)
@@ -193,29 +217,29 @@ class ModifiedValue extends Model
             ]
         ]
     */
-    public static function organizeForProducts(&$products_modifiers, $target_modifiers, $key): void
+    public static function organizeForProducts(&$products_modifiers, Collection $target_modifiers, $key): void
     {
-        foreach ($target_modifiers as $pmod) {
-            if ($pmod->target_type == BookedProduct::class) {
-                $mod_id = $pmod->modifier->modifier_type_id;
-                $product_id = $pmod->target->product_id;
+        $actual_modifiers = $target_modifiers->filter(fn($pmod) => $pmod->target_type == BookedProduct::class);
 
-                if (! isset($products_modifiers[$mod_id])) {
-                    $products_modifiers[$mod_id] = (object) [
-                        'label' => sprintf('%s (%s)', $pmod->modifier->modifierType->name, ($key == 'pending' ? _i('Prenotato') : _i('Consegnato'))),
-                    ];
-                }
+        foreach ($actual_modifiers as $pmod) {
+            $mod_id = $pmod->modifier->modifier_type_id;
+            $product_id = $pmod->target->product_id;
 
-                if (! isset($products_modifiers[$mod_id]->$key)) {
-                    $products_modifiers[$mod_id]->$key = [];
-                }
-
-                if (! isset($products_modifiers[$mod_id]->$key[$product_id])) {
-                    $products_modifiers[$mod_id]->$key[$product_id] = 0;
-                }
-
-                $products_modifiers[$mod_id]->$key[$product_id] += $pmod->effective_amount;
+            if (! isset($products_modifiers[$mod_id])) {
+                $products_modifiers[$mod_id] = (object) [
+                    'label' => sprintf('%s (%s)', $pmod->modifier->modifierType->name, ($key == 'pending' ? _i('Prenotato') : _i('Consegnato'))),
+                ];
             }
+
+            if (! isset($products_modifiers[$mod_id]->$key)) {
+                $products_modifiers[$mod_id]->$key = [];
+            }
+
+            if (! isset($products_modifiers[$mod_id]->$key[$product_id])) {
+                $products_modifiers[$mod_id]->$key[$product_id] = 0;
+            }
+
+            $products_modifiers[$mod_id]->$key[$product_id] += $pmod->effective_amount;
         }
     }
 }

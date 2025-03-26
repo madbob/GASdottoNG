@@ -1,9 +1,14 @@
-<html>
+<!DOCTYPE html>
+<html lang="it">
     <head>
         <style>
             table {
                 border-spacing: 0;
                 border-collapse: collapse;
+            }
+
+            table th, table td {
+                padding: 5px;
             }
         </style>
     </head>
@@ -43,7 +48,7 @@
 
         <hr/>
 
-        <table border="1" style="width: 100%" cellpadding="5">
+        <table border="1" style="width: 100%">
             <thead>
                 <tr>
                     <th scope="col" width="55%"><strong>{{ _i('Prodotto') }}</strong></th>
@@ -96,7 +101,7 @@
                             <td>{{ $am->name }}</td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
-                            <td>{{ printablePriceCurrency($am->amount) }}</td>
+                            <td>{{ App\ModifiedValue::printAggregated($am) }}</td>
                         </tr>
                     @endforeach
                 @endforeach
@@ -107,7 +112,7 @@
             &nbsp;
         </p>
 
-        <table border="0" style="width: 100%" cellpadding="5">
+        <table border="0" style="width: 100%">
             <tbody>
                 @foreach($rates as $id => $total)
                     <tr>
