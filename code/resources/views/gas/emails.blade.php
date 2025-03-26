@@ -28,7 +28,7 @@
                                 <td>
                                     <x-larastrap::check name="enable_send_order_reminder" squeeze triggers_collapse="send_order_reminder" :value="$gas->hasFeature('send_order_reminder')" />
                                     <x-larastrap::collapse id="send_order_reminder" label_width="8" input_width="4">
-                                        <x-larastrap::number name="send_order_reminder" :label="_i('Quanti giorni prima?')" />
+                                        <x-larastrap::number :margins="[0,0,0,0]" name="send_order_reminder" :label="_i('Quanti giorni prima?')" />
                                     </x-larastrap::collapse>
                                 </td>
                                 <td>

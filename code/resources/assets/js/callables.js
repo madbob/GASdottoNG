@@ -190,7 +190,7 @@ class Callables {
     }
 
     static beforeBookingSaved(form, data) {
-        form.siblings('.booking-header').find('input[name^=circles]').filter(':checked').each((index, item) => {
+        form.closest('.tab-content').find('.booking-header').find('input[name^=circles]').filter(':checked').each((index, item) => {
             form.append('<input name="circles[]" value="' + $(item).val() + '" />');
         });
     }

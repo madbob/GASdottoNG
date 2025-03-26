@@ -832,6 +832,12 @@ i[class^='bi-hidden-'] {
     }
 }
 
+#send_order_reminder {
+    .card-body {
+        padding: 5px;
+    }
+}
+
 @include media-breakpoint-down(md) {
     .flowbox {
         flex-direction: column;

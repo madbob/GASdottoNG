@@ -1,23 +1,13 @@
 <?php
 
-$count_products = 0;
-$selected_circles = null;
+$selected_circles = new Illuminate\Support\Collection();
 
 foreach($aggregate->orders as $order) {
     $o = $order->userBooking($user->id);
-    $count_products += $o->products()->count();
-
-    if ($count_products == 0) {
-        foreach($o->friends_bookings as $sub_o) {
-            $count_products += $sub_o->products()->count();
-        }
-    }
-
-    if ($count_products > 0) {
-        $selected_circles = $o->circles;
-        break;
-    }
+    $selected_circles = $selected_circles->merge($o->circles);
 }
+
+$selected_circles = $selected_circles->unique('id');
 
 if ($user->isFriend() == false) {
     $circles = $aggregate->orders->first()->circlesByGroup();
@@ -33,10 +23,10 @@ if ($user->isFriend() == false) {
         foreach($select_circles as $meta) {
             $default = array_filter($meta->circles, fn($c) => $c->is_default);
             if (empty($default) == false) {
-                $selected_circles[] = $default[0];
+                $selected_circles[] = array_shift($default);
             }
             else {
-                $selected_circles[] = $meta->circles[0];
+                $selected_circles[] = $meta->circles[array_key_first($meta->circles)];
             }
         }
     }
@@ -47,9 +37,15 @@ if ($user->isFriend() == false) {
 <div class="row booking-header">
     <div class="col-12 col-md-8">
         @if($user->isFriend() == false)
-            @foreach($select_circles as $meta)
-                <x-larastrap::radios-model :label="$meta->group->name" name="circles[]" :options="$meta->circles" :value="$selected_circles" :readonly="$editable == false" />
-            @endforeach
+            @if($editable)
+                @foreach($select_circles as $meta)
+                    <x-larastrap::radios-model :label="$meta->group->name" name="circles[]" :options="$meta->circles" :value="$selected_circles" />
+                @endforeach
+            @else
+                @foreach($select_circles as $meta)
+                    <x-larastrap::text readonly disabled :label="$meta->group->name" :value="$selected_circles->filter(fn($c) => $c->group->id == $meta->group->id)->map(fn($c) => $c->name)->join(', ')" />
+                @endforeach
+            @endif
 
             @foreach($display_circles as $meta)
                 <x-larastrap::field :label="$meta->group->name">
@@ -63,21 +59,19 @@ if ($user->isFriend() == false) {
         @endif
     </div>
     <div class="col-12 col-md-4">
-        @if($count_products != 0)
-            <div class="list-group">
-                <a href="{{ url('booking/' . $aggregate->id . '/user/' . $user->id . '/document') }}" class="list-group-item">
-                    {{ _i('Dettaglio Consegne') }} <i class="bi-download"></i>
-                </a>
+        <div class="list-group">
+            <a href="{{ url('booking/' . $aggregate->id . '/user/' . $user->id . '/document') }}" class="list-group-item">
+                {{ _i('Dettaglio Consegne') }} <i class="bi-download"></i>
+            </a>
 
-                @if($currentgas->hasFeature('extra_invoicing'))
-                    @foreach(App\Receipt::retrieveByAggregateUser($aggregate, $user) as $receipt)
-                        <a href="{{ route('receipts.download', $receipt->id) }}" class="list-group-item">
-                            {{ _i('Fattura') }} <i class="bi-download"></i>
-                        </a>
-                    @endforeach
-                @endif
-            </div>
-        @endif
+            @if($currentgas->hasFeature('extra_invoicing'))
+                @foreach(App\Receipt::retrieveByAggregateUser($aggregate, $user) as $receipt)
+                    <a href="{{ route('receipts.download', $receipt->id) }}" class="list-group-item">
+                        {{ _i('Fattura') }} <i class="bi-download"></i>
+                    </a>
+                @endforeach
+            @endif
+        </div>
     </div>
 </div>
 

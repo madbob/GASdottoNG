@@ -26,7 +26,7 @@ $form_buttons = [
 
 ?>
 
-@include('booking.head', ['aggregate' => $aggregate])
+@include('booking.head', ['aggregate' => $aggregate, 'editable' => true])
 
 <div class="row">
     @if($side_filter)

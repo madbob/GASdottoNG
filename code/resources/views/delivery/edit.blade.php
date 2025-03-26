@@ -86,6 +86,16 @@ app()->make('AggregationSwitch')->setEnforced(true);
 
                 ?>
 
+                @if($o->circles->isEmpty() == false)
+                    <div class="row">
+                        <div class="col-md-6">
+                            @foreach($o->circlesByGroup() as $meta)
+                                <x-larastrap::text readonly :label="$meta->group->name" :value="join(', ', array_map(fn($c) => $c->name, $meta->circles))" />
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 @if($o->status == 'shipped')
                     <div class="row">
                         <div class="col-md-6">
