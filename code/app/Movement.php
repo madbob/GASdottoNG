@@ -152,6 +152,11 @@ class Movement extends Model
         return $this->type_metadata->transactionType($this, $peer);
     }
 
+    public function operations()
+    {
+        return $this->type_metadata->opsByMethod($this->method);
+    }
+
     private function objectIsPeer($obj_peer, $peer_type)
     {
         $t = $this->$peer_type;

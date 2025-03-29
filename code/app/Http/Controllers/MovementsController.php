@@ -75,7 +75,12 @@ class MovementsController extends BackedController
                     }
                 }
                 else {
-                    $ret = $this->exportMain($format, $data['movements']);
+                    if ($format == 'balance') {
+                        $ret = app()->make('MovementsFormatService')->formatAsBalance($data['movements']);
+                    }
+                    else {
+                        $ret = $this->exportMain($format, $data['movements']);
+                    }
                 }
             }
 

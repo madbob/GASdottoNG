@@ -77,7 +77,7 @@ class MovementType extends Model
         $obj->alterBalance($amount, $movement->currency, $op->field);
     }
 
-    private function opsByMethod($method)
+    public function opsByMethod($method)
     {
         $ops = json_decode($this->function);
 

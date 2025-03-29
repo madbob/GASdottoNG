@@ -151,9 +151,11 @@ class Gas extends Model
         $ret = [
             'suppliers' => (object) [
                 'label' => _i('Fornitori'),
+                'class' => Supplier::class,
             ],
             'users' => (object) [
                 'label' => _i('Utenti'),
+                'class' => User::class,
             ],
         ];
 
@@ -172,6 +174,12 @@ class Gas extends Model
         return $ret;
     }
 
+    /*
+        TODO: questa funzione dovrebbe essere statica. Viene ampiamente usata in
+        movementtypes/edit.blade.php per recuperare i saldi da formattare nel
+        pannello, ma usando istanze create sul momento; l'accesso a $this per
+        determinare l'abilitazione di Satispay spacca tutto
+    */
     public function balanceFields()
     {
         $ret = [
