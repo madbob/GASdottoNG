@@ -1,6 +1,6 @@
 <?php
 
-if ($with_friends == true) {
+if ($with_friends) {
     $products_source = 'products_with_friends';
     $modifiers = $booking->aggregatedModifiersWithFriends();
 }
@@ -37,6 +37,6 @@ else {
     <tr>
         <td width="40%">{{ $am->name }}</td>
         <td width="40%">&nbsp;</td>
-        <td width="20%">{{ printablePriceCurrency($am->amount, ',') }}</td>
+        <td width="20%">{{ App\ModifiedValue::printAggregated($am) }}</td>
     </tr>
 @endforeach

@@ -24,6 +24,7 @@ class ServicesProvider extends ServiceProvider implements DeferrableProvider
             \App\Services\ModifiersService::class,
             \App\Services\ModifierTypesService::class,
             \App\Services\MovementsService::class,
+            \App\Services\MovementsFormatService::class,
             \App\Services\MovementTypesService::class,
             \App\Services\MultiGasService::class,
             \App\Services\NotificationsService::class,

@@ -257,12 +257,26 @@ trait CreditableTrait
         return [];
     }
 
-    public function extendedBalanceFields()
+    /*
+        Restituisce identificativi e nomi di tutti i saldi possibili per il
+        soggetto, inclusi quelli "virtuali"
+    */
+    public function extendedBalanceFields(): array
     {
-        $ret = $this->balanceFields();
+        $ret = [];
 
-        foreach ($this->virtualBalances(null) as $name => $virtual) {
-            $ret[$name] = $virtual->label;
+        foreach($this->balanceFields() as $id => $name) {
+            $ret[$id] = (object) [
+                'label' => $name,
+                'class' => get_class($this),
+            ];
+        }
+
+        foreach ($this->virtualBalances(null) as $id => $virtual) {
+            $ret[$id] = (object) [
+                'label' => $virtual->label,
+                'class' => $virtual->class,
+            ];
         }
 
         return $ret;

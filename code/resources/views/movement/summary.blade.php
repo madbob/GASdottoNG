@@ -9,9 +9,9 @@
 
     ?>
 
-    @foreach($obj->extendedBalanceFields() as $identifier => $name)
+    @foreach($obj->extendedBalanceFields() as $identifier => $meta)
         <li class="list-group-item">
-            {{ $name }}
+            {{ $meta->label }}
 
             @foreach($currencies as $curr)
                 <span class="badge bg-secondary float-end ms-2">{{ printablePriceCurrency($balances[$curr->id]->$identifier, '.', $curr) }}</span>

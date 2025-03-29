@@ -1,9 +1,14 @@
-<html>
+<!DOCTYPE html>
+<html lang="it">
     <head>
         <style>
             table {
                 border-spacing: 0;
                 border-collapse: collapse;
+            }
+
+            table th, table td {
+                padding: 5px;
             }
         </style>
     </head>
@@ -26,7 +31,7 @@
 
             <?php $booked_cell_value = $delivered_cell_value = 0 ?>
 
-            <table border="1" style="width: 100%" cellpadding="5" nobr="true">
+            <table border="1" style="width: 100%" nobr="true">
                 <thead>
                     <tr>
                         <th scope="col" colspan="5">
@@ -94,7 +99,7 @@
 
                     @foreach($booking->aggregatedModifiers() as $am)
                         <tr>
-                            <th scope="row" colspan="5"><strong>{{ $am->name }}: {{ printablePriceCurrency($am->amount, ',') }}</th>
+                            <th scope="row" colspan="5"><strong>{{ $am->name }}: {{ App\ModifiedValue::printAggregated($am) }}</th>
                         </tr>
                     @endforeach
 
@@ -118,7 +123,7 @@
 
                 <?php $booked_cell_value = $delivered_cell_value = 0 ?>
 
-                <table border="1" style="width: 100%" cellpadding="5" nobr="true">
+                <table border="1" style="width: 100%" nobr="true">
                     <thead>
                         <tr>
                             <th scope="col" colspan="5">
@@ -180,7 +185,7 @@
 
                         @foreach($booking->aggregatedModifiers() as $am)
                             <tr>
-                                <th scope="row" colspan="5"><strong>{{ $am->name }}: {{ printablePriceCurrency($am->amount, ',') }}</th>
+                                <th scope="row" colspan="5"><strong>{{ $am->name }}: {{ App\ModifiedValue::printAggregated($am) }}</th>
                             </tr>
                         @endforeach
 
