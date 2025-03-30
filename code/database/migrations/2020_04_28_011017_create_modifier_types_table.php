@@ -12,8 +12,8 @@ class CreateModifierTypesTable extends Migration
             $table->timestamps();
 
             $table->string('name');
-            $table->string('identifier')->default('')->after('system');
             $table->boolean('system')->default(false);
+            $table->string('identifier')->default('');
             $table->boolean('active')->default(true);
             $table->text('classes');
             $table->boolean('hidden')->default(false);
