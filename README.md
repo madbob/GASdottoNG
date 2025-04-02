@@ -12,4 +12,4 @@ GASdotto è il gestionale per i gruppi di acquisto.
 
 GASdotto è distribuito in licenza AGPLv3+.
 
-Copyright (C) 2017/2023 Roberto Guido <bob@linux.it>
+Copyright (C) 2017/2025 Roberto Guido <bob@linux.it>
