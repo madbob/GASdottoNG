@@ -35,8 +35,28 @@
 							$payment_options[$payment_identifier] = $payment_meta->name;
 						}
 
+                        $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
+
 						@endphp
-						<x-larastrap::radios name="payment_method" :label="_i('Modalità Pagamento')" :options="$payment_options" value="all" classes="table-filters" :attributes="['data-table-target' => '#creditsTable']" />
+
+						<x-larastrap::radios
+                            name="payment_method"
+                            :label="_i('Modalità Pagamento')"
+                            :options="$payment_options"
+                            value="all"
+                            classes="table-filters"
+                            data-table-target="#creditsTable" />
+
+                        @foreach($groups as $group)
+                            <x-larastrap::radios-model
+                                color="outline-info"
+                                :name="sprintf('group_%s', $group->id)"
+                                :options="$group->circles"
+                                :label="$group->printableName()"
+                                classes="table-filters"
+                                data-table-target="#creditsTable"
+                                :extra_options="['all' => 'Tutti']" />
+                        @endforeach
                     </div>
                 </div>
 
@@ -59,7 +79,18 @@
 								</thead>
 								<tbody>
 									@foreach($currentgas->users()->topLevel()->get() as $user)
-										<tr data-filtered-payment_method="{{ $user->payment_method_id }}">
+                                        @php
+
+                                        $serialized_circles = [];
+
+                                        foreach($groups as $group) {
+                                            $circles = $user->circles->filter(fn($c) => $c->group_id == $group->id);
+                                            $serialized_circles[] = sprintf('data-filtered-group_%s="%s"', $group->id, $circles->pluck('id')->join('|'));
+                                        }
+
+                                        @endphp
+
+										<tr data-filtered-payment_method="{{ $user->payment_method_id }}" {!! join(' ', $serialized_circles) !!}>
 											<td>
 												<input type="hidden" name="user_id[]" value="{{ $user->id }}">
 												{{ $user->printableName() }}

@@ -38,9 +38,16 @@
         $classes[] = 'holding-movement-' . $user->fee->id;
     }
 
+    $serialized_circles = [];
+
+    foreach($groups as $group) {
+        $circles = $user->circles->filter(fn($c) => $c->group_id == $group->id);
+        $serialized_circles[] = sprintf('data-filtered-group_%s="%s"', $group->id, $circles->pluck('id')->join('|'));
+    }
+
     ?>
 
-    <tr id="{{ $row_random_id }}" data-filtered-actual_status="{{ $user_status }}" class="{{ join(' ', $classes) }}" data-reload-url="{{ route('users.fee', $user->id) }}">
+    <tr id="{{ $row_random_id }}" data-filtered-actual_status="{{ $user_status }}" class="{{ join(' ', $classes) }}" data-reload-url="{{ route('users.fee', $user->id) }}" {!! join(' ', $serialized_circles) !!}>
         <td>
             <input type="hidden" name="user_id[]" value="{{ $user->id }}">
             {!! $user->printableName() !!}

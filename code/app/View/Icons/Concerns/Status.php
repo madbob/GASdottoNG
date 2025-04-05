@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Icons;
+namespace App\View\Icons\Concerns;
 
 trait Status
 {

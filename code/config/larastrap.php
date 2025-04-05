@@ -56,6 +56,10 @@ return [
             'color' => 'outline-info',
         ],
 
+        'radios-model' => [
+            'color' => 'outline-info',
+        ],
+
         'checks' => [
             'color' => 'outline-info',
         ],

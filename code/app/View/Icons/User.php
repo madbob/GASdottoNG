@@ -3,28 +3,16 @@
 namespace App\View\Icons;
 
 use App\Role;
-use App\Group;
+use App\View\Icons\Concerns\Status;
+use App\View\Icons\Concerns\UserGroups;
 
 class User extends IconsMap
 {
-    use Status;
+    use Status, UserGroups;
 
     public static function commons($user)
     {
         $ret = [];
-
-        if ($user->can('users.admin', $user->gas)) {
-            $ret = self::statusIcons($ret);
-
-            if (Group::where('context', 'user')->count() > 0) {
-                $ret['house-fill'] = (object) [
-                    'test' => function ($obj) {
-                        return $obj->circles()->count() == 0;
-                    },
-                    'text' => _i('Senza Gruppi'),
-                ];
-            }
-        }
 
         if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas)) {
             $ret['wallet'] = (object) [
@@ -63,34 +51,37 @@ class User extends IconsMap
 
     public static function selective()
     {
-        return [
-            'person-circle' => (object) [
-                'text' => _i('Ruolo'),
-                'assign' => function ($obj) {
-                    $ret = [];
-                    foreach ($obj->roles as $r) {
-                        $ret[] = 'hidden-person-circle-' . $r->id;
+        $ret = [];
+
+        $ret['person-circle'] = (object) [
+            'text' => _i('Ruolo'),
+            'assign' => function ($obj) {
+                $ret = [];
+                foreach ($obj->roles as $r) {
+                    $ret[] = 'hidden-person-circle-' . $r->id;
+                }
+
+                return $ret;
+            },
+            'options' => function ($objs) {
+                $skip_roles = [];
+
+                foreach (['user', 'friend'] as $r) {
+                    $srole = roleByFunction($r);
+                    if ($srole) {
+                        $skip_roles[] = $srole->id;
                     }
+                }
 
-                    return $ret;
-                },
-                'options' => function ($objs) {
-                    $skip_roles = [];
+                return Role::whereNotIn('id', $skip_roles)->get()->reduce(function ($carry, $item) {
+                    $carry['hidden-person-circle-' . $item->id] = $item->name;
 
-                    foreach (['user', 'friend'] as $r) {
-                        $srole = roleByFunction($r);
-                        if ($srole) {
-                            $skip_roles[] = $srole->id;
-                        }
-                    }
-
-                    return Role::whereNotIn('id', $skip_roles)->get()->reduce(function ($carry, $item) {
-                        $carry['hidden-person-circle-' . $item->id] = $item->name;
-
-                        return $carry;
-                    }, []);
-                },
-            ],
+                    return $carry;
+                }, []);
+            },
         ];
+
+        $groups = self::selectiveGroups();
+        return array_merge($ret, $groups);
     }
 }

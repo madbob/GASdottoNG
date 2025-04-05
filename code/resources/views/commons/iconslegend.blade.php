@@ -35,18 +35,20 @@ foreach($class as $c) {
 						<i class="bi-{{ $icon }}"></i>
                     </button>
                 @else
-                    <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
-                        <span>{{ $label->label }}</span>
-						<i class="bi-{{ $icon }}"></i>
-						<span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        @foreach($label->items as $subicon => $sublabel)
-                            <li>
-								<a href="#" class="dropdown-item">{{ $sublabel }}<i class="bi-{{ $subicon }}"></i></a>
-							</li>
-                        @endforeach
-                    </ul>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
+                            <span>{{ $label->label }}</span>
+    						<i class="bi-{{ $icon }}"></i>
+    						<span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            @foreach($label->items as $subicon => $sublabel)
+                                <li>
+    								<a href="#" class="dropdown-item">{{ $sublabel }}<i class="bi-{{ $subicon }}"></i></a>
+    							</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @endif
             @endif
         @endforeach

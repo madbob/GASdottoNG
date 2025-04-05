@@ -2,29 +2,14 @@
 
 namespace App\View\Icons;
 
+use App\View\Icons\Concerns\BookingStatus;
+
 class Booking extends IconsMap
 {
+    use BookingStatus;
+
     public static function commons($user)
     {
-        return [
-            'clock' => (object) [
-                'test' => function ($obj) {
-                    return $obj->status != 'shipped';
-                },
-                'text' => _i('Da consegnare'),
-            ],
-            'check' => (object) [
-                'test' => function ($obj) {
-                    return $obj->status == 'shipped';
-                },
-                'text' => _i('Consegnato'),
-            ],
-            'save' => (object) [
-                'test' => function ($obj) {
-                    return $obj->status == 'saved';
-                },
-                'text' => _i('Salvato'),
-            ],
-        ];
+        return self::bookingStatusIcons([]);
     }
 }

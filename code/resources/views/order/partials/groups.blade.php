@@ -13,7 +13,7 @@ if (is_null($order)) {
         <x-larastrap::hidden name="circles[]" :value="$circle->id" />
     @endforeach
 @else
-    <?php
+    @php
 
     $eligible_groups = $order->eligibleGroups();
 
@@ -29,7 +29,7 @@ if (is_null($order)) {
         return $tot->concat($g->circles);
     }, new Collection());
 
-    ?>
+    @endphp
 
     @if($limiting->isEmpty() == false)
         <x-larastrap::checklist-model :label="_i('Limita accesso')" name="circles" :options="$limiting" :readonly="$readonly" :pophelp="_i('Selezionando uno o più elementi, l\'ordine sarà visibile solo agli utenti assegnati alle rispettive Cerchie. Se nessun elemento viene selezionato, l\'ordine sarà visibile a tutti.')" />

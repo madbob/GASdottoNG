@@ -124,6 +124,22 @@ class AggregateBooking extends Model
         return null;
     }
 
+    public function getCirclesAttribute(): Collection
+    {
+        return $this->user->circles;
+    }
+
+    public function getBookingCirclesAttribute(): Collection
+    {
+        $ret = new Collection();
+
+        foreach ($this->bookings as $booking) {
+            $ret = $ret->merge($booking->circles);
+        }
+
+        return $ret->unique();
+    }
+
     public function getConvenientStringsAttribute()
     {
         $suppliers = [];

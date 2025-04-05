@@ -26,7 +26,7 @@ class UsersController extends BackedController
         return $this->easyExecute(function () use ($request) {
             $user = $request->user();
             $users = $this->service->list('', $user->can('users.admin', $user->gas));
-            $users->loadMissing(['fee', 'roles']);
+            $users->loadMissing(['fee', 'roles', 'circles']);
 
             return view('pages.users', ['users' => $users]);
         });
@@ -258,7 +258,7 @@ class UsersController extends BackedController
         return $this->easyExecute(function () {
             $this->ensureAuth(['users.admin' => 'gas', 'users.movements' => 'gas']);
             $users = $this->service->list('', true);
-            $users->loadMissing(['fee', 'fee.related', 'gas', 'latestFee', 'latestFee.related']);
+            $users->loadMissing(['fee', 'fee.related', 'gas', 'latestFee', 'latestFee.related', 'circles']);
 
             return view('user.fees', ['users' => $users]);
         });

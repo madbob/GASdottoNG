@@ -2,6 +2,8 @@
 
 namespace App\View\Icons;
 
+use App\View\Icons\Concerns\Status;
+
 class Supplier extends IconsMap
 {
     use Status;

@@ -195,8 +195,14 @@ class Filters {
                     }
                     else {
                         let attribute = selected.attr('name');
+
                         let attr = row.attr('data-filtered-' + attribute);
-                        display = display && (attr == value);
+                        if (attr) {
+                            display = display && (attr.split('|').includes(value));
+                        }
+                        else {
+                            display = false;
+                        }
                     }
                 }
                 else if ($(this).hasClass('table-text-filter')) {
