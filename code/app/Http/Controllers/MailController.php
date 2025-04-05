@@ -63,7 +63,7 @@ class MailController extends Controller
                 $validator->validate($message);
             }
             catch (InvalidSnsMessageException $e) {
-                Log::error('SNS Message Validation Error: ' . $e->getMessage());
+                Log::error('SNS Message Validation Error: ' . $e->getMessage() . "\n" . print_r($message, true));
                 abort(404);
             }
 
