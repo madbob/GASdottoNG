@@ -25,12 +25,9 @@ class AggregateSummaries implements ShouldQueue
         $this->message = $message;
     }
 
-    private function handleBookings($aggregate, $status)
+    private function handleBookings($aggregate)
     {
-        $bookings = array_filter($aggregate->bookings, function ($booking) use ($status) {
-            return in_array($booking->status, $status);
-        });
-
+        $bookings = $aggregate->notifiableBookings();
         $redux = $aggregate->reduxData();
 
         foreach ($bookings as $booking) {
@@ -56,14 +53,7 @@ class AggregateSummaries implements ShouldQueue
             $order->save();
         }
 
-        if ($aggregate->isActive()) {
-            $status = ['pending', 'saved'];
-        }
-        else {
-            $status = ['shipped'];
-        }
-
-        $this->handleBookings($aggregate, $status);
+        $this->handleBookings($aggregate);
         $hub->enable(true);
     }
 }

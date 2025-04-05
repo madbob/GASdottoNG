@@ -23,7 +23,9 @@ class NewOrderNotification extends ManyMailNotification
 
         $contacts = [];
         foreach ($this->order->enforcedContacts() as $user) {
-            $contacts[] = $user->email;
+            foreach($user->getContactsByType('email') as $mail) {
+                $contacts[] = $mail;
+            }
         }
 
         $contacts = implode(', ', array_filter($contacts));

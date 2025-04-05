@@ -273,6 +273,24 @@ class Aggregate extends Model
         return false;
     }
 
+    /*
+        Restituisce le prenotazioni soggette all'invio del "Riepilogo Consegne",
+        che variano a seconda dello stato dell'Aggregate
+    */
+    public function notifiableBookings()
+    {
+        if ($this->isActive()) {
+            $status = ['pending', 'saved'];
+        }
+        else {
+            $status = ['shipped'];
+        }
+
+        return array_filter($this->bookings, function ($booking) use ($status) {
+            return in_array($booking->status, $status);
+        });
+    }
+
     public function hasChangedProdcts()
     {
         $has_changed_products = false;

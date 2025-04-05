@@ -40,8 +40,14 @@ $master_summary = $aggregate->reduxData();
                 <div class="col-6">
                     <?php
 
-                    $send_mail_label = $shippable_status ? _i('Invia Riepiloghi Prenotazioni') : _i('Invia Riepiloghi Consegne');
-                    $send_mail_hint = $shippable_status ? _i("Questa mail verrà inviata a coloro che hanno partecipato all'ordine ma la cui prenotazione non è ancora stata consegnata.") : _i("Questa mail verrà inviata a coloro che hanno partecipato all'ordine e la cui prenotazione è stata effettivamente consegnata.");
+                    if ($shippable_status) {
+                        $send_mail_label = _i('Invia Riepiloghi Prenotazioni');
+                        $send_mail_hint = _i("Questa mail verrà inviata a coloro che hanno partecipato all'ordine ma la cui prenotazione non è ancora stata consegnata.");
+                    }
+                    else {
+                        $send_mail_label = _i('Invia Riepiloghi Consegne');
+                        $send_mail_hint = _i("Questa mail verrà inviata a coloro che hanno partecipato all'ordine e la cui prenotazione è stata effettivamente consegnata.");
+                    }
 
                     ?>
 
@@ -53,7 +59,12 @@ $master_summary = $aggregate->reduxData();
                     <x-larastrap::modal :title="_i('Notifiche Mail')" :id="sprintf('notify-aggregate-%s', $aggregate->id)">
                         <x-larastrap::iform method="POST" :action="url('aggregates/notify/' . $aggregate->id)">
                             <x-larastrap::suggestion>
-                                {{ $send_mail_hint }}
+                                <p>
+                                    {{ $send_mail_hint }}
+                                </p>
+                                <p>
+                                    {{ _i('Utenti che riceveranno la mail: %s', [count($aggregate->notifiableBookings())]) }}
+                                </p>
                             </x-larastrap::suggestion>
 
                             <input type="hidden" name="update-field" value="last-notification-date-{{ $aggregate->id }}">
