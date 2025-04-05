@@ -182,7 +182,7 @@ return [
             'extends' => 't',
             'params' => [
                 'node' => 'div',
-                'classes' => ['alert', 'alert-info', 'mb-2'],
+                'classes' => ['alert', 'alert-info', 'mb-2', 'small', 'p-2'],
                 'attributes' => [
                     'role' => 'alert',
                 ],

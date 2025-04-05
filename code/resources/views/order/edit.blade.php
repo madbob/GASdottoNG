@@ -106,6 +106,28 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
             @include('commons.orderstatus', ['order' => $order])
         </div>
         <div class="col-12 col-lg-4">
+            @php
+
+            $show_alert = false;
+
+            if ($order->aggregate->isActive()) {
+                foreach ($order->involvedModifiers(true) as $modifier) {
+                    if ($modifier->isTrasversal()) {
+                        $show_alert = true;
+                        break;
+                    }
+                }
+            }
+
+            @endphp
+
+            @if($show_alert)
+                <x-larastrap::suggestion>
+                    {{ _i("Il valore di alcuni modificatori verrà ricalcolato quando l'ordine sarà in stato \"Consegnato\".") }}
+                    <a target="_blank" href="https://www.gasdotto.net/docs/modificatori#distribuzione">{{ _i('Leggi di più') }}</a>
+                </x-larastrap::suggestion>
+            @endif
+
             @include('commons.modifications', [
                 'obj' => $order,
                 'skip_void' => true,
