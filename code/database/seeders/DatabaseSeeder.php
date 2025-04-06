@@ -33,7 +33,6 @@ class DatabaseSeeder extends Seeder
         DB::table('variants')->delete();
         DB::table('categories')->delete();
         DB::table('measures')->delete();
-        DB::table('deliveries')->delete();
         DB::table('notifications')->delete();
         DB::table('bookings')->delete();
         DB::table('booked_products')->delete();
@@ -41,6 +40,8 @@ class DatabaseSeeder extends Seeder
         DB::table('movement_types')->delete();
         DB::table('movements')->delete();
         DB::table('contacts')->delete();
+        DB::table('groups')->delete();
+        DB::table('circles')->delete();
         DB::table('comments')->delete();
     }
 

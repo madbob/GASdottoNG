@@ -20,7 +20,6 @@ use App\Date;
 use App\Measure;
 use App\Category;
 use App\VatRate;
-use App\Delivery;
 use App\Modifier;
 
 class DemoSeeder extends Seeder
@@ -33,21 +32,21 @@ class DemoSeeder extends Seeder
         $gas->message = "Questa istanza permette di avere una idea del funzionamento di GASdottoNG.\n\nPer accedere:\nUtente amministratore: username: root, password: password\nUtente non privilegiato: username: user, password: password\n\nL'inoltro di messaggi email da questa istanza è deliberatamente disabilitato, per evitare abusi.\n\nQuesta istanza viene quotidianamente rinnovata con le ultimissime modifiche (al contrario delle istanze hostate su gasdotto.net, sulle quali viene condotto qualche test in più prima della pubblicazione). GASdottoNG è un progetto in continua evoluzione: se noti qualcosa che non va, o una funzione che manca, mandaci una mail a info@madbob.org";
         $gas->save();
 
-        $del = new Delivery();
-        $del->name = 'Cooperativa Pippo';
-        $del->address = 'Via Roma 42, Torino, 10100';
-        $del->default = 1;
-        $del->save();
+        $group = app()->make('GroupsService')->store([
+            'name' => 'Luoghi di Consegna',
+        ]);
 
-        $mod = new Modifier();
-        $mod->modifier_type_id = 'spese-trasporto';
-        $mod->target_type = Delivery::class;
-        $mod->target_id = $del->id;
-        $mod->applies_type = 'booking';
-        $mod->applies_target = 'booking';
-        $mod->definition = '[{"threshold":9223372036854775807,"amount":"3"}]';
-        $mod->movement_type_id = 'donation-to-gas';
-        $mod->save();
+        $circle = app()->make('CirclesService')->store([
+            'name' => 'Bar Sport',
+            'description' => '',
+            'group_id' => $group->id,
+        ]);
+
+        $circle = app()->make('CirclesService')->store([
+            'name' => 'Da Mario',
+            'description' => 'Un altro test',
+            'group_id' => $group->id,
+        ]);
 
         $users = [
             ['user', 'Giuseppe', 'Garibaldi'],
