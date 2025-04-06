@@ -30,7 +30,7 @@ class DemoSeeder extends Seeder
         $gas = Gas::where('name', '!=', '')->first();
 
         $gas->name = 'GAS Demo';
-        $gas->message = "Questa istanza permette di avere una idea del funzionamento di GASdottoNG.\n\nPer accedere:\nUtente amministratore: username: root, password: root\nUtente non privilegiato: username: user, password: user\n\nL'inoltro di messaggi email da questa istanza è deliberatamente disabilitato, per evitare abusi.\n\nQuesta istanza viene quotidianamente rinnovata con le ultimissime modifiche (al contrario delle istanze hostate su gasdotto.net, sulle quali viene condotto qualche test in più prima della pubblicazione). GASdottoNG è un progetto in continua evoluzione: se noti qualcosa che non va, o una funzione che manca, mandaci una mail a info@madbob.org";
+        $gas->message = "Questa istanza permette di avere una idea del funzionamento di GASdottoNG.\n\nPer accedere:\nUtente amministratore: username: root, password: password\nUtente non privilegiato: username: user, password: password\n\nL'inoltro di messaggi email da questa istanza è deliberatamente disabilitato, per evitare abusi.\n\nQuesta istanza viene quotidianamente rinnovata con le ultimissime modifiche (al contrario delle istanze hostate su gasdotto.net, sulle quali viene condotto qualche test in più prima della pubblicazione). GASdottoNG è un progetto in continua evoluzione: se noti qualcosa che non va, o una funzione che manca, mandaci una mail a info@madbob.org";
         $gas->save();
 
         $del = new Delivery();
@@ -65,7 +65,7 @@ class DemoSeeder extends Seeder
             $u->username = $user[0];
             $u->firstname = $user[1];
             $u->lastname = $user[2];
-            $u->password = Hash::make('user');
+            $u->password = Hash::make('password');
             $u->save();
         }
 
@@ -74,6 +74,8 @@ class DemoSeeder extends Seeder
 
         $referrer_role = Role::where('name', 'Referente')->first();
         $administrator = User::where('username', 'root')->first();
+        $administrator->password = Hash::make('password');
+        $administrator->save();
 
         $u = new User();
         $u->gas_id = $gas->id;
@@ -82,7 +84,7 @@ class DemoSeeder extends Seeder
         $u->username = 'luigi';
         $u->firstname = 'Luigi';
         $u->lastname = 'Verdi';
-        $u->password = Hash::make('user');
+        $u->password = Hash::make('password');
         $u->save();
 
         $suppliers = [
