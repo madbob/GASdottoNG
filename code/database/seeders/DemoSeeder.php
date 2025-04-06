@@ -43,6 +43,7 @@ class DemoSeeder extends Seeder
         $mod->modifier_type_id = 'spese-trasporto';
         $mod->target_type = Delivery::class;
         $mod->target_id = $del->id;
+        $mod->applies_type = 'booking';
         $mod->applies_target = 'booking';
         $mod->definition = '[{"threshold":9223372036854775807,"amount":"3"}]';
         $mod->movement_type_id = 'donation-to-gas';
@@ -209,6 +210,7 @@ class DemoSeeder extends Seeder
                         $mod->target_id = $prod->id;
                         $mod->value = 'percentage';
                         $mod->arithmetic = 'sub';
+                        $mod->applies_type = 'product';
                         $mod->applies_target = 'product';
                         $mod->definition = '[{"threshold":9223372036854775807,"amount":"5"}]';
                         $mod->save();
@@ -229,21 +231,5 @@ class DemoSeeder extends Seeder
 
             $administrator->addRole($referrer_role, $s);
         }
-
-        $d = new Date();
-        $d->type = 'order';
-        $d->description = '{"end":"10","shipping":"12","comment":"","suspend":"true"}';
-        $d->target_type = Supplier::class;
-        $d->target_id = 'la-zucchina-dorata';
-        $d->recurring = '{"day":"thursday","cycle":"biweekly","from":"' . Carbon::today()->subMonths(1)->endOfMonth()->format('Y-m-d') . '","to":"' . Carbon::today()->addMonths(2)->endOfMonth()->format('Y-m-d') . '"}';
-        $d->save();
-
-        $d = new Date();
-        $d->type = 'order';
-        $d->description = '{"end":"10","shipping":"15","comment":"","suspend":"true"}';
-        $d->target_type = Supplier::class;
-        $d->target_id = 'luigi-il-macellaio';
-        $d->recurring = '{"day":"wednesday","cycle":"month_third","from":"' . Carbon::today()->subMonths(1)->endOfMonth()->format('Y-m-d') . '","to":"' . Carbon::today()->addMonths(2)->endOfMonth()->format('Y-m-d') . '"}';
-        $d->save();
     }
 }
