@@ -30,7 +30,7 @@ class DemoSeeder extends Seeder
         $gas = Gas::where('name', '!=', '')->first();
 
         $gas->name = 'GAS Demo';
-        $gas->message = "Questa istanza permette di avere una idea del funzionamento di GASdottoNG.\n\nPer accedere:\nUtente amministratore: username: root, password: root\nUtente non privilegiato: username: user, password: user\n\nL'inoltro di messaggi email da questa istanza è deliberatamente disabilitato, per evitare abusi.\n\nQuesta istanza viene quotidianamente rinnovata con le ultimissime modifiche (al contrario delle istanze hostate su gasdotto.net, sulle quali viene condotto qualche test in più prima della pubblicazione). GASdottoNG è un progetto in continua evoluzione: se noti qualcosa che non va, o una funzione che manca, mandaci una mail a info@madbob.org";
+        $gas->message = "Questa istanza permette di avere una idea del funzionamento di GASdottoNG.\n\nPer accedere:\nUtente amministratore: username: root, password: password\nUtente non privilegiato: username: user, password: password\n\nL'inoltro di messaggi email da questa istanza è deliberatamente disabilitato, per evitare abusi.\n\nQuesta istanza viene quotidianamente rinnovata con le ultimissime modifiche (al contrario delle istanze hostate su gasdotto.net, sulle quali viene condotto qualche test in più prima della pubblicazione). GASdottoNG è un progetto in continua evoluzione: se noti qualcosa che non va, o una funzione che manca, mandaci una mail a info@madbob.org";
         $gas->save();
 
         $del = new Delivery();
@@ -43,6 +43,7 @@ class DemoSeeder extends Seeder
         $mod->modifier_type_id = 'spese-trasporto';
         $mod->target_type = Delivery::class;
         $mod->target_id = $del->id;
+        $mod->applies_type = 'booking';
         $mod->applies_target = 'booking';
         $mod->definition = '[{"threshold":9223372036854775807,"amount":"3"}]';
         $mod->movement_type_id = 'donation-to-gas';
@@ -65,7 +66,7 @@ class DemoSeeder extends Seeder
             $u->username = $user[0];
             $u->firstname = $user[1];
             $u->lastname = $user[2];
-            $u->password = Hash::make('user');
+            $u->password = Hash::make('password');
             $u->save();
         }
 
@@ -74,6 +75,8 @@ class DemoSeeder extends Seeder
 
         $referrer_role = Role::where('name', 'Referente')->first();
         $administrator = User::where('username', 'root')->first();
+        $administrator->password = Hash::make('password');
+        $administrator->save();
 
         $u = new User();
         $u->gas_id = $gas->id;
@@ -82,7 +85,7 @@ class DemoSeeder extends Seeder
         $u->username = 'luigi';
         $u->firstname = 'Luigi';
         $u->lastname = 'Verdi';
-        $u->password = Hash::make('user');
+        $u->password = Hash::make('password');
         $u->save();
 
         $suppliers = [
@@ -207,6 +210,7 @@ class DemoSeeder extends Seeder
                         $mod->target_id = $prod->id;
                         $mod->value = 'percentage';
                         $mod->arithmetic = 'sub';
+                        $mod->applies_type = 'product';
                         $mod->applies_target = 'product';
                         $mod->definition = '[{"threshold":9223372036854775807,"amount":"5"}]';
                         $mod->save();
@@ -227,21 +231,5 @@ class DemoSeeder extends Seeder
 
             $administrator->addRole($referrer_role, $s);
         }
-
-        $d = new Date();
-        $d->type = 'order';
-        $d->description = '{"end":"10","shipping":"12","comment":"","suspend":"true"}';
-        $d->target_type = Supplier::class;
-        $d->target_id = 'la-zucchina-dorata';
-        $d->recurring = '{"day":"thursday","cycle":"biweekly","from":"' . Carbon::today()->subMonths(1)->endOfMonth()->format('Y-m-d') . '","to":"' . Carbon::today()->addMonths(2)->endOfMonth()->format('Y-m-d') . '"}';
-        $d->save();
-
-        $d = new Date();
-        $d->type = 'order';
-        $d->description = '{"end":"10","shipping":"15","comment":"","suspend":"true"}';
-        $d->target_type = Supplier::class;
-        $d->target_id = 'luigi-il-macellaio';
-        $d->recurring = '{"day":"wednesday","cycle":"month_third","from":"' . Carbon::today()->subMonths(1)->endOfMonth()->format('Y-m-d') . '","to":"' . Carbon::today()->addMonths(2)->endOfMonth()->format('Y-m-d') . '"}';
-        $d->save();
     }
 }
