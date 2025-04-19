@@ -38,7 +38,7 @@
         </div>
     @endif
 
-	@if($aggregate->hasChangedProdcts())
+	@if($aggregate->hasChangedProducts())
 		<div class="row">
 	        <div class="col">
 				<div class="alert alert-danger mb-2">

@@ -291,7 +291,7 @@ class Aggregate extends Model
         });
     }
 
-    public function hasChangedProdcts()
+    public function hasChangedProducts()
     {
         $has_changed_products = false;
 
