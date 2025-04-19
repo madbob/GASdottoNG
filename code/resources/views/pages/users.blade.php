@@ -40,6 +40,10 @@
                     <x-larastrap::ambutton :label="_i('Stato Quote')" :attributes="['data-modal-url' => route('users.fees')]" />
                 @endif
             @endif
+
+            @if(Gate::check('users.admin', $currentgas) && App\Group::where('context', 'user')->count() > 0)
+                <x-larastrap::ambutton :label="_i('Assegna Gruppi')" :data-modal-url="route('groups.matrix')" />
+            @endif
         </div>
     </div>
 

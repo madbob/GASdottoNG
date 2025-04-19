@@ -26,6 +26,21 @@ class GroupsService extends BaseService
         return $g;
     }
 
+    /*
+        Quando un gruppo cambia contesto, esplicitamente sgancio le relazioni
+        con gli altri contesti sul DB.
+        Questo per evitare il caso - tutt'altro che improbabile - che venga
+        ad esempio creato un gruppo da assegnare agli utenti, tutti abbiano
+        assegnata la relativa cerchia di default, e questo gruppo poi cambi di
+        destinazione per essere usato per le prenotazioni, salvo apparire
+        impropriamente anche negli utenti
+    */
+    private function detachMassive($group, $table)
+    {
+        $circles = $group->circles->pluck('id')->toArray();
+        DB::table($table)->whereIn('circle_id', $circles)->delete();
+    }
+
     public function update($id, array $request)
     {
         $this->ensureAuth(['gas.config' => 'gas']);
@@ -39,18 +54,22 @@ class GroupsService extends BaseService
                 $this->setIfSet($g, $request, 'cardinality');
                 $this->boolIfSet($g, $request, 'filters_orders');
                 $this->boolIfSet($g, $request, 'user_selectable');
+                $this->detachMassive($g, 'booking_circle');
                 break;
 
             case 'booking':
                 $g->cardinality = 'single';
                 $g->filters_orders = false;
                 $g->user_selectable = true;
+                $this->detachMassive($g, 'circle_user');
                 break;
 
             case 'order':
                 $g->cardinality = 'many';
                 $g->filters_orders = false;
                 $g->user_selectable = true;
+                $this->detachMassive($g, 'circle_user');
+                $this->detachMassive($g, 'booking_circle');
                 break;
         }
 

@@ -45,11 +45,9 @@ trait InCircles
 
         if ($group) {
             if (empty($ret)) {
-                $ret = [
-                    (object) [
-                        'group' => $group,
-                        'circles' => [],
-                    ],
+                $ret = (object) [
+                    'group' => $group,
+                    'circles' => [],
                 ];
             }
             else {

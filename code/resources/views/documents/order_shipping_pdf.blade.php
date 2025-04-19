@@ -66,6 +66,14 @@ foreach($data->contents as $d) {
             li {
                 margin: 0;
             }
+
+            h3, h4 {
+                width: 100%;
+                background-color: #555;
+                color: #FFF;
+                text-align: center;
+                padding: 5px;
+            }
         </style>
     </head>
 

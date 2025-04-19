@@ -8,8 +8,6 @@
                     'typename_readable' => _i('Gruppo'),
                     'targeturl' => 'groups'
                 ])
-
-                <x-larastrap::ambutton :label="_i('Assegna Gruppi')" :data-modal-url="route('groups.matrix')" />
             </div>
         </div>
 

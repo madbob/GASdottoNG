@@ -475,6 +475,9 @@ class Booking extends Model
             $user_circles = $this->user->circles;
         }
 
+        \Log::debug('Prenotazione: ' . $this->circles->map(fn($c) => $c->name)->join(' - '));
+        \Log::debug('Utente: ' . $user_circles->map(fn($c) => $c->name)->join(' - '));
+
         return $this->circles->merge($user_circles);
     }
 

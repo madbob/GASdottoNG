@@ -82,4 +82,37 @@ class GroupsServiceTest extends TestCase
             $this->assertEquals($circle2->id, $assigned->circles[0]->id);
         }
     }
+
+    /*
+        Aggiornamento contesto Gruppo
+    */
+    public function test_change_context()
+    {
+        [$group, $circle, $circle2] = $this->createGroupWithCircle();
+
+        $this->nextRound();
+
+        $users = User::all();
+        $this->assertTrue($users->count() > 0);
+
+        foreach ($users as $user) {
+            $assigned = $user->circlesByGroup($group);
+            $this->assertEquals(1, count($assigned->circles));
+            $this->assertEquals($circle->id, $assigned->circles[0]->id);
+        }
+
+        $this->nextRound();
+
+        app()->make('GroupsService')->update($group->id, [
+            'context' => 'booking',
+        ]);
+
+        $this->nextRound();
+
+        $users = User::all();
+        foreach ($users as $user) {
+            $assigned = $user->circlesByGroup($group);
+            $this->assertEquals(0, count($assigned->circles));
+        }
+    }
 }
