@@ -45,7 +45,7 @@ class ModifiedValue extends Model
                 return $this->amount * -1;
 
             default:
-                throw new \DomainException("Unexpected arithmetic for modifier: " . $this->modifier->arithmetic);
+                throw new \DomainException('Unexpected arithmetic for modifier: ' . $this->modifier->arithmetic);
         }
     }
 
@@ -219,7 +219,7 @@ class ModifiedValue extends Model
     */
     public static function organizeForProducts(&$products_modifiers, Collection $target_modifiers, $key): void
     {
-        $actual_modifiers = $target_modifiers->filter(fn($pmod) => $pmod->target_type == BookedProduct::class);
+        $actual_modifiers = $target_modifiers->filter(fn ($pmod) => $pmod->target_type == BookedProduct::class);
 
         foreach ($actual_modifiers as $pmod) {
             $mod_id = $pmod->modifier->modifier_type_id;

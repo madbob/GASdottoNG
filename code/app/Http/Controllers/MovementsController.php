@@ -378,7 +378,7 @@ class MovementsController extends BackedController
                 return $this->exportIntegralCES($user->gas, $users, $filename, $body);
             }
         }
-        else if ($type == 'suppliers') {
+        elseif ($type == 'suppliers') {
             $suppliers = $user->gas->suppliers;
 
             if ($subtype == 'csv') {

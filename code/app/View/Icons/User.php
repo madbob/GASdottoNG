@@ -82,6 +82,7 @@ class User extends IconsMap
         ];
 
         $groups = self::selectiveGroups();
+
         return array_merge($ret, $groups);
     }
 }

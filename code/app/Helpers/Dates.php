@@ -15,7 +15,7 @@ function printableDate($value, $short = false)
             try {
                 $date = Carbon::parse($value);
             }
-            catch(\Exception $e) {
+            catch (\Exception $e) {
                 $date = null;
             }
         }

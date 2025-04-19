@@ -131,7 +131,7 @@ class ReceiptsController extends BackedController
 
     private function send($elements): void
     {
-        $to_send = $elements->filter(fn ($r) => !$r->mailed);
+        $to_send = $elements->filter(fn ($r) => ! $r->mailed);
 
         foreach ($to_send as $receipt) {
             try {

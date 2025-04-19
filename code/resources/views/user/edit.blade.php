@@ -144,8 +144,6 @@ if ($user->isFriend() && $admin_editable) {
                             @endif
                         @endif
 
-                        <hr/>
-
                         @include('commons.permissionsviewer', ['object' => $user, 'editable' => $admin_editable])
                     @else
                         <x-larastrap::datepicker name="member_since" :label="_i('Membro da')" readonly disabled />

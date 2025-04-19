@@ -44,8 +44,8 @@ class AggregateBooking extends IconsMap
 
                         $ret['hidden-truck-none'] = _i('Senza Gruppi');
 
-                        foreach($groups as $group) {
-                            foreach($group->circles()->orderBy('name', 'asc')->get() as $circle) {
+                        foreach ($groups as $group) {
+                            foreach ($group->circles()->orderBy('name', 'asc')->get() as $circle) {
                                 $ret['hidden-truck-' . $circle->id] = sprintf('%s - %s', $group->printableName(), $circle->printableName());
                             }
                         }
@@ -57,6 +57,7 @@ class AggregateBooking extends IconsMap
         }
 
         $usergroups = self::selectiveGroups();
+
         return array_merge(static::$bookinggroups ?: [], $usergroups ?: []);
     }
 }

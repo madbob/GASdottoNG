@@ -36,8 +36,8 @@ trait UserGroups
 
                         $ret['hidden-people-none'] = _i('Senza Gruppi');
 
-                        foreach($groups as $group) {
-                            foreach($group->circles()->orderBy('name', 'asc')->get() as $circle) {
+                        foreach ($groups as $group) {
+                            foreach ($group->circles()->orderBy('name', 'asc')->get() as $circle) {
                                 $ret['hidden-people-' . $circle->id] = sprintf('%s - %s', $group->printableName(), $circle->printableName());
                             }
                         }

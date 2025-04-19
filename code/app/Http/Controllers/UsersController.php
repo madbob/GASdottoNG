@@ -38,7 +38,7 @@ class UsersController extends BackedController
     */
     public function blocked(Request $request)
     {
-        if (!$request->user()->pending) {
+        if (! $request->user()->pending) {
             return redirect()->route('dashboard');
         }
         else {
@@ -183,7 +183,7 @@ class UsersController extends BackedController
             if ($type == 'accounting') {
                 $access = $requester->can('movements.admin', $target->gas) || $requester->can('movements.view', $target->gas);
             }
-            else if ($type == 'friends') {
+            elseif ($type == 'friends') {
                 $access = $target->can('users.subusers', $target->gas);
             }
         }
@@ -311,7 +311,7 @@ class UsersController extends BackedController
 
     public function changePassword(Request $request)
     {
-        if (!$request->user()->enforce_password_change) {
+        if (! $request->user()->enforce_password_change) {
             return redirect()->route('dashboard');
         }
 

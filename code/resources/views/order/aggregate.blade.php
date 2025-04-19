@@ -51,7 +51,7 @@ $master_summary = $aggregate->reduxData();
 
                     ?>
 
-                    <x-larastrap::field :label="$send_mail_label" :pophelp="_i('Invia a tutti gli utenti che hanno partecipato all\'ordine una mail riassuntiva della propria prenotazione. È possibile aggiungere un messaggio da allegare a tutti, per eventuali segnalazioni addizionali. Il messaggio di riepilogo viene automaticamente inviato alla chiusura dell\'ordine, automatica o manuale che sia, se configurato dal pannello Configurazioni.')">
+                    <x-larastrap::field margins="0 0 0 0" :label="$send_mail_label" :pophelp="_i('Invia a tutti gli utenti che hanno partecipato all\'ordine una mail riassuntiva della propria prenotazione. È possibile aggiungere un messaggio da allegare a tutti, per eventuali segnalazioni addizionali. Il messaggio di riepilogo viene automaticamente inviato alla chiusura dell\'ordine, automatica o manuale che sia, se configurato dal pannello Configurazioni.')">
                         <x-larastrap::mbutton :label="_i('Invia Mail')" :triggers_modal="sprintf('notify-aggregate-%s', $aggregate->id)" />
                         <small>{{ _i('Ultime notifiche inviate') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></small>
                     </x-larastrap::field>

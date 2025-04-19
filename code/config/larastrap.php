@@ -156,7 +156,7 @@ return [
         'mbutton' => [
             'extends' => 'button',
             'params' => [
-                'color' => 'light',
+                'color' => 'dark',
                 'postlabel' => '<i class="bi-window"></i>',
             ],
         ],
@@ -164,7 +164,7 @@ return [
             'extends' => 'button',
             'params' => [
                 'classes' => ['async-modal'],
-                'color' => 'light',
+                'color' => 'dark',
                 'postlabel' => '<i class="bi-window"></i>',
             ],
         ],

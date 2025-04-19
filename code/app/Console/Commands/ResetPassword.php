@@ -26,7 +26,7 @@ class ResetPassword extends Command
         if ($user) {
             $user->password = Hash::make($password);
             $user->save();
-            echo "Password resettata per utente " . $user->username . "\n";
+            echo 'Password resettata per utente ' . $user->username . "\n";
         }
         else {
             echo "Utente non trovato\n";

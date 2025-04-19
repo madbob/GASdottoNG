@@ -105,7 +105,7 @@ class CirclesFilter
                 $ret[] = $c;
             }
         }
-        else if (str_starts_with($this->mode, 'group_')) {
+        elseif (str_starts_with($this->mode, 'group_')) {
             $group_id = substr($this->mode, strlen('group_'));
 
             $c = new CirclesFilter(null, null);
@@ -137,7 +137,7 @@ class CirclesFilter
 
         if (str_starts_with($this->mode, 'group_')) {
             $group = substr($this->mode, strlen('group_'));
-            $circles = $circles->filter(fn($c) => $c->group_id == $group);
+            $circles = $circles->filter(fn ($c) => $c->group_id == $group);
         }
         else {
             $circles = $circles->sortBy('group_id');

@@ -16,7 +16,6 @@ use App\Order;
 use App\Product;
 use App\Variant;
 use App\VariantValue;
-use App\Date;
 use App\Measure;
 use App\Category;
 use App\VatRate;

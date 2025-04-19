@@ -418,9 +418,10 @@ class Role extends Model implements AutoReadsFields
 
     public function autoreadField($name, $request): AutoReadOperation
     {
-        switch($name) {
+        switch ($name) {
             case 'actions':
                 $this->actions = implode(',', $request->input('actions') ?? []);
+
                 return AutoReadOperation::Managed;
         }
 

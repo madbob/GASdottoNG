@@ -817,7 +817,7 @@ class Order extends Model
     {
         $total = $aggregate_data->price_delivered;
 
-        foreach($modifiers as $value) {
+        foreach ($modifiers as $value) {
             if ($value->activeMath()) {
                 $movement_type = $value->modifier->movementType;
                 if (is_null($movement_type)) {

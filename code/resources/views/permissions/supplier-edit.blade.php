@@ -16,22 +16,21 @@
 		</p>
 	@else
 	    @foreach($roles as $role)
-	        <div class="row">
-	            <h3>{{ $role->name }}</h3>
-	        </div>
-
-	        <div class="row mb-2">
-	            @include('commons.completionrows', [
-	                'objects' => $role->usersByTarget($supplier),
-	                'source' => route('users.search'),
-	                'adding_label' => _i('Aggiungi Nuovo Utente'),
-	                'add_callback' => 'supplierAttachUser',
-	                'remove_callback' => 'supplierDetachUser',
-	                'extras' => [
-	                    'supplier-id' => $supplier->id,
-	                    'role-id' => $role->id
-	                ]
-	            ])
+	        <div class="card mb-4">
+                <div class="card-header">{{ $role->name }}</div>
+                <div class="card-body">
+    	            @include('commons.completionrows', [
+    	                'objects' => $role->usersByTarget($supplier),
+    	                'source' => route('users.search'),
+    	                'adding_label' => _i('Aggiungi Nuovo Utente'),
+    	                'add_callback' => 'supplierAttachUser',
+    	                'remove_callback' => 'supplierDetachUser',
+    	                'extras' => [
+    	                    'supplier-id' => $supplier->id,
+    	                    'role-id' => $role->id
+    	                ]
+    	            ])
+                </div>
 	        </div>
 	    @endforeach
 	@endif

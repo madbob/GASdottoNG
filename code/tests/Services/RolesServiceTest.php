@@ -3,7 +3,6 @@
 namespace Tests\Services;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use MadBob\Larastrap\Integrations\LarastrapStack;
 

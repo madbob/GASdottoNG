@@ -38,7 +38,7 @@
         @if(Gate::check('supplier.book', null))
             <div class="card mb-3">
                 <div class="card-header">
-                    <p class="float-end">
+                    <p class="float-end m-0">
                         <a target="_blank" href="{{ url('ordini.xml') }}"><i class="bi-rss"></i></a>
                         <a target="_blank" href="{{ url('ordini.ics') }}"><i class="bi-calendar"></i></a>
                     </p>

@@ -62,8 +62,8 @@ class VariantCombo extends Model
     {
         $myself = $this;
 
-        $test = BookedProductVariant::whereHas('components', function($query) use ($myself) {
-            foreach($myself->values as $value) {
+        $test = BookedProductVariant::whereHas('components', function ($query) use ($myself) {
+            foreach ($myself->values as $value) {
                 $query->where('value_id', $value->id);
             }
         })->count();

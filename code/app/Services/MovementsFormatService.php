@@ -7,7 +7,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\IllegalArgumentException;
 use App\Gas;
 
 class MovementsFormatService extends BaseService
@@ -30,11 +29,12 @@ class MovementsFormatService extends BaseService
         $ret = $reference_row;
         $ops = $movement->operations();
 
-        foreach(['sender', 'target'] as $peer)
-        foreach ($ops->$peer->operations as $op) {
-            $key = $this->balanceKey($movement->$peer, $op, $classmap);
-            if (isset($ret[$key])) {
-                $ret[$key] = $movement->amount;
+        foreach (['sender', 'target'] as $peer) {
+            foreach ($ops->$peer->operations as $op) {
+                $key = $this->balanceKey($movement->$peer, $op, $classmap);
+                if (isset($ret[$key])) {
+                    $ret[$key] = $movement->amount;
+                }
             }
         }
 
@@ -71,7 +71,7 @@ class MovementsFormatService extends BaseService
         $classmap = [];
 
         $fields = $gas->extendedBalanceFields();
-        foreach($fields as $field_id => $field_meta) {
+        foreach ($fields as $field_id => $field_meta) {
             $classmap[$field_meta->class] = $field_id;
 
             $headers[] = _i('Entrate %s', [$field_meta->label]);

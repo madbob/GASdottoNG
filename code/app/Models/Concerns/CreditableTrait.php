@@ -265,7 +265,7 @@ trait CreditableTrait
     {
         $ret = [];
 
-        foreach($this->balanceFields() as $id => $name) {
+        foreach ($this->balanceFields() as $id => $name) {
             $ret[$id] = (object) [
                 'label' => $name,
                 'class' => get_class($this),
