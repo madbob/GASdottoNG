@@ -8,15 +8,29 @@
 
         $payments = paymentsByType('booking-payment');
         $default_payment_method = defaultPaymentByType('booking-payment');
+        $table_identifier = 'fast-shipping-' . sanitizeId($aggregate->id);
 
         ?>
+
+        <div class="row">
+            <div class="col">
+                @include('commons.iconslegend', [
+                    'class' => App\AggregateBooking::class,
+                    'target' => '#' . $table_identifier,
+                    'table_filter' => true,
+                    'contents' => $aggregate->bookings,
+                ])
+            </div>
+        </div>
+
+        <hr>
 
         <div class="row">
             <x-larastrap::form classes="inner-form" method="POST" :action="url('deliveries/' . $aggregate->id . '/fast')">
                 <input type="hidden" name="post-saved-function" value="reloadCurrentLoadable">
 
                 <div class="col-md-12">
-                    <table class="table">
+                    <table class="table" id="{{ $table_identifier }}">
                         <thead>
                             <tr>
                                 <th scope="col" width="5%">
@@ -51,7 +65,7 @@
                                             <x-larastrap::check name="bookings[]" classes="booking-select" squeeze :value="$row_id" switch="false" checked="true" />
                                         @endif
                                     </td>
-                                    <td>{{ $booking->user->printableName() }}</td>
+                                    <td>{!! $booking->printableHeader() !!}</td>
                                     <td>{{ printablePriceCurrency($booking->getValue('effective', true)) }}</td>
                                     <td>
                                         @if($booking->status != 'shipped')
