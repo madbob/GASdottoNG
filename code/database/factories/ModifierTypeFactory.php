@@ -4,12 +4,13 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\ModifierType;
-
 class ModifierTypeFactory extends Factory
 {
-    protected $model = ModifierType::class;
-
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
     public function definition()
     {
         return [

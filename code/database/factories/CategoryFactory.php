@@ -4,16 +4,17 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Category;
-
 class CategoryFactory extends Factory
 {
-    protected $model = Category::class;
-
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
         return [
-            'name' => $this->faker->text(10),
+            'name' => fake()->word(),
         ];
     }
 }

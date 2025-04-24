@@ -4,19 +4,36 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Supplier;
-
 class SupplierFactory extends Factory
 {
-    protected $model = Supplier::class;
-
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'business_name' => $this->faker->company(),
-            'payment_method' => $this->faker->text(100),
-            'order_method' => $this->faker->text(100),
+            'name' => fake('it_IT')->company(),
+            'description' => fake()->paragraph(),
+            'order_method' => fake()->sentence(),
+            'payment_method' => fake()->creditCardType(),
+            'taxcode' => fake('it_IT')->taxId(),
+            'vat' => fake('it_IT')->vat(),
         ];
+    }
+
+    public function ita()   
+    {
+        /**
+         * Set the dummy model's attributes for it_IT SupplierFactory.
+         *
+         * @return array<string, mixed>
+         */
+        return $this->state(function (array $attributes)  {
+            return [
+            'payment_method' => fake()->randomElement(['Contanti', 'Assegno', 'Bonifico bancario', 'PayPal', 'Satispay']),
+            ];
+        });
     }
 }

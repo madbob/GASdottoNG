@@ -4,17 +4,18 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\VatRate;
-
 class VatRateFactory extends Factory
 {
-    protected $model = VatRate::class;
-
     public function definition()
     {
+        /**
+         * Define the model's default state.
+         *
+         * @return array<string, mixed>
+         */
         return [
-            'name' => $this->faker->word(),
-            'percentage' => $this->faker->randomNumber(2),
+            'name' => fake()->word(),
+            'percentage' => fake()->numberBetween(4, 40),
         ];
     }
 }

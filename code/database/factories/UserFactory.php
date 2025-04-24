@@ -6,32 +6,30 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-use App\User;
-
 class UserFactory extends Factory
 {
-    protected $model = User::class;
+    /**
+     * The current password being used by the factory.
+     */
+    protected static ?string $password;
 
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
-        do {
-            $username = $this->faker->userName();
-        }
-        while (User::where('username', $username)->count() != 0);
-
-        do {
-            $firstname = $this->faker->firstName();
-            $lastname = $this->faker->lastName();
-        }
-        while (User::where('firstname', $firstname)->where('lastname', $lastname)->count() != 0);
+        $firstname = fake('it_IT')->lastName();
 
         return [
-            'username' => $username,
+            'username' => fake()->unique()->numerify(Str::slug($firstname) . '.####'),
             'firstname' => $firstname,
-            'lastname' => $lastname,
-            'password' => Hash::make(Str::random(10)),
-            'member_since' => date('Y-m-d H:i:s'),
-            'card_number' => Str::random(20),
+            'lastname' => fake('it_IT')->lastName(),
+            'password' => static::$password ??= Hash::make('password'),
+            'taxcode' => fake('it_IT')->taxId(),
+            'member_since' => fake()->dateTimeThisDecade(),
+            'card_number' => fake()->creditCardNumber(),
         ];
     }
 }

@@ -2,25 +2,22 @@
 
 namespace Database\Factories;
 
+use App\Supplier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Order;
 use App\Aggregate;
 
 class OrderFactory extends Factory
 {
-    protected $model = Order::class;
-
     public function definition()
     {
-        $aggregate = Aggregate::factory()->create();
-
         return [
-            'start' => date('Y-m-d'),
-            'end' => date('Y-m-d', strtotime('+5 days')),
-            'shipping' => date('Y-m-d', strtotime('+6 days')),
+            'supplier_id' => Supplier::factory(),
             'status' => 'open',
-            'aggregate_id' => $aggregate->id,
+            'start' => fake()->dateTimeInInterval('-1 week', '-1 day'),
+            'end' => fake()->dateTimeInInterval('1 day', '1 week'),
+            'shipping' => fake()->dateTimeInInterval('1 week', '2 week'),
+            'aggregate_id' => Aggregate::factory(),
         ];
     }
 }
