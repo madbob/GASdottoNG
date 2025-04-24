@@ -30,9 +30,8 @@ class ModifierFactory extends Factory
      */
     public function shipping(Delivery $delivery): ModifierFactory
     {
-        return $this->state(function (array $attributes) use ($delivery) {
+        return $this->state(function () use ($delivery): array {
             return [
-                // 'movement_type_id' => 'donation-to-gas',
                 'target_type' => Delivery::class,
                 'target_id' => $delivery->id,
                 'applies_type' => 'booking',
@@ -48,7 +47,7 @@ class ModifierFactory extends Factory
      */
     public function discount(Product $product): ModifierFactory
     {
-        return $this->state(function (array $attributes) use ($product) {
+        return $this->state(function () use ($product): array {
             return [
                 'movement_type_id' => 'sconto',
                 'target_type' => Product::class,

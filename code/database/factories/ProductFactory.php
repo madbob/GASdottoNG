@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         /**
          * Define the model's default state.
@@ -62,7 +62,7 @@ class ProductFactory extends Factory
             ]
         ];
 
-        return $this->state(function () use ($products) {
+        return $this->state(function () use ($products): array {
             $category = array_rand($products);
             $products = $products[$category];
 

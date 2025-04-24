@@ -23,16 +23,16 @@ class SupplierFactory extends Factory
         ];
     }
 
-    public function ita()   
+    public function ita(): SupplierFactory
     {
         /**
          * Set the dummy model's attributes for it_IT SupplierFactory.
          *
          * @return array<string, mixed>
          */
-        return $this->state(function (array $attributes)  {
+        return $this->state(function (): array {
             return [
-            'payment_method' => fake()->randomElement(['Contanti', 'Assegno', 'Bonifico bancario', 'PayPal', 'Satispay']),
+                'payment_method' => fake()->randomElement(['Contanti', 'Assegno', 'Bonifico bancario', 'PayPal', 'Satispay']),
             ];
         });
     }

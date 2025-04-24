@@ -4,13 +4,14 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Movement;
-
 class MovementFactory extends Factory
 {
-    protected $model = Movement::class;
-
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
         return [
             'amount' => $this->faker->randomNumber(2),

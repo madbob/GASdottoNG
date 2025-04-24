@@ -35,12 +35,11 @@ class DemoFactorySeeder extends Seeder
             ->recycle($gas)
             ->create(['default' => 1]);
 
-        $mod = Modifier::factory()
+        Modifier::factory()
             ->shipping($del)
             ->create([
                 'modifier_type_id' => ModifierType::where('identifier', 'shipping')->first()->id,
             ]);
-
 
         $role = roleByIdentifier('user');
         app()->make('RolesService')->attachAction($role->id, 'users.subusers');

@@ -9,7 +9,12 @@ use App\Aggregate;
 
 class OrderFactory extends Factory
 {
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
         return [
             'supplier_id' => Supplier::factory(),

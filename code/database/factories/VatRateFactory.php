@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class VatRateFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         /**
          * Define the model's default state.
