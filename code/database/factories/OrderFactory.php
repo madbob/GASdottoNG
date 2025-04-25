@@ -18,11 +18,12 @@ class OrderFactory extends Factory
     {
         return [
             'supplier_id' => Supplier::factory(),
-            'status' => 'open',
+            'aggregate_id' => Aggregate::factory(),
+            'comment' => fake()->sentence(),
+            'status' => fake()->randomElement(['suspended', 'open', 'closed', 'shipped', 'user_payment', 'archived']),
             'start' => fake()->dateTimeInInterval('-1 week', '-1 day'),
             'end' => fake()->dateTimeInInterval('1 day', '1 week'),
             'shipping' => fake()->dateTimeInInterval('1 week', '2 week'),
-            'aggregate_id' => Aggregate::factory(),
         ];
     }
 }

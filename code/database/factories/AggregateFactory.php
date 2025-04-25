@@ -14,6 +14,7 @@ class AggregateFactory extends Factory
     public function definition(): array
     {
         return [
+            'comment' => fake()->sentence(),
         ];
     }
 }

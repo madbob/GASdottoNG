@@ -20,6 +20,9 @@ use App\Modifier;
 
 class DemoFactorySeeder extends Seeder
 {
+    /**
+     * Run the seeder to create demo records, primarily using Eloquent factories.
+     */
     public function run()
     {
         $gas = Gas::firstOrFail();
