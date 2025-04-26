@@ -122,6 +122,7 @@ class BookingsServiceTest extends TestCase
         ]);
 
         $variant = $this->createVariant($product);
+        $variant_value = $variant->values()->first();
 
         $this->sample_order->products()->attach($product->id);
 
@@ -134,7 +135,7 @@ class BookingsServiceTest extends TestCase
             'action' => 'booked',
             $product->id => 0,
             'variant_quantity_' . $product->id => [2],
-            'variant_selection_' . $variant->id => [$variant->values()->first()->id],
+            'variant_selection_' . $variant->id => [$variant_value->id],
         ];
 
         app()->make('BookingsService')->bookingUpdate($data_friend, $this->sample_order->aggregate, $friend, false);
@@ -147,7 +148,7 @@ class BookingsServiceTest extends TestCase
             'action' => 'booked',
             $product->id => 0,
             'variant_quantity_' . $product->id => [1],
-            'variant_selection_' . $variant->id => [$variant->values()->first()->id],
+            'variant_selection_' . $variant->id => [$variant_value->id],
         ];
 
         app()->make('BookingsService')->bookingUpdate($data_master, $this->sample_order->aggregate, $this->userWithBasePerms, false);
@@ -161,6 +162,14 @@ class BookingsServiceTest extends TestCase
         foreach ($products as $prod) {
             $this->assertEquals($product->id, $prod->product_id);
         }
+
+        $this->nextRound();
+
+        $this->actingAs($this->userReferrer);
+        $variant = app()->make('VariantsService')->show($variant->id);
+        $this->assertTrue($variant->hasBookings());
+        $variant_value = $variant->values->firstWhere('id', $variant_value->id);
+        $this->assertTrue($variant_value->hasBookings());
     }
 
     /*
