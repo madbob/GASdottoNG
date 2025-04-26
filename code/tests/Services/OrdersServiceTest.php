@@ -105,9 +105,9 @@ class OrdersServiceTest extends TestCase
 
             $this->assertEquals($this->order->supplier_id, $order->supplier_id);
             $this->assertEquals('Commento di prova', $order->comment);
-            $this->assertEquals($start, $order->start);
-            $this->assertEquals($end, $order->end);
-            $this->assertEquals($shipping, $order->shipping);
+            $this->assertEquals($start, $order->start->format('Y-m-d'));
+            $this->assertEquals($end, $order->end->format('Y-m-d'));
+            $this->assertEquals($shipping, $order->shipping->format('Y-m-d'));
             $this->assertEquals($this->order->supplier->products()->count(), $order->products()->count());
             $this->assertEquals(0, $order->bookings()->count());
             $this->assertEquals($aggregate->id, $order->aggregate_id);
@@ -172,7 +172,7 @@ class OrdersServiceTest extends TestCase
         $order = app()->make('OrdersService')->show($this->order->id);
 
         $this->assertEquals($order->comment, 'Un altro commento');
-        $this->assertEquals($order->shipping, $new_shipping);
+        $this->assertEquals($order->shipping->format('Y-m-d'), $new_shipping);
         $this->assertEquals($order->start, $this->order->start);
         $this->assertEquals($order->end, $this->order->end);
     }

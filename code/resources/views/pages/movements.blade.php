@@ -34,7 +34,7 @@
                             @include('commons.genericdaterange', ['start_date' => strtotime('-1 weeks')])
                             @include('commons.selectmovementtypefield', ['show_all' => true])
                             <x-larastrap::radios name="method" :label="_i('Pagamento')" :options="paymentsSimple()" value="none" />
-                            <x-larastrap::select-model name="user_id" :label="_i('Utente')" :options="$currentgas->users" :extra_options="[0 => _i('Nessuno')]" />
+                            <x-larastrap::select-model name="user_id" :label="_i('Utente')" :options="$currentgas->users()->topLevel()->get()" :extra_options="[0 => _i('Nessuno')]" />
                             <x-larastrap::select-model name="supplier_id" :label="_i('Fornitore')" :options="$currentuser->targetsByAction('movements.admin,supplier.orders,supplier.movements')" :extra_options="[0 => _i('Nessuno')]" />
                             <x-larastrap::text name="identifier" :label="_i('Identificativo')" />
                             <x-larastrap::text name="notes" :label="_i('Note')" />

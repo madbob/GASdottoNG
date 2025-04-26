@@ -37,6 +37,15 @@ class Order extends Model
         'creating' => SluggableCreating::class,
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'start' => 'datetime:Y-m-d',
+            'end' => 'datetime:Y-m-d',
+            'shipping' => 'datetime:Y-m-d',
+        ];
+    }
+
     protected static function boot()
     {
         parent::boot();

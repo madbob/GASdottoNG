@@ -27,7 +27,7 @@ class OrderNumbersDispatcher
 
     public function getNumber($order)
     {
-        $year = date('Y', strtotime($order->start));
+        $year = $order->start->format('Y');
         $this->initCache($year);
 
         $counter = 0;

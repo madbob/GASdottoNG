@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 
 use App\Models\Concerns\TracksUpdater;
 
@@ -143,7 +144,7 @@ class AggregateBooking extends Model
     public function getConvenientStringsAttribute()
     {
         $suppliers = [];
-        $shipping_date = PHP_INT_MAX;
+        $shipping_date = Carbon::parse('2100-31-12');
 
         foreach ($this->bookings as $booking) {
             $order = $booking->order;
@@ -151,8 +152,8 @@ class AggregateBooking extends Model
             $suppliers[$order->supplier->printableName()] = true;
 
             if ($order->shipping != null && $order->shipping != '0000-00-00') {
-                $this_shipping = strtotime($order->shipping);
-                if ($this_shipping < $shipping_date) {
+                $this_shipping = $order->shipping;
+                if ($this_shipping->lessThan($shipping_date)) {
                     $shipping_date = $this_shipping;
                 }
             }
@@ -174,7 +175,7 @@ class AggregateBooking extends Model
 
         return [
             'suppliers' => implode(', ', $suppliers),
-            'shipping' => $shipping_date == PHP_INT_MAX ? _i('indefinita') : printableDate($shipping_date),
+            'shipping' => $shipping_date->year != 2100 ? _i('indefinita') : printableDate($shipping_date),
         ];
     }
 
