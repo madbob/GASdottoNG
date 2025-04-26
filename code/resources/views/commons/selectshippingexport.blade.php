@@ -23,7 +23,7 @@ if (empty($all) == false) {
 					$options['all_by_name'] = _i('Utente');
 					break;
 				case 'all_by_place':
-					$options['all_by_place'] = _i('Gruppi/Cerchi');
+					$options['all_by_place'] = _i('Aggregazioni/Gruppi');
 					break;
                 case 'specific':
                     foreach($all as $meta) {
@@ -83,7 +83,7 @@ if (empty($all) == false) {
 			$test_no_shipping = count($test_no_shipping);
 
 			if ($test_no_shipping > 0) {
-				$shipping_warning = _i('Attenzione: %d utenti non hanno una cerchia assegnata per il gruppo %s', [$test_no_shipping, $meta->group->printableName()]);
+				$shipping_warning = _i('Attenzione: %d utenti non hanno un gruppi assegnato per %s', [$test_no_shipping, $meta->group->printableName()]);
 			}
 		}
 

@@ -5,10 +5,10 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
 
 ?>
 
-<x-larastrap::modal :title="_i('Assegna Gruppi')" size="xl">
+<x-larastrap::modal :title="_i('Assegna Aggregazioni')" size="xl">
     @if($groups->isEmpty())
         <div class="alert alert-info">
-            {{ _i('Non ci sono ancora gruppi assegnabili direttamente agli utenti.') }}
+            {{ _i('Non ci sono ancora aggregazioni assegnabili direttamente agli utenti.') }}
         </div>
     @else
         <x-larastrap::iform :action="route('groups.matrix.save')">

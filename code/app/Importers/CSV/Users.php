@@ -97,8 +97,8 @@ class Users extends CSVImporter
         $groups = Group::where('context', 'user')->orderBy('name', 'asc')->get();
         foreach ($groups as $group) {
             $ret['group_' . $group->id] = (object) [
-                'label' => _i('Gruppo %s'),
-                'explain' => _i('Se specificato, deve contenere il nome di uno dei Cerchi impostati nel pannello "Configurazioni" per questo Gruppo'),
+                'label' => _i('Aggregazione %s', [$group->name]),
+                'explain' => _i('Se specificato, deve contenere il nome di uno dei Gruppi impostati nel pannello "Configurazioni" per questa Aggregazione'),
             ];
         }
 

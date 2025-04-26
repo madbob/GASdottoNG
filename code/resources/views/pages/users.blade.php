@@ -42,7 +42,7 @@
             @endif
 
             @if(Gate::check('users.admin', $currentgas) && App\Group::where('context', 'user')->count() > 0)
-                <x-larastrap::ambutton :label="_i('Assegna Gruppi')" :data-modal-url="route('groups.matrix')" />
+                <x-larastrap::ambutton :label="_i('Assegna Aggregazioni')" :data-modal-url="route('groups.matrix')" />
             @endif
         </div>
     </div>

@@ -1,11 +1,11 @@
 <x-larastrap::accordion always_open="true">
-    <x-larastrap::accordionitem :label="_i('Gruppi')">
+    <x-larastrap::accordionitem :label="_i('Aggregazioni')">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
                     'template' => 'groups.base-edit',
                     'typename' => 'group',
-                    'typename_readable' => _i('Gruppo'),
+                    'typename_readable' => _i('Aggregazione'),
                     'targeturl' => 'groups'
                 ])
             </div>
@@ -16,7 +16,7 @@
                 @include('commons.loadablelist', [
                     'identifier' => 'group-list',
                     'items' => App\Group::orderBy('name', 'asc')->get(),
-                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi sarà possibile aggregare gli utenti in molteplici gruppi, in modo da separare le prenotazioni, organizzare la logistica delle consegne, applicare modificatori speciali e molto altro.')
+                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi sarà possibile dividere logicamente gli utenti in molteplici aggregazioni, in modo da separare le prenotazioni, organizzare la logistica delle consegne, applicare modificatori speciali e molto altro.')
                 ])
             </div>
         </div>

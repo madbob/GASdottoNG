@@ -37,7 +37,7 @@ class User extends Formatter
         $groups = Group::where('context', 'user')->get();
         foreach ($groups as $group) {
             $ret['group_' . $group->id] = (object) [
-                'name' => _i('Gruppo %s', [$group->name]),
+                'name' => _i('Aggregazione %s', [$group->name]),
                 'checked' => true,
                 'format' => function ($obj, $context) use ($group) {
                     return implode(' - ', array_map(fn ($c) => $c->printableName(), $obj->circlesByGroup($group)->circles));

@@ -63,14 +63,6 @@ class GroupsService extends BaseService
                 $g->user_selectable = true;
                 $this->detachMassive($g, 'circle_user');
                 break;
-
-            case 'order':
-                $g->cardinality = 'many';
-                $g->filters_orders = false;
-                $g->user_selectable = true;
-                $this->detachMassive($g, 'circle_user');
-                $this->detachMassive($g, 'booking_circle');
-                break;
         }
 
         $g->save();

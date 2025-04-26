@@ -944,7 +944,7 @@ class Order extends Model
 
     public function eligibleGroups()
     {
-        return Group::whereIn('context', ['booking', 'order'])->orWhere(function ($query) {
+        return Group::where('context', 'booking')->orWhere(function ($query) {
             $query->where('context', 'user')->where('filters_orders', true);
         })->orderBy('name', 'asc')->get();
     }

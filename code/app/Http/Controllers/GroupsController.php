@@ -30,7 +30,8 @@ class GroupsController extends BackedController
     }
 
     /*
-        Mostra la griglia di assegnazione massiva dei Gruppi con context = User
+        Mostra la griglia di assegnazione massiva delle Aggregazioni con
+        context = User
     */
     public function matrix()
     {
