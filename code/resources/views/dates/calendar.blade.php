@@ -6,7 +6,7 @@ foreach (easyFilterOrders(null, null, null, ['open', 'closed']) as $a) {
     if ($a->shipping) {
         $events[] = (object) [
             'title' => join(', ', $a->orders->reduce(function($carry, $item) { $carry[] = addslashes($item->supplier->name); return $carry; }, [])),
-            'date' => $a->shipping,
+            'date' => $a->shipping->format('Y-m-d'),
             'className' => 'calendar-shipping-' . $a->status,
             'url' => $a->getBookingURL(),
         ];
