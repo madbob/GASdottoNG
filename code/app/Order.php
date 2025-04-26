@@ -172,11 +172,11 @@ class Order extends Model
 
     public function printableDates()
     {
-        $start = strtotime($this->start);
-        $end = strtotime($this->end);
+        $start = $this->start;
+        $end = $this->end;
         $string = _i('da %s a %s', [printableDate($start), printableDate($end)]);
         if ($this->shipping != null && $this->shipping != '0000-00-00') {
-            $shipping = strtotime($this->shipping);
+            $shipping = $this->shipping;
             $string .= _i(', in consegna %s', [printableDate($shipping)]);
         }
 
