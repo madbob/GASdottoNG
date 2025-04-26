@@ -53,7 +53,7 @@
                 $last_fee = $user->fee;
             }
             else {
-                $last_fee = $user->queryMovements(null, 'sender')->where('type', 'annual-fee')->orderBy('date', 'desc')->first();
+                $last_fee = $user->queryMovements(null, 'sender')->where('type', 'annual-fee')->with('related')->orderBy('date', 'desc')->first();
             }
 
             @endphp
