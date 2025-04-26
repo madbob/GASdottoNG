@@ -1,5 +1,10 @@
 <?php
 
+/*
+    Modello che implementa un elemento di una Aggregazione (chiamata
+    pubblicamente "Gruppo")
+*/
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;

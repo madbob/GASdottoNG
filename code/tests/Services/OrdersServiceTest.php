@@ -696,6 +696,32 @@ class OrdersServiceTest extends TestCase
     }
 
     /*
+        Gestione ordine con prenotazioni non chiuse
+    */
+    public function test_pending()
+    {
+        $product = $this->order->products->random();
+        $product->package_size = 10;
+        $product->save();
+
+        $this->order->keep_open_packages = 'each';
+        $this->order->save();
+
+        $booking = $this->initMailableOrder();
+
+        $this->nextRound();
+
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $this->assertTrue($order->aggregate->hasPendingPackages());
+        $pending = $order->pendingPackages();
+        $this->assertEquals(1, $pending->count());
+
+        foreach($pending as $pend) {
+            $this->assertEquals($product->id, $pend->id);
+        }
+    }
+
+    /*
         Registra il pagamento al fornitore
     */
     public function test_order_payment()

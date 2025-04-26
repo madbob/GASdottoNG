@@ -1,5 +1,10 @@
 <?php
 
+/*
+    Modello che implementa una aggregazione di utenti (chiamata pubblicamente
+    "Aggregazione")
+*/
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
