@@ -208,7 +208,7 @@ class DemoSeeder extends Seeder
                         $mod->target_id = $prod->id;
                         $mod->value = 'percentage';
                         $mod->arithmetic = 'sub';
-                        $mod->applies_type = 'product';
+                        $mod->applies_type = 'none';
                         $mod->applies_target = 'product';
                         $mod->definition = '[{"threshold":9223372036854775807,"amount":"5"}]';
                         $mod->save();

@@ -57,7 +57,7 @@ class MailController extends Controller
     {
         if (env('MAIL_MAILER') == 'scaleway') {
             $message = Message::fromRawPostData();
-            $validator = new MessageValidator();
+            $validator = new MessageValidator(null, '/^sns\..*\.scaleway\.com$/');
 
             try {
                 $validator->validate($message);
