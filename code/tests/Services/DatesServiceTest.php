@@ -148,9 +148,9 @@ class DatesServiceTest extends TestCase
         $this->assertEquals($orders->count(), 1);
         foreach ($orders as $o) {
             $this->assertEquals($o->supplier_id, $this->supplier1->id);
-            $this->assertEquals($o->start, date('Y-m-d'));
-            $this->assertEquals($o->end, date('Y-m-d', strtotime('+10 days')));
-            $this->assertEquals($o->shipping, date('Y-m-d', strtotime('+11 days')));
+            $this->assertEquals($o->start->format('Y-m-d'), date('Y-m-d'));
+            $this->assertEquals($o->end->format('Y-m-d'), date('Y-m-d', strtotime('+10 days')));
+            $this->assertEquals($o->shipping->format('Y-m-d'), date('Y-m-d', strtotime('+11 days')));
         }
 
         Artisan::call('open:orders');

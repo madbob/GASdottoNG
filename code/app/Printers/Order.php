@@ -195,7 +195,7 @@ class Order extends Printer
             $document_title = _i('Prodotti ordine %s presso %s del %s', [
                 $obj->internal_number,
                 $obj->supplier->printableName(),
-                $obj->shipping ? date('d/m/Y', strtotime($obj->shipping)) : date('d/m/Y'),
+                $obj->shipping ? $obj->shipping->format('d/m/Y') : date('d/m/Y'),
             ]);
 
             $document->append(new Title($document_title));

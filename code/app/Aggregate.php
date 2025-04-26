@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\Carbon;
 
 use Auth;
 use Log;
@@ -89,26 +90,26 @@ class Aggregate extends Model
         $orders = $this->orders;
 
         if ($orders->count() > aggregatesConvenienceLimit()) {
-            $start_date = PHP_INT_MAX;
-            $end_date = 0;
-            $shipping_date = PHP_INT_MAX;
+            $start_date = Carbon::parse('2100-31-12');
+            $end_date = Carbon::parse('1970-01-01');
+            $shipping_date = Carbon::parse('1970-01-01');
 
             foreach ($orders as $order) {
                 $names[] = $order->printableName();
 
-                $this_start = strtotime($order->start);
-                if ($this_start < $start_date) {
+                $this_start = $order->start;
+                if ($this_start->lessThan($start_date)) {
                     $start_date = $this_start;
                 }
 
-                $this_end = strtotime($order->end);
-                if ($this_end > $end_date) {
+                $this_end = $order->end;
+                if ($this_end->greaterThan($end_date)) {
                     $end_date = $this_end;
                 }
 
-                if ($order->shipping != null && $order->shipping != '0000-00-00') {
-                    $this_shipping = strtotime($order->shipping);
-                    if ($this_shipping < $shipping_date) {
+                if ($order->shipping != null) {
+                    $this_shipping = $order->shipping;
+                    if ($this_shipping->lessThan($shipping_date)) {
                         $shipping_date = $this_shipping;
                     }
                 }
@@ -119,7 +120,7 @@ class Aggregate extends Model
             }
 
             $date_string = sprintf('da %s a %s', printableDate($start_date), printableDate($end_date));
-            if ($shipping_date != PHP_INT_MAX) {
+            if ($shipping_date->year != 1970) {
                 $date_string .= sprintf(', in consegna %s', printableDate($shipping_date));
             }
 
