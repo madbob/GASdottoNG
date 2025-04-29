@@ -34,7 +34,7 @@ class RemindOrders extends Command
                     continue;
                 }
 
-                $days = $gas->send_order_reminder;
+                $days = (int) $gas->send_order_reminder;
                 $expiration = $today->copy()->addDays($days);
 
                 if ($order->end == $expiration->format('Y-m-d')) {
