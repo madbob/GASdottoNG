@@ -10,7 +10,7 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
             'columns' => [
                 [
                     'label' => _i('Fornitore'),
-                    'field' => 'supplier_id',
+                    'field' => 'supplier',
                     'type' => 'select-model',
                     'extra' => [
                         'options' => $suppliers
