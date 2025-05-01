@@ -8,8 +8,6 @@
 
 namespace App\Formatters;
 
-use App\BookedProduct;
-
 class Order extends Formatter
 {
     private static function formatCode()
@@ -109,10 +107,11 @@ class Order extends Formatter
             'time' => (object) [
                 'name' => _i('Data/Ora'),
                 'checked' => false,
-                'format_product' => fn ():null => null,
+                'format_product' => function ($product, $summary) {
+                    return $summary->booked->created_at->format('d-m-Y H:i');
+                },
                 'format_variant' => function ($product, $summary) {
-                    $booking = BookedProduct::find($summary->variant->product_id);
-                    return $booking ? $booking->created_at->format('d-m-Y H:i') : null;
+                    return $summary->variant->created_at->format('d-m-Y H:i');
                 },
             ],
             'name' => (object) [
