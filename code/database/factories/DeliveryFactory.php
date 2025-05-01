@@ -4,17 +4,27 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Delivery;
-
 class DeliveryFactory extends Factory
 {
-    protected $model = Delivery::class;
-
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
+        $name = fake('it_IT')->company();
+
         return [
-            'name' => $this->faker->word(),
-            'address' => sprintf('%s, %s, %s', $this->faker->streetAddress(), $this->faker->city(), $this->faker->randomNumber(5, true)),
+            'name' => $name,
+            'address' => sprintf(
+                '%s, %s, %s, %s',
+                $name,
+                fake('it_IT')->streetAddress(),
+                fake('it_IT')->state(),
+                fake()->randomNumber(5, true)
+            ),
+            'default' => 0,
         ];
     }
 }

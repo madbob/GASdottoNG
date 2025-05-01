@@ -2,25 +2,28 @@
 
 namespace Database\Factories;
 
+use App\Supplier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Order;
 use App\Aggregate;
 
 class OrderFactory extends Factory
 {
-    protected $model = Order::class;
-
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
-        $aggregate = Aggregate::factory()->create();
-
         return [
-            'start' => date('Y-m-d'),
-            'end' => date('Y-m-d', strtotime('+5 days')),
-            'shipping' => date('Y-m-d', strtotime('+6 days')),
-            'status' => 'open',
-            'aggregate_id' => $aggregate->id,
+            'supplier_id' => Supplier::factory(),
+            'aggregate_id' => Aggregate::factory(),
+            'comment' => fake()->sentence(),
+            'status' => fake()->randomElement(['suspended', 'open', 'closed', 'shipped', 'user_payment', 'archived']),
+            'start' => fake()->dateTimeInInterval('-1 week', '-1 day'),
+            'end' => fake()->dateTimeInInterval('1 day', '1 week'),
+            'shipping' => fake()->dateTimeInInterval('1 week', '2 week'),
         ];
     }
 }

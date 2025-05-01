@@ -4,17 +4,18 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Measure;
-
 class MeasureFactory extends Factory
 {
-    protected $model = Measure::class;
-
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
         return [
-            'name' => $this->faker->text(10),
-            'discrete' => true,
+            'name' => fake()->word(),
+            'discrete' => fake()->boolean(),
         ];
     }
 }
