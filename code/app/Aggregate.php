@@ -129,9 +129,10 @@ class Aggregate extends Model
         $orders = $this->orders;
 
         if ($orders->count() > aggregatesConvenienceLimit()) {
-            $start_date = Carbon::parse('2100-31-12');
-            $end_date = Carbon::parse('1970-01-01');
-            $shipping_date = Carbon::parse('1970-01-01');
+            $start_date = Carbon::today()->addYears(100);
+            $end_date = Carbon::today()->subYears(100);
+            $shipping_date = Carbon::today()->subYears(100);
+            $shipping_date_set = false;
 
             foreach ($orders as $order) {
                 $names[] = $order->printableName();
@@ -150,6 +151,7 @@ class Aggregate extends Model
                     $this_shipping = $order->shipping;
                     if ($this_shipping->lessThan($shipping_date)) {
                         $shipping_date = $this_shipping;
+                        $shipping_date_set = true;
                     }
                 }
             }
@@ -159,7 +161,7 @@ class Aggregate extends Model
             }
 
             $date_string = sprintf('da %s a %s', printableDate($start_date), printableDate($end_date));
-            if ($shipping_date->year != 1970) {
+            if ($shipping_date_set) {
                 $date_string .= sprintf(', in consegna %s', printableDate($shipping_date));
             }
 

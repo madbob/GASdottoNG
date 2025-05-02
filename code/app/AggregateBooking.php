@@ -144,7 +144,8 @@ class AggregateBooking extends Model
     public function getConvenientStringsAttribute()
     {
         $suppliers = [];
-        $shipping_date = Carbon::parse('2100-31-12');
+        $shipping_date = Carbon::today()->addYears(100);
+        $shipping_date_set = false;
 
         foreach ($this->bookings as $booking) {
             $order = $booking->order;
@@ -155,6 +156,7 @@ class AggregateBooking extends Model
                 $this_shipping = $order->shipping;
                 if ($this_shipping->lessThan($shipping_date)) {
                     $shipping_date = $this_shipping;
+                    $shipping_date_set = true;
                 }
             }
         }
@@ -175,7 +177,7 @@ class AggregateBooking extends Model
 
         return [
             'suppliers' => implode(', ', $suppliers),
-            'shipping' => $shipping_date->year != 2100 ? _i('indefinita') : printableDate($shipping_date),
+            'shipping' => $shipping_date_set ? printableDate($shipping_date) : _i('indefinita'),
         ];
     }
 
