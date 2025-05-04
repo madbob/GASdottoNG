@@ -104,6 +104,16 @@ class Order extends Formatter
     public static function formattableColumns($type = null)
     {
         $ret = [
+            'time' => (object) [
+                'name' => _i('Data/Ora'),
+                'checked' => false,
+                'format_product' => function ($product, $summary) {
+                    return $summary->booked->created_at->format('d-m-Y H:i');
+                },
+                'format_variant' => function ($product, $summary) {
+                    return $summary->variant->created_at->format('d-m-Y H:i');
+                },
+            ],
             'name' => (object) [
                 'name' => _i('Nome Prodotto'),
                 'checked' => true,

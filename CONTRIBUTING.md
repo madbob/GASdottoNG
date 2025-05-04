@@ -39,7 +39,7 @@ cp .env.example .env
 ```
 **Ricordati di configurare le impostazioni Docker nel file .env, abilitando o sostituendo i parametri commentati con quelli di default nella sezione 'For Docker' all'interno dello stesso file.*
 
-#### 4. Avvia i contenitori Docker ed entra nella Terminale all'interno del container del progetto.
+#### 4. Avvia i container Docker ed entra nella Terminale all'interno del container del progetto.
 *Il primo avvio potrebbe richiedere più o meno tempo a seconda delle caratteristiche del tuo computer e della connessione internet.*
 ```shell
 sail up -d
@@ -82,18 +82,18 @@ Adesso puoi visitare `localhost` e iniziare a testare e sviluppare.
 #### Per uscire dal container Docker, utilizza il comando `exit` nel terminale o semplicemente `CTRL+d`.
 `exit`
 
-#### Per fermare i contenitori Docker, utilizza il comando `stop`.
+#### Per fermare i container Docker, utilizza il comando `stop`.
 `sail stop`
 
 Per saperne di più su [Laravel Sail](https://laravel.com/docs/master/sail)
 visita e consulta la documentazione ufficiale di Laravel.
 
 ### Uso comune nello sviluppo.
-- `sail up -d` -> Per avviare i contenitori Docker
+- `sail up -d` -> Per avviare i container Docker
 
 - `sail shell` -> Per entrare nella terminale interattiva all'interno del container
 
 #### Al interno, all'interno della terminale esegui i comandi necessari come se stessi lavorando in locale.
 
-- `exit`-> Per uscire dalla container
-- `sail stop` -> Per fermare i contenitori Docker
+- `exit`-> Per uscire dal container
+- `sail stop` -> Per fermare i container Docker
