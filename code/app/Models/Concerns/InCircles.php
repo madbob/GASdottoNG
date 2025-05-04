@@ -66,7 +66,7 @@ trait InCircles
         $circles = [];
 
         foreach ($groups as $group) {
-            $key = sprintf('circles__%s__%s', $this->id, $group->id);
+            $key = sprintf('circles__%s__%s', sanitizeId($this->id), sanitizeId($group->id));
             $circles = array_merge($circles, $request[$key] ?? []);
         }
 
