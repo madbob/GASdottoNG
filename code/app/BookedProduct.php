@@ -391,6 +391,7 @@ class BookedProduct extends Model
         return (object) [
             'id' => $this->product_id,
             'product' => $this->product,
+            'booked' => $this,
             'variants' => [],
         ];
     }

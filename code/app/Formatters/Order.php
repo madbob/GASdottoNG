@@ -146,6 +146,17 @@ class Order extends Formatter
             ],
 
             'price' => self::formatPrice(),
+
+            'time' => (object) [
+                'name' => _i('Data/Ora Prenotazione'),
+                'checked' => false,
+                'format_product' => function ($product, $summary) {
+                    return $summary->booked->created_at->format('d/m/Y H:i');
+                },
+                'format_variant' => function ($product, $summary) {
+                    return $summary->variant->created_at->format('d/m/Y H:i');
+                },
+            ],
         ];
 
         if ($type == 'summary') {
