@@ -10,6 +10,7 @@ namespace App\Helpers;
 
 use Illuminate\Support\Collection;
 
+use App\Group;
 use App\Circle;
 
 class CirclesFilter
@@ -18,12 +19,9 @@ class CirclesFilter
 
     private $circles;
 
-    private $groups;
-
     public function __construct($aggregate, $request)
     {
         $this->circles = [];
-        $this->groups = [];
 
         if (is_null($aggregate) == false) {
             $all = $aggregate->circlesByGroup();
@@ -35,16 +33,19 @@ class CirclesFilter
                         continue;
                     }
 
-                    $this->groups[$group_id] = [];
-
                     $key = sprintf('circles_%s', $group_id);
                     $selected = $request[$key] ?? 'all_by_name';
 
-                    if ($selected != 'all_by_name' && $selected != 'all_by_place') {
+                    if ($selected == 'all_by_place') {
+                        $g = Group::find($group_id);
+                        foreach($g->circles as $circle) {
+                            $this->circles[] = $circle;
+                        }
+                    }
+                    else if ($selected != 'all_by_name') {
                         $circle = Circle::find($selected);
                         if ($circle) {
                             $this->circles[] = $circle;
-                            $this->groups[$group_id][] = $circle;
                         }
                     }
                 }
@@ -62,6 +63,21 @@ class CirclesFilter
         }
     }
 
+    private function sortCirclesByGroup()
+    {
+        $ret = [];
+
+        foreach($this->circles as $circle) {
+            if (!isset($ret[$circle->group_id])) {
+                $ret[$circle->group_id] = [];
+            }
+
+            $ret[$circle->group_id][] = $circle;
+        }
+
+        return $ret;
+    }
+
     public function getMode()
     {
         return $this->mode;
@@ -77,14 +93,19 @@ class CirclesFilter
         return implode(' - ', array_map(fn ($c) => $c->name, $this->circles));
     }
 
-    public function combinations()
+    public function combinations(): array
     {
         $ret = [];
+        $all_circles = $this->sortCirclesByGroup();
 
         if ($this->mode == 'all_by_place') {
+            /*
+                https://stackoverflow.com/questions/8567082/how-to-generate-in-php-all-combinations-of-items-in-multiple-arrays/33259643#33259643
+            */
+
             $result = [[]];
 
-            foreach ($this->groups as $key => $circles) {
+            foreach ($all_circles as $key => $circles) {
                 $append = [];
 
                 foreach ($result as $group) {
@@ -100,8 +121,7 @@ class CirclesFilter
             foreach ($result as $res) {
                 $c = new CirclesFilter(null, null);
                 $c->mode = $this->mode;
-                $c->groups = $res;
-                $c->circles = array_reduce($res, fn ($carry, $circles) => array_merge($carry, $circles), []);
+                $c->circles = $res;
                 $ret[] = $c;
             }
         }
@@ -110,8 +130,7 @@ class CirclesFilter
 
             $c = new CirclesFilter(null, null);
             $c->mode = $this->mode;
-            $c->groups = [$this->groups[$group_id]];
-            $c->circles = $this->groups[$group_id];
+            $c->circles = $all_circles[$group_id];
             $ret[] = $c;
         }
         else {

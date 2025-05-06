@@ -54,7 +54,7 @@ if (empty($all) == false) {
 					$options['all_by_name'] = _i('Tutti (ordinati per utente)');
 					break;
 				case 'all_by_place':
-					$options['all_by_place'] = _i('Tutti (ordinati per cerchia)');
+					$options['all_by_place'] = _i('Tutti (ordinati per gruppo)');
 					break;
 			}
 		}
