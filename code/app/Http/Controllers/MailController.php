@@ -84,7 +84,7 @@ class MailController extends Controller
                         $payload = json_decode($body->Message);
                         $event = $payload->type;
                         $email = $payload->email_to;
-                        $message = $payload->email_error;
+                        $message = $payload->email_response_message;
                         $this->registerBounce($event, $email, $message);
                     }
                 }

@@ -12,13 +12,14 @@ mv .env /tmp
 
 for i in `ls .env.*`
 do
-        echo $i
-        cp $i .env
+    echo $i
+    cp $i .env
 
-        php artisan check:fees
-        php artisan close:orders
-        php artisan open:orders
-        php artisan remind:orders
+    php artisan check:fees
+    php artisan close:orders
+    php artisan open:orders
+    php artisan remind:orders
+    php artisan model:prune --model "App\InnerLog"
 done
 
 mv /tmp/.env .
