@@ -13,8 +13,6 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected $baseUrl = 'http://localhost';
-
     protected function setUp(): void
     {
         parent::setUp();

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Services;
+namespace Tests\Features;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

@@ -12,6 +12,32 @@ use App\User;
 
 class RolesService extends BaseService
 {
+    public function initSystemRoles()
+    {
+        $queue = systemParameters('Roles');
+
+        while (true) {
+            $next_queue = [];
+
+            foreach ($queue as $identifier => $instance) {
+                if (Role::where('identifier', $identifier)->count() == 0) {
+                    try {
+                        $instance->create();
+                    }
+                    catch (\Exception $e) {
+                        $next_queue[$identifier] = $instance;
+                    }
+                }
+            }
+
+            if (empty($next_queue)) {
+                break;
+            }
+
+            $queue = $next_queue;
+        }
+    }
+
     public function store(array $request)
     {
         $this->ensureAuth(['gas.permissions' => 'gas']);

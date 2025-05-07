@@ -12,7 +12,6 @@ use App\Gas;
 use App\Measure;
 use App\Notification;
 use App\User;
-use App\Role;
 use App\VatRate;
 
 use Illuminate\Database\Seeder;
@@ -60,28 +59,7 @@ class DatabaseSeeder extends Seeder
 
     private function roleInit($gas)
     {
-        $queue = systemParameters('Roles');
-
-        while (true) {
-            $next_queue = [];
-
-            foreach ($queue as $identifier => $instance) {
-                if (Role::where('identifier', $identifier)->count() == 0) {
-                    try {
-                        $instance->create();
-                    }
-                    catch (\Exception $e) {
-                        $next_queue[$identifier] = $instance;
-                    }
-                }
-            }
-
-            if (empty($next_queue)) {
-                break;
-            }
-
-            $queue = $next_queue;
-        }
+        app()->make('RolesService')->initSystemRoles();
 
         $gas->setConfig('roles', (object) [
             'user' => roleByIdentifier('user')->id,
