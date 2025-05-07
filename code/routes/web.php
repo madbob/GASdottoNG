@@ -1,16 +1,18 @@
 <?php
 
-Auth::routes();
-Route::get('autologin/{token}', 'Auth\LoginController@autologin')->name('autologin');
-
-Route::get('ordini.xml', 'OrdersController@rss')->name('rss');
-Route::get('ordini.ics', 'OrdersController@ical')->name('ical');
+use App\Http\Middleware\SetLanguage;
 
 Route::get('gas/{id}/logo', 'GasController@getLogo');
-
 Route::get('payment/status/satispay', 'PaymentController@statusPaymentSatispay')->name('payment.status_satispay');
-
 Route::post('mail/status/sway', 'MailController@postStatusScaleway');
+Route::get('autologin/{token}', 'Auth\LoginController@autologin')->name('autologin');
+
+Route::middleware([SetLanguage::class])->group(function () {
+    Auth::routes();
+
+    Route::get('ordini.xml', 'OrdersController@rss')->name('rss');
+    Route::get('ordini.ics', 'OrdersController@ical')->name('ical');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('users/blocked', 'UsersController@blocked')->name('users.blocked');
