@@ -28,8 +28,8 @@ class FastBookingsService extends BaseService
         foreach ($booking->products_with_friends as $booked) {
             $product_id = $booked->product_id;
 
-            if ($booked->variants->isEmpty() == false) {
-                if (isset($datarow['variant_quantity_' . $product_id]) == false) {
+            if ($booked->variants->isEmpty() === false) {
+                if (isset($datarow['variant_quantity_' . $product_id]) === false) {
                     $datarow['variant_quantity_' . $product_id] = [];
                 }
 
@@ -39,7 +39,7 @@ class FastBookingsService extends BaseService
                     foreach ($combo->values as $val) {
                         $variant_id = $val->variant->id;
 
-                        if (isset($datarow['variant_selection_' . $variant_id]) == false) {
+                        if (isset($datarow['variant_selection_' . $variant_id]) === false) {
                             $datarow['variant_selection_' . $variant_id] = [];
                         }
 
@@ -50,7 +50,7 @@ class FastBookingsService extends BaseService
                 }
             }
             else {
-                if (isset($datarow[$booked->product_id]) == false) {
+                if (isset($datarow[$booked->product_id]) === false) {
                     $datarow[$booked->product_id] = 0;
                 }
 

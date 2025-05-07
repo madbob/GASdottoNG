@@ -11,13 +11,13 @@ class Product extends IconsMap
         return [
             'slash-circle' => (object) [
                 'test' => function ($obj) {
-                    return $obj->active == false;
+                    return !$obj->active;
                 },
                 'text' => _i('Disabilitato'),
             ],
             'hidden-circle' => (object) [
                 'test' => function ($obj) {
-                    return $obj->active == true;
+                    return $obj->active;
                 },
                 'text' => _i('Ordinabile'),
             ],

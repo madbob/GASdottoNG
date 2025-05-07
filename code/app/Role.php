@@ -30,17 +30,17 @@ class Role extends Model implements AutoReadsFields
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany('App\User')->orderBy('lastname', 'asc')->with('roles');
+        return $this->belongsToMany(User::class)->orderBy('lastname', 'asc')->with('roles');
     }
 
     public function children(): HasMany
     {
-        return $this->hasMany('App\Role', 'parent_id');
+        return $this->hasMany(Role::class, 'parent_id');
     }
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo('App\Role', 'parent_id');
+        return $this->belongsTo(Role::class, 'parent_id');
     }
 
     public function isEnabled()
@@ -59,7 +59,7 @@ class Role extends Model implements AutoReadsFields
     private static function recursiveSortedByHierarchy($roles, &$collection, &$ids)
     {
         foreach ($roles as $role) {
-            if ($role->isEnabled() && in_array($role->id, $ids) == false) {
+            if ($role->isEnabled() && in_array($role->id, $ids) === false) {
                 $collection->push($role);
                 $ids[] = $role->id;
                 self::recursiveSortedByHierarchy($role->children, $collection, $ids);
@@ -174,7 +174,7 @@ class Role extends Model implements AutoReadsFields
             $rules = DB::table('attached_role_user')->where('role_user_id', $this->getRelationValue('pivot')->id)->get();
             foreach ($rules as $r) {
                 $class = $r->target_type;
-                if (isset($applies_cache[$class]) == false) {
+                if (isset($applies_cache[$class]) === false) {
                     $applies_cache[$class] = [];
                 }
 
@@ -201,7 +201,7 @@ class Role extends Model implements AutoReadsFields
         $this->applies_only_cache = null;
     }
 
-    private function testApplication($obj, $cache_type)
+    private function testApplication($obj, $cache_type): bool
     {
         $this->appliesCache();
 
@@ -239,7 +239,7 @@ class Role extends Model implements AutoReadsFields
         User::roles(), in quanto si applica solo sull'istanza del ruolo
         assegnata ad uno specifico utente
     */
-    public function appliesOnly($obj)
+    public function appliesOnly($obj): bool
     {
         return $this->testApplication($obj, 'applies_only_cache');
     }
@@ -297,7 +297,7 @@ class Role extends Model implements AutoReadsFields
                 continue;
             }
 
-            if ($exclude_trashed == false && hasTrait($class, SoftDeletes::class)) {
+            if ($exclude_trashed === false && hasTrait($class, SoftDeletes::class)) {
                 $objs = $class::withTrashed()->whereIn('id', $ids)->get();
             }
             else {
@@ -371,7 +371,7 @@ class Role extends Model implements AutoReadsFields
                 ->delete();
         }
         else {
-            if (is_null($obj) || $this->appliesOnly($obj) == false) {
+            if (is_null($obj) || $this->appliesOnly($obj) === false) {
                 return;
             }
 

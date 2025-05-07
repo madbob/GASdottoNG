@@ -12,7 +12,7 @@ class AggregateBooking extends Printer
 
         foreach ($obj->user->friends as $friend) {
             $friend_booking = $obj->aggregate->bookingBy($friend->id);
-            if ($friend_booking->bookings->isEmpty() == false) {
+            if ($friend_booking->bookings->isEmpty() === false) {
                 $bookings[] = $friend_booking;
             }
         }

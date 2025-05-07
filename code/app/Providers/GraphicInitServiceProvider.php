@@ -15,11 +15,11 @@ class GraphicInitServiceProvider extends ServiceProvider
             if (Auth::check()) {
                 $user = Auth::user();
 
-                if ($view->offsetExists('currentuser') == false) {
+                if ($view->offsetExists('currentuser') === false) {
                     $view->with('currentuser', $user);
                 }
 
-                if ($view->offsetExists('currentgas') == false) {
+                if ($view->offsetExists('currentgas') === false) {
                     $view->with('currentgas', currentAbsoluteGas());
                 }
             }
@@ -39,7 +39,7 @@ class GraphicInitServiceProvider extends ServiceProvider
             ];
 
             foreach ($defaults as $name => $value) {
-                if ($view->offsetExists($name) == false) {
+                if ($view->offsetExists($name) === false) {
                     $view->with($name, $value);
                 }
             }

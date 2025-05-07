@@ -47,7 +47,7 @@ trait Orders
 
     protected function filterExtraModifiers($modifiers, $extras)
     {
-        if ($extras == false) {
+        if ($extras === false) {
             $modifiers = $modifiers->filter(function ($mod) {
                 return is_null($mod->modifier->movementType);
             });
@@ -60,7 +60,7 @@ trait Orders
     {
         $ret = [];
 
-        if (is_null($product_redux) == false) {
+        if ($product_redux != null) {
             if (! empty($product_redux->variants)) {
                 $offset = $internal_offsets->by_variant;
 

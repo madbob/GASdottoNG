@@ -15,7 +15,7 @@ class ContactObserver
                 break;
 
             case 'email':
-                if (filter_var($contact->value, FILTER_VALIDATE_EMAIL) == false) {
+                if (filter_var($contact->value, FILTER_VALIDATE_EMAIL) === false) {
                     return false;
                 }
                 break;

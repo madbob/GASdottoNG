@@ -77,7 +77,7 @@ class CirclesService extends BaseService
 
         if ($c->is_default) {
             $other = $c->group->circles()->where('id', '!=', $c->id)->get();
-            if ($other->isEmpty() == false) {
+            if ($other->isEmpty() === false) {
                 $new_default = $other->first();
                 $new_default->is_default = true;
                 $new_default->save();

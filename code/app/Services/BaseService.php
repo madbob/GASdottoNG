@@ -37,8 +37,8 @@ class BaseService
                 $subject = $user->gas;
             }
 
-            if ($user->can($permission, $subject) == false) {
-                if ($or == false) {
+            if ($user->can($permission, $subject) === false) {
+                if ($or === false) {
                     Log::info('Utente non autorizzato: ' . $user->id . ' non ha permesso ' . $permission);
                     throw new AuthException(403);
                 }
@@ -48,7 +48,7 @@ class BaseService
             }
         }
 
-        if ($has_something == false) {
+        if ($has_something === false) {
             Log::info('Utente non autorizzato: ' . $user->id . ' non ha nessun permesso tra ' . implode(', ', array_keys($permissions)));
             throw new AuthException(403);
         }
@@ -62,7 +62,7 @@ class BaseService
             $target->$key = $source[$key];
         }
         else {
-            if (is_null($default) == false) {
+            if (is_null($default) === false) {
                 $target->$key = $default;
             }
         }

@@ -18,7 +18,7 @@ class MovementObserver
         $this->movements_hub = App::make('MovementsHub');
     }
 
-    private function testPeer(&$movement, $metadata, $peer)
+    private function testPeer(&$movement, $metadata, $peer): bool
     {
         $type = sprintf('%s_type', $peer);
         $id = sprintf('%s_id', $peer);
@@ -38,7 +38,7 @@ class MovementObserver
         return true;
     }
 
-    private function verifyConsistency($movement)
+    private function verifyConsistency($movement): bool
     {
         $metadata = $movement->type_metadata;
 
@@ -55,20 +55,20 @@ class MovementObserver
         }
 
         foreach (['sender', 'target'] as $peer) {
-            if ($this->testPeer($movement, $metadata, $peer) == false) {
+            if ($this->testPeer($movement, $metadata, $peer) === false) {
                 return false;
             }
         }
 
         $operations = json_decode($metadata->function);
         $valid = count(array_filter($operations, fn ($op) => $movement->method == $op->method)) > 0;
-        if ($valid == false) {
+        if ($valid === false) {
             Log::error(_i('Movimento %d: metodo "%s" non permesso su tipo "%s"', [$movement->id, $movement->printablePayment(), $movement->printableType()]));
 
             return false;
         }
 
-        if ($metadata->allow_negative == false && $movement->amount < 0) {
+        if (!$metadata->allow_negative && $movement->amount < 0) {
             Log::error(_i('Movimento: ammontare negativo non permesso'));
 
             return false;
@@ -90,7 +90,7 @@ class MovementObserver
         $movement->notes = $movement->notes ?: '';
         $movement->currency_id = $movement->currency_id ?: defaultCurrency()->id;
 
-        if ($movement->exists == false && $movement->archived == true) {
+        if (!$movement->exists && $movement->archived) {
             return true;
         }
 
@@ -181,7 +181,7 @@ class MovementObserver
             dal tipo di movimento stesso
         */
 
-        if ($this->verifyConsistency($movement) == false) {
+        if ($this->verifyConsistency($movement) === false) {
             return false;
         }
 

@@ -53,7 +53,7 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
-            if ($found == false) {
+            if ($found === false) {
                 $collection->push($bookedvariant);
             }
 

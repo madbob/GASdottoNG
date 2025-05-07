@@ -83,7 +83,7 @@ class CirclesFilter
         return $this->mode;
     }
 
-    public function sortedByUser()
+    public function sortedByUser(): bool
     {
         return $this->mode == 'all_by_name';
     }

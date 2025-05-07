@@ -22,7 +22,7 @@ class AggregateBooking extends IconsMap
     {
         if (static::$bookinggroups == null) {
             $groups = Group::orderBy('name', 'asc')->where('context', 'booking')->get();
-            if ($groups->isEmpty() == false) {
+            if ($groups->isEmpty() === false) {
                 static::$bookinggroups['truck'] = (object) [
                     'text' => _i('Aggregazione Prenotazione'),
                     'assign' => function ($obj) {

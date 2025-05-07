@@ -25,12 +25,12 @@ abstract class Constraint extends Parameter
         quanto si assume maggiore libertà discrezionale a chi distribuisce la
         merce
     */
-    public function mandatoryContraint()
+    public function mandatoryContraint(): bool
     {
         return false;
     }
 
-    public function hardContraint()
+    public function hardContraint(): bool
     {
         return true;
     }
@@ -53,7 +53,7 @@ abstract class Constraint extends Parameter
         ];
 
         foreach ($constraints as $constraint) {
-            if ($only_mandatory == true && $constraint->mandatoryContraint() == false) {
+            if ($only_mandatory == true && $constraint->mandatoryContraint() === false) {
                 continue;
             }
 

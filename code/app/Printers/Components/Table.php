@@ -18,7 +18,7 @@ class Table implements Component
     {
         $ret = '<table border="1" style="width: 100%" cellpadding="5">';
 
-        if (empty($this->headers) == false) {
+        if (empty($this->headers) === false) {
             $cellsize = round(100 / count($this->headers), 3);
 
             $ret .= '<thead><tr>';

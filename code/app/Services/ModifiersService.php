@@ -42,7 +42,7 @@ class ModifiersService extends BaseService
                     }
                 }
 
-                if ($test == false) {
+                if ($test === false) {
                     throw new AuthException(403);
                 }
 

@@ -45,7 +45,7 @@ trait Shipping
                 $original_booking_status = $booking->status;
                 $booking->status = $status;
 
-                if ($isolate_friends == false) {
+                if ($isolate_friends === false) {
                     foreach ($booking->friends_bookings as $friend) {
                         $friend->status = $status;
                     }
@@ -61,7 +61,7 @@ trait Shipping
         if ($original_booking_status != null) {
             $booking->status = $original_booking_status;
 
-            if ($isolate_friends == false) {
+            if ($isolate_friends === false) {
                 foreach ($booking->friends_bookings as $friend) {
                     $friend->status = $original_booking_status;
                 }
@@ -79,7 +79,7 @@ trait Shipping
         $formattable_product = OrderFormatter::formattableColumns('shipping');
         $internal_offsets = $this->offsetsByStatus($status);
 
-        if ($isolate_friends == false) {
+        if ($isolate_friends === false) {
             $bookings = $order->topLevelBookings(null);
             $products_source = 'products_with_friends';
         }
@@ -139,7 +139,7 @@ trait Shipping
 
             [$labels_modifiers, $total_modifiers] = $this->collectModifiersTotal($booking, $aggregate_data, $isolate_friends, $extra_modifiers);
             $obj->totals = array_merge($obj->totals, $labels_modifiers);
-            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, $isolate_friends == false) + $total_modifiers;
+            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, $isolate_friends === false) + $total_modifiers;
 
             $this->restoreBookingStatus($original_booking_status, $isolate_friends, $booking);
 

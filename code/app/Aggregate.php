@@ -77,7 +77,7 @@ class Aggregate extends Model
         $user_groups = [];
 
         foreach ($this->circles as $circle) {
-            if (isset($ret[$circle->group->id]) == false) {
+            if (isset($ret[$circle->group->id]) === false) {
                 $ret[$circle->group->id] = (object) [
                     'group' => $circle->group,
                     'circles' => new Collection(),

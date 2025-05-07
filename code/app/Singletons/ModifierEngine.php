@@ -192,7 +192,7 @@ class ModifierEngine
                 artificiosamente creata una nuova e vuota
                 (cfr. Order::topLevelBookings())
             */
-            if ($obj_mod_target->exists == false) {
+            if ($obj_mod_target->exists === false) {
                 $obj_mod_target->save();
             }
 
@@ -211,8 +211,8 @@ class ModifierEngine
     */
     private function normalizeAggregateData($aggregate_data, $booking)
     {
-        if (isset($aggregate_data->orders[$booking->order_id]) == false) {
-            if (isset($aggregate_data->bookings[$booking->id]) == false) {
+        if (isset($aggregate_data->orders[$booking->order_id]) === false) {
+            if (isset($aggregate_data->bookings[$booking->id]) === false) {
                 return null;
             }
             else {
@@ -229,7 +229,7 @@ class ModifierEngine
 
     public function apply($modifier, $booking, $aggregate_data)
     {
-        if ($modifier->active == false) {
+        if (!$modifier->active) {
             Log::debug('Modificatore non attivo, ignoro applicazione');
 
             return null;
@@ -314,7 +314,7 @@ class ModifierEngine
         else {
             $target_definition = $this->targetDefinition($modifier, $check_value);
 
-            if (is_null($target_definition) == false) {
+            if ($target_definition != null) {
                 $altered_amount = $this->applyDefinition($booking, $modifier, $mod_target->$mod_attribute ?? 0, $target_definition, $check_target);
 
                 /*

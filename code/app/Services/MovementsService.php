@@ -25,9 +25,9 @@ class MovementsService extends BaseService
         $type = 'all';
 
         if ($supplier) {
-            if ($own == false && $user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            if ($own === false && $user->can('movements.admin', $user->gas) === false && $user->can('movements.view', $user->gas) === false) {
                 $this->ensureAuth(['supplier.invoices' => $supplier, 'supplier.movements' => $supplier]);
-                if ($user->can('supplier.movements', $supplier) == false) {
+                if ($user->can('supplier.movements', $supplier) === false) {
                     $type = 'invoices';
                 }
             }
@@ -35,13 +35,13 @@ class MovementsService extends BaseService
             return $supplier->queryMovements($query, $type);
         }
         else {
-            if ($own == false && $user->can('movements.admin', $user->gas) == false && $user->can('movements.view', $user->gas) == false) {
+            if ($own === false && $user->can('movements.admin', $user->gas) === false && $user->can('movements.view', $user->gas) === false) {
                 $this->ensureAuth(['supplier.invoices' => null, 'supplier.movements' => null]);
 
                 $query->where(function ($subquery) use ($user) {
                     $suppliers = $user->targetsByAction('supplier.invoices,supplier.movements');
                     foreach ($suppliers as $supplier) {
-                        if ($user->can('supplier.movements', null) == false) {
+                        if ($user->can('supplier.movements', null) === false) {
                             $type = 'invoices';
                         }
                         else {
@@ -243,7 +243,7 @@ class MovementsService extends BaseService
             $movement = $this->setCommonAttributes($movement, $request);
             $movement->save();
 
-            if ($movement->saved == false) {
+            if (!$movement->saved) {
                 throw new IllegalArgumentException(_i('Salvataggio fallito'));
             }
 
@@ -259,7 +259,7 @@ class MovementsService extends BaseService
             $movement = $this->setCommonAttributes($movement, $request);
             $movement->save();
 
-            if ($movement->saved == false) {
+            if (!$movement->saved) {
                 throw new IllegalArgumentException(_i('Salvataggio fallito'));
             }
 

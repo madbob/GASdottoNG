@@ -117,7 +117,7 @@ class MovementTypesService extends BaseService
         $this->boolIfSet($type, $request, 'allow_negative');
         $this->setIfSet($type, $request, 'default_notes');
 
-        if ($type->system == false) {
+        if (!$type->system) {
             $type->sender_type = empty($request['sender_type']) ? null : $request['sender_type'];
             $type->target_type = empty($request['target_type']) ? null : $request['target_type'];
         }

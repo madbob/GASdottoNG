@@ -17,7 +17,7 @@ class OrderNumbersDispatcher
 
     private function initCache($year)
     {
-        if (array_key_exists($year, $this->cache) == false) {
+        if (array_key_exists($year, $this->cache) === false) {
             /*
                 Questo di fatto serve solo ad eseguire gli unit test
             */

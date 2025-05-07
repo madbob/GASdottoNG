@@ -97,12 +97,12 @@ class VariantsService extends BaseService
             $combo->active = in_array($combo->id, $actives);
 
             $combo->price_offset = $prices[$index] ?? 0;
-            if (filled($combo->price_offset) == false) {
+            if (filled($combo->price_offset) === false) {
                 $combo->price_offset = 0;
             }
 
             $combo->weight_offset = $weights[$index] ?? 0;
-            if (filled($combo->weight_offset) == false) {
+            if (filled($combo->weight_offset) === false) {
                 $combo->weight_offset = 0;
             }
 

@@ -11,7 +11,7 @@ class AbsoluteQuantity extends Constraint
         return 'absolute';
     }
 
-    public function mandatoryContraint()
+    public function mandatoryContraint(): bool
     {
         return true;
     }

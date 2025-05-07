@@ -48,7 +48,7 @@ class UsersService extends BaseService
     {
         $searched = User::withTrashed()->findOrFail($id);
 
-        if ($searched->testUserAccess() == false) {
+        if ($searched->testUserAccess() === false) {
             $this->ensureAuth(['users.admin' => 'gas', 'users.view' => 'gas']);
         }
 
@@ -135,7 +135,7 @@ class UsersService extends BaseService
             $type = 1;
         }
         elseif ($user->id == $id) {
-            if ($user->can('users.self', $user->gas) == false) {
+            if ($user->can('users.self', $user->gas) === false) {
                 /*
                     Anche laddove non sia concesso agli utenti il permesso di
                     cambiare la propria anagrafica, devono comunque poter cambiare
@@ -322,12 +322,12 @@ class UsersService extends BaseService
         }
 
         $parent = $this->show($parent_id);
-        if ($parent->can('users.subusers') == false) {
+        if ($parent->can('users.subusers') === false) {
             throw new IllegalArgumentException(_i('Il nuovo utente assegnatario non può gestire amici'), 1);
         }
 
         $user = $this->show($user_id);
-        if ($user->isFriend() == false) {
+        if ($user->isFriend() === false) {
             throw new IllegalArgumentException(_i('Un utente regolare non può essere retrocesso ad amico'), 1);
         }
 
@@ -348,7 +348,7 @@ class UsersService extends BaseService
     {
         $user = $this->show($id);
 
-        if ($user->testUserAccess() == false) {
+        if ($user->testUserAccess() === false) {
             $this->ensureAuth(['users.admin' => 'gas']);
         }
 
@@ -361,7 +361,7 @@ class UsersService extends BaseService
 
         $user = $this->show($id);
 
-        if ($user->testUserAccess() == false) {
+        if ($user->testUserAccess() === false) {
             $this->ensureAuth(['users.admin' => 'gas']);
         }
 

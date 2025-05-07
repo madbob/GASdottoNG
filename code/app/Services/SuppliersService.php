@@ -44,7 +44,7 @@ class SuppliersService extends BaseService
             });
         }
 
-        if ($user->can('supplier.view', $user->gas) == false && $user->can('supplier.add', $user->gas) == false) {
+        if ($user->can('supplier.view', $user->gas) === false && $user->can('supplier.add', $user->gas) === false) {
             $suppliers_id = $this->accessible($user);
             $query->whereIn('id', $suppliers_id);
         }
@@ -62,9 +62,9 @@ class SuppliersService extends BaseService
     {
         $user = $this->ensureAuth();
 
-        if ($user->can('supplier.view', $user->gas) == false && $user->can('supplier.add', $user->gas) == false) {
+        if ($user->can('supplier.view', $user->gas) === false && $user->can('supplier.add', $user->gas) === false) {
             $suppliers_id = $this->accessible($user);
-            if (in_array($id, $suppliers_id) == false) {
+            if (in_array($id, $suppliers_id) === false) {
                 \Log::debug('Fornitore ' . $id . ' non accessibile a utente ' . $user->id);
                 throw new AuthException(401);
             }

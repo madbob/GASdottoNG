@@ -29,7 +29,7 @@ class NotificationsService extends BaseService
             $dates_query->where('date', '<=', $end);
         }
 
-        if ($user->can('notifications.admin', $user->gas) == false) {
+        if ($user->can('notifications.admin', $user->gas) === false) {
             $notifications_query->whereHas('users', function ($query) use ($user) {
                 $query->where('users.id', $user->id);
             });

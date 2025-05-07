@@ -88,7 +88,7 @@ class BookingPayment extends MovementType
 
                     foreach ($aggregate->orders as $order) {
                         $booking = $order->userBooking($user);
-                        if ($booking->exists == false) {
+                        if ($booking->exists === false) {
                             /*
                                 Quando un utente non ha fatto nessuna
                                 prenotazione, ma i suoi amici si, non ho un

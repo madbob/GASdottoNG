@@ -36,7 +36,7 @@ trait Summary
             $total += $am->amount;
         }
 
-        if (empty($rows) == false) {
+        if (empty($rows) === false) {
             $last_row = array_fill(0, count($fields), '');
             $last_row[0] = _i('Totale con Modificatori');
             $last_row[$price_offset] = printablePrice($total);
@@ -57,8 +57,8 @@ trait Summary
 
         foreach ($order->products()->sorted()->get() as $product) {
             $row = $this->formatProduct($fields, $formattable, $summary->products[$product->id] ?? null, $product, $internal_offsets);
-            if (empty($row) == false) {
-                if (is_null($price_offset) == false) {
+            if (empty($row) === false) {
+                if ($price_offset != null) {
                     $total = array_reduce($row, fn ($carry, $r) => $carry + guessDecimal($r[$price_offset]), $total);
                 }
 
@@ -66,10 +66,10 @@ trait Summary
             }
         }
 
-        if (empty($rows) == false) {
+        if (empty($rows) === false) {
             $headers = array_map(fn ($f) => $formattable[$f]->name, $fields);
 
-            if (is_null($price_offset) == false) {
+            if ($price_offset != null) {
                 $last_row = array_fill(0, count($fields), '');
                 $last_row[0] = _i('Totale');
                 $last_row[$price_offset] = printablePrice($total);

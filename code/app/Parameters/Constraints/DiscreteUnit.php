@@ -11,7 +11,7 @@ class DiscreteUnit extends Constraint
         return 'discrete';
     }
 
-    public function mandatoryContraint()
+    public function mandatoryContraint(): bool
     {
         return true;
     }

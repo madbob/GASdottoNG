@@ -110,7 +110,7 @@ class Order extends Printer
     {
         $guessed_fields = [];
 
-        if ($order->products->filter(fn ($p) => empty($p->code) == false)->count() != 0) {
+        if ($order->products->filter(fn ($p) => empty($p->code) === false)->count() != 0) {
             $guessed_fields[] = 'code';
         }
 

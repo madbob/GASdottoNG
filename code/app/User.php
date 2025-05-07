@@ -142,7 +142,7 @@ class User extends Authenticatable
     {
         $ret = $this->printableName();
 
-        if ($this->isFriend() == false) {
+        if ($this->isFriend() === false) {
             $ret .= $this->headerIcons();
         }
 
@@ -233,7 +233,7 @@ class User extends Authenticatable
             $query->where('aggregate_id', '!=', $aggregate->id)->where('shipping', $aggregate->shipping);
         })->get();
 
-        if ($other_bookings->isEmpty() == false) {
+        if ($other_bookings->isEmpty() === false) {
             $notice = _i('Questa persona oggi deve ritirare anche altre prenotazioni:');
             $notice .= '<ul>';
 

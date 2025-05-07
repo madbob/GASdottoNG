@@ -36,7 +36,7 @@ class BookingsService extends BaseService
                 break;
             }
 
-            if ($delivering == false) {
+            if ($delivering === false) {
                 if ($target->testUserAccess($user)) {
                     $valid = true;
                     break;
@@ -44,7 +44,7 @@ class BookingsService extends BaseService
             }
         }
 
-        if ($valid == false) {
+        if ($valid === false) {
             throw new AuthException(403);
         }
 
@@ -60,7 +60,7 @@ class BookingsService extends BaseService
         $bpv = new BookedProductVariant();
         $bpv->product_id = $booked->id;
 
-        if ($delivering == false) {
+        if ($delivering === false) {
             $bpv->quantity = $quantity;
             $bpv->delivered = 0;
         }
@@ -114,7 +114,7 @@ class BookingsService extends BaseService
 
     private function handlingParam($delivering)
     {
-        if ($delivering == false) {
+        if ($delivering === false) {
             return 'quantity';
         }
         else {
@@ -146,7 +146,7 @@ class BookingsService extends BaseService
                 }
             }
             else {
-                if ($q == 0 && $delivering == false) {
+                if ($q == 0 && $delivering === false) {
                     $bpv->delete();
 
                     continue;
@@ -166,7 +166,7 @@ class BookingsService extends BaseService
             Attenzione: in fase di consegna/salvataggio è lecito che una
             quantità sia a zero, ma ciò non implica eliminare la variante
         */
-        if ($delivering == false) {
+        if ($delivering === false) {
             BookedProductVariant::where('product_id', '=', $booked->id)->whereNotIn('id', $saved_variants)->delete();
         }
 
@@ -236,7 +236,7 @@ class BookingsService extends BaseService
 
             $quantities = [];
 
-            if ($product->variants->isEmpty() == false) {
+            if ($product->variants->isEmpty() === false) {
                 $quantities = $request['variant_quantity_' . $product->id] ?? '';
                 if (empty($quantities)) {
                     continue;
@@ -248,7 +248,7 @@ class BookingsService extends BaseService
             if ($quantity != 0 || ! empty($quantities)) {
                 $booked->save();
 
-                if ($product->variants->isEmpty() == false) {
+                if ($product->variants->isEmpty() === false) {
                     $values = [];
                     foreach ($product->variants as $variant) {
                         if (isset($request['variant_selection_' . $variant->id])) {
@@ -260,7 +260,7 @@ class BookingsService extends BaseService
                 }
             }
 
-            if ($delivering == false && $quantity == 0) {
+            if ($delivering === false && $quantity == 0) {
                 $booked->delete();
             }
             else {
@@ -281,7 +281,7 @@ class BookingsService extends BaseService
             aggregato e l'utente non ha partecipato a qualcuno degli ordini; in
             tal caso, la sua prenotazione vuota non va salvata
         */
-        if (($delivering == false || $existed_before == false) && $booked_products->count() == 0) {
+        if (($delivering === false || $existed_before === false) && $booked_products->count() == 0) {
             $booking->delete();
 
             return null;
@@ -448,7 +448,7 @@ class BookingsService extends BaseService
             }
         }
 
-        if ($delivering == false) {
+        if ($delivering === false) {
             $this->checkAvailableCredit($target_user);
         }
 

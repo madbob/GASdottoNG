@@ -14,7 +14,7 @@ trait UserGroups
             static::$selectiveUserIcons = [];
 
             $groups = Group::orderBy('name', 'asc')->where('context', 'user')->get();
-            if ($groups->isEmpty() == false) {
+            if ($groups->isEmpty() === false) {
                 static::$selectiveUserIcons['people'] = (object) [
                     'text' => _i('Aggregazione Utente'),
                     'assign' => function ($obj) {

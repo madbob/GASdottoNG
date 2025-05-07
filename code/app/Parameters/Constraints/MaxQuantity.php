@@ -22,7 +22,7 @@ class MaxQuantity extends Constraint
         return null;
     }
 
-    public function hardContraint()
+    public function hardContraint(): bool
     {
         return false;
     }

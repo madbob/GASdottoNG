@@ -477,7 +477,7 @@ class Order extends Model
             $query->where('context', 'user')->where('filters_orders', true);
         })->pluck('id');
 
-        if ($user_circles->isEmpty() == false) {
+        if ($user_circles->isEmpty() === false) {
             $query_users->whereHas('circles', function ($query) use ($user_circles) {
                 $query->whereIn('id', $user_circles);
             });
@@ -742,7 +742,7 @@ class Order extends Model
 
                 foreach ($this->bookings as $booking) {
                     foreach ($booking->involvedCircles() as $circle) {
-                        if (isset($managed_circles[$circle->id]) == false) {
+                        if (isset($managed_circles[$circle->id]) === false) {
                             $managed_circles[$circle->id] = true;
                             $modifiers = $modifiers->merge($circle->modifiers);
                         }

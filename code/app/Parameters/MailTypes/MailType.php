@@ -41,7 +41,7 @@ abstract class MailType extends Parameter
         $params['gas_name'] = $gas->name;
 
         foreach (array_keys($this->params()) as $identifier) {
-            if (isset($params[$identifier]) == false) {
+            if (isset($params[$identifier]) === false) {
                 $value = null;
 
                 switch ($identifier) {
@@ -59,7 +59,7 @@ abstract class MailType extends Parameter
                         break;
                 }
 
-                if (is_null($value) == false) {
+                if ($value != null) {
                     $params[$identifier] = $value;
                 }
             }

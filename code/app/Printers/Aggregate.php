@@ -67,20 +67,20 @@ class Aggregate extends Printer
                         }
                     }
 
-                    if ($found == false) {
+                    if ($found === false) {
                         $data->contents[] = $td;
                     }
                 }
             }
 
-            $all_gas = (App::make('GlobalScopeHub')->enabled() == false);
+            $all_gas = (App::make('GlobalScopeHub')->enabled() === false);
 
             /*
                 Attenzione: in $data->contents non ci sono istanze di Booking,
                 dunque non posso usare qui CirclesFilter::sortBookings()
             */
             usort($data->contents, function ($a, $b) use ($circles, $all_gas) {
-                if ($circles->sortedByUser() == false && $a->circles_sorting != $b->circles_sorting) {
+                if ($circles->sortedByUser() === false && $a->circles_sorting != $b->circles_sorting) {
                     return $a->circles_sorting <=> $b->circles_sorting;
                 }
 
@@ -125,7 +125,7 @@ class Aggregate extends Printer
     private function handleGDXP($obj)
     {
         $hub = App::make('GlobalScopeHub');
-        if ($hub->enabled() == false) {
+        if ($hub->enabled() === false) {
             $gas = $obj->gas->pluck('id');
         }
         else {
@@ -187,7 +187,7 @@ class Aggregate extends Printer
             $document->append(new Title($document_title));
 
             $hub = App::make('GlobalScopeHub');
-            if ($hub->enabled() == false) {
+            if ($hub->enabled() === false) {
                 $gas = $obj->gas;
             }
             else {

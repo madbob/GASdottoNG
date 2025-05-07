@@ -77,7 +77,7 @@ class DatesService extends BaseService
             $generic_types = array_keys(Date::types());
 
             foreach ($ids as $index => $id) {
-                if (in_array($targets[$index], $suppliers) == false) {
+                if (in_array($targets[$index], $suppliers) === false) {
                     Log::debug('Non autorizzato ad aggiungere date a questo fornitore');
 
                     continue;
@@ -145,7 +145,7 @@ class DatesService extends BaseService
             $suspends = $request['suspend'] ?? [];
 
             foreach ($ids as $index => $id) {
-                if (in_array($targets[$index], $suppliers) == false || empty($recurrings[$index])) {
+                if (in_array($targets[$index], $suppliers) === false || empty($recurrings[$index])) {
                     \Log::debug('Salvataggio ordine ricorrente fallito: permessi non validi');
 
                     continue;
