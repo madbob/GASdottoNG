@@ -103,12 +103,16 @@ class DatesServiceTest extends TestCase
         $this->assertEquals($dates->count(), 1);
     }
 
-    private function getCurrentWeekday()
+    private function getCurrentWeekday($day = null)
     {
         $weekday = null;
 
+        if ($day === null) {
+            $day = date('l');
+        }
+
         $days = localeDays();
-        $today = mb_strtolower(date('l'));
+        $today = mb_strtolower($day);
         foreach ($days as $it => $en) {
             if ($en == $today) {
                 $weekday = ucwords($it);
@@ -127,8 +131,13 @@ class DatesServiceTest extends TestCase
         $this->actingAs($this->userAdmin);
         $weekday = $this->getCurrentWeekday();
 
+        $dates = Date::all();
+        $this->assertEquals($dates->count(), 0);
+
         $orders = Order::all();
         $this->assertEquals($orders->count(), 0);
+
+        $this->nextRound();
 
         app()->make('DatesService')->updateOrders([
             'id' => [''],
@@ -153,9 +162,57 @@ class DatesServiceTest extends TestCase
             $this->assertEquals($o->shipping->format('Y-m-d'), date('Y-m-d', strtotime('+11 days')));
         }
 
+        $this->nextRound();
+
         Artisan::call('open:orders');
         $orders = Order::where('status', 'open')->get();
         $this->assertEquals($orders->count(), 1);
+
+        $this->nextRound();
+
+        $dates = Date::all();
+        $this->assertEquals($dates->count(), 1);
+    }
+
+    /*
+        Salvataggio e apertura ordini ricorrenti
+    */
+    public function test_future_orders()
+    {
+        $this->actingAs($this->userAdmin);
+        $weekday = $this->getCurrentWeekday(date('l', strtotime('+1 days')));
+
+        $orders = Order::all();
+        $this->assertEquals($orders->count(), 0);
+
+        app()->make('DatesService')->updateOrders([
+            'id' => [''],
+            'target_id' => [$this->supplier1->id],
+            'recurring' => [$weekday . ' - Ogni due Settimane - ' . printableDate(date('Y-m-d', strtotime('+1 days'))) . ' - ' . printableDate(date('Y-m-d', strtotime('+6 months')))],
+            'action' => ['open'],
+            'first_offset' => [10],
+            'second_offset' => [11],
+            'comment' => [''],
+            'suspend' => [],
+        ]);
+
+        $this->nextRound();
+
+        $dates = Date::all();
+        $this->assertEquals($dates->count(), 1);
+
+        $orders = Order::where('status', 'open')->get();
+        $this->assertEquals($orders->count(), 0);
+
+        $this->nextRound();
+        $this->travel(1)->days();
+
+        Artisan::call('open:orders');
+        $orders = Order::where('status', 'open')->get();
+        $this->assertEquals($orders->count(), 1);
+
+        $dates = Date::all();
+        $this->assertEquals($dates->count(), 1);
     }
 
     public function test_recurrences()

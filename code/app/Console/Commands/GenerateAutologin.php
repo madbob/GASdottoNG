@@ -9,7 +9,7 @@ use App\User;
 
 class GenerateAutologin extends Command
 {
-    protected $signature = 'generate:autologin {user}';
+    protected $signature = 'generate:autologin {user?}';
 
     protected $description = "Controlla la scadenza delle quote di iscrizione alla chiusura dell'anno sociale";
 
@@ -17,7 +17,14 @@ class GenerateAutologin extends Command
     {
         $username = $this->argument('user');
 
-        $user = User::withoutGlobalScopes()->where('username', $username)->orWhere('id', $username)->first();
+        if ($username == null) {
+            $admin = roleByIdentifier('admin');
+            $user = $admin->users()->first();
+        }
+        else {
+            $user = User::withoutGlobalScopes()->where('username', $username)->orWhere('id', $username)->first();
+        }
+
         if ($user) {
             if (blank($user->access_token)) {
                 $user->access_token = Str::random(10);

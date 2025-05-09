@@ -63,6 +63,7 @@ class OpenOrders extends Command
                 }
 
                 if ($all_previous) {
+                    Log::info('Esaurite le date degli ordini automatici per ' . $date->target->printableName());
                     $date->delete();
                 }
             }
