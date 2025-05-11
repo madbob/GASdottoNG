@@ -132,7 +132,7 @@ class Products extends CSVImporter
                     }
                 }
 
-                if (is_null($test) == false) {
+                if ($test != null) {
                     $p = $test;
                     $p->want_replace = $test;
                 }
@@ -187,7 +187,7 @@ class Products extends CSVImporter
                         continue;
                     }
 
-                    if (! empty($value) && is_null($field) == false && $field != 'none') {
+                    if (! empty($value) && $field != null && $field != 'none') {
                         $p->$field = $value;
                     }
                 }

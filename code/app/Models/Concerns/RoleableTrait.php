@@ -24,7 +24,7 @@ trait RoleableTrait
         */
         $all_roles = $this->can('gas.permissions', $this->gas);
 
-        return Role::sortedByHierarchy($all_roles == false);
+        return Role::sortedByHierarchy($all_roles === false);
     }
 
     public function checkRoleTargets($role)

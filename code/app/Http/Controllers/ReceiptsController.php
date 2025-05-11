@@ -175,6 +175,10 @@ class ReceiptsController extends BackedController
 
             case 'csv':
                 return $this->outputCSV($elements);
+
+            default:
+                throw new \InvalidArgumentException('Formato non previsto per ricerca ricevute: ' . $format);
+                break;
         }
     }
 }

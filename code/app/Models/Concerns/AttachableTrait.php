@@ -37,7 +37,7 @@ trait AttachableTrait
         $relation = $this->morphMany('App\Attachment', 'target')->orderBy('name', 'asc');
         $relation = $this->fillDefaultAttachments($relation);
 
-        if ($this->attachmentPermissionGranted() == false) {
+        if ($this->attachmentPermissionGranted() === false) {
             $user = Auth::user();
             if ($user) {
                 $relation->where(function ($query) use ($user) {
@@ -110,15 +110,15 @@ trait AttachableTrait
 
         $this->checkDeletes($request);
 
-        if (is_null($file) == false && $file->isValid()) {
+        if ($file != null && $file->isValid()) {
             $filename = $this->storeFile($name, $file);
-            if ($filename == false) {
+            if ($filename === false) {
                 return false;
             }
 
             $url = '';
         }
-        elseif (is_null($url) == false) {
+        elseif ($url != null) {
             $filename = '';
         }
         else {
@@ -178,8 +178,8 @@ trait AttachableTrait
     {
         $prefix = Str::slug(get_class($this));
         $path = gas_storage_path($prefix . '-' . $this->id);
-        if (file_exists($path) == false && $create) {
-            if (@mkdir($path, 0750, true) == false) {
+        if (file_exists($path) === false && $create) {
+            if (@mkdir($path, 0750, true) === false) {
                 return null;
             }
         }

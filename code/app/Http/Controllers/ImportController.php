@@ -58,6 +58,10 @@ class ImportController extends Controller
                     $parameters = $importer->run($request);
 
                     return view($importer->finalTemplate(), $parameters);
+
+                default:
+                    throw new \InvalidArgumentException('Passaggio non previsto in fase di importazione: ' . $step);
+                    break;
             }
         }
         catch (\Exception $e) {

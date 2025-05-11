@@ -65,7 +65,7 @@ abstract class CSVImporter
     {
         $selected = [];
 
-        if (isset($parameters['sorted_fields']) && empty($parameters['sorted_fields']) == false) {
+        if (isset($parameters['sorted_fields']) && empty($parameters['sorted_fields']) === false) {
             $sorted = $parameters['sorted_fields'];
             $fields = $this->fields();
 
@@ -100,7 +100,7 @@ abstract class CSVImporter
     {
         try {
             $f = $request->file('file', null);
-            if (is_null($f) || $f->isValid() == false) {
+            if (is_null($f) || $f->isValid() === false) {
                 throw new \InvalidArgumentException(_i('File non caricato correttamente, possibili problemi con la dimensione'));
             }
 
@@ -212,8 +212,8 @@ abstract class CSVImporter
     {
         if (Str::startsWith($value, 'new:')) {
             $name = Str::after($value, 'new:');
-            if (empty($name) == false) {
-                if (isset($cached[$name]) == false) {
+            if (empty($name) === false) {
+                if (isset($cached[$name]) === false) {
                     $obj = $createNew($name);
                     $cached[$name] = $obj->id;
                 }

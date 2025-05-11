@@ -26,7 +26,7 @@ class RemindOrders extends Command
 
         foreach ($orders as $order) {
             foreach ($order->aggregate->gas as $gas) {
-                if ($gas->hasFeature('send_order_reminder') == false) {
+                if ($gas->hasFeature('send_order_reminder') === false) {
                     continue;
                 }
 
@@ -38,7 +38,7 @@ class RemindOrders extends Command
                 $expiration = $today->copy()->addDays($days);
 
                 if ($order->end == $expiration->format('Y-m-d')) {
-                    if (isset($notifications[$gas->id]) == false) {
+                    if (isset($notifications[$gas->id]) === false) {
                         $notifications[$gas->id] = [];
                     }
 

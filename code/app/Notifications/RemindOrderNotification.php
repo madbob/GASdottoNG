@@ -31,7 +31,7 @@ class RemindOrderNotification extends ManyMailNotification
             $contacts[] = $user->email;
         }
 
-        if (empty($contacts) == false) {
+        if (empty($contacts) === false) {
             $row .= _i('Per informazioni: %s', [implode(', ', array_filter($contacts))]) . "\n";
         }
 

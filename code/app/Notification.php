@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-use Log;
-
 use App\Models\Concerns\Datable;
 use App\Models\Concerns\AttachableTrait;
 use App\Jobs\DeliverNotification;
@@ -52,8 +50,8 @@ class Notification extends Model implements Datable
 
     public function sendMail()
     {
-        if ($this->mailed == false) {
-            \Log::info('Notification ' . $this->id . ' already delivered by mail');
+        if (!$this->mailed) {
+            \Log::info('Notifica ' . $this->id . ' da non spedire via mail');
 
             return;
         }
@@ -62,7 +60,7 @@ class Notification extends Model implements Datable
             DeliverNotification::dispatch($this->id);
         }
         catch (\Exception $e) {
-            Log::error('Unable to trigger DeliverNotification job while sending notification: ' . $e->getMessage());
+            \Log::error('Unable to trigger DeliverNotification job while sending notification: ' . $e->getMessage());
         }
     }
 

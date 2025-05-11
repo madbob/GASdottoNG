@@ -23,9 +23,9 @@ class CirclesFilter
     {
         $this->circles = [];
 
-        if (is_null($aggregate) == false) {
+        if ($aggregate != null) {
             $all = $aggregate->circlesByGroup();
-            if (empty($all) == false) {
+            if (empty($all) === false) {
                 $selected = null;
 
                 foreach ($all as $group_id => $circles) {
@@ -168,7 +168,7 @@ class CirclesFilter
     public function sortBookings($bookings)
     {
         $tmp_bookings = new Collection();
-        $filter_circles = (empty($this->circles) == false);
+        $filter_circles = (empty($this->circles) === false);
 
         foreach ($bookings as $booking) {
             $valid = true;

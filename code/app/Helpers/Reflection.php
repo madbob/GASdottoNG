@@ -162,6 +162,8 @@ function unrollSpecialSelectors($users)
                     $map[] = $booking->user_id;
                 }
             }
+
+            \Log::debug(sprintf('Filtro speciale %s, selezionati %s utenti', $u, count($map)));
         }
         else {
             $map[] = $u;

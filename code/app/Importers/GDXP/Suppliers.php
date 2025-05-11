@@ -187,7 +187,7 @@ class Suppliers extends GDXPImporter
             $psku = $json_product->sku ?? '';
             $ex_product = null;
 
-            if (empty($psku) == false) {
+            if (empty($psku) === false) {
                 $ex_product = $supplier->products()->where('supplier_code', $psku)->first();
             }
 

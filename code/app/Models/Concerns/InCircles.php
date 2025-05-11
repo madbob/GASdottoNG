@@ -33,7 +33,7 @@ trait InCircles
         }
 
         foreach ($iterate as $circle) {
-            if (isset($ret[$circle->group->id]) == false) {
+            if (isset($ret[$circle->group->id]) === false) {
                 $ret[$circle->group->id] = (object) [
                     'group' => $circle->group,
                     'circles' => [],

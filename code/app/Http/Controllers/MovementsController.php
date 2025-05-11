@@ -283,6 +283,39 @@ class MovementsController extends BackedController
         ]);
     }
 
+    private function suppliersDocument($user, $request, $subtype)
+    {
+        $suppliers = $user->gas->suppliers;
+
+        if ($subtype == 'csv') {
+            $filename = sanitizeFilename(_i('Saldi Fornitori al %s.csv', date('d/m/Y')));
+            $headers = [_i('ID'), _i('Nome')];
+
+            $currencies = Currency::enabled();
+            foreach ($currencies as $curr) {
+                $headers[] = _i('Saldo %s', $curr->symbol);
+            }
+
+            return output_csv($filename, $headers, $suppliers, function ($supplier) use ($currencies) {
+                $row = [];
+                $row[] = $supplier->id;
+                $row[] = $supplier->printableName();
+
+                foreach ($currencies as $curr) {
+                    $row[] = printablePrice($supplier->currentBalanceAmount($curr));
+                }
+
+                return $row;
+            });
+        }
+        elseif ($subtype == 'integralces') {
+            $body = strtoupper($request->input('body'));
+            $filename = sanitizeFilename(_i('IntegralCES Fornitori.csv'));
+
+            return $this->exportIntegralCES($user->gas, $suppliers, $filename, $body);
+        }
+    }
+
     public function document(Request $request, $type, $subtype = 'none')
     {
         $user = $this->checkAuth();
@@ -379,35 +412,7 @@ class MovementsController extends BackedController
             }
         }
         elseif ($type == 'suppliers') {
-            $suppliers = $user->gas->suppliers;
-
-            if ($subtype == 'csv') {
-                $filename = sanitizeFilename(_i('Saldi Fornitori al %s.csv', date('d/m/Y')));
-                $headers = [_i('ID'), _i('Nome')];
-
-                $currencies = Currency::enabled();
-                foreach ($currencies as $curr) {
-                    $headers[] = _i('Saldo %s', $curr->symbol);
-                }
-
-                return output_csv($filename, $headers, $suppliers, function ($supplier) use ($currencies) {
-                    $row = [];
-                    $row[] = $supplier->id;
-                    $row[] = $supplier->printableName();
-
-                    foreach ($currencies as $curr) {
-                        $row[] = printablePrice($supplier->currentBalanceAmount($curr));
-                    }
-
-                    return $row;
-                });
-            }
-            elseif ($subtype == 'integralces') {
-                $body = strtoupper($request->input('body'));
-                $filename = sanitizeFilename(_i('IntegralCES Fornitori.csv'));
-
-                return $this->exportIntegralCES($user->gas, $suppliers, $filename, $body);
-            }
+            return $this->suppliersDocument($user, $request, $subtype);
         }
     }
 

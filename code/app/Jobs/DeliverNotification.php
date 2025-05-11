@@ -25,6 +25,7 @@ class DeliverNotification implements ShouldQueue
     public function handle()
     {
         $notification = Notification::findOrFail($this->notification_id);
+        \Log::info('Mando notifica ' . $notification->id . ' a ' . $notification->users->count() . ' utenti');
 
         foreach ($notification->users as $user) {
             try {

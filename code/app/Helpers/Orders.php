@@ -106,5 +106,9 @@ function getOrdersByStatus($user, $status)
                     });
                 });
             })->with($eager_load)->get();
+
+        default:
+            throw new \InvalidArgumentException('Stato non previsto per aggregazione ordini: ' . $status);
+            break;
     }
 }

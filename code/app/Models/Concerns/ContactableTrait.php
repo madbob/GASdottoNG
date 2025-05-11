@@ -131,7 +131,7 @@ trait ContactableTrait
     {
         $ret = [];
 
-        if (is_array($type) == false) {
+        if (is_array($type) === false) {
             $type = [$type];
         }
 

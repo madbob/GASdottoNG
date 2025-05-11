@@ -34,7 +34,7 @@ class Order extends Formatter
             'name' => _i('Quantità'),
             'checked' => true,
             'format_product' => function ($product, $summary, $alternate = false) {
-                if ($alternate == false) {
+                if ($alternate === false) {
                     return printableQuantity($summary->quantity_pieces, $product->measure->discrete, 2);
                 }
                 else {
@@ -50,7 +50,7 @@ class Order extends Formatter
             'name' => _i('Numero Confezioni'),
             'format_product' => function ($product, $summary, $alternate = false) {
                 if ($product->package_size != 0) {
-                    if ($alternate == false) {
+                    if ($alternate === false) {
                         return $summary->quantity_pieces / $product->package_size;
                     }
                     else {
@@ -70,7 +70,7 @@ class Order extends Formatter
             'name' => _i('Unità di Misura'),
             'checked' => true,
             'format_product' => function ($product, $summary, $alternate = false) {
-                if ($alternate == false) {
+                if ($alternate === false) {
                     return $product->printableMeasure(true);
                 }
                 else {
@@ -91,7 +91,7 @@ class Order extends Formatter
             'name' => _i('Prezzo'),
             'checked' => true,
             'format_product' => function ($product, $summary, $alternate = false) {
-                if ($alternate == false) {
+                if ($alternate === false) {
                     return printablePrice($summary->price);
                 }
                 else {
