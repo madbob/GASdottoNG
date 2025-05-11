@@ -141,11 +141,11 @@ class User extends Formatter
     {
         $ret = [
             'lastname' => (object) [
-                'name' => _i('Cognome'),
+                'name' => __('user.lastname'),
                 'checked' => true,
             ],
             'firstname' => (object) [
-                'name' => _i('Nome'),
+                'name' => __('user.firstname'),
                 'checked' => true,
             ],
             'fullname' => (object) [

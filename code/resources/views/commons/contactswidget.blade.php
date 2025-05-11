@@ -12,7 +12,7 @@
                 ]
             ],
             [
-                'label' => _i('Tipo'),
+                'label' => __('generic.type'),
                 'field' => 'type',
                 'type' => 'select',
                 'extra' => [

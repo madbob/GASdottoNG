@@ -42,7 +42,7 @@ foreach($classes as $class => $name) {
     <div class="row">
         <div class="col-12 col-md-6">
             @if($type->system)
-                <x-larastrap::text name="name" :label="_i('Nome')" required />
+                <x-larastrap::text name="name" tlabel="generic.notes" required />
                 <x-larastrap::check name="allow_negative" :label="_i('Accetta Valori Negativi')" :pophelp="_i('Se disabilitato, impedisce di immettere un ammontare negativo per il movimento contabile')" />
                 <x-larastrap::price name="fixed_value" :label="_i('Valore Fisso')" disabled readonly />
                 <x-larastrap::select name="sender_type" :label="_i('Pagante')" :options="$target_classes" disabled readonly />

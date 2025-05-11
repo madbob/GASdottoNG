@@ -1,8 +1,6 @@
-<x-larastrap::modal :title="_i('Gestione Ordini Automatici')" size="fullscreen">
+<x-larastrap::modal size="fullscreen">
     <div class="row">
-        <div class="col-md-12">
-            {{ _i("Con questo strumento puoi gestire apertura e chiusura automatica degli ordini. Gli ordini che vengono aperti e chiusi insieme (dunque hanno gli stessi parametri di ricorrenza, chiusura e consegna) saranno automaticamente aggregati. Quando una ricorrenza è esaurita (tutte le sue occorrenza sono date passate) viene rimossa da questo elenco.") }}
-        </div>
+        <div class="col-md-12">{{ __('orders.help.automatic_instructions') }}</div>
     </div>
 
     <hr>
@@ -17,12 +15,12 @@
                     'show_columns' => true,
                     'columns' => [
                         [
-                            'label' => _i('ID'),
+                            'label' => __('generic.id'),
                             'field' => 'id',
                             'type' => 'hidden',
                         ],
                         [
-                            'label' => _i('Tipo'),
+                            'label' => __('generic.type'),
                             'field' => 'type',
                             'type' => 'hidden',
                             'extra' => [
@@ -30,7 +28,7 @@
                             ]
                         ],
                         [
-                            'label' => _i('Fornitore'),
+                            'label' => __('orders.supplier'),
                             'field' => 'target_id',
                             'type' => 'select-model',
                             'width' => 15,

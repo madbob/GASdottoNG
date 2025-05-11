@@ -1,19 +1,15 @@
 <?php
 
-return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used during authentication for various
-    | messages that we need to display to the user. You are free to modify
-    | these language lines according to your application's requirements.
-    |
-    */
-
-    'failed' => 'These credentials do not match our records.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-
-];
+return array (
+  'accept_privacy' => 'I have read and agree to the <a href="%s" target="_blank">Privacy Policy</a>.',
+  'username' => 'Username',
+  'reset_username' => 'Username or e-mail address',
+  'password' => 'Password',
+  'password_request_link' => 'Recover password',
+  'maintenance_notice' => 'Maintenance mode: access is restricted to administrators',
+  'login' => 'Login',
+  'remember' => 'Remember me',
+  'register' => 'Sign up',
+  'confirm_password' => 'Confirm password',
+  'update_password' => 'Change password',
+);

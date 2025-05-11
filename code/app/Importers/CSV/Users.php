@@ -17,22 +17,22 @@ class Users extends CSVImporter
     private function essentialFields(&$ret)
     {
         $ret['firstname'] = (object) [
-            'label' => _i('Nome'),
+            'label' => __('user.firstname'),
             'mandatory' => true,
         ];
 
         $ret['lastname'] = (object) [
-            'label' => _i('Cognome'),
+            'label' => __('user.lastname'),
             'mandatory' => true,
         ];
 
         $ret['username'] = (object) [
-            'label' => _i('Username'),
+            'label' => __('auth.username'),
             'mandatory' => true,
         ];
 
         $ret['password'] = (object) [
-            'label' => _i('Password'),
+            'label' => __('auth.password'),
         ];
     }
 

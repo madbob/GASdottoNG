@@ -36,8 +36,8 @@ foreach(App\Currency::enabled() as $curr) {
                 <tr>
                     <th scope="col">{{ _i('Data Registrazione') }}</th>
                     <th scope="col">{{ _i('Data Movimento') }}</th>
-                    <th scope="col">{{ _i('Tipo') }}</th>
-                    <th scope="col">{{ _i('Pagamento') }}</th>
+                    <th scope="col">{{ __('generic.type') }}</th>
+                    <th scope="col">{{ __('generic.payment') }}</th>
                     @if($exclude_sender == false)
                         <th scope="col">{{ _i('Pagante') }}</th>
                     @endif
@@ -45,7 +45,7 @@ foreach(App\Currency::enabled() as $curr) {
                         <th scope="col">{{ _i('Pagato') }}</th>
                     @endif
                     <th scope="col">{{ _i('Valore') }}</th>
-                    <th scope="col">{{ _i('Note') }}</th>
+                    <th scope="col">{{ __('generic.notes') }}</th>
                     @if(Gate::check('movements.admin', $currentgas))
                         <th scope="col">{{ _i('Modifica') }}</th>
                     @endif

@@ -38,7 +38,7 @@
 
 								<thead>
 									<tr>
-										<th scope="col" width="50%">{{ _i('Nome') }}</th>
+										<th scope="col" width="50%">{{ __('generic.name') }}</th>
 
 										@foreach($currencies as $curr)
 											<th scope="col" width="{{ round(50 / $currencies->count(), 2) }}%">{{ _i('Saldo Attuale') }}</th>

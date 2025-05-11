@@ -27,14 +27,14 @@ class Movements extends CSVImporter
                 'label' => _i('Identificativo'),
             ],
             'notes' => (object) [
-                'label' => _i('Note'),
+                'label' => __('generic.notes'),
             ],
             'user' => (object) [
                 'label' => _i('Utente'),
                 'explain' => _i('Username o indirizzo e-mail'),
             ],
             'supplier' => (object) [
-                'label' => _i('Fornitore'),
+                'label' => __('orders.supplier'),
                 'explain' => _i('Nome o partita IVA'),
             ],
         ];

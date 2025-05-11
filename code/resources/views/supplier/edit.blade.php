@@ -38,7 +38,7 @@
         @include('supplier.orders', ['supplier' => $supplier])
     </x-larastrap::tabpane>
 
-    <x-larastrap::tabpane :label="_i('Prodotti')" icon="bi-cart">
+    <x-larastrap::tabpane tlabel="products.list" icon="bi-cart">
         @include('supplier.products', ['supplier' => $supplier])
     </x-larastrap::tabpane>
 

@@ -10,10 +10,10 @@ class Modifier
     {
         return [
             'none' => '',
-            'quantity' => _i('la quantità'),
-            'price' => _i('il valore'),
-            'order_price' => _i("il valore dell'ordine"),
-            'weight' => _i('il peso'),
+            'quantity' => __('modifiers.dynamics.values.quantity'),
+            'price' => __('modifiers.dynamics.values.price'),
+            'order_price' => __('modifiers.dynamics.values.order_price'),
+            'weight' => __('modifiers.dynamics.values.weight'),
         ];
     }
 
@@ -21,25 +21,25 @@ class Modifier
     {
         return [
             'product,product' => '',
-            'product,booking' => _i('di prodotto nella prenotazione'),
-            'product,order' => _i("di prodotto nell'ordine"),
+            'product,booking' => __('modifiers.dynamics.targets.product.booking'),
+            'product,order' => __('modifiers.dynamics.targets.product.order'),
             'order,product' => '',
-            'order,booking' => _i('della prenotazione'),
-            'order,order' => _i("dell'ordine"),
+            'order,booking' => __('modifiers.dynamics.targets.order.booking'),
+            'order,order' => __('modifiers.dynamics.targets.order.order'),
             'aggregate,product' => '',
-            'aggregate,booking' => _i('della prenotazione aggregata'),
-            'aggregate,order' => _i("dell'ordine aggregato"),
+            'aggregate,booking' => __('modifiers.dynamics.targets.aggregate.booking'),
+            'aggregate,order' => __('modifiers.dynamics.targets.aggregate.order'),
             'circle,product' => '',
-            'circle,booking' => _i('della prenotazione assegnata al cerchio'),
-            'circle,order' => _i('della porzione di ordine destinata al cerchio'),
+            'circle,booking' => __('modifiers.dynamics.targets.circle.booking'),
+            'circle,order' => __('modifiers.dynamics.targets.circle.order'),
         ];
     }
 
     private static function scaleLabels()
     {
         return [
-            'minor' => _i('è minore di'),
-            'major' => _i('è maggiore di'),
+            'minor' => __('modifiers.dynamics.scale.minor'),
+            'major' => __('modifiers.dynamics.scale.major'),
         ];
     }
 
@@ -51,7 +51,7 @@ class Modifier
             $quantity_label = $target->measure->name;
         }
         else {
-            $quantity_label = _i('Prodotti');
+            $quantity_label = __('products.list');
         }
 
         return [
@@ -63,7 +63,7 @@ class Modifier
             'quantity' => $quantity_label,
             'price' => $currency,
             'order_price' => $currency,
-            'weight' => _i('Chili'),
+            'weight' => __('generic.kilos'),
         ];
     }
 
@@ -72,39 +72,39 @@ class Modifier
         $currency = defaultCurrency()->symbol;
 
         return [
-            'sum,product,absolute' => [_i('somma al costo del prodotto'), $currency],
-            'sum,booking,absolute' => [_i('somma al costo della prenotazione'), $currency],
-            'sum,order,absolute' => [_i("somma al costo dell'ordine"), $currency],
-            'sum,product,percentage' => [_i('somma al costo del prodotto'), '%'],
-            'sum,booking,percentage' => [_i('somma al costo della prenotazione'), '%'],
-            'sum,order,percentage' => [_i("somma al costo dell'ordine"), '%'],
-            'sum,product,mass' => [_i('per ogni Kg di prodotto, somma'), $currency],
-            'sum,booking,mass' => [_i('per ogni Kg nella prenotazione, somma'), $currency],
-            'sum,order,mass' => [_i("per ogni Kg nell'ordine, somma"), $currency],
+            'sum,product,absolute' => [__('modifiers.dynamics.distribution.sum.product'), $currency],
+            'sum,booking,absolute' => [__('modifiers.dynamics.distribution.sum.booking'), $currency],
+            'sum,order,absolute' => [__('modifiers.dynamics.distribution.sum.order'), $currency],
+            'sum,product,percentage' => [__('modifiers.dynamics.distribution.sum.product'), '%'],
+            'sum,booking,percentage' => [__('modifiers.dynamics.distribution.sum.booking'), '%'],
+            'sum,order,percentage' => [__('modifiers.dynamics.distribution.sum.order'), '%'],
+            'sum,product,mass' => [__('modifiers.dynamics.distribution.sum.product_kg'), $currency],
+            'sum,booking,mass' => [__('modifiers.dynamics.distribution.sum.booking_kg'), $currency],
+            'sum,order,mass' => [__('modifiers.dynamics.distribution.sum.order_kg'), $currency],
 
-            'sub,product,absolute' => [_i('sottrai al costo del prodotto'), $currency],
-            'sub,booking,absolute' => [_i('sottrai al costo della prenotazione'), $currency],
-            'sub,order,absolute' => [_i("sottrai al costo dell'ordine"), $currency],
-            'sub,product,percentage' => [_i('sottrai al costo del prodotto'), '%'],
-            'sub,booking,percentage' => [_i('sottrai al costo della prenotazione'), '%'],
-            'sub,order,percentage' => [_i("sottrai al costo dell'ordine"), '%'],
-            'sub,product,mass' => [_i('per ogni Kg di prodotto, sottrai'), $currency],
-            'sub,booking,mass' => [_i('per ogni Kg nella prenotazione, sottrai'), $currency],
-            'sub,order,mass' => [_i("per ogni Kg nell'ordine, sottrai"), $currency],
+            'sub,product,absolute' => [__('modifiers.dynamics.distribution.sub.product'), $currency],
+            'sub,booking,absolute' => [__('modifiers.dynamics.distribution.sub.booking'), $currency],
+            'sub,order,absolute' => [__('modifiers.dynamics.distribution.sub.order'), $currency],
+            'sub,product,percentage' => [__('modifiers.dynamics.distribution.sub.product'), '%'],
+            'sub,booking,percentage' => [__('modifiers.dynamics.distribution.sub.booking'), '%'],
+            'sub,order,percentage' => [__('modifiers.dynamics.distribution.sub.order'), '%'],
+            'sub,product,mass' => [__('modifiers.dynamics.distribution.sub.product_kg'), $currency],
+            'sub,booking,mass' => [__('modifiers.dynamics.distribution.sub.booking_kg'), $currency],
+            'sub,order,mass' => [__('modifiers.dynamics.distribution.sub.order_kg'), $currency],
 
-            'passive,product,absolute' => [_i('rispetto al costo del prodotto, calcola'), $currency],
-            'passive,booking,absolute' => [_i('rispetto al costo della prenotazione, calcola'), $currency],
-            'passive,order,absolute' => [_i("rispetto al costo dell'ordine, calcola"), $currency],
-            'passive,product,percentage' => [_i('rispetto al costo del prodotto, calcola'), '%'],
-            'passive,booking,percentage' => [_i('rispetto al costo della prenotazione, calcola'), '%'],
-            'passive,order,percentage' => [_i("rispetto al costo dell'ordine, calcola"), '%'],
-            'passive,product,mass' => [_i('per ogni Kg di prodotto, calcola'), $currency],
-            'passive,booking,mass' => [_i('per ogni Kg nella prenotazione, calcola'), $currency],
-            'passive,order,mass' => [_i("per ogni Kg nell'ordine, calcola"), $currency],
+            'passive,product,absolute' => [__('modifiers.dynamics.distribution.passive.product'), $currency],
+            'passive,booking,absolute' => [__('modifiers.dynamics.distribution.passive.booking'), $currency],
+            'passive,order,absolute' => [__('modifiers.dynamics.distribution.passive.order'), $currency],
+            'passive,product,percentage' => [__('modifiers.dynamics.distribution.passive.product'), '%'],
+            'passive,booking,percentage' => [__('modifiers.dynamics.distribution.passive.booking'), '%'],
+            'passive,order,percentage' => [__('modifiers.dynamics.distribution.passive.order'), '%'],
+            'passive,product,mass' => [__('modifiers.dynamics.distribution.passive.product_kg'), $currency],
+            'passive,booking,mass' => [__('modifiers.dynamics.distribution.passive.booking_kg'), $currency],
+            'passive,order,mass' => [__('modifiers.dynamics.distribution.passive.order_kg'), $currency],
 
-            'apply,product,price' => [_i('applica il prezzo unitario'), $currency],
-            'apply,booking,price' => [_i('applica il prezzo unitario'), $currency],
-            'apply,order,price' => [_i('applica il prezzo unitario'), $currency],
+            'apply,product,price' => [__('modifiers.dynamics.distribution.apply.product'), $currency],
+            'apply,booking,price' => [__('modifiers.dynamics.distribution.apply.product'), $currency],
+            'apply,order,price' => [__('modifiers.dynamics.distribution.apply.product'), $currency],
         ];
     }
 
@@ -112,9 +112,9 @@ class Modifier
     {
         return [
             'none' => '',
-            'quantity' => _i('e distribuiscilo in base alle quantità prenotate'),
-            'price' => _i('e distribuiscilo in base al valore delle prenotazioni'),
-            'weight' => _i('e distribuiscilo in base al peso delle prenotazioni'),
+            'quantity' => __('modifiers.dynamics.types.quantity'),
+            'price' => __('modifiers.dynamics.types.price'),
+            'weight' => __('modifiers.dynamics.types.weight'),
         ];
     }
 
@@ -143,7 +143,7 @@ class Modifier
                             foreach ($distribution_types as $dt => $dts) {
                                 $key = sprintf('%s,%s,%s,%s,%s,%s', $vl, $tl, $sl, $vu, $dl, $dt);
                                 $labels[$key] = [
-                                    _i('Se %s %s %s', [$vs, $ts, $ss]),
+                                    __('modifiers.dynamics.template', ['value' => $vs, 'target' => $ts, 'scale' => $ss]),
                                     $vus,
                                     $ds[0],
                                     $ds[1],

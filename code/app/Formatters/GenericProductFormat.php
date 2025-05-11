@@ -14,12 +14,12 @@ trait GenericProductFormat
     {
         $attributes = [
             'name' => _i('Nome'),
-            'supplier_code' => _i('Codice Fornitore'),
+            'supplier_code' => __('products.code'),
             'measure' => _i('Unità di Misura'),
             'category' => _i('Categoria'),
             'price' => _i('Prezzo Unitario'),
-            'active' => _i('Ordinabile'),
-            'vat_rate' => _i('Aliquota IVA'),
+            'active' => __('products.bookable'),
+            'vat_rate' => __('products.vat_rate'),
             'portion_quantity' => _i('Pezzatura'),
             'package_size' => _i('Dimensione Confezione'),
             'weight' => _i('Peso'),

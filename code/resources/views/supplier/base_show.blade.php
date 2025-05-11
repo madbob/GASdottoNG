@@ -20,7 +20,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <x-larastrap::text name="name" :label="_i('Nome')" readonly disabled />
+            <x-larastrap::text name="name" tlabel="generic.name" readonly disabled />
             <x-larastrap::text name="business_name" :label="_i('Ragione Sociale')" readonly disabled />
 
             <x-larastrap::field :label="_i('Descrizione')">

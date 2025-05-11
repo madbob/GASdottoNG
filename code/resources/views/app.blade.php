@@ -9,7 +9,7 @@
         <meta name="description" content="Questa è una istanza di GASdotto, il gestionale per l'Economia Solidale" />
 
         <title>{{ currentAbsoluteGas()->name }} | GASdotto</title>
-        <link rel="alternate" type="application/rss+xml" title="{{ _i('Ordini Aperti') }}" href="{{ route('rss') }}"/>
+        <link rel="alternate" type="application/rss+xml" title="{{ __('orders.list_open') }}" href="{{ route('rss') }}"/>
 
         <link rel="stylesheet" type="text/css" href="{{ mix('/css/gasdotto.css') }}">
 
@@ -23,7 +23,7 @@
     </head>
     <body>
         <div id="preloader">
-            <img src="{{ asset('images/loading.svg') }}" alt="{{ _i('Caricamento in corso') }}">
+            <img src="{{ asset('images/loading.svg') }}" alt="{{ __('commons.loading') }}">
         </div>
 
         @if(isset($menu))
@@ -51,31 +51,31 @@
         </x-larastrap::modal>
 
         @if(Auth::check())
-            <x-larastrap::modal title="{{ _i('Feedback') }}" id="feedback-modal">
+            <x-larastrap::modal title="{{ __('commons.feedback') }}" id="feedback-modal">
                 <div>
                     <p>
-                        {{ _i('GASdotto è sviluppato con modello open source!') }}
+                        {{ __('commons.about.opensource') }}
                     </p>
                     <p>
-                        {{ _i('Puoi contribuire mandando una segnalazione o una richiesta:') }}
+                        {{ __('commons.about.contribute') }}
                     </p>
                     <ul>
-                        <li>su GitHub: <a href="https://github.com/madbob/GASdottoNG/" target="_blank">github.com/madbob/GASdottoNG</a></li>
+                        <li>GitHub: <a href="https://github.com/madbob/GASdottoNG/" target="_blank">github.com/madbob/GASdottoNG</a></li>
                         <li>via mail: <a href="mailto:info@madbob.org">info@madbob.org</a></li>
                         <li>sulla mailing list degli utenti: <a href="https://groups.google.com/g/gasdotto-dev">groups.google.com/g/gasdotto-dev</a></li>
                     </ul>
                     <p>
-                        {{ _i('O facendo una donazione:') }}
+                        {{ __('commons.about.donate') }}
                     </p>
                     <p>
                         <a href="https://paypal.me/m4db0b" target="_blank"><img src="https://www.gasdotto.net/images/paypal.png" border="0" alt="PayPal"></a>
                     </p>
                 </div>
                 <p>
-                    {!! _i('Puoi anche consultate <a href="https://gasdotto.net/" target="_blank">il sito di GASdotto</a> per dare una occhiata alla documentazione, o seguirci <a href="https://twitter.com/GASdottoNet" target="_blank">su Twitter</a> o <a href="https://sociale.network/@gasdottonet" target="_blank">su Mastodon</a> per aggiornamenti periodici.') !!}
+                    {!! __('commons.about.link') !!}
                 </p>
                 <p>
-                    {{ _i('Attenzione: per problemi sui contenuti di questo sito (fornitori, ordini, prenotazioni...) fai riferimento agli amministrazioni del tuo GAS.') }}
+                    {{ __('commons.about.local_contact') }}
                 </p>
                 <ul>
                     @foreach(everybodyCan('gas.permissions', $currentgas) as $admin)
@@ -83,16 +83,14 @@
                     @endforeach
                 </ul>
 
-                @if(currentLang() != 'it_IT')
-                    <p>
-                        {!! _i('Se vuoi contribuire alla traduzione nella tua lingua, visita <a href="https://hosted.weblate.org/projects/gasdottong/translations/">questa pagina</a>.') !!}
-                    </p>
-                @endif
+                <p>
+                    {!! __('commons.about.translations') !!}
+                </p>
             </x-larastrap::modal>
         @endif
 
         @if(Session::has('prompt_message'))
-            <x-larastrap::modal title="{{ _i('Attenzione') }}" id="prompt-message-modal">
+            <x-larastrap::modal title="{{ __('commons.warning') }}" id="prompt-message-modal">
                 <p class="w-100 h-100 d-flex align-items-center justify-content-center">
                     {!! Session::get('prompt_message') !!}
                 </p>

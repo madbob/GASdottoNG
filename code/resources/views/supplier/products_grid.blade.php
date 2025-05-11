@@ -117,7 +117,7 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                             </div>
 
                                             <x-larastrap::hidden name="id" npostfix="[]" />
-                                            <x-larastrap::text name="name" :label="_i('Nome')" squeeze required :nprefix="$product->id . '-'" />
+                                            <x-larastrap::text name="name" tlabel="generic.name" squeeze required :nprefix="$product->id . '-'" />
                                         </td>
 
                                         <td class="order-cell-category {{ in_array('category', $columns) ? '' : 'hidden' }}">
@@ -137,7 +137,7 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                         </td>
 
                                         <td class="order-cell-active {{ in_array('active', $columns) ? '' : 'hidden' }}">
-                                            <x-larastrap::check name="active" classes="bookable" :label="_i('Ordinabile')" squeeze :nprefix="$product->id . '-'" />
+                                            <x-larastrap::check name="active" classes="bookable" tlabel="products.bookable" squeeze :nprefix="$product->id . '-'" />
                                         </td>
                                     </tr>
                                 </x-larastrap::enclose>

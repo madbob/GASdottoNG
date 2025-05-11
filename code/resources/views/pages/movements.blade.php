@@ -33,11 +33,11 @@
                         <x-filler :data-action="route('movements.index')" data-fill-target="#movements-in-range" :download-buttons="[['link' => route('movements.index', ['format' => 'csv']), 'label' => _i('Esporta CSV')], ['link' => route('movements.index', ['format' => 'pdf']), 'label' => _i('Esporta PDF')], ['link' => route('movements.index', ['format' => 'balance']), 'label' => _i('Esporta Bilancio')]]">
                             @include('commons.genericdaterange', ['start_date' => strtotime('-1 weeks')])
                             @include('commons.selectmovementtypefield', ['show_all' => true])
-                            <x-larastrap::radios name="method" :label="_i('Pagamento')" :options="paymentsSimple()" value="none" />
+                            <x-larastrap::radios name="method" tlabel="generic.payment" :options="paymentsSimple()" value="none" />
                             <x-larastrap::select-model name="user_id" :label="_i('Utente')" :options="$currentgas->users()->topLevel()->get()" :extra_options="[0 => _i('Nessuno')]" />
-                            <x-larastrap::select-model name="supplier_id" :label="_i('Fornitore')" :options="$currentuser->targetsByAction('movements.admin,supplier.orders,supplier.movements')" :extra_options="[0 => _i('Nessuno')]" />
+                            <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentuser->targetsByAction('movements.admin,supplier.orders,supplier.movements')" :extra_options="[0 => _i('Nessuno')]" />
                             <x-larastrap::text name="identifier" :label="_i('Identificativo')" />
-                            <x-larastrap::text name="notes" :label="_i('Note')" />
+                            <x-larastrap::text name="notes" tlabel="generic.notes" />
 
                             <x-larastrap::field :label="_i('Importo')">
                                 <div class="input-group">

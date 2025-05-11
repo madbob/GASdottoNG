@@ -38,7 +38,7 @@
                     'end_date' => strtotime('+6 months'),
                 ])
 
-                <x-larastrap::select-model name="supplier_id" :label="_i('Fornitore')" :options="$currentgas->suppliers" :extra_options="[0 => _i('Tutti')]" />
+                <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentgas->suppliers" :extra_options="[0 => _i('Tutti')]" />
 
                 @php
 
@@ -70,7 +70,7 @@
                 'class' => App\Aggregate::class
             ],
             'sorting_rules' => [
-                'supplier_name' => _i('Fornitore'),
+                'supplier_name' => __('orders.supplier'),
                 'start' => _i('Data Apertura'),
                 'end' => _i('Data Chiusura'),
                 'shipping' => _i('Data Consegna'),

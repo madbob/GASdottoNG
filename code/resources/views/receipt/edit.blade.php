@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-4">
             @include('commons.staticobjfield', ['obj' => $receipt, 'name' => 'user', 'label' => _i('Utente')])
-            <x-larastrap::text name="number" :label="_i('Numero')" readonly disabled />
+            <x-larastrap::text name="number" tlabel="generic.number" readonly disabled />
             <x-larastrap::datepicker name="date" :label="_i('Data')" />
             <x-larastrap::price name="total" :label="_i('Totale Imponibile')" readonly disabled />
             <x-larastrap::price name="total_tax" :label="_i('Totale IVA')" readonly disabled />

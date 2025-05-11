@@ -4,8 +4,8 @@
     <x-larastrap::mform :obj="$invoice" classes="invoice-editor" method="PUT" :action="route('invoices.update', $invoice->id)">
         <div class="row">
             <div class="col-12 col-md-6">
-                @include('commons.staticobjfield', ['obj' => $invoice, 'name' => 'supplier', 'label' => _i('Fornitore')])
-                <x-larastrap::text name="number" :label="_i('Numero')" disabled readonly />
+                @include('commons.staticobjfield', ['obj' => $invoice, 'name' => 'supplier', 'label' => __('orders.supplier')])
+                <x-larastrap::text name="number" tlabel="generic.number" disabled readonly />
                 <x-larastrap::datepicker name="date" :label="_i('Data')" disabled readonly />
 
                 <x-larastrap::field :label="_i('Allegato')">
@@ -54,11 +54,11 @@
                 ])
             </div>
             <div class="col-12 col-md-6">
-                <x-larastrap::textarea name="notes" :label="_i('Note')" />
+                <x-larastrap::textarea name="notes" tlabel="generic.notes" />
                 <x-larastrap::select name="status" :label="_i('Stato')" :options="App\Helpers\Status::invoices()" />
 
                 @if($currentuser->can('movements.admin', $currentgas) || $currentuser->can('supplier.movements', $invoice->supplier))
-                    <x-larastrap::field :label="_i('Pagamento')">
+                    <x-larastrap::field tlabel="generic.payment">
                         @if($invoice->payment)
                             <div class="row">
                                 <div class="col">

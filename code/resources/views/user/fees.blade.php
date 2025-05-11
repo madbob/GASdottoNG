@@ -2,7 +2,7 @@
 $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
 @endphp
 
-<x-larastrap::modal classes="close-on-submit" :title="_i('Controllo Quote')" size="fullscreen">
+<x-larastrap::modal classes="close-on-submit" size="fullscreen">
     <x-larastrap::form method="POST" :action="route('users.savefees')">
         <input type="hidden" name="reload-whole-page" value="1">
 
@@ -10,8 +10,8 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
             <div class="col-12 col-md-6">
                 <x-larastrap::radios
                     name="actual_status"
-                    :options="['all' => _i('Tutti'), 'active' => _i('Attivi'), 'suspended' => _i('Sospesi'), 'deleted' => _i('Cessati')]"
-                    :label="_i('Stato')"
+                    :options="['all' => __('generic.all'), 'active' => __('user.statuses.active'), 'suspended' => __('user.statuses.suspended'), 'deleted' => __('user.statuses.deleted')]"
+                    tlabel="generic.status"
                     classes="table-filters"
                     value="active"
                     data-table-target="#usersStatusTable" />
@@ -36,9 +36,9 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
                 <table class="table align-middle" id="usersStatusTable">
                     <thead>
                         <tr>
-                            <th scope="col" width="20%">{{ _i('Nome') }}</th>
-                            <th scope="col" width="30%">{{ _i('Ultima Quota Versata') }}</th>
-                            <th scope="col" width="30%">{{ _i('Stato') }}</th>
+                            <th scope="col" width="20%">{{ __('generic.name') }}</th>
+                            <th scope="col" width="30%">{{ __('user.last_fee') }}</th>
+                            <th scope="col" width="30%">{{ __('generic.status') }}</th>
                             <th scope="col" width="20%"></th>
                         </tr>
                     </thead>

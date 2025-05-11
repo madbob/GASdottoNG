@@ -48,9 +48,9 @@ $suppliers = App\Supplier::orderBy('name', 'asc')->get();
                         <th scope="col">{{ _i('Importa') }}</th>
                         <th scope="col">{{ _i('Data') }}</th>
                         <th scope="col">{{ _i('Utente') }}</th>
-                        <th scope="col">{{ _i('Fornitore') }}</th>
+                        <th scope="col">{{ __('orders.supplier') }}</th>
                         <th scope="col">{{ _i('Identificativo') }}</th>
-                        <th scope="col">{{ _i('Note') }}</th>
+                        <th scope="col">{{ __('generic.notes') }}</th>
                         <th scope="col">
                             <x-larastrap::select name="type" nprefix="skip" squeeze :options="$types" classes="triggers-all-selects csv_movement_type_select" data-target-class="csv_movement_type_select" />
                         </th>

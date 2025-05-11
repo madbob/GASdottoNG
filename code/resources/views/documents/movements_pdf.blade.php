@@ -18,12 +18,12 @@
                 <tr>
                     <th scope="col">{{ _i('Data Registrazione') }}</th>
                     <th scope="col">{{ _i('Data Movimento') }}</th>
-                    <th scope="col">{{ _i('Tipo') }}</th>
-                    <th scope="col">{{ _i('Pagamento') }}</th>
+                    <th scope="col">{{ __('generic.type') }}</th>
+                    <th scope="col">{{ __('generic.payment') }}</th>
                     <th scope="col">{{ _i('Pagante') }}</th>
                     <th scope="col">{{ _i('Pagato') }}</th>
                     <th scope="col">{{ _i('Valore') }}</th>
-                    <th scope="col">{{ _i('Note') }}</th>
+                    <th scope="col">{{ __('generic.notes') }}</th>
                 </tr>
             </thead>
             <tbody>

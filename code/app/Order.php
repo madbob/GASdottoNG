@@ -712,7 +712,7 @@ class Order extends Model
                 'width' => 8,
             ],
             'notes' => (object) [
-                'label' => _i('Note'),
+                'label' => __('generic.notes'),
                 'help' => _i('Pannello da cui modificare direttamente le quantità di prodotto in ogni prenotazione, ed aggiungere note per il fornitore'),
                 'width' => 3,
             ],

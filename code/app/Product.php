@@ -328,23 +328,19 @@ class Product extends Model
                 'width' => 5,
             ],
             'name' => (object) [
-                'label' => _i('Nome'),
-                'help' => _i('Nome del prodotto'),
+                'label' => __('generic.name'),
                 'width' => 20,
             ],
             'category' => (object) [
                 'label' => _i('Categoria'),
-                'help' => _i('Categoria del prodotto'),
                 'width' => 15,
             ],
             'measure' => (object) [
                 'label' => _i('Unità di Misura'),
-                'help' => _i('Unità di misura del prodotto'),
                 'width' => 15,
             ],
             'price' => (object) [
                 'label' => _i('Prezzo Unitario'),
-                'help' => _i('Prezzo Unitario del prodotto'),
                 'width' => 10,
             ],
             'max_available' => (object) [
@@ -353,8 +349,8 @@ class Product extends Model
                 'width' => 10,
             ],
             'active' => (object) [
-                'label' => _i('Ordinabile'),
-                'help' => _i("Indica se il prodotto potrà essere ordinato o meno all'interno dei nuovi ordini per il fornitore"),
+                'label' => __('products.bookable'),
+                'help' => __('products.help.bookable'),
                 'width' => 5,
             ],
         ];

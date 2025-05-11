@@ -5,19 +5,19 @@
         <div class="row">
             <div class="col-12 col-md-6">
                 @if($invoice->status == 'payed')
-                    @include('commons.staticobjfield', ['obj' => $invoice, 'name' => 'supplier', 'label' => _i('Fornitore')])
-                    <x-larastrap::text name="number" :label="_i('Numero')" disabled readonly />
+                    @include('commons.staticobjfield', ['obj' => $invoice, 'name' => 'supplier', 'label' => __('orders.supplier')])
+                    <x-larastrap::text name="number" tlabel="generic.number" disabled readonly />
                     <x-larastrap::datepicker name="date" :label="_i('Data')" disabled readonly />
                 @else
                     <x-larastrap::select-model
                         name="supplier_id"
-                        :label="_i('Fornitore')"
+                        tlabel="orders.supplier"
                         classes="select-fetcher"
                         :options="$currentuser->targetsByAction('supplier.invoices')"
                         :help="view('supplier.invoicedata', ['supplier' => $invoice->supplier])->render()"
                         :attributes="['data-fetcher-target' => '.form-text', 'data-fetcher-url' => route('suppliers.invoicedata', 'XXX')]" />
 
-                    <x-larastrap::text name="number" :label="_i('Numero')" required />
+                    <x-larastrap::text name="number" tlabel="generic.number" required />
                     <x-larastrap::datepicker name="date" :label="_i('Data')" required defaults_now />
                 @endif
 
@@ -77,11 +77,11 @@
                 ])
             </div>
             <div class="col-12 col-md-6">
-                <x-larastrap::textarea name="notes" :label="_i('Note')" />
+                <x-larastrap::textarea name="notes" tlabel="generic.notes" />
                 <x-larastrap::select name="status" :label="_i('Stato')" :options="App\Helpers\Status::invoices()" />
 
                 @if($currentuser->can('movements.admin', $currentgas) || $currentuser->can('supplier.movements', $invoice->supplier))
-                    <x-larastrap::field :label="_i('Pagamento')">
+                    <x-larastrap::field tlabel="generic.payment">
                         @if($invoice->payment)
                             <div class="row">
                                 <div class="col">

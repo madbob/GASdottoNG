@@ -121,7 +121,13 @@ class InvoicesController extends BackedController
     private function outputCSV($elements)
     {
         $filename = _i('Esportazione fatture GAS %s.csv', date('d/m/Y'));
-        $headers = [_i('Fornitore'), _i('Data'), _i('Numero'), _i('Imponibile'), _i('IVA')];
+        $headers = [
+            __('orders.supplier'),
+            _i('Data'),
+            __('generic.number'),
+            _i('Imponibile'),
+            _i('IVA')
+        ];
 
         return output_csv($filename, $headers, $elements, function ($invoice) {
             return [

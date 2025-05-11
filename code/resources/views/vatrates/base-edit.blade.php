@@ -1,2 +1,2 @@
-<x-larastrap::text name="name" :label="_i('Nome')" />
-<x-larastrap::decimal name="percentage" :label="_i('Aliquota IVA')" textappend="%" />
+<x-larastrap::text name="name" tlabel="generic.name" />
+<x-larastrap::decimal name="percentage" tlabel="products.vat_rate" textappend="%" />

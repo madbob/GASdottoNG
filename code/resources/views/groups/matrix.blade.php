@@ -17,7 +17,7 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
             <table class="table">
                 <thead>
                     <tr>
-                        <th>{{ _i('Nome') }}</th>
+                        <th>{{ __('generic.name') }}</th>
                         @foreach($groups as $group)
                             <th>
                                 <x-larastrap::hidden name="groups[]" :value="$group->id" />

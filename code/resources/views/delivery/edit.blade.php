@@ -103,7 +103,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                             <x-larastrap::datepicker :label="_i('Data Consegna')" :value="$o->delivery" disabled readonly />
                         </div>
                         <div class="col-md-6">
-                            @include('commons.staticmovementfield', ['obj' => $o->payment, 'label' => _i('Pagamento'), 'rand' => $rand])
+                            @include('commons.staticmovementfield', ['obj' => $o->payment, 'label' => __('generic.payment'), 'rand' => $rand])
                         </div>
                     </div>
                 @endif

@@ -3,13 +3,13 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
 @endphp
 
 @if($currentuser->gas->hasFeature('auto_aggregates'))
-    <x-larastrap::field :label="_i('Fornitori')" :pophelp="_i('Selezionando diversi fornitori, verranno generati i rispettivi ordini e saranno automaticamente aggregati. Questa funzione viene attivata se nel database sono presenti almeno 3 aggregati con almeno %d ordini ciascuno.', aggregatesConvenienceLimit())">
+    <x-larastrap::field tlabel="orders.supplier" :pophelp="_i('Selezionando diversi fornitori, verranno generati i rispettivi ordini e saranno automaticamente aggregati. Questa funzione viene attivata se nel database sono presenti almeno 3 aggregati con almeno %d ordini ciascuno.', aggregatesConvenienceLimit())">
         @include('commons.manyrows', [
             'contents' => $order ? collect([$order]) : new Illuminate\Support\Collection(),
             'new_label' => _i('Aggiungi'),
             'columns' => [
                 [
-                    'label' => _i('Fornitore'),
+                    'label' => __('orders.supplier'),
                     'field' => 'supplier',
                     'type' => 'select-model',
                     'extra' => [
@@ -20,7 +20,7 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
         ])
     </x-larastrap::field>
 @else
-    <x-larastrap::select-model name="supplier" :label="_i('Fornitore')" :options="$suppliers" required />
+    <x-larastrap::select-model name="supplier" tlabel="orders.supplier" :options="$suppliers" required />
 @endif
 
 <x-larastrap::textarea name="comment" :label="_i('Commento')" maxlength="190" rows="2" :pophelp="_i('Eventuale testo informativo da visualizzare nel titolo dell\'ordine. Se più lungo di %d caratteri, il testo viene invece incluso nel pannello delle relative prenotazioni.', [longCommentLimit()])" />

@@ -13,7 +13,7 @@ class Order extends Formatter
     private static function formatCode()
     {
         return (object) [
-            'name' => _i('Codice Fornitore'),
+            'name' => __('products.code'),
             'format_product' => function ($product, $summary) {
                 return $product->supplier_code;
             },
@@ -115,7 +115,7 @@ class Order extends Formatter
                 },
             ],
             'supplier' => (object) [
-                'name' => _i('Fornitore'),
+                'name' => __('orders.supplier'),
                 'checked' => false,
                 'format_product' => function ($product, $summary) {
                     return $product->supplier->printableName();

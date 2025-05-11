@@ -7,12 +7,12 @@
         <thead>
             <tr>
                 <th scope="col">{{ _i('Data') }}</th>
-                <th scope="col">{{ _i('Tipo') }}</th>
+                <th scope="col">{{ __('generic.type') }}</th>
                 <th scope="col">{{ _i('Pagamento') }}</th>
                 <th scope="col">{{ _i('Riferimento') }}</th>
                 <th scope="col">{{ _i('Credito') }}</th>
                 <th scope="col">{{ _i('Debito') }}</th>
-                <th scope="col">{{ _i('Note') }}</th>
+                <th scope="col">{{ __('generic.notes') }}</th>
                 @if(Gate::check('movements.admin', $currentgas))
                     <th scope="col">{{ _i('Modifica') }}</th>
                 @endif

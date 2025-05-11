@@ -15,7 +15,7 @@
                             {{ _i('Specifica quanto vuoi versare ed eventuali note per gli amministratori; riceverai una notifica sul tuo smartphone per confermare, entro 15 minuti, il versamento.') }}
                         </p>
 
-                        <x-larastrap::text name="mobile" :label="_i('Numero di Telefono')" required />
+                        <x-larastrap::text name="mobile" tlabel="generic.phone" required />
                         <x-larastrap::price name="amount" :label="_i('Valore')" required />
                         <x-larastrap::text name="description" :label="_i('Descrizione')" />
                     </x-larastrap::form>

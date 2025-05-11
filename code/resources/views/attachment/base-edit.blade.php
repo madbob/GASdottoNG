@@ -1,12 +1,12 @@
-<x-larastrap::text name="name" :label="_i('Nome')" required />
+<x-larastrap::text name="name" tlabel="generic.name" required />
 
-<x-larastrap::radios name="type" :label="_i('Tipo')" value="file" :options="['file' => _i('File'), 'url' => _i('URL')]" classes="selective-display" :attributes="['data-target' => '.attachment_type']" />
+<x-larastrap::radios name="type" tlabel="generic.type" value="file" :options="['file' => __('generic.file'), 'url' => __('generic.url')]" classes="selective-display" :attributes="['data-target' => '.attachment_type']" />
 
 <div class="attachment_type" data-type="file">
-    <x-larastrap::file name="file" :label="_i('File')" />
+    <x-larastrap::file name="file" tlabel="generic.file" />
 </div>
 <div class="attachment_type" data-type="url">
-    <x-larastrap::url name="url" :label="_i('URL')" />
+    <x-larastrap::url name="url" tlabel="generic.url" />
 </div>
 
-@include('commons.multipleusers', ['obj' => $attachment, 'name' => 'users', 'label' => _i('Destinatari')])
+@include('commons.multipleusers', ['obj' => $attachment, 'name' => 'users', 'label' => __('generic.recipients')])

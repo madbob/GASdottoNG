@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="_i('Variante')">
+<x-larastrap::modal>
     <?php $combos = $product->variant_combos ?>
 
     <x-larastrap::form classes="inner-form" method="POST" :action="route('variants.updatematrix', $product->id)">
@@ -8,7 +8,7 @@
 
         <div class="row">
             <div class="col">
-                <x-larastrap::text name="name" :label="_i('Nome')" :value="$product->variants->first()->name" />
+                <x-larastrap::text name="name" tlabel="generic.name" :value="$product->variants->first()->name" />
 
                 <hr />
 
@@ -42,7 +42,7 @@
 
                                     @if ($product->measure->discrete)
                                         <td>
-                                            <x-larastrap::number name="weight_offset" squeeze npostfix="[]" :textappend="_i('Chili')" step="0.01" />
+                                            <x-larastrap::number name="weight_offset" squeeze npostfix="[]" ttextappend="generic.kilos" step="0.01" />
                                         </td>
                                     @endif
 
@@ -57,7 +57,7 @@
 
 						<tr>
 				            <td colspan="6">
-				                <a href="#" class="btn btn-warning add-row">{{ _i('Aggiungi Nuovo') }}</a>
+				                <a href="#" class="btn btn-warning add-row">{{ __('generic.add_new') }}</a>
 				            </td>
 				        </tr>
                     </tbody>
@@ -83,7 +83,7 @@
 
 								@if ($product->measure->discrete)
 									<td>
-										<x-larastrap::number name="weight_offset" squeeze npostfix="[]" :textappend="_i('Chili')" step="0.01" />
+										<x-larastrap::number name="weight_offset" squeeze npostfix="[]" ttextappend="generic.kilos" step="0.01" />
 									</td>
 								@endif
 

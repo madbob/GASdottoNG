@@ -57,10 +57,10 @@ class MovementsFormatService extends BaseService
         $headers = [
             _i('Data Registrazione'),
             _i('Data Movimento'),
-            _i('Tipo'),
-            _i('Pagamento'),
+            __('generic.type'),
+            __('generic.payment'),
             _i('Identificativo'),
-            _i('Note'),
+            __('generic.notes'),
             _i('Pagante'),
             _i('Pagato'),
         ];

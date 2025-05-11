@@ -11,7 +11,7 @@
 
             ?>
 
-            <x-larastrap::select name="type" :label="_i('Tipo')" :options="$types" disabled readonly />
+            <x-larastrap::select name="type" tlabel="generic.type" :options="$types" disabled readonly />
             <x-larastrap::price name="amount" :label="_i('Valore')" disabled readonly />
             <x-larastrap::datepicker name="date" :label="_i('Data')" disabled readonly />
 
@@ -20,7 +20,7 @@
             @endif
 
             @if(filled($obj->notes))
-                <x-larastrap::textarea name="notes" :label="_i('Note')" disabled readonly />
+                <x-larastrap::textarea name="notes" tlabel="generic.notes" disabled readonly />
             @endif
         </div>
         <div class="col">
@@ -30,7 +30,7 @@
             @if($obj->related->isEmpty() == false)
                 <x-larastrap::field :label="_i('Movimenti Correlati')">
                     @foreach($obj->related as $rel)
-                        @include('commons.staticmovementfield', ['obj' => $rel, 'label' => _i('Pagamento'), 'squeeze' => true])
+                        @include('commons.staticmovementfield', ['obj' => $rel, 'label' => __('generic.payment'), 'squeeze' => true])
                     @endforeach
                 </x-larastrap::field>
             @endif

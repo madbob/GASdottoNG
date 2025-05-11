@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use Illuminate\Support\Facades\App;
+
 use Closure;
 use LaravelGettext;
 use Session;
@@ -33,6 +35,11 @@ class SetLanguage
         */
         Session::put('laravel-gettext-locale-locale', 'rotto');
         LaravelGettext::setLocale($locale);
+
+        /*
+            TODO: fix
+        */
+        App::setLocale('it');
 
         return $next($request);
     }

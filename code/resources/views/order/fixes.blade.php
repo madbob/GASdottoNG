@@ -46,7 +46,7 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#" class="dropdown-item" data-sort-by="name">{{ _i('Nome') }}</a>
+                            <a href="#" class="dropdown-item" data-sort-by="name">{{ __('generic.notes') }}</a>
                         </li>
                         <li>
                             <a href="#" class="dropdown-item" data-sort-by="date">{{ _i('Data Prenotazione') }}</a>

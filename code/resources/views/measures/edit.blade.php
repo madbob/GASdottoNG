@@ -10,12 +10,12 @@
                     'show_columns' => true,
                     'columns' => [
                         [
-                            'label' => _i('ID'),
+                            'label' => __('generic.id'),
                             'field' => 'id',
                             'type' => 'hidden',
                         ],
                         [
-                            'label' => _i('Nome'),
+                            'label' => __('generic.name'),
                             'field' => 'name',
                             'type' => 'text',
                             'extra' => [
@@ -38,7 +38,7 @@
                             }
                         ],
                         [
-                            'label' => _i('Prodotti'),
+                            'label' => __('products.list'),
                             'field' => 'id',
                             'type' => 't',
                             'extra_callback' => function($content, $attributes) {

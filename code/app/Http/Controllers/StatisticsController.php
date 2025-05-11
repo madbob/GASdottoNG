@@ -279,7 +279,11 @@ class StatisticsController extends Controller
 
         if ($id == 'summary') {
             [$data, $categories] = $this->getSummary($start, $end, $type, $target);
-            $csv_headers = [_i('Fornitore'), _i('Valore Ordini'), _i('Utenti Coinvolti')];
+            $csv_headers = [
+                __('orders.supplier'), 
+                _i('Valore Ordini'),
+                _i('Utenti Coinvolti')
+            ];
         }
         else {
             $supplier = $request->input('supplier');

@@ -28,7 +28,7 @@ else {
         <div class="col-12 col-md-6">
             <x-filler :data-action="route('receipts.search')" data-fill-target="#receipts-in-range" :actionButtons="$actions" :downloadButtons="$downloads">
                 @include('commons.genericdaterange', ['start_date' => strtotime('-1 months')])
-                <x-larastrap::select-model name="supplier_id" :label="_i('Fornitore')" :options="$currentgas->suppliers" :extra_options="[0 => _i('Nessuno')]" />
+                <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentgas->suppliers" :extra_options="[0 => _i('Nessuno')]" />
 
                 @if($user_id == '0')
                     <x-larastrap::select-model name="user_id" :label="_i('Utente')" :options="$currentgas->users()->topLevel()->sorted()->get()" :extra_options="[0 => _i('Nessuno')]" />

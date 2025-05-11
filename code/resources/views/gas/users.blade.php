@@ -13,10 +13,10 @@
                     <?php
 
                     $selectable_mandatory = [
-                        'firstname' => _i('Nome'),
-                        'lastname' => _i('Cognome'),
-                        'email' => _i('E-Mail'),
-                        'phone' => _i('Telefono'),
+                        'firstname' => __('user.firstname'),
+                        'lastname' => __('user.lastname'),
+                        'email' => __('generic.email'),
+                        'phone' => __('generic.phone'),
                     ];
 
                     $selected_mandatory = [];

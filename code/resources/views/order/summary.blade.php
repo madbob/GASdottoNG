@@ -49,7 +49,7 @@ foreach($display_columns as $identifier => $metadata) {
                         <a href="#" class="dropdown-item" data-sort-by="sorting" data-numeric-sorting="true">{{ _i('Ordinamento Manuale') }}</a>
                     </li>
                     <li>
-                        <a href="#" class="dropdown-item" data-sort-by="name">{{ _i('Nome') }}</a>
+                        <a href="#" class="dropdown-item" data-sort-by="name">{{ __('generic.name') }}</a>
                     </li>
                     <li>
                         <a href="#" class="dropdown-item" data-sort-by="category_name">{{ _i('Categoria') }}</a>

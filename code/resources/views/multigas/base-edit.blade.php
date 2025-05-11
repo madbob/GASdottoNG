@@ -8,7 +8,7 @@
     </div>
 </x-larastrap::field>
 
-<x-larastrap::text name="username" :label="_i('Username')" required />
-<x-larastrap::text name="firstname" :label="_i('Nome')" required />
-<x-larastrap::text name="lastname" :label="_i('Cognome')" required />
-<x-larastrap::password name="password" :label="_i('Password')" required />
+<x-larastrap::text name="username" tlabel="auth.username" required />
+<x-larastrap::text name="firstname" tlabel="user.firstname" required />
+<x-larastrap::text name="lastname" tlabel="user.lastname" required />
+<x-larastrap::password name="password" tlabel="auth.password" required />

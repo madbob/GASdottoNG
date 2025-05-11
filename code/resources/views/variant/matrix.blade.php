@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="_i('Varianti')">
+<x-larastrap::modal>
     <?php
 
     /*
@@ -44,7 +44,7 @@
 
                                     @if ($product->measure->discrete)
                                         <td>
-                                            <x-larastrap::number name="weight_offset" squeeze npostfix="[]" :textappend="_i('Chili')" step="0.01" />
+                                            <x-larastrap::number name="weight_offset" squeeze npostfix="[]" ttextappend="generic.kilos" step="0.01" />
                                         </td>
                                     @endif
                                 </tr>

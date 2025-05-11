@@ -9,7 +9,7 @@
                 @include('commons.addingbutton', [
                     'template' => 'supplier.base-edit',
                     'typename' => 'supplier',
-                    'typename_readable' => _i('Fornitore'),
+                    'typename_readable' => __('orders.supplier'),
                     'targeturl' => 'suppliers'
                 ])
             @endcan

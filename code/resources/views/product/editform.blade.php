@@ -12,8 +12,8 @@ if (!isset($duplicate)) {
     <div class="col-md-6">
         @include('product.base-edit', ['product' => $product])
 
-        <x-larastrap::text name="supplier_code" :label="_i('Codice Fornitore')" />
-        <x-larastrap::check name="active" :label="_i('Ordinabile')" :pophelp="_i('Indica se il prodotto potrà essere ordinato o meno all\'interno dei nuovi ordini per il fornitore. Lo stato dei singoli prodotti potrà comunque essere cambiato da parte dei referenti anche all\'interno di un ordine aperto')" />
+        <x-larastrap::text name="supplier_code" tlabel="products.code" />
+        <x-larastrap::check name="active" tlabel="products.bookable" tpophelp="products.help.bookable" />
 
         @if($duplicate == false)
             @include('commons.modifications', ['obj' => $product, 'duplicate' => $duplicate])

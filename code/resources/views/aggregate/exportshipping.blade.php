@@ -13,11 +13,9 @@ else {
 
 ?>
 
-<x-larastrap::modal :title="_i('Dettaglio Consegne Aggregato')">
+<x-larastrap::modal>
     <x-larastrap::form classes="direct-submit" method="GET" :action="route('aggregates.document', ['id' => $aggregate->id, 'type' => 'shipping'])">
-        <p>
-            {{ _i("Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni di tutti gli ordini inclusi in questo aggregato.") }}
-        </p>
+        <p>{{ __('orders.help_aggregate_export_shipping') }}</p>
 
         <hr>
 
@@ -26,17 +24,17 @@ else {
         @include('commons.selectshippingexport', ['aggregate' => $aggregate, 'included_metaplace' => ['all_by_name', 'all_by_place', 'specific']])
 
         <?php list($options, $values) = flaxComplexOptions(App\Formatters\User::formattableColumns('shipping')) ?>
-        <x-larastrap::checks name="fields" :label="_i('Dati Utenti')" :options="$options" :value="$currentgas->orders_shipping_user_columns" />
+        <x-larastrap::checks name="fields" tlabel="export.data.users" :options="$options" :value="$currentgas->orders_shipping_user_columns" />
 
         <?php list($options, $values) = flaxComplexOptions(App\Formatters\Order::formattableColumns('shipping')) ?>
-        <x-larastrap::checks name="fields" :label="_i('Colonne Prodotti')" :options="$options" :value="$currentgas->orders_shipping_product_columns" />
+        <x-larastrap::checks name="fields" tlabel="export.data.products" :options="$options" :value="$currentgas->orders_shipping_product_columns" />
 
-        <x-larastrap::radios name="status" :label="_i('Stato Prenotazioni')" :options="['pending' => _i('Prenotate'), 'shipped' => _i('Consegnate')]" value="pending" />
+        <x-larastrap::radios name="status" tlabel="export.data.status" :options="['pending' => __('orders.booking.statuses.booked'), 'shipped' => __('orders.booking.statuses.shipped')]" value="pending" />
 
         @if(someoneCan('users.subusers'))
-            <x-larastrap::radios name="isolate_friends" :label="_i('Amici separati')" :options="['0' => _i('No'), '1' => _i('Sì')]" value="0" :pophelp="_i('Di default, le prenotazioni degli utenti \'amici\' vengono aggregate in quelle dei rispettivi utenti principali. Selezionando \'Sì\', vengono rappresentate nel documento come prenotazioni autonome.')" />
+            <x-larastrap::radios name="isolate_friends" tlabel="export.data.split_friends" :options="['0' => __('generic.no'), '1' => __('generic.yes')]" value="0" tpophelp="export.help_split_friends" />
         @endif
 
-        <x-larastrap::radios name="format" :label="_i('Formato')" :options="['pdf' => _i('PDF'), 'csv' => _i('CSV')]" value="pdf" />
+        <x-larastrap::radios name="format" tlabel="export.data.format" :options="['pdf' => __('export.data.formats.pdf'), 'csv' => __('export.data.formats.csv')]" value="pdf" />
     </x-larastrap::form>
 </x-larastrap::modal>

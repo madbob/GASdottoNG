@@ -1,10 +1,10 @@
 <div class="variants-editor" id="variants_editor_{{ sanitizeId($product->id) }}" data-reload-url="{{ route('variants.show', $product->id) }}">
     <div class="row">
         <div class="col">
-            <x-larastrap::ambutton :label="_i('Crea Nuova Variante')" :data-modal-url="route('variants.create', ['product_id' => $product->id])" />
+            <x-larastrap::ambutton tlabel="generic.add_new" :data-modal-url="route('variants.create', ['product_id' => $product->id])" />
 
             @if($product->variants->count() > 1)
-                <x-larastrap::ambutton :label="_i('Modifica Matrice Varianti')" :data-modal-url="route('variants.matrix', $product->id)" />
+                <x-larastrap::ambutton tlabel="products.variant.matrix" :data-modal-url="route('variants.matrix', $product->id)" />
             @endif
         </div>
     </div>

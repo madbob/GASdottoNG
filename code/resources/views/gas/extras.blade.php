@@ -56,7 +56,7 @@
                 @include('commons.addingbutton', [
                     'template' => 'vatrates.base-edit',
                     'typename' => 'vatrate',
-                    'typename_readable' => _i('Aliquota IVA'),
+                    'typename_readable' => __('products.vat_rate'),
                     'targeturl' => 'vatrates',
                     'autoread' => true,
                 ])

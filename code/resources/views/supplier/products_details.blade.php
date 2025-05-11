@@ -4,10 +4,10 @@
     $sorting_rules = [];
 
     if ($currentgas->manual_products_sorting) {
-        $sorting_rules['sorting'] = _i('Ordinamento Manuale');
+        $sorting_rules['sorting'] = __('generic.sortings.manual');
     }
 
-    $sorting_rules['name'] = _i('Nome');
+    $sorting_rules['name'] = __('generic.name');
 
     $sorting_rules['category_name'] = (object) [
         'label' => _i('Categoria'),

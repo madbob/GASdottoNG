@@ -97,7 +97,17 @@ class MovementsController extends BackedController
         $filename = sanitizeFilename(_i('Esportazione movimenti GAS %s.%s', [date('d/m/Y'), $format]));
 
         if ($format == 'csv') {
-            $headers = [_i('Data Registrazione'), _i('Data Movimento'), _i('Tipo'), _i('Pagamento'), _i('Identificativo'), _i('Pagante'), _i('Pagato'), _i('Valore'), _i('Note')];
+            $headers = [
+                _i('Data Registrazione'),
+                _i('Data Movimento'),
+                __('generic.type'),
+                __('generic.payment'),
+                _i('Identificativo'),
+                _i('Pagante'),
+                _i('Pagato'),
+                _i('Valore'),
+                __('generic.notes')
+            ];
 
             return output_csv($filename, $headers, $movements, function ($mov) {
                 $row = [];
@@ -308,7 +318,11 @@ class MovementsController extends BackedController
                 $has_shipping_place = $user->gas->hasFeature('shipping_places');
                 $filename = sanitizeFilename(_i('Crediti al %s.csv', date('d/m/Y')));
 
-                $headers = [_i('ID'), _i('Nome'), _i('E-Mail')];
+                $headers = [
+                    __('generic.id'),
+                    __('generic.name'),
+                    __('generic.email')
+                ];
 
                 $currencies = Currency::enabled();
                 foreach ($currencies as $curr) {
@@ -383,7 +397,10 @@ class MovementsController extends BackedController
 
             if ($subtype == 'csv') {
                 $filename = sanitizeFilename(_i('Saldi Fornitori al %s.csv', date('d/m/Y')));
-                $headers = [_i('ID'), _i('Nome')];
+                $headers = [
+                    __('generic.id'),
+                    __('generic.name'),
+                ];
 
                 $currencies = Currency::enabled();
                 foreach ($currencies as $curr) {

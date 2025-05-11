@@ -12,7 +12,7 @@
 
     @if($gas->restricted == '1')
         <div class="alert alert-warning text-center mt-3">
-            {{ _i('Modalità Manutenzione: Accesso Temporaneamente Ristretto ai soli Amministratori') }}
+            {{ __('auth.maintenance_notice') }}
         </div>
         <hr/>
     @endif
@@ -29,13 +29,13 @@
 
     <br/>
 
-    <x-larastrap::form method="POST" action="{{ route('login') }}" :buttons="[['color' => 'success', 'label' => _i('Login'), 'type' => 'submit']]">
+    <x-larastrap::form method="POST" action="{{ route('login') }}" :buttons="[['color' => 'success', 'tlabel' => 'auth.login', 'type' => 'submit']]">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <input type="hidden" name="language" value="{{ $gas->getConfig('language') }}">
 
-        <x-larastrap::username name="username" :label="_i('Username')" />
-        <x-larastrap::password name="password" :label="_i('Password')" />
-        <x-larastrap::check name="remember" :label="_i('Ricordami')" checked="true" :attributes="['data-attribute' => 'remember_me', 'data-attribute-default' => 'true']" classes="remember-checkbox" value="1" />
+        <x-larastrap::username name="username" tlabel="auth.username" />
+        <x-larastrap::password name="password" tlabel="auth.password" />
+        <x-larastrap::check name="remember" tlabel="auth.remember" checked="true" :attributes="['data-attribute' => 'remember_me', 'data-attribute-default' => 'true']" classes="remember-checkbox" value="1" />
     </x-larastrap::form>
 </div>
 
@@ -43,9 +43,9 @@
     <hr/>
     <p>
         @if($gas->hasFeature('public_registrations'))
-            <a href="{{ route('register') }}">{{ _i('Registrati') }}</a>
+            <a href="{{ route('register') }}">{{ __('auth.register') }}</a>
         @endif
-        <a class="float-end" href="{{ route('password.request') }}">{{ _i('Recupero Password') }}</a>
+        <a class="float-end" href="{{ route('password.request') }}">{{ __('auth.password_request_link') }}</a>
     </p>
     <br>
     <br>

@@ -4,7 +4,7 @@ $summary = $master_summary->orders[$order->id];
 
 $custom_buttons = [
     [
-        'label' => _i('Esporta'),
+        'tlabel' => 'generic.export',
         'classes' => ['float-start', 'link-button', 'me-2'],
         'attributes' => ['data-link' => $order->exportableURL()]
     ]
@@ -16,7 +16,7 @@ if ($order->bookings()->count() > 0) {
     $custom_buttons[] = [
         'color' => 'danger',
         'classes' => ['async-modal'],
-        'label' => _i('Elimina'),
+        'tlabel' => 'generic.remove',
         'attributes' => [
             'data-modal-url' => route('orders.nodestroy', $order->id),
         ]
@@ -36,27 +36,27 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
 
     <div class="row">
         <div class="col-12 col-lg-4">
-            @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => _i('Fornitore')])
-            <x-larastrap::text name="internal_number" :label="_i('Numero')" readonly disabled :pophelp="_i('Numero progressivo automaticamente assegnato ad ogni ordine')" />
+            @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'tlabel' => 'orders.supplier'])
+            <x-larastrap::text name="internal_number" tlabel="generic.number" readonly disabled tpophelp="orders.help.number" />
 
             <?php
 
             $keep_open_packages_values = [
-                'no' => _i('No, ignora la dimensione delle confezioni'),
-                'each' => _i('Si, permetti eventuali altre prenotazioni'),
+                'no' => __('orders.packages.ignore'),
+                'each' => __('orders.packages.permit'),
             ];
 
             if ($order->aggregate->gas()->count() > 1) {
-                $keep_open_packages_values['all'] = _i('Si, e contempla le quantità prenotate da parte di tutti i GAS');
+                $keep_open_packages_values['all'] = __('orders.packages.permit_all');
             }
 
             ?>
 
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
-                <x-larastrap::textarea name="comment" :label="_i('Commento')" maxlength="190" rows="2" :pophelp="_i('Eventuale testo informativo da visualizzare nel titolo dell\'ordine. Se più lungo di %d caratteri, il testo viene invece incluso nel pannello delle relative prenotazioni.', [longCommentLimit()])" />
-                <x-larastrap::datepicker name="start" :label="_i('Data Apertura')" required />
-                <x-larastrap::datepicker name="end" :label="_i('Data Chiusura')" required :attributes="['data-enforce-after' => '.date[name=start]']" :pophelp="_i('Data di chiusura dell\'ordine. Al termine del giorno qui indicato, l\'ordine sarà automaticamente impostato nello stato Prenotazioni Chiuse')" />
-                <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" :attributes="['data-enforce-after' => '.date[name=end]']" />
+                <x-larastrap::textarea name="comment" tlabel="generic.comment" maxlength="190" rows="2" :pophelp="__('help.comment', ['limit' => longCommentLimit()])" />
+                <x-larastrap::datepicker name="start" tlabel="orders.dates.start" required />
+                <x-larastrap::datepicker name="end" tlabel="orders.dates.end" required :attributes="['data-enforce-after' => '.date[name=start]']" tpophelp="orders.help.end" />
+                <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" :attributes="['data-enforce-after' => '.date[name=end]']" />
 
                 @if($currentgas->booking_contacts == 'manual')
                     <?php
@@ -70,27 +70,27 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
 
                     ?>
 
-                    <x-larastrap::selectobj name="users" :label="_i('Contatti')" :options="$contactable_users" multiple :pophelp="_i('I contatti degli utenti selezionati saranno mostrati nel pannello delle prenotazioni. Tenere premuto Ctrl per selezionare più utenti')" />
+                    <x-larastrap::selectobj name="users" tlabel="generic.contacts" :options="$contactable_users" multiple tpophelp="orders.help.contacts" />
                 @endif
 
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
-                    <x-larastrap::radios name="keep_open_packages" :label="_i('Forza completamento confezioni')" :options="$keep_open_packages_values" classes="btn-group-vertical" :pophelp="_i('Se questa opzione viene abilitata, alla chiusura dell\'ordine sarà verificato se ci sono prodotti la cui quantità complessivamente ordinata non è multipla della dimensione della relativa confezione. Se si, l\'ordine resterà aperto e sarà possibile per gli utenti prenotare solo quegli specifici prodotti finché non si raggiunge la quantità desiderata')" />
+                    <x-larastrap::radios name="keep_open_packages" tlabel="orders.handle_packages" :options="$keep_open_packages_values" classes="btn-group-vertical" tpophelp="orders.help.handle_packages" />
                 @endif
             @else
                 @if(!empty($order->comment))
-                    <x-larastrap::text name="comment" :label="_i('Commento')" readonly disabled />
+                    <x-larastrap::text name="comment" tlabel="generic.comment" readonly disabled />
                 @endif
 
-                <x-larastrap::datepicker name="start" :label="_i('Data Apertura')" readonly disabled />
-                <x-larastrap::datepicker name="end" :label="_i('Data Chiusura')" readonly disabled />
-                <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" readonly disabled />
+                <x-larastrap::datepicker name="start" tlabel="orders.dates.start" readonly disabled />
+                <x-larastrap::datepicker name="end" tlabel="orders.dates.end" readonly disabled />
+                <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" readonly disabled />
 
                 @if($order->circles()->count() != 0 && $order->aggregate->orders()->count() == 1)
                     @include('order.partials.groups', ['order' => $order, 'readonly' => true])
                 @endif
 
                 @if($order->products()->where('package_size', '!=', 0)->count() != 0)
-                    <x-larastrap::text :label="_i('Forza completamento confezioni')" :value="$keep_open_packages_values[$order->keep_open_packages]" readonly disabled />
+                    <x-larastrap::text tlabel="orders.handle_packages" :value="$keep_open_packages_values[$order->keep_open_packages]" readonly disabled />
                 @endif
             @endif
 
@@ -120,14 +120,14 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
             @include('commons.modifications', [
                 'obj' => $order,
                 'skip_void' => true,
-                'suggestion' => $show_alert ? _i('Il valore di alcuni modificatori verrà ricalcolato quando l\'ordine sarà in stato "Consegnato".<br><a target="_blank" href="https://www.gasdotto.net/docs/modificatori#distribuzione">Leggi di più</a>') : '',
+                'suggestion' => $show_alert ? __('orders.help.modifiers_notice') : '',
             ])
 
             @if(Gate::check('movements.admin', $currentgas) || Gate::check('supplier.movements', $order->supplier))
                 @include('commons.movementfield', [
                     'obj' => $order->payment,
                     'name' => 'payment_id',
-                    'label' => _i('Pagamento'),
+                    'label' => __('generic.payment'),
                     'default' => \App\Movement::generate('order-payment', $currentgas, $order, $order->fullSupplierValue($summary, $shipped_modifiers) ?? 0),
                     'to_modal' => [
                         'amount_editable' => true,
@@ -135,12 +135,12 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
                             'reload-loadable' => '#order-list',
                         ],
                     ],
-                    'help_popover' => _i("Da qui è possibile immettere il movimento contabile di pagamento dell'ordine nei confronti del fornitore, che andrà ad alterare il relativo saldo"),
+                    'help_popover' => __('orders.help.payment'),
                 ])
             @else
                 @include('commons.staticmovementfield', [
                     'obj' => $order->payment,
-                    'label' => 'Pagamento'
+                    'label' => __('generic.payment'),
                 ])
             @endif
         </div>

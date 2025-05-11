@@ -42,9 +42,9 @@ class Contact extends Model
         $ret = [
             'address' => _i('Indirizzo'),
             'referent' => _i('Referente'),
-            'email' => _i('E-Mail'),
+            'email' => __('generic.email'),
             'skip_email' => _i('E-Mail (no notifiche)'),
-            'phone' => _i('Telefono'),
+            'phone' => __('generic.phone'),
             'mobile' => _i('Cellulare'),
             'fax' => _i('Fax'),
             'website' => _i('Sito Web'),

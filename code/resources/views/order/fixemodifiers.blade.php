@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="_i('Attenzione')">
+<x-larastrap::modal>
     <x-larastrap::iform method="POST" :action="route('orders.postfixmodifiers', $order->id)">
         <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
 

@@ -48,7 +48,7 @@ class Supplier extends Model
 
     public static function commonClassName()
     {
-        return _i('Fornitore');
+        return __('orders.supplier');
     }
 
     public function products(): HasMany

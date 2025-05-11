@@ -17,7 +17,7 @@
                 <table class="table" id="remoteSuppliers">
                     <thead>
                         <tr>
-                            <th scope="col" width="25%">{{ _i('Nome') }}</th>
+                            <th scope="col" width="25%">{{ __('generic.name') }}</th>
                             <th scope="col" width="20%">{{ _i('Partita IVA') }}</th>
                             <th scope="col" width="25%">{{ _i('Aggiornato') }}</th>
                             <th scope="col" width="25%">{{ _i('Ultima Lettura') }}</th>

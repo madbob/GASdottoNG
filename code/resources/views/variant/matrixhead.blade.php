@@ -4,19 +4,19 @@
 			<th scope="col">{{ $value->variant->name }}</th>
 		@endforeach
 
-		<th scope="col" width="15%">{{ _i('Ordinabile') }}</th>
+		<th scope="col" width="15%">{{ __('products.bookable') }}</th>
 
 		<th scope="col" width="20%">
-			{{ _i('Codice Fornitore') }}
-			<x-larastrap::pophelp :text="_i('Se non viene specificato, tutte le varianti usano il Codice Fornitore del prodotto principale.')" />
+			{{ __('products.code') }}
+			<x-larastrap::pophelp ttext="products.variant.help.code" />
 		</th>
 		<th scope="col" width="20%">
-			{{ _i('Differenza Prezzo') }}
-			<x-larastrap::pophelp :text="_i('Differenza di prezzo, positiva o negativa, da applicare al prezzo del prodotto quando una specifica combinazione di varianti viene selezionata.')" />
+			{{ __('products.variant.price_difference') }}
+			<x-larastrap::pophelp ttext="__('products.variant.help.price_difference')" />
 		</th>
 
 		@if($product->measure->discrete)
-			<th scope="col" width="20%">{{ _i('Differenza Peso') }}</th>
+			<th scope="col" width="20%">{{ __('products.variant.weight_difference') }}</th>
 		@endif
 	</tr>
 </thead>

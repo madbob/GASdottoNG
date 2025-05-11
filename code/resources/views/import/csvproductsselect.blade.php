@@ -34,13 +34,13 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                 <thead>
                     <tr>
                         <th scope="col" width="5%">{{ _i('Importa') }}</th>
-                        <th scope="col" width="15%">{{ _i('Nome') }}</th>
+                        <th scope="col" width="15%">{{ __('generic.name') }}</th>
                         <th scope="col" width="15%">{{ _i('Descrizione') }}</th>
                         <th scope="col" width="10%">{{ _i('Prezzo Unitario') }}</th>
                         <th scope="col" width="10%">{{ _i('Categoria') }}</th>
                         <th scope="col" width="10%">{{ _i('Unità di Misura') }}</th>
-                        <th scope="col" width="10%">{{ _i('Aliquota IVA') }}</th>
-                        <th scope="col" width="10%">{{ _i('Codice Fornitore') }}</th>
+                        <th scope="col" width="10%">{{ __('products.vat_rate') }}</th>
+                        <th scope="col" width="10%">{{ __('products.code') }}</th>
                         <th scope="col" width="15%">{{ _i('Aggiorna') }}</th>
                     </tr>
                 </thead>

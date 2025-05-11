@@ -1,7 +1,7 @@
 <x-larastrap::mform :obj="$gas" method="PUT" :action="route('multigas.update', $gas->id)" :nodelete="$currentuser->gas->id == $gas->id">
     <div class="row">
         <div class="col-6">
-            <x-larastrap::text name="name" :label="_i('Nome')" required />
+            <x-larastrap::text name="name" tlabel="generic.name" required />
         </div>
     </div>
 

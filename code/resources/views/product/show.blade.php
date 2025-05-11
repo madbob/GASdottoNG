@@ -12,10 +12,10 @@
             </x-larastrap::field>
 
             @if(filled($product->supplier_code))
-                <x-larastrap::text name="supplier_code" :label="_i('Codice Fornitore')" readonly disabled />
+                <x-larastrap::text name="supplier_code" tlabel="products.code" readonly disabled />
             @endif
 
-            <x-larastrap::check name="active" :label="_i('Ordinabile')" readonly disabled />
+            <x-larastrap::check name="active" tlabel="products.bookable" readonly disabled />
         </div>
         <div class="col-md-6">
             <div class="row">

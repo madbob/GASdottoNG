@@ -1,11 +1,7 @@
-<x-larastrap::modal :title="_i('Riassunto Prodotti')" classes="close-on-submit order-document-download-modal">
+<x-larastrap::modal classes="close-on-submit order-document-download-modal">
     <x-larastrap::form method="GET" :action="url('orders/document/' . $order->id . '/summary')">
-        <p>
-            {{ ("Da qui puoi ottenere un documento che riassume le quantità prenotate di tutti i prodotti: utile da inviare al fornitore, una volta chiuso l'ordine.") }}
-        </p>
-        <p>
-            {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
-        </p>
+        <p>{!! __('export.help_aggregate_export_summary') !!}</p>
+        <p>{!! __('export.help_csv_libreoffice') !!}</p>
 
         <hr/>
 

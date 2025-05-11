@@ -25,7 +25,7 @@ if ($editable && $obj && $obj->exists) {
     $buttons[] = ['color' => 'danger', 'label' => _i('Elimina'), 'classes' => ['float-start', 'async-modal'], 'attributes' => ['data-modal-url' => route('movements.askdelete', $obj->id)]];
 }
 
-$buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['type' => 'submit']];
+$buttons[] = ['color' => 'success', 'tlabel' => 'generic.save', 'attributes' => ['type' => 'submit']];
 
 ?>
 
@@ -82,6 +82,6 @@ $buttons[] = ['color' => 'success', 'label' => _i('Salva'), 'attributes' => ['ty
 
         <x-larastrap::datepicker name="date" :label="_i('Data')" defaults_now="true" />
         <x-larastrap::text name="identifier" :label="_i('Identificativo')" />
-        <x-larastrap::textarea name="notes" :label="_i('Note')" />
+        <x-larastrap::textarea name="notes" tlabel="generic.notes" />
     </x-larastrap::iform>
 </x-larastrap::modal>

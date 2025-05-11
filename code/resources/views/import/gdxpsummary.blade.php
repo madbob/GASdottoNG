@@ -13,7 +13,7 @@
                     </x-larastrap::enclose>
                 @endif
 
-                <x-larastrap::field :label="_i('Fornitore')">
+                <x-larastrap::field tlabel="orders.supplier">
                     <div class="radio">
                         <label>
                             <input type="radio" name="supplier_source" value="new" {{ $existing ? '' : 'checked' }}> {{ _i('Crea nuovo') }}: {{ $supplier->name }}
@@ -27,7 +27,7 @@
                     </div>
                 </x-larastrap::field>
 
-                <x-larastrap::field :label="_i('Prodotti')">
+                <x-larastrap::field tlabel="products.list">
                     <label class="static-label text-body-secondary">
                         {{ _i('Nel file ci sono %s prodotti.', $supplier->products->count()) }}
                     </label>

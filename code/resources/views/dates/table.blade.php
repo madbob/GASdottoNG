@@ -19,12 +19,12 @@
                     'show_columns' => true,
                     'columns' => [
                         [
-                            'label' => _i('ID'),
+                            'label' => __('generic.id'),
                             'field' => 'id',
                             'type' => 'hidden',
                         ],
                         [
-                            'label' => _i('Fornitore'),
+                            'label' => __('orders.supplier'),
                             'field' => 'target_id',
                             'type' => 'select-model',
                             'width' => 15,
@@ -54,7 +54,7 @@
                             'width' => 20,
                         ],
                         [
-                            'label' => _i('Tipo'),
+                            'label' => __('generic.type'),
                             'field' => 'type',
                             'type' => 'select',
                             'width' => 10,

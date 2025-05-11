@@ -27,7 +27,7 @@
                     'contents' => $movements,
                     'columns' => [
                         [
-                            'label' => _i('Tipo'),
+                            'label' => __('generic.type'),
                             'field' => 'type',
                             'type' => 'select',
                             'width' => 3,
@@ -54,7 +54,7 @@
                             ]
                         ],
                         [
-                            'label' => _i('Note'),
+                            'label' => __('generic.notes'),
                             'field' => 'notes',
                             'type' => 'text',
                             'width' => 4,

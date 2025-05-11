@@ -16,7 +16,7 @@ $total = 0;
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">{{ _i('Fornitore') }}</th>
+            <th scope="col">{{ __('orders.supplier') }}</th>
             <th scope="col">{{ _i('Utente') }}</th>
             <th scope="col">{{ _i('Data') }}</th>
             <th scope="col">{{ _i('Valore') }}</th>

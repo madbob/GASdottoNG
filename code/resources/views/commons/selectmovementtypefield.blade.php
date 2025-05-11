@@ -9,7 +9,7 @@ if (!isset($field_name)) {
 }
 
 if (!isset($current_label)) {
-    $current_label = _i('Tipo');
+    $current_label = __('generic.type');
 }
 
 if (!isset($current_pophelp)) {

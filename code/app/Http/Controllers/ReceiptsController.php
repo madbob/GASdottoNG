@@ -116,7 +116,13 @@ class ReceiptsController extends BackedController
     private function outputCSV($elements)
     {
         $filename = _i('Esportazione ricevute GAS %s.csv', date('d/m/Y'));
-        $headers = [_i('Utente'), _i('Data'), _i('Numero'), _i('Imponibile'), _i('IVA')];
+        $headers = [
+            _i('Utente'),
+            _i('Data'),
+            __('generic.number'), 
+            _i('Imponibile'),
+            _i('IVA')
+        ];
 
         return output_csv($filename, $headers, $elements, function ($receipt) {
             return [

@@ -16,7 +16,7 @@ class Products extends CSVImporter
     {
         return [
             'name' => (object) [
-                'label' => _i('Nome'),
+                'label' => __('generic.name'),
             ],
             'description' => (object) [
                 'label' => _i('Descrizione'),
@@ -29,7 +29,7 @@ class Products extends CSVImporter
                 'explain' => _i('Da usare in combinazione con Aliquota IVA'),
             ],
             'vat' => (object) [
-                'label' => _i('Aliquota IVA'),
+                'label' => __('products.vat_rate'),
             ],
             'category' => (object) [
                 'label' => _i('Categoria'),
@@ -38,7 +38,7 @@ class Products extends CSVImporter
                 'label' => _i('Unità di Misura'),
             ],
             'supplier_code' => (object) [
-                'label' => _i('Codice Fornitore'),
+                'label' => __('products.code'),
             ],
             'package_size' => (object) [
                 'label' => _i('Dimensione Confezione'),

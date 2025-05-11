@@ -5,22 +5,22 @@
         <div class="col-md-4">
             @php
 
-            $statuses = ['no' => _i('Invariato')];
+            $statuses = ['no' => __('orders.statuses.unchange')];
             foreach(\App\Helpers\Status::orders() as $identifier => $meta) {
                 $statuses[$identifier] = $meta->label;
             }
 
             @endphp
 
-            <x-larastrap::select name="status" :label="_i('Stato')" :options="$statuses" value="no" :pophelp="_i('Da qui puoi modificare lo stato di tutti gli ordini inclusi nell\'aggregato')" />
+            <x-larastrap::select name="status" tlabel="generic.status" :options="$statuses" value="no" tpophelp="orders.help_aggregate_status" />
 
-            <x-larastrap::textarea name="comment" :label="_i('Commento')" rows="2" />
+            <x-larastrap::textarea name="comment" tlabel="generic.comment" rows="2" />
 
-            <x-larastrap::check name="change_dates" :label="_i('Modifica Date')" triggers_collapse="change_dates" :pophelp="_i('Da qui è possibile modificare la data di apertura, chiusura a consegna di tutti gli ordini inclusi nell\'aggregato')" checked="false" />
+            <x-larastrap::check name="change_dates" tlabel="orders.change_date" triggers_collapse="change_dates" tpophelp="orders.help_change_date" checked="false" />
             <x-larastrap::collapse id="change_dates">
-                <x-larastrap::datepicker name="start" :label="_i('Data Apertura Prenotazioni')" />
-                <x-larastrap::datepicker name="end" :label="_i('Data Chiusura Prenotazioni')" />
-                <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" />
+                <x-larastrap::datepicker name="start" tlabel="order.dates.start" />
+                <x-larastrap::datepicker name="end" tlabel="order.dates.end" />
+                <x-larastrap::datepicker name="shipping" tlabel="order.dates.shipping" />
             </x-larastrap::collapse>
         </div>
         <div class="col-md-4">
@@ -48,9 +48,9 @@
 
 				<thead>
 					<tr>
-						<th scope="col">Ordine</th>
-						<th scope="col">Totale Prenotato</th>
-						<th scope="col">Totale Consegnato</th>
+						<th scope="col">{{ __('orders.name') }}</th>
+						<th scope="col">{{ __('orders.totals.booked') }}</th>
+						<th scope="col">{{ __('orders.totals.shipped') }}</th>
 					</tr>
 				</thead>
 				<tbody>

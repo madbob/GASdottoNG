@@ -6,7 +6,7 @@
                     <thead>
                         <tr>
                             <th scope="col" width="20%">{{ _i('Prodotto') }}</th>
-                            <th scope="col" width="15%">{{ _i('Aliquota IVA') }}</th>
+                            <th scope="col" width="15%">{{ __('products.vat_rate') }}</th>
                             <th scope="col" width="15%">{{ _i('Quantità Consegnata') }}</th>
                             <th scope="col" width="15%">{{ _i('Totale Imponibile') }}</th>
                             <th scope="col" width="15%">{{ _i('Totale IVA') }}</th>
@@ -47,7 +47,7 @@
                     <thead>
                         <tr>
                             <th scope="col" width="20%">{{ _i('Prodotto') }}</th>
-                            <th scope="col" width="15%">{{ _i('Aliquota IVA') }}</th>
+                            <th scope="col" width="15%">{{ __('products.vat_rate') }}</th>
                             <th scope="col" width="15%">{{ _i('Quantità Consegnata') }}</th>
                             <th scope="col" width="15%">{{ _i('Totale Imponibile') }}</th>
                             <th scope="col" width="15%">{{ _i('Totale IVA') }}</th>

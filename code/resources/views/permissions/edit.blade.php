@@ -2,7 +2,7 @@
     <x-larastrap::mform :obj="$role" classes="role-editor" method="PUT" :action="route('roles.update', $role->id)" :nodelete="$role->users()->count() != 0 || $role->system == true" autoread>
         <div class="row">
             <div class="col-md-6">
-                <x-larastrap::text name="name" :label="_i('Nome')" required />
+                <x-larastrap::text name="name" tlabel="generic.name" required />
 
                 <?php $super_candidates = App\Role::whereNotIn('id', $role->children->pluck('id')->toArray())->where('id', '!=', $role->id)->orderBy('name')->get() ?>
                 @if($super_candidates->count() != 0)

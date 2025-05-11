@@ -1,3 +1,3 @@
-<x-larastrap::modal :title="_i('Attenzione')">
+<x-larastrap::modal>
 	@include('movementtypes.broken_modifier', ['id' => $id])
 </x-larastrap::modal>

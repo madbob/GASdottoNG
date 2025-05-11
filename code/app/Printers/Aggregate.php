@@ -177,7 +177,7 @@ class Aggregate extends Printer
 
             $document = new Document($subtype);
 
-            $document_title = _i('Prodotti') . '<br>';
+            $document_title = __('products.list') . '<br>';
             if ($obj->orders->count() <= aggregatesConvenienceLimit()) {
                 foreach ($obj->orders as $order) {
                     $document_title .= sprintf('%s %s<br>', $order->supplier->name, $order->internal_number);
@@ -204,7 +204,7 @@ class Aggregate extends Printer
                 }
             }
 
-            $title = _i('Prodotti Ordini');
+            $title = __('products.list');
             $filename = sanitizeFilename($title . '.' . $subtype);
 
             return $document->download($filename);
