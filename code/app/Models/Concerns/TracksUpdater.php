@@ -36,7 +36,7 @@ trait TracksUpdater
 
     private static function updateUser($model): void
     {
-        if ($model->isDirty('updated_by') == false) {
+        if ($model->isDirty('updated_by') === false) {
             $user = Auth::user();
             if ($user) {
                 $model->updated_by = $user->id;

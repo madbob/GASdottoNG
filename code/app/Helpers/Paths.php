@@ -19,7 +19,7 @@ function gas_storage_path($path = null, $folder = false)
     }
 
     if ($folder) {
-        if (file_exists($ret) == false) {
+        if (file_exists($ret) === false) {
             mkdir($ret, 0777);
         }
     }

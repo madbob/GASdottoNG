@@ -284,6 +284,10 @@ class BookedProduct extends Model
             case 'weight':
                 $ret = $this->fixWeight('quantity');
                 break;
+
+            default:
+                throw new \InvalidArgumentException('Tipo valore per prodotto prenotato non previsto: ' . $type);
+                break;
         }
 
         return $ret;
@@ -304,6 +308,10 @@ class BookedProduct extends Model
 
             case 'weight':
                 $ret = $this->fixWeight('delivered');
+                break;
+
+            default:
+                throw new \InvalidArgumentException('Tipo valore per prodotto consegnato non previsto: ' . $type);
                 break;
         }
 
@@ -330,6 +338,10 @@ class BookedProduct extends Model
                     case 'shipped':
                     case 'saved':
                         $ret = $this->getShippedValue($type);
+                        break;
+
+                    default:
+                        throw new \InvalidArgumentException('Stato non previsto per prenotazione: ' . $this->booking->status);
                         break;
                 }
             }

@@ -31,13 +31,13 @@ trait SuspendableTrait
         if (is_null($this->suspended_at) && is_null($this->deleted_at)) {
             return 'active';
         }
-        elseif (is_null($this->suspended_at) == false && is_null($this->deleted_at) == false) {
+        elseif ($this->suspended_at != null && $this->deleted_at != null) {
             return 'removed';
         }
-        elseif (is_null($this->suspended_at) == false) {
+        elseif ($this->suspended_at != null) {
             return 'suspended';
         }
-        elseif (is_null($this->deleted_at) == false) {
+        elseif ($this->deleted_at != null) {
             return 'deleted';
         }
     }

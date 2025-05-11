@@ -73,7 +73,7 @@ class Modifier extends Model
 
     public function isTrasversal()
     {
-        if ($this->active == false) {
+        if (!$this->active) {
             return false;
         }
 
@@ -82,7 +82,7 @@ class Modifier extends Model
 
     public function getNameAttribute()
     {
-        if ($this->active == false) {
+        if (!$this->active) {
             return _i('Nessun Valore');
         }
 

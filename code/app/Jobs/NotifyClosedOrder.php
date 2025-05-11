@@ -51,7 +51,7 @@ class NotifyClosedOrder implements ShouldQueue
 
     private function dispatchToSupplier($order)
     {
-        if ($order->isRunning() == false) {
+        if ($order->isRunning() === false) {
             $supplier = $order->supplier;
 
             if ($supplier->notify_on_close_enabled != 'none') {
@@ -128,7 +128,7 @@ class NotifyClosedOrder implements ShouldQueue
 
                 $referents = everybodyCan('supplier.orders', $order->supplier);
                 foreach ($referents as $u) {
-                    if (isset($notifiable_users[$u->id]) == false) {
+                    if (isset($notifiable_users[$u->id]) === false) {
                         $notifiable_users[$u->id] = (object) [
                             'user' => $u,
                             'orders' => [],

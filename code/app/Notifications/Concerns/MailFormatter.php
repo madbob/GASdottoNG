@@ -25,7 +25,7 @@ trait MailFormatter
 
         $config = json_decode($gas->getConfig('mail_' . $config_name));
 
-        if (isset($params['user']) == false) {
+        if (isset($params['user']) === false) {
             $params['user'] = $user;
         }
 

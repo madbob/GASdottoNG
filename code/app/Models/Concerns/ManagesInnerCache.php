@@ -29,7 +29,7 @@ trait ManagesInnerCache
 
     private function globalKey($name)
     {
-        if ($this->uses_global_cache == false) {
+        if ($this->uses_global_cache === false) {
             $hub = app()->make('GlobalScopeHub');
             if ($hub->hubRequired() && $hub->enabled()) {
                 $gas_id = $hub->getGas();
@@ -58,7 +58,7 @@ trait ManagesInnerCache
         if ($this->uses_global_cache) {
             $name = $this->globalKey($name);
 
-            if ($this->global_store->has($name) == false) {
+            if ($this->global_store->has($name) === false) {
                 $value = $function($this);
                 $this->global_store->put($name, $value);
                 $ret = $value;

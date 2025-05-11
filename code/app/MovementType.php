@@ -155,7 +155,7 @@ class MovementType extends Model
             $types = MovementType::whereIn('id', $types)->get();
 
             foreach ($types as $type) {
-                if ($type->overlapsPaymentMethods($this) == false) {
+                if ($type->overlapsPaymentMethods($this) === false) {
                     return true;
                 }
             }
@@ -164,7 +164,7 @@ class MovementType extends Model
             $has_modifiers = Modifier::where('movement_type_id', $this->id)->exists();
             if ($has_modifiers) {
                 $booking_payment_type = movementTypes('booking-payment');
-                if ($this->overlapsPaymentMethods($booking_payment_type) == false) {
+                if ($this->overlapsPaymentMethods($booking_payment_type) === false) {
                     return true;
                 }
             }
@@ -178,13 +178,13 @@ class MovementType extends Model
         tipo di movimento passato come parametro siano attivi per il tipo di
         movimento corrente, ma non controlla il contrario (né deve farlo)
     */
-    public function overlapsPaymentMethods($other_type)
+    public function overlapsPaymentMethods($other_type): bool
     {
         $methods_local = array_keys(paymentsByType($this->id));
         $methods_other = array_keys(paymentsByType($other_type->id));
 
         foreach ($methods_other as $mo) {
-            if (in_array($mo, $methods_local) == false) {
+            if (in_array($mo, $methods_local) === false) {
                 return false;
             }
         }

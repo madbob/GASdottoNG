@@ -208,7 +208,7 @@ class Users extends CSVImporter
                 $login = $line[$login_index];
 
                 $u = $this->retrieveUser($login, $gas);
-                $new_user = ($u->exists == false);
+                $new_user = !$u->exists;
 
                 $contacts = [
                     'contact_id' => [],
@@ -236,7 +236,7 @@ class Users extends CSVImporter
                         if (filled($value)) {
                             $u->password = Hash::make($value);
 
-                            if ($new_user == false) {
+                            if ($new_user === false) {
                                 \Log::debug('Cambio password utente ' . $u->username . ' durante importazione CSV');
                             }
 
@@ -287,7 +287,7 @@ class Users extends CSVImporter
                     $u->alterBalance($credit, defaultCurrency());
                 }
 
-                if ($new_user && $password_defined == false) {
+                if ($new_user && $password_defined === false) {
                     $u->initialWelcome();
                 }
             }

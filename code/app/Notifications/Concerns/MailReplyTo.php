@@ -16,7 +16,7 @@ trait MailReplyTo
 
             foreach ($roles as $role) {
                 $contacts = $role->usersByTarget($order->supplier);
-                if ($contacts->isEmpty() == false) {
+                if ($contacts->isEmpty() === false) {
                     break;
                 }
             }
