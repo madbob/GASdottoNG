@@ -253,7 +253,7 @@ class Aggregate extends Printer
     {
         $status = $request['status'] ?? 'pending';
         $include_missing = $request['include_missing'] ?? 'no';
-        $circles = $request['circles'] ?? ['no'];
+        $circles = new CirclesFilter($obj, $request);
 
         $required_fields = $request['fields'] ?? [];
         $fields = splitFields($required_fields);
