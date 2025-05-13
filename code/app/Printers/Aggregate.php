@@ -30,7 +30,14 @@ class Aggregate extends Printer
 
         $temp_data = [];
         foreach ($obj->orders as $order) {
-            $temp_data[] = $this->formatShipping($order, $fields, $status, $isolate_friends, $circles, true);
+            if ($circles->getMode() == 'all_by_place') {
+                foreach ($circles->combinations() as $combo) {
+                    $temp_data[] = $this->formatShipping($order, $fields, $status, $isolate_friends, $combo, true);
+                }
+            }
+            else {
+                $temp_data[] = $this->formatShipping($order, $fields, $status, $isolate_friends, $circles, true);
+            }
         }
 
         if (empty($temp_data)) {
