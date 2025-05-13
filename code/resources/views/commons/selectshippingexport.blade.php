@@ -70,7 +70,7 @@ if (empty($all) == false) {
 
 			foreach($aggregate->orders as $order) {
 				$no_shipping = $order->bookings()->whereHas('user', function($query) use ($meta) {
-					$query->whereDoesntHave('circles', function($query) use ($meta) {
+					$query->whereNull('parent_id')->whereDoesntHave('circles', function($query) use ($meta) {
 						$query->where('group_id', $meta->group->id);
 					});
 				})->get()->pluck('user_id')->toArray();
