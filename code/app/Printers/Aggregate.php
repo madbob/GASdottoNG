@@ -26,7 +26,7 @@ class Aggregate extends Printer
         $fields = splitFields($required_fields);
         $status = $request['status'] ?? 'pending';
         $circles = new CirclesFilter($obj, $request);
-        $isolate_friends = $request['isolate_friends'] ?? 0;
+        $isolate_friends = ($request['isolate_friends'] ?? 0) == 1;
 
         $temp_data = [];
         foreach ($obj->orders as $order) {

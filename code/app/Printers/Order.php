@@ -48,8 +48,8 @@ class Order extends Printer
         $action = $request['action'] ?? 'download';
         $subtype = $request['format'] ?? 'pdf';
         $status = $request['status'] ?? 'pending';
-        $isolate_friends = $request['isolate_friends'] ?? 0;
-        $extra_modifiers = $request['extra_modifiers'] ?? 0;
+        $isolate_friends = ($request['isolate_friends'] ?? 0) == 1;
+        $extra_modifiers = ($request['extra_modifiers'] ?? 0) == 1;
         $required_fields = $request['fields'] ?? [];
         $fields = splitFields($required_fields);
         $circles = new CirclesFilter($obj->aggregate, $request);
@@ -132,7 +132,7 @@ class Order extends Printer
     {
         $action = $request['action'] ?? 'download';
         $subtype = $request['format'] ?? 'pdf';
-        $extra_modifiers = $request['extra_modifiers'] ?? 0;
+        $extra_modifiers = ($request['extra_modifiers'] ?? 0) == 1;
 
         $title = _i('Prodotti ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
         $filename = sanitizeFilename($title . '.' . $subtype);
