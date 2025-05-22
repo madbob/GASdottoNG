@@ -7,7 +7,7 @@ if(isset($filters) == false) {
     $filters = [];
 }
 if(isset($empty_message) == false) {
-    $empty_message = _i('Non ci sono elementi da visualizzare.');
+    $empty_message = __('generic.empty_list');
 }
 if(isset($header_function) == false) {
     $header_function = 'printableHeader';

@@ -19,6 +19,8 @@ return array (
   'taxcode' => 'Fiscal code',
   'card_number' => 'Card number',
   'payment_method' => 'Payment Method',
+  'all' => 'Users',
+  'name' => 'User',
   'statuses' => 
   array (
     'active' => 'Active',
@@ -36,6 +38,7 @@ return array (
     'notifications_instructions' => 'Select suppliers for which you want to receive a notification when new orders are opened.',
     'fee' => 'Data relating to the user\'s membership fee, which expires each year. To disable this option, go to Configurations -> Accounting',
     'deposit' => 'Data relating to the deposit paid by the user when registering for the GAS. To disable this option, go to Configurations -> Accounting',
+    'satispay' => 'From here you can increase your credit using Satispay. Specify how much you want to pay and any notes for the administrators, you will receive a notification on your smartphone, to be confirmed within 15 minutes.',
     'remove_profile' => '',
     'remove_profile_credit_notice' => '',
   ),
@@ -46,10 +49,22 @@ return array (
   'change_friend_assignee' => 'New assignee',
   'fee' => 'Membership Fee',
   'deposit' => 'Deposit',
+  'fees_status' => 'Fees\' Status',
+  'all_ceased' => 'Ceased',
   'last_fee' => 'Last Fee',
+  'fees' => 
+  array (
+    'new' => 'New Fee',
+    'change' => 'Edit Fee',
+  ),
   'empty' => 
   array (
     'friends' => 'Add here information about friends for whom you want to create sub-reservations. Each reservation will be autonomous but handled as a single one when delivering. Each friend can have his or her authentication credentials to access GASdotto and add reservations on his/her own.',
   ),
+  'satispay' => 
+  array (
+    'reload' => 'Charge Credit with Satispay',
+  ),
   'remove_profile' => '',
+  'assign_aggregations' => '',
 );

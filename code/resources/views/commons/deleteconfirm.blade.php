@@ -1,4 +1,4 @@
-<x-larastrap::modal id="delete-confirm-modal" :title="_i('Elimina')" size="lg">
+<x-larastrap::modal id="delete-confirm-modal" size="lg">
     <x-larastrap::iform method="DELETE" :action="$url ?? ''" id="form-delete-confirm-modal" :buttons="[['type' => 'submit', 'color' => 'danger', 'label' => _i('Conferma')]]">
         @if($password_protected)
             <input type="hidden" name="pre-saved-function" value="passwordProtected">

@@ -68,11 +68,11 @@ class Users extends CSVImporter
     private function otherFields(&$ret)
     {
         $ret['birthplace'] = (object) [
-            'label' => _i('Luogo di Nascita'),
+            'label' => __('user.birthplace'),
         ];
 
         $ret['birthday'] = (object) [
-            'label' => _i('Data di Nascita'),
+            'label' => __('user.birthdate'),
             'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')]),
         ];
 
@@ -116,7 +116,7 @@ class Users extends CSVImporter
         }
 
         $ret['credit'] = (object) [
-            'label' => _i('Credito Attuale'),
+            'label' => __('movements.current_credit'),
             'explain' => _i('Attenzione! Usare questo attributo solo in fase di importazione iniziale degli utenti, e solo per i nuovi utenti, o i saldi risulteranno sempre incoerenti!'),
         ];
     }
@@ -299,7 +299,7 @@ class Users extends CSVImporter
         DB::commit();
 
         return [
-            'title' => _i('Utenti importati'),
+            'title' => __('imports.imported_users'),
             'objects' => $users,
             'errors' => $errors,
         ];

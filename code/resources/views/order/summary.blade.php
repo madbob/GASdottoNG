@@ -37,22 +37,22 @@ foreach($display_columns as $identifier => $metadata) {
     <div class="row d-none d-md-flex mb-1">
         <div class="col flowbox">
             <div class="form-group mainflow d-none d-xl-block">
-                <input type="text" class="form-control table-text-filter" data-table-target="#{{ $table_identifier }}" placeholder="{{ _i('Filtra') }}">
+                <input type="text" class="form-control table-text-filter" data-table-target="#{{ $table_identifier }}" tplaceholder="generic.do_filter">
             </div>
 
             <div class="btn-group table-sorter" data-table-target="#{{ $table_identifier }}">
                 <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
-                    {{ _i('Ordina Per') }} <span class="caret"></span>
+                    {{ __('generic.sort_by') }} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="#" class="dropdown-item" data-sort-by="sorting" data-numeric-sorting="true">{{ _i('Ordinamento Manuale') }}</a>
+                        <a href="#" class="dropdown-item" data-sort-by="sorting" data-numeric-sorting="true">{{ __('generic.sortings.manual') }}</a>
                     </li>
                     <li>
                         <a href="#" class="dropdown-item" data-sort-by="name">{{ __('generic.name') }}</a>
                     </li>
                     <li>
-                        <a href="#" class="dropdown-item" data-sort-by="category_name">{{ _i('Categoria') }}</a>
+                        <a href="#" class="dropdown-item" data-sort-by="category_name">{{ __('generic.category') }}</a>
                     </li>
                 </ul>
             </div>
@@ -83,7 +83,7 @@ foreach($display_columns as $identifier => $metadata) {
                         @if($identifier == 'selection')
                             <th scope="col" width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
                                 @if($products->count() != $order_products->count())
-                                    <button class="btn btn-light btn-sm toggle-product-abilitation" data-bs-toggle="button">{!! _i('Vedi Tutti') !!}</button>
+                                    <button class="btn btn-light btn-sm toggle-product-abilitation" data-bs-toggle="button">{{ __('generic.view_all') }}</button>
                                 @endif
                             </th>
                         @else
@@ -218,7 +218,7 @@ foreach($display_columns as $identifier => $metadata) {
 
                         <!-- Peso Ordinato -->
                         <td class="order-cell-weight {{ in_array('weight', $columns) ? '' : 'hidden' }}">
-                            <label class="order-summary-product-weight">{{ $summary->products[$product->id]->weight ?? 0 }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
+                            <label class="order-summary-product-weight">{{ $summary->products[$product->id]->weight ?? 0 }} {{ $product->measure->discrete ? __('generic.kilos') : $product->measure->name }}</label>
                         </td>
 
                         <!-- Totale Prezzo -->
@@ -233,7 +233,7 @@ foreach($display_columns as $identifier => $metadata) {
 
                         <!-- Peso Consegnato -->
                         <td class="order-cell-weight_delivered {{ in_array('weight_delivered', $columns) ? '' : 'hidden' }}">
-                            <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]->weight_delivered ?? 0 }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
+                            <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]->weight_delivered ?? 0 }} {{ $product->measure->discrete ? __('generic.kilos') : $product->measure->name }}</label>
                         </td>
 
                         <!-- Totale Consegnato -->
@@ -276,7 +276,7 @@ foreach($display_columns as $identifier => $metadata) {
                                     <span class="order-summary-order-price_delivered">
                                         {{ printablePriceCurrency($summary->price_delivered ?? 0) }}
                                         @if($order->bookings()->where('status', 'saved')->count() != 0)
-                                            <span class="ms-2 text-black" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="{{ _i('Le quantità di alcune prenotazioni in questo ordine sono salvate ma non risultano ancora effettivamente consegnate né pagate.') }}">
+                                            <span class="ms-2 text-black" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="{{ __('orders.help.pending_saved_bookings') }}">
                                                 <i class="bi-exclamation-circle"></i>
                                             </span>
                                         @endif
@@ -288,11 +288,11 @@ foreach($display_columns as $identifier => $metadata) {
                                     @break
 
                                 @case('weight')
-                                    {{ $summary->weight ?? 0 }} {{ _i('Chili') }}
+                                    {{ $summary->weight ?? 0 }} {{ __('generic.kilos') }}
                                     @break
 
                                 @case('weight_delivered')
-                                    {{ $summary->weight_delivered ?? 0 }} {{ _i('Chili') }}
+                                    {{ $summary->weight_delivered ?? 0 }} {{ __('generic.kilos') }}
                                     @break
 
                             @endswitch

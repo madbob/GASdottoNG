@@ -8,9 +8,9 @@
             @endphp
 
             @if($current_orders->isEmpty())
-                {{ _i('Attualmente non ci sono ordini aperti per questo fornitore.') }}
+                {{ __('orders.help.supplier_no_orders') }}
             @else
-                {{ _i('Ci sono ordini aperti per questo fornitore:') }}
+                {{ __('orders.help.supplier_has_orders') }}
                 @foreach($current_orders as $current_order)
                     <x-larastrap::link class="btn btn-info" :href="$current_order->getBookingURL()" :label="$current_order->printableName()" />
                 @endforeach
@@ -21,16 +21,16 @@
     <div class="row">
         <div class="col-md-6">
             <x-larastrap::text name="name" tlabel="generic.name" readonly disabled />
-            <x-larastrap::text name="business_name" :label="_i('Ragione Sociale')" readonly disabled />
+            <x-larastrap::text name="business_name" tlabel="supplier.legal_name" readonly disabled />
 
-            <x-larastrap::field :label="_i('Descrizione')">
+            <x-larastrap::field tlabel="generic.description">
                 <p class="form-control-plaintext">
                     {!! prettyFormatHtmlText($supplier->description) !!}
                 </p>
             </x-larastrap::field>
 
-            <x-larastrap::text name="taxcode" :label="_i('Codice Fiscale')" readonly disabled />
-            <x-larastrap::text name="vat" :label="_i('Partita IVA')" readonly disabled />
+            <x-larastrap::text name="taxcode" tlabel="user.taxcode" readonly disabled />
+            <x-larastrap::text name="vat" tlabel="supplier.vat" readonly disabled />
             @include('commons.staticcontactswidget', ['obj' => $supplier])
         </div>
         <div class="col-md-6">

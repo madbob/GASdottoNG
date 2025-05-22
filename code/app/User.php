@@ -64,7 +64,7 @@ class User extends Authenticatable
 
     public static function commonClassName()
     {
-        return _i('Utente');
+        return __('user.name');
     }
 
     public function notifications(): BelongsToMany
@@ -265,7 +265,7 @@ class User extends Authenticatable
         }
 
         $this->forceFill([
-            'firstname' => _i('Utente'),
+            'firstname' => __('user.name'),
             'lastname' => _i('Rimosso'),
             'suspended_at' => now(),
             'birthday' => '1900-01-01',

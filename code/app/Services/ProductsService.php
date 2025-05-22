@@ -17,7 +17,7 @@ class ProductsService extends BaseService
             'results' => [
                 (object) [
                     'id' => 0,
-                    'text' => _i('Nessuno'),
+                    'text' => __('generic.none'),
                 ],
             ],
         ];

@@ -14,7 +14,7 @@
     </head>
 
     <body>
-        <h3>{{ _i('Dettaglio Consegne') }}<br/>
+        <h3>{{ __('orders.files.order.shipping') }}<br/>
             @if($aggregate->orders()->count() <= aggregatesConvenienceLimit())
                 @foreach($aggregate->orders as $order)
                     {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
@@ -56,7 +56,7 @@
                             </tr>
 
                             <tr>
-                                <td width="40%"><strong>{{ _i('Prodotto') }}</strong></td>
+                                <td width="40%"><strong>{{ __('products.name') }}</strong></td>
                                 <td width="15%"><strong>{{ _i('Prenotato') }}</strong></td>
                                 <td width="15%">&nbsp;</td>
                                 <td width="15%"><strong>{{ _i('Consegnato') }}</strong></td>
@@ -127,7 +127,7 @@
                     <thead>
                         <tr>
                             <th scope="col" colspan="5">
-                                <strong>{{ _i('Totale') }}</strong>
+                                <strong>{{ __('orders.totals.total') }}</strong>
                             </th>
                         </tr>
                     </thead>
@@ -148,7 +148,7 @@
                                 </tr>
 
                                 <tr>
-                                    <td width="40%"><strong>{{ _i('Prodotto') }}</strong></td>
+                                    <td width="40%"><strong>{{ __('products.name') }}</strong></td>
                                     <td width="15%"><strong>{{ _i('Prenotato') }}</strong></td>
                                     <td width="15%">&nbsp;</td>
                                     <td width="15%"><strong>{{ _i('Consegnato') }}</strong></td>

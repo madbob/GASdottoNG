@@ -332,19 +332,19 @@ class Product extends Model
                 'width' => 20,
             ],
             'category' => (object) [
-                'label' => _i('Categoria'),
+                'label' => __('generic.category'),
                 'width' => 15,
             ],
             'measure' => (object) [
-                'label' => _i('Unità di Misura'),
+                'label' => __('generic.measure'),
                 'width' => 15,
             ],
             'price' => (object) [
-                'label' => _i('Prezzo Unitario'),
+                'label' => __('products.prices.unit'),
                 'width' => 10,
             ],
             'max_available' => (object) [
-                'label' => _i('Disponibile'),
+                'label' => __('products.available'),
                 'help' => _i('Quantità massima di prodotto che complessivamente può essere prenotata in un ordine'),
                 'width' => 10,
             ],

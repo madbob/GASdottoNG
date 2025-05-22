@@ -1,10 +1,6 @@
-<x-larastrap::modal :title="_i('Importa GDXP')">
+<x-larastrap::modal>
     <div class="wizard_page">
-        <p>
-            {{ _i('Errore nel caricamento o nella lettura del file.') }}
-        </p>
-        <p>
-            {{ _i('Si prega di riprovare, o di sottoporre il problema agli sviluppatori di GASdotto: info@madbob.org') }}
-        </p>
+        <p>{{ __('imports.error_main') }}</p>
+        <p>{{ _i('imports.error_retry') }}</p>
     </div>
 </x-larastrap::modal>

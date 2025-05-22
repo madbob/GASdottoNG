@@ -117,9 +117,9 @@ class ReceiptsController extends BackedController
     {
         $filename = _i('Esportazione ricevute GAS %s.csv', date('d/m/Y'));
         $headers = [
-            _i('Utente'),
-            _i('Data'),
-            __('generic.number'), 
+            __('user.name'),
+            __('generic.date'),
+            __('generic.number'),
             _i('Imponibile'),
             _i('IVA')
         ];

@@ -4,9 +4,9 @@
     <div class="row">
         <div class="col-md-4">
             @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => __('orders.supplier')])
-            <x-larastrap::datepicker name="start" :label="_i('Data Apertura')" readonly disabled />
-            <x-larastrap::datepicker name="end" :label="_i('Data Chiusura')" readonly disabled />
-            <x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" readonly disabled />
+            <x-larastrap::datepicker name="start" tlabel="orders.dates.start" readonly disabled />
+            <x-larastrap::datepicker name="end" tlabel="orders.dates.end" readonly disabled />
+            <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" readonly disabled />
             @include('commons.orderstatus', ['order' => $order, 'editable' => false])
         </div>
 

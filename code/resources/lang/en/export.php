@@ -17,10 +17,12 @@ return array (
     'products' => 'Product Columns',
     'split_friends' => '',
   ),
+  'do_pdf' => 'Export PDF',
   'help_split_friends' => '',
   'help_aggregate_export_summary' => '',
   'flags' => 
   array (
     'include_unbooked' => '',
   ),
+  'do_balance' => '',
 );

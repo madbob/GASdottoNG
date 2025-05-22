@@ -1,6 +1,6 @@
 <x-larastrap::text name="name" tlabel="generic.name" required />
-<x-larastrap::price name="price" :label="_i('Prezzo Unitario')" required :pophelp="_i('Prezzo unitario per unità di misura. Si intende IVA inclusa, per maggiori dettagli si veda il campo Aliquota IVA. Può assumere un significato particolare quando viene attivata la Pezzatura')" />
-<x-larastrap::selectobj name="category_id" :label="_i('Categoria')" :options="App\Category::with(['children'])->orderBy('name', 'asc')->where('parent_id', '=', null)->get()" required />
-<x-larastrap::select-model name="measure_id" :label="_i('Unità di Misura')" classes="measure-selector" :options="App\Measure::orderBy('name', 'asc')->get()" required :help="_i('Hai selezionato una unità di misura discreta: per questo prodotto possono essere usate solo quantità intere.')" :pophelp="_i('Unità di misura assegnata al prodotto. Attenzione: può influenzare l\'abilitazione di alcune variabili del prodotto, si veda il parametro Unità Discreta nel pannello di amministrazione delle unità di misura (acessibile solo agli utenti abilitati)')" />
-<x-larastrap::textarea name="description" :label="_i('Descrizione')" />
-<x-larastrap::select-model name="vat_rate_id" tlabel="products.vat_rate" :options="App\VatRate::orderBy('name', 'asc')->get()" :pophelp="_i('Le aliquote esistenti possono essere configurate nel pannello Configurazioni')" :extra_options="[0 => _i('Nessuna')]" />
+<x-larastrap::price name="price" tlabel="products.prices.unit" required tpophelp="products.help.unit_price" />
+<x-larastrap::selectobj name="category_id" tlabel="generic.category" :options="App\Category::with(['children'])->orderBy('name', 'asc')->where('parent_id', '=', null)->get()" required />
+<x-larastrap::select-model name="measure_id" tlabel="generic.measure" classes="measure-selector" :options="App\Measure::orderBy('name', 'asc')->get()" required thelp="products.help.discrete_measure_selected_notice" tpophelp="products.help.measure" />
+<x-larastrap::textarea name="description" tlabel="generic.description" />
+<x-larastrap::select-model name="vat_rate_id" tlabel="products.vat_rate" :options="App\VatRate::orderBy('name', 'asc')->get()" tpophelp="products.help.vat_rate" :extra_options="[0 => __('generic.none')]" />

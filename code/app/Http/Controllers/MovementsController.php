@@ -102,10 +102,10 @@ class MovementsController extends BackedController
                 _i('Data Movimento'),
                 __('generic.type'),
                 __('generic.payment'),
-                _i('Identificativo'),
+                __('generic.identifier'),
                 _i('Pagante'),
                 _i('Pagato'),
-                _i('Valore'),
+                __('generic.value'),
                 __('generic.notes')
             ];
 

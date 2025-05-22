@@ -27,7 +27,7 @@
 						@php
 
 						$payment_options = [
-							'all' => _i('Tutti'),
+							'all' => __('generic.all'),
 							'none' => _i('Non Specificato'),
 						];
 
@@ -41,7 +41,7 @@
 
 						<x-larastrap::radios
                             name="payment_method"
-                            :label="_i('Modalità Pagamento')"
+                            :label="__('user.payment_method')"
                             :options="$payment_options"
                             value="all"
                             classes="table-filters"
@@ -55,7 +55,7 @@
                                 :label="$group->printableName()"
                                 classes="table-filters"
                                 data-table-target="#creditsTable"
-                                :extra_options="['all' => 'Tutti']" />
+                                :extra_options="['all' => __('generic.all')]" />
                         @endforeach
                     </div>
                 </div>
@@ -74,7 +74,7 @@
 										@foreach($currencies as $curr)
 											<th scope="col" width="{{ round(35 / $currencies->count(), 2) }}%">{{ _i('Credito Residuo') }}</th>
 										@endforeach
-										<th scope="col" width="25%">{{ _i('Modalità Pagamento') }}</th>
+										<th scope="col" width="25%">{{ __('user.payment_method') }}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -123,7 +123,7 @@
                     <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
                     <input type="hidden" name="collectFilteredUsers" value="#creditsTable">
                     <input type="hidden" name="pre-saved-function" value="formToDownload">
-                    <button type="submit" class="btn btn-success">{{ _i('Esporta CSV') }} <i class="bi-download"></i></button>
+                    <button type="submit" class="btn btn-success">{{ __('generic.exports.csv') }} <i class="bi-download"></i></button>
                 </form>
 
                 @if($currentgas->hasFeature('rid'))
@@ -140,7 +140,7 @@
                     <div class="collapse well" id="exportRID">
                         <form class="form-horizontal inner-form" action="{{ url('movements/document/credits/rid?download=1') }}" method="GET">
                             <input type="hidden" name="pre-saved-function" value="formToDownload">
-                            <x-larastrap::datepicker name="date" :label="_i('Data')" requird defaults_now />
+                            <x-larastrap::datepicker name="date" tlabel="generic.date" requird defaults_now />
                             <x-larastrap::text name="body" :label="_i('Causale')" :value="_i('VERSAMENTO GAS')" />
                             <button type="submit" class="btn btn-success">{{ _i('Esporta SEPA') }}</button>
                         </form>

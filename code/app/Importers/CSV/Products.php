@@ -19,10 +19,10 @@ class Products extends CSVImporter
                 'label' => __('generic.name'),
             ],
             'description' => (object) [
-                'label' => _i('Descrizione'),
+                'label' => __('generic.description'),
             ],
             'price' => (object) [
-                'label' => _i('Prezzo Unitario'),
+                'label' => __('products.prices.unit'),
             ],
             'price_without_vat' => (object) [
                 'label' => _i('Prezzo Unitario (senza IVA)'),
@@ -32,16 +32,16 @@ class Products extends CSVImporter
                 'label' => __('products.vat_rate'),
             ],
             'category' => (object) [
-                'label' => _i('Categoria'),
+                'label' => __('generic.category'),
             ],
             'measure' => (object) [
-                'label' => _i('Unità di Misura'),
+                'label' => __('generic.measure'),
             ],
             'supplier_code' => (object) [
                 'label' => __('products.code'),
             ],
             'package_size' => (object) [
-                'label' => _i('Dimensione Confezione'),
+                'label' => __('products.package_size'),
             ],
             'package_price' => (object) [
                 'label' => _i('Prezzo Confezione'),
@@ -51,13 +51,13 @@ class Products extends CSVImporter
                 'label' => _i('Peso (in KG)'),
             ],
             'min_quantity' => (object) [
-                'label' => _i('Ordine Minimo'),
+                'label' => __('products.min_quantity'),
             ],
             'multiple' => (object) [
-                'label' => _i('Ordinabile per Multipli'),
+                'label' => __('products.multiple'),
             ],
             'portion_quantity' => (object) [
-                'label' => _i('Pezzatura'),
+                'label' => __('products.portion_quantity'),
             ],
         ];
     }

@@ -133,7 +133,7 @@ class Invoice extends Model implements Datable
     public function balanceFields()
     {
         return [
-            'bank' => _i('Saldo Fornitore'),
+            'bank' => __('invoices.balances.supplier'),
         ];
     }
 

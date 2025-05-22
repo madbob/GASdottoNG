@@ -71,7 +71,7 @@ trait Summary
 
             if ($price_offset != null) {
                 $last_row = array_fill(0, count($fields), '');
-                $last_row[0] = _i('Totale');
+                $last_row[0] = __('orders.totals.total');
                 $last_row[$price_offset] = printablePrice($total);
                 $rows[] = $last_row;
 

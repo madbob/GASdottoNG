@@ -40,7 +40,7 @@
                 </x-larastrap::tabpane>
             @endforeach
 
-            <x-larastrap::tabpane :label="_i('Totale')" icon="bi-plus-circle">
+            <x-larastrap::tabpane tlabel="orders.totals.total" icon="bi-plus-circle">
                 <div class="row">
                     <div class="col-md-4 offset-md-8 mb-2">
                         @include('aggregate.files', ['aggregate' => $aggregate, 'managed_gas' => 0])

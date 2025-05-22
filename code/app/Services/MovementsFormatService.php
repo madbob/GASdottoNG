@@ -59,7 +59,7 @@ class MovementsFormatService extends BaseService
             _i('Data Movimento'),
             __('generic.type'),
             __('generic.payment'),
-            _i('Identificativo'),
+            __('generic.identifier'),
             __('generic.notes'),
             _i('Pagante'),
             _i('Pagato'),

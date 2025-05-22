@@ -110,7 +110,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col" width="30%">{{ _i('Data') }}</th>
+                                <th scope="col" width="30%">{{ __('generic.date') }}</th>
                                 <th scope="col" width="70%">{{ _i('Messaggio') }}</th>
                             </tr>
                         </thead>

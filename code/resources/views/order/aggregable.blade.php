@@ -4,7 +4,7 @@
 
         @if($orders->isEmpty())
             <p>
-                {{ _i('Non ci sono elementi da visualizzare.') }}
+                {{ __('generic.empty_list') }}
             </p>
             <p>
                 {{ _i("Una volta aggregati, gli ordini verranno visualizzati come uno solo pur mantenendo ciascuno i suoi attributi. Questa funzione è consigliata per facilitare l'amministrazione di ordini che, ad esempio, vengono consegnati nella stessa data.") }}

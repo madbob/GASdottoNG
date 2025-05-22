@@ -5,7 +5,7 @@
 		<x-larastrap::tabpane :label="_i('Utenti')">
 			<div class="row">
 				<div class="col">
-					<a href="{{ route('movements.history.details', ['date' => $date, 'format' => 'csv', 'target' => 'users']) }}" class="btn btn-light">Esporta CSV <i class="bi-download"></i></a>
+					<a href="{{ route('movements.history.details', ['date' => $date, 'format' => 'csv', 'target' => 'users']) }}" class="btn btn-light">{{ __('generic.exports.csv') }} <i class="bi-download"></i></a>
 				</div>
 			</div>
 
@@ -43,7 +43,7 @@
 		<x-larastrap::tabpane :label="_i('Fornitori')">
 			<div class="row">
 				<div class="col">
-					<a href="{{ route('movements.history.details', ['date' => $date, 'format' => 'csv', 'target' => 'suppliers']) }}" class="btn btn-light">Esporta CSV <i class="bi-download"></i></a>
+					<a href="{{ route('movements.history.details', ['date' => $date, 'format' => 'csv', 'target' => 'suppliers']) }}" class="btn btn-light">{{ __('generic.exports.csv') }} <i class="bi-download"></i></a>
 				</div>
 			</div>
 

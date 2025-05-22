@@ -8,7 +8,7 @@
             @include('commons.addingbutton', [
                 'template' => 'notification.create',
                 'typename' => 'notification',
-                'typename_readable' => _i('Notifica'),
+                'typename_readable' => __('notifications.name'),
                 'targeturl' => 'notifications'
             ])
         </div>

@@ -17,7 +17,7 @@ class MenuServiceProvider extends ServiceProvider
 {
     private function commonItems($user, &$menu)
     {
-        $menu['<i class="bi-house"></i> ' . _i('Home')] = [
+        $menu['<i class="bi-house"></i> ' . __('generic.home')] = [
             'url' => route('dashboard'),
         ];
 
@@ -30,7 +30,7 @@ class MenuServiceProvider extends ServiceProvider
     private function accessUsers($user, $gas, &$menu)
     {
         if ($user->can('users.admin', $gas) || $user->can('users.view', $gas)) {
-            $menu['<i class="bi-people"></i> ' . _i('Utenti')] = [
+            $menu['<i class="bi-people"></i> ' . __('user.all')] = [
                 'url' => route('users.index'),
                 'attributes' => ['id' => 'menu_users'],
             ];
@@ -40,7 +40,7 @@ class MenuServiceProvider extends ServiceProvider
     private function accessSuppliers($user, $gas, &$menu)
     {
         if ($user->can('supplier.view', $gas) || $user->can('supplier.add', $gas) || $user->can('supplier.modify', null)) {
-            $menu['<i class="bi-tags"></i> ' . _i('Fornitori')] = [
+            $menu['<i class="bi-tags"></i> ' . __('supplier.all')] = [
                 'url' => route('suppliers.index'),
                 'attributes' => ['id' => 'menu_suppliers'],
             ];
@@ -50,7 +50,7 @@ class MenuServiceProvider extends ServiceProvider
     private function accessOrders($user, $gas, &$menu)
     {
         if ($user->can('supplier.orders', null) || $user->can('supplier.shippings', null) || $user->can('order.view', $gas)) {
-            $menu['<i class="bi-list-task"></i> ' . _i('Ordini')] = [
+            $menu['<i class="bi-list-task"></i> ' . __('orders.all')] = [
                 'url' => route('orders.index'),
                 'attributes' => ['id' => 'menu_orders'],
             ];
@@ -60,7 +60,7 @@ class MenuServiceProvider extends ServiceProvider
     private function accessBookings($user, $gas, &$menu)
     {
         if ($user->can('supplier.book', null)) {
-            $menu['<i class="bi-bookmark"></i> ' . _i('Prenotazioni')] = [
+            $menu['<i class="bi-bookmark"></i> ' . __('generic.menu.bookings')] = [
                 'url' => route('bookings.index'),
                 'attributes' => ['id' => 'menu_bookings'],
             ];
@@ -70,7 +70,7 @@ class MenuServiceProvider extends ServiceProvider
     private function accessAccounting($user, $gas, &$menu)
     {
         if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas) || $user->can('supplier.movements', null) || $user->can('supplier.invoices', null)) {
-            $menu['<i class="bi-piggy-bank"></i> ' . _i('Contabilità')] = [
+            $menu['<i class="bi-piggy-bank"></i> ' . __('generic.menu.accounting')] = [
                 'url' => route('movements.index'),
                 'attributes' => ['id' => 'menu_accouting'],
             ];
@@ -80,19 +80,19 @@ class MenuServiceProvider extends ServiceProvider
     private function accessStatistics($user, $gas, &$menu)
     {
         if ($user->can('gas.statistics', $gas)) {
-            $menu['<i class="bi-graph-up"></i> ' . _i('Statistiche')] = route('stats.index');
+            $menu['<i class="bi-graph-up"></i> ' . __('generic.menu.stats')] = route('stats.index');
         }
     }
 
     private function accessNotifications($user, $gas, &$menu)
     {
-        $menu['<i class="bi-bell"></i> ' . _i('Notifiche')] = route('notifications.index');
+        $menu['<i class="bi-bell"></i> ' . __('generic.menu.notifications')] = route('notifications.index');
     }
 
     private function accessConfigs($user, $gas, &$menu)
     {
         if ($user->can('gas.config', $gas)) {
-            $menu['<bi class="bi-tools"></i> ' . _i('Configurazioni')] = [
+            $menu['<bi class="bi-tools"></i> ' . __('generic.menu.configs')] = [
                 'url' => route('gas.edit', $gas->id),
                 'attributes' => ['id' => 'menu_config'],
             ];
@@ -102,7 +102,7 @@ class MenuServiceProvider extends ServiceProvider
     private function accessMultigas($user, $gas, &$menu)
     {
         if ($user->can('gas.multi', $gas)) {
-            $menu['<i class="bi-globe"></i> ' . _i('Multi-GAS')] = route('multigas.index');
+            $menu['<i class="bi-globe"></i> ' . __('generic.menu.multigas')] = route('multigas.index');
         }
     }
 

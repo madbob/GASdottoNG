@@ -1,0 +1,31 @@
+<?php
+
+return array (
+  'payment_method' => 'Payment Method',
+  'all' => 'Suppliers',
+  'attachments' => 'Files and Images',
+  'remote_index' => 'Remote Index',
+  'vat' => 'VAT Number',
+  'enable_fast_shipping' => 'Enable Quick Deliveries',
+  'help' => 
+  array (
+    'enable_fast_shipping' => '',
+    'enable_no_quantities' => 'When this option is enabled, a field is activated in the delivery panel for this supplier, allowing direct input of the total delivery value instead of quantities for each delivered product. If this field is utilised, all quantities listed in the reservation are assumed to be delivered, and the variance between the theoretical and manually entered real value is tracked.',
+    'modifiers_notice' => '',
+    'import_products_notice' => 'The price list from this supplier has been imported from the centralised archive: it is recommended to modify it as little as possible to simplify future updates.',
+    'handling_products' => 'Warning: there are orders not yet shipped nor archived for this supplier.',
+    'name' => 'Supplier\'s common name',
+    'legal_name' => '',
+    'description' => 'Short description accessible to all users',
+    'payment_method' => 'Potential note about payment methods for the supplier. Restricted to authorised users with editing rights for supplier details',
+    'orders_mode' => '',
+    'send_notification_on_close' => '',
+  ),
+  'enable_no_quantities' => 'Enable Shipping with no Quantities',
+  'export_products' => 'Export Products List',
+  'admin_categories' => 'Manage Categories',
+  'admin_measures' => 'Measure Units Administration',
+  'legal_name' => 'Business Name',
+  'orders_mode' => 'Order progress mode',
+  'send_notification_on_close' => '',
+);

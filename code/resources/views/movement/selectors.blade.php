@@ -18,11 +18,11 @@
 @endif
 
 @if($fixed)
-    <x-larastrap::price name="amount" :label="_i('Valore')" :value="$fixed" readonly />
+    <x-larastrap::price name="amount" tlabel="generic.value" :value="$fixed" readonly />
 @else
     @include('commons.pricecurrency', ['allow_negative' => $allow_negative])
 @endif
 
 <x-larastrap::radios name="method" :label="_i('Metodo')" :options="$payments" :value="$default_method" required />
-<x-larastrap::text name="identifier" :label="_i('Identificativo')" />
-<x-larastrap::textarea name="notes" :label="_i('Note')" :value="$default_notes" />
+<x-larastrap::text name="identifier" tlabel="generic.identifier" />
+<x-larastrap::textarea name="notes" tlabel="generic.notes" :value="$default_notes" />

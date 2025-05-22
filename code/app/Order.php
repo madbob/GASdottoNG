@@ -636,17 +636,15 @@ class Order extends Model
                 'width' => 3,
             ],
             'name' => (object) [
-                'label' => _i('Prodotto'),
-                'help' => _i('Nome e descrizione del prodotto'),
+                'label' => __('products.name'),
                 'width' => 20,
             ],
             'price' => (object) [
-                'label' => _i('Prezzo'),
-                'help' => _i('Prezzo unitario del prodotto'),
+                'label' => __('products.prices.unit'),
                 'width' => 5,
             ],
             'available' => (object) [
-                'label' => _i('Disponibile'),
+                'label' => __('products.available'),
                 'help' => _i('Quantità disponibile del prodotto'),
                 'width' => 5,
             ],
@@ -677,7 +675,7 @@ class Order extends Model
 
         $ret = $ret + [
             'unit_measure' => (object) [
-                'label' => _i('Unità di Misura'),
+                'label' => __('generic.measure'),
                 'help' => _i('Unità di misura assegnata al prodotto'),
                 'width' => 9,
             ],
@@ -697,7 +695,7 @@ class Order extends Model
                 'width' => 8,
             ],
             'quantity_delivered' => (object) [
-                'label' => _i('Quantità Consegnata'),
+                'label' => __('orders.quantities.shipped'),
                 'help' => _i('Quantità complessivamente consegnata del prodotto'),
                 'width' => 8,
             ],
@@ -923,7 +921,7 @@ class Order extends Model
     public function balanceFields()
     {
         return [
-            'bank' => _i('Saldo Fornitore'),
+            'bank' => __('invoices.balances.supplier'),
         ];
     }
 

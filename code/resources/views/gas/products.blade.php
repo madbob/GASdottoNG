@@ -11,7 +11,9 @@
                     @foreach(App\Product::displayColumns() as $identifier => $metadata)
                         <div class="form-check form-switch">
                             <input type="checkbox" name="products_grid_display_columns[]" class="form-check-input" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
-                            <small> - {{ $metadata->help }}</small>
+                            @if(isset($metadata->help))
+                                <small> - {{ $metadata->help }}</small>
+                            @endif
                         </div>
                     @endforeach
                 </x-larastrap::field>

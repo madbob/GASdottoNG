@@ -69,7 +69,7 @@
             <div class="modal-footer">
                 <form class="form-inline iblock inner-form" action="{{ url('movements/document/suppliers/csv?dummy=1') }}" method="GET">
                     <input type="hidden" name="pre-saved-function" value="formToDownload">
-                    <button type="submit" class="btn btn-success">{{ _i('Esporta CSV') }} <i class="bi-download"></i></button>
+                    <button type="submit" class="btn btn-success">{{ __('generic.exports.csv') }} <i class="bi-download"></i></button>
                 </form>
 
                 @if($currentgas->hasFeature('integralces'))

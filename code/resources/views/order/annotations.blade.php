@@ -4,14 +4,14 @@
     <div class="row">
         <div class="col">
             <x-larastrap::suggestion>
-                {{ _i('Alcuni utenti hanno lasciato una nota alle proprie prenotazioni.') }}
+                {{ __('orders.help.pending_notes') }}
             </x-larastrap::suggestion>
 
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col" width="20%">Utente</th>
-                        <th scope="col" width="80%">Note</th>
+                        <th scope="col" width="20%">{{ __('user.name') }}</th>
+                        <th scope="col" width="80%">{{ __('generic.notes') }}</th>
                     </tr>
                 </thead>
                 <tbody>

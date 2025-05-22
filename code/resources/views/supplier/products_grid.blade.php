@@ -1,4 +1,4 @@
-<?php
+@php
 
 $columns = $currentgas->products_grid_display_columns;
 
@@ -15,13 +15,13 @@ $products = $supplier->products()->sorted()->get();
 $categories = App\Category::whereNull('parent_id')->orderBy('name', 'asc')->get();
 $measures = App\Measure::orderBy('name', 'asc')->get();
 
-?>
+@endphp
 
 <div class="products-grid">
     <div class="row d-none d-md-flex mb-1">
         <div class="col flowbox">
             <div class="form-group mainflow d-none d-xl-block">
-                <input type="text" class="form-control table-text-filter" data-table-target="#{{ $identifier }}"  placeholder="{{ _i('Filtra') }}">
+                <input type="text" class="form-control table-text-filter" data-table-target="#{{ $identifier }}"  placeholder="{{ __('generic.do_filter') }}">
             </div>
 
             @include('commons.columns', [
@@ -72,15 +72,15 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                 </th>
 
                                 <th scope="col" class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
-                                    <x-larastrap::button classes="remove_all skip-on-submit" :label="_i('Elimina')" color="danger" />
+                                    <x-larastrap::button classes="remove_all skip-on-submit" tlabel="generic.remove" color="danger" />
                                 </th>
 
                                 <th scope="col" class="order-cell-category {{ in_array('category', $columns) ? '' : 'hidden' }}">
-                                    <x-larastrap::select-model classes="skip-on-submit" name="category_id_all" :options="$categories" :extra_options="[0 => _i('Non Modificare')]" squeeze />
+                                    <x-larastrap::select-model classes="skip-on-submit" name="category_id_all" :options="$categories" :extra_options="[0 => __('generic.do_not_modify')]" squeeze />
                                 </th>
 
                                 <th scope="col" class="order-cell-measure {{ in_array('measure', $columns) ? '' : 'hidden' }}">
-                                    <x-larastrap::select-model classes="skip-on-submit" name="measure_id_all" :options="$measures" :extra_options="[0 => _i('Non Modificare')]" squeeze />
+                                    <x-larastrap::select-model classes="skip-on-submit" name="measure_id_all" :options="$measures" :extra_options="[0 => __('generic.do_not_modify')]" squeeze />
                                 </th>
 
                                 <th scope="col" class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
@@ -121,19 +121,19 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                         </td>
 
                                         <td class="order-cell-category {{ in_array('category', $columns) ? '' : 'hidden' }}">
-                                            <x-larastrap::select-model name="category_id" :label="_i('Categoria')" :options="$categories" squeeze :nprefix="$product->id . '-'" />
+                                            <x-larastrap::select-model name="category_id" tlabel="generic.category" :options="$categories" squeeze :nprefix="$product->id . '-'" />
                                         </td>
 
                                         <td class="order-cell-measure {{ in_array('measure', $columns) ? '' : 'hidden' }}">
-                                            <x-larastrap::select-model name="measure_id" :label="_i('Unità di Misura')" :options="$measures" squeeze :nprefix="$product->id . '-'" />
+                                            <x-larastrap::select-model name="measure_id" tlabel="generic.measure" :options="$measures" squeeze :nprefix="$product->id . '-'" />
                                         </td>
 
                                         <td class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
-                                            <x-larastrap::price name="price" :label="_i('Prezzo Unitario')" squeeze required :nprefix="$product->id . '-'" />
+                                            <x-larastrap::price name="price" tlabel="products.prices.unit" squeeze required :nprefix="$product->id . '-'" />
                                         </td>
 
                                         <td class="order-cell-max_available {{ in_array('max_available', $columns) ? '' : 'hidden' }}">
-                                            <x-larastrap::decimal name="max_available" :label="_i('Disponibile')" squeeze required :nprefix="$product->id . '-'" />
+                                            <x-larastrap::decimal name="max_available" tlabel="products.available" squeeze required :nprefix="$product->id . '-'" />
                                         </td>
 
                                         <td class="order-cell-active {{ in_array('active', $columns) ? '' : 'hidden' }}">

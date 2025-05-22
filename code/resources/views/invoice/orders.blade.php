@@ -1,18 +1,15 @@
-<x-larastrap::modal :title="_i('Modifica Ordini')">
+<x-larastrap::modal>
     <?php $orders = $invoice->ordersCandidates() ?>
 
     @if($orders->isEmpty())
         <div class="alert alert-danger">
-            {{ _i('Non ci sono ordini assegnabili a questa fattura. Gli ordini devono: fare riferimento allo stesso fornitore cui è assegnata la fattura; non avere un pagamento al fornitore già registrato; essere in stato "Consegnato" o "Archiviato"; avere almeno una prenotazione "Consegnata" (il totale delle prenotazioni consegnate viene usato per effettuare il calcolo del pagamento effettivo).') }}
+            {{ __('invoices.help.no_orders') }}
         </div>
     @else
         <x-larastrap::iform method="POST" :action="url('invoices/wire/review/' . $invoice->id)">
             <input type="hidden" name="close-modal" value="1" />
             <input type="hidden" name="reload-loadable" value="#invoice-list" />
-
-            <p>
-                {{ _i("Qui appaiono gli ordini che: appartengono al fornitore intestatario della fattura; sono in stato Consegnato o Archiviato; hanno almeno una prenotazione marcata come Consegnata. I totali vengono calcolati sulle quantità effettivamente consegnate, non sulle prenotazioni.") }}
-            </p>
+            <p>{{ __('invoices.help.filtered_orders') }}</p>
 
             <hr>
 
@@ -20,10 +17,10 @@
                 <thead>
                     <tr>
                         <th scope="col" width="10%"></th>
-                        <th scope="col" width="30%">{{ _i('Ordine') }}</th>
-                        <th scope="col" width="20%">{{ _i('Totale Imponibile') }}</th>
-                        <th scope="col" width="20%">{{ _i('Totale IVA') }}</th>
-                        <th scope="col" width="20%">{{ _i('Totale') }}</th>
+                        <th scope="col" width="30%">{{ __('orders.name') }}</th>
+                        <th scope="col" width="20%">{{ __('orders.totals.taxable') }}</th>
+                        <th scope="col" width="20%">{{ __('orders.totals.vat') }}</th>
+                        <th scope="col" width="20%">{{ __('orders.totals.total') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,7 +49,7 @@
 
                 <tr class="orders-in-invoice-total">
                     <td>&nbsp;</td>
-                    <td>{{ _i('Totale Selezionato') }}</td>
+                    <td>{{ __('orders.totals.selected') }}</td>
                     <td>
                         <span class="taxable">0</span> {{ currentAbsoluteGas()->currency }}
                     </td>
@@ -66,7 +63,7 @@
 
                 <tr>
                     <td>&nbsp;</td>
-                    <td>{{ _i('Fattura') }}</td>
+                    <td>{{ __('generic.invoice') }}</td>
                     <td>
                         <span>{{ $invoice->total }}</span> {{ currentAbsoluteGas()->currency }}
                     </td>

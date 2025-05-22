@@ -123,7 +123,7 @@ class InvoicesController extends BackedController
         $filename = _i('Esportazione fatture GAS %s.csv', date('d/m/Y'));
         $headers = [
             __('orders.supplier'),
-            _i('Data'),
+            __('generic.date'),
             __('generic.number'),
             _i('Imponibile'),
             _i('IVA')

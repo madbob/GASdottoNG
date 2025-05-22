@@ -6,7 +6,7 @@
 
                 <?php $super_candidates = App\Role::whereNotIn('id', $role->children->pluck('id')->toArray())->where('id', '!=', $role->id)->orderBy('name')->get() ?>
                 @if($super_candidates->count() != 0)
-                    <x-larastrap::select-model name="parent" :label="_i('Ruolo Superiore')" :options="$super_candidates" :extra_options="[0 => _i('Nessuno')]" />
+                    <x-larastrap::select-model name="parent" tlabel="permissions.parent_role" :options="$super_candidates" :extra_options="[0 => __('generic.none')]" />
                 @endif
             </div>
         </div>
@@ -22,7 +22,7 @@
                                 <?php $is_mandatory = $role->mandatoryAction($identifier) ?>
                                 {{ $description }}
                                 @if($is_mandatory)
-                                    <br><small>{{ _i("Questo è l'unico ruolo abilitato a questo permesso speciale: se lo revochi rischi di perdere il controllo dell'istanza.") }}</small>
+                                    <br><small>{{ __('permissions.help.unique_role_warning') }}</small>
                                 @endif
                                 <span class="float-end">
                                     <input type="checkbox" data-role="{{ $role->id }}" data-action="{{ $identifier }}" {{ $role->enabledAction($identifier) ? 'checked' : '' }} {{ $is_mandatory ? 'disabled' : '' }}>
@@ -40,14 +40,14 @@
                                 <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#permissions-{{ sanitizeId($user->id) }}-{{ $role->id }}">
                                     {{ $user->printableName() }}
 									@if($user->checkRoleTargets($role) == false)
-										<span class="text-danger" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="{{ _i("A questo ruolo manca l'assegnazione a uno o più elementi per i quali sono concessi permessi, ed il comportamento potrebbe non essere quello desiderato") }}"><i class="bi-exclamation-circle"></i></span>
+										<span class="text-danger" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="{{ __('permissions.help.missing_elements_warning') }}"><i class="bi-exclamation-circle"></i></span>
 									@endif
                                 </button>
                             </li>
                         @endforeach
 
                         <li class="nav-item last-tab">
-                            <input class="form-control roleAssign" type="text" placeholder="{{ _i('Cerca e Aggiungi Nuovo Utente') }}">
+                            <input class="form-control roleAssign" type="text" placeholder="{{ __('permissions.add_user') }}">
                         </li>
                     </ul>
                 </div>

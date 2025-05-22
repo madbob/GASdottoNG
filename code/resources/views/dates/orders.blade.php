@@ -92,7 +92,7 @@
                             ]
                         ],
                         [
-                            'label' => _i('Commento'),
+                            'label' => __('generic.comment'),
                             'field' => 'comment',
                             'type' => 'text',
                             'width' => 10,

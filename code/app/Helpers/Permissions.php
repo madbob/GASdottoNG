@@ -4,33 +4,33 @@ function allPermissions()
 {
     $ret = [
         'App\Gas' => [
-            'gas.access' => _i('Accesso consentito anche in manutenzione'),
-            'gas.permissions' => _i('Modificare tutti i permessi'),
-            'gas.config' => _i('Modificare le configurazioni del GAS'),
-            'supplier.add' => _i('Creare nuovi fornitori'),
-            'supplier.book' => _i('Effettuare ordini'),
-            'supplier.view' => _i('Vedere tutti i fornitori'),
-            'order.view' => _i('Vedere tutti gli ordini'),
-            'users.self' => _i('Modificare la propria anagrafica'),
-            'users.selfdestroy' => _i('Eliminare il proprio account'),
-            'users.admin' => _i('Amministrare gli utenti'),
-            'users.view' => _i('Vedere tutti gli utenti'),
-            'users.subusers' => _i('Avere sotto-utenti con funzioni limitate'),
-            'users.movements' => _i('Amministrare i movimenti contabili degli utenti'),
-            'movements.admin' => _i('Amministrare tutti i movimenti contabili'),
-            'movements.view' => _i('Vedere i movimenti contabili'),
-            'movements.types' => _i('Amministrare i tipi dei movimenti contabili'),
-            'categories.admin' => _i('Amministrare le categorie'),
-            'measures.admin' => _i('Amministrare le unità di misura'),
-            'gas.statistics' => _i('Visualizzare le statistiche'),
-            'notifications.admin' => _i('Amministrare le notifiche'),
+            'gas.access' => __('permissions.permissions.maintenance_access'),
+            'gas.permissions' => __('permissions.permissions.alter_permissions'),
+            'gas.config' => __('permissions.permissions.alter_configs'),
+            'supplier.add' => __('permissions.permissions.create_suppliers'),
+            'supplier.book' => __('permissions.permissions.do_booking'),
+            'supplier.view' => __('permissions.permissions.view_suppliers'),
+            'order.view' => __('permissions.permissions.view_orders'),
+            'users.self' => __('permissions.permissions.alter_self'),
+            'users.selfdestroy' => __('permissions.permissions.delete_account'),
+            'users.admin' => __('permissions.permissions.admin_users'),
+            'users.view' => __('permissions.permissions.view_users'),
+            'users.subusers' => __('permissions.permissions.sub_users'),
+            'users.movements' => __('permissions.permissions.admin_user_movements'),
+            'movements.admin' => __('permissions.permissions.admin_movements'),
+            'movements.view' => __('permissions.permissions.view_movements'),
+            'movements.types' => __('permissions.permissions.admin_movements_types'),
+            'categories.admin' => __('permissions.permissions.admin_categories'),
+            'measures.admin' => __('permissions.permissions.admin_measures'),
+            'gas.statistics' => __('permissions.permissions.view_statistics'),
+            'notifications.admin' => __('permissions.permissions.admin_notifications'),
         ],
         'App\Supplier' => [
-            'supplier.modify' => _i('Modificare i fornitori assegnati'),
-            'supplier.orders' => _i('Aprire e modificare ordini'),
-            'supplier.shippings' => _i('Effettuare le consegne'),
-            'supplier.invoices' => _i('Amministrare le fatture'),
-            'supplier.movements' => _i('Amministrare i movimenti contabili del fornitore'),
+            'supplier.modify' => __('permissions.permissions.alter_suppliers'),
+            'supplier.orders' => __('permissions.permissions.open_orders'),
+            'supplier.shippings' => __('permissions.permissions.do_deliveries'),
+            'supplier.invoices' => __('permissions.permissions.admin_invoices'),
+            'supplier.movements' => __('permissions.permissions.admin_supplier_movements'),
         ],
     ];
 
@@ -48,7 +48,7 @@ function allPermissions()
             $gas = $gas->fresh();
 
             if ($gas->multigas) {
-                $ret['App\Gas']['gas.multi'] = _i('Amministrare la modalità Multi-GAS su questa istanza');
+                $ret['App\Gas']['gas.multi'] = __('permissions.permissions.admin_multigas');
             }
         }
     }

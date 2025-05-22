@@ -77,10 +77,10 @@
         </td>
 
         <td>
-            <x-larastrap::ambutton color="success" :label="_i('Nuova Quota')" :data-modal-url="$new_fee_url" />
+            <x-larastrap::ambutton color="success" tlabel="user.fees.new" :data-modal-url="$new_fee_url" />
 
             @if($user->fee)
-                <x-larastrap::ambutton color="warning" :label="_i('Modifica Quota')" :data-modal-url="$modify_fee_url" />
+                <x-larastrap::ambutton color="warning" tlabel="user.fees.change" :data-modal-url="$modify_fee_url" />
             @endif
         </td>
     </tr>

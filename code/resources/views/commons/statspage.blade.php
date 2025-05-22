@@ -25,7 +25,7 @@ else {
                     <div class="form-group">
                         <div class="col-12 col-sm-8 offset-sm-4">
                             <button type="submit" class="btn btn-info" name="format" value="json">{{ _i('Ricerca') }}</button>
-                            <a href="{{ route('stats.show', 'summary') }}" class="btn btn-light form-download" name="format" value="csv">{{ _i('Esporta CSV') }} <i class="bi-download"></i></a>
+                            <a href="{{ route('stats.show', 'summary') }}" class="btn btn-light form-download" name="format" value="csv">{{ __('generic.exports.csv') }} <i class="bi-download"></i></a>
                         </div>
                     </div>
                 </form>
@@ -71,7 +71,7 @@ else {
                     <div class="form-group">
                         <div class="col-12 col-sm-8 offset-sm-4">
                             <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
-                            <a href="{{ route('stats.show', 'supplier') }}" class="btn btn-light form-download" name="format" value="csv">{{ _i('Esporta CSV') }} <i class="bi-download"></i></a>
+                            <a href="{{ route('stats.show', 'supplier') }}" class="btn btn-light form-download" name="format" value="csv">{{ __('generic.exports.csv') }} <i class="bi-download"></i></a>
                         </div>
                     </div>
                 </form>

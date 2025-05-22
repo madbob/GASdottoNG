@@ -1,13 +1,13 @@
 @if(Gate::check('movements.admin', $currentgas) || Gate::check('movements.view', $currentgas))
     <div class="row">
         <div class="col">
-            <h4>{{ _i('Ordini da pagare') }}</h4>
+            <h4>{{ __('orders.statuses.to_pay') }}</h4>
 
             <?php $orders = $supplier->orders()->whereDoesntHave('payment')->get() ?>
 
             @if($orders->isEmpty())
                 <x-larastrap::suggestion>
-                    {{ _i('Non ci sono elementi da visualizzare.') }}
+                    {{ __('generic.empty_list') }}
                 </x-larastrap::suggestion>
             @else
                 <ul class="list-group">

@@ -3,10 +3,10 @@
         <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
 
         <p>
-            {!! _i('Ci sono ordini non ancora consegnati e archiviati in cui appare il prodotto di cui ha appena modificato il prezzo. Seleziona quelli in cui vuoi che venga applicato il nuovo prezzo (del prodotto e/o le differenze prezzi delle eventuali varianti).') !!}
+            {{ __('products.help.pending_orders_change_price') }}
         </p>
         <p>
-            {!! _i("Se modifichi i prezzi e nell'ordine ci sono prenotazioni che sono già state consegnate, dovrai manualmente salvare nuovamente tali consegne affinché vengano rigenerati i nuovi movimenti contabili aggiornati.") !!}
+            {{ __('products.help.pending_orders_change_price_second') }}
         </p>
 
         <p>

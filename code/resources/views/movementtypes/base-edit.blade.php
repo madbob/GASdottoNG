@@ -1,7 +1,7 @@
 <?php
 
 $target_classes = [
-    '' => _i('Nessuno'),
+    '' => __('generic.none'),
 ];
 
 $classes = modelsUsingTrait(\App\Models\Concerns\CreditableTrait::class);

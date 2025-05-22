@@ -24,7 +24,7 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
                         :label="$group->printableName()"
                         classes="table-filters"
                         data-table-target="#usersStatusTable"
-                        :extra_options="['all' => 'Tutti']" />
+                        :extra_options="['all' => __('generic.all')]" />
                 @endforeach
             </div>
         </div>

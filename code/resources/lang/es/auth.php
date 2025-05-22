@@ -11,5 +11,16 @@ return array (
   'remember' => '',
   'register' => '',
   'confirm_password' => '',
+  'help' => 
+  array (
+    'required_new_password' => '',
+    'unconfirmed' => '',
+    'username' => '',
+    'email_mode' => '',
+  ),
   'update_password' => '',
+  'modes' => 
+  array (
+    'email' => '',
+  ),
 );

@@ -15,18 +15,18 @@ trait GenericProductFormat
         $attributes = [
             'name' => _i('Nome'),
             'supplier_code' => __('products.code'),
-            'measure' => _i('Unità di Misura'),
-            'category' => _i('Categoria'),
-            'price' => _i('Prezzo Unitario'),
+            'measure' => __('generic.measure'),
+            'category' => __('generic.category'),
+            'price' => __('products.prices.unit'),
             'active' => __('products.bookable'),
             'vat_rate' => __('products.vat_rate'),
-            'portion_quantity' => _i('Pezzatura'),
-            'package_size' => _i('Dimensione Confezione'),
-            'weight' => _i('Peso'),
-            'multiple' => _i('Multiplo'),
-            'min_quantity' => _i('Minimo'),
-            'max_quantity' => _i('Massimo Consigliato'),
-            'max_available' => _i('Disponibile'),
+            'portion_quantity' => __('products.portion_quantity'),
+            'package_size' => __('products.package_size'),
+            'weight' => __('generic.weight'),
+            'multiple' => __('products.multiple'),
+            'min_quantity' => __('products.min_quantity'),
+            'max_quantity' => __('products.max_quantity'),
+            'max_available' => __('products.available'),
         ];
 
         $ret = [];

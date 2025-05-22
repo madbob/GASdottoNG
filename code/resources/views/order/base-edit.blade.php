@@ -24,9 +24,9 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
 @endif
 
 <x-larastrap::textarea name="comment" :label="_i('Commento')" maxlength="190" rows="2" :pophelp="_i('Eventuale testo informativo da visualizzare nel titolo dell\'ordine. Se più lungo di %d caratteri, il testo viene invece incluso nel pannello delle relative prenotazioni.', [longCommentLimit()])" />
-<x-larastrap::datepicker name="start" :label="_i('Data Apertura Prenotazioni')" defaults_now="true" required :pophelp="_i('Impostando qui una data futura, e lo stato In Sospeso, questo ordine sarà automaticamente aperto nella data specificata')" />
-<x-larastrap::datepicker name="end" :label="_i('Data Chiusura Prenotazioni')" defaults_now="true" required data-enforce-after=".date[name=start]" :pophelp="_i('Data di chiusura dell\'ordine. Al termine del giorno qui indicato, l\'ordine sarà automaticamente impostato nello stato Prenotazioni Chiuse')" />
-<x-larastrap::datepicker name="shipping" :label="_i('Data Consegna')" defaults_now="true" required data-enforce-after=".date[name=end]" />
+<x-larastrap::datepicker name="start" tlabel="orders.dates.start" defaults_now="true" required :pophelp="_i('Impostando qui una data futura, e lo stato In Sospeso, questo ordine sarà automaticamente aperto nella data specificata')" />
+<x-larastrap::datepicker name="end" tlabel="orders.dates.end" defaults_now="true" required data-enforce-after=".date[name=start]" :pophelp="_i('Data di chiusura dell\'ordine. Al termine del giorno qui indicato, l\'ordine sarà automaticamente impostato nello stato Prenotazioni Chiuse')" />
+<x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" defaults_now="true" required data-enforce-after=".date[name=end]" />
 
 <x-larastrap::field>
     @if(empty($suppliers) == false)

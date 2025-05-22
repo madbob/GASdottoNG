@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-6">
             <x-larastrap::textarea name="description" :label="_i('Contenuto')" required />
-            <x-larastrap::datepicker name="date" :label="_i('Data')" required />
+            <x-larastrap::datepicker name="date" tlabel="generic.date" required />
         </div>
     </div>
 </x-larastrap::mform>

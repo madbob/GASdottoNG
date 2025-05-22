@@ -1,20 +1,20 @@
-<x-larastrap::mform :obj="$receipt" classes="receipt-editor" nosave nodelete :other_buttons="[['label' => _i('Scarica'), 'classes' => ['link-button'], 'attributes' => ['data-link' => route('receipts.download', $receipt->id)]]]">
+<x-larastrap::mform :obj="$receipt" classes="receipt-editor" nosave nodelete :other_buttons="[['label' => __('generic.download'), 'classes' => ['link-button'], 'attributes' => ['data-link' => route('receipts.download', $receipt->id)]]]">
     <div class="row">
         <div class="col-md-6">
-            @include('commons.staticobjfield', ['obj' => $receipt, 'name' => 'user', 'label' => _i('Utente')])
+            @include('commons.staticobjfield', ['obj' => $receipt, 'name' => 'user', 'label' => __('user.name')])
             <x-larastrap::text name="number" tlabel="generic.number" readonly disabled />
-            <x-larastrap::datepicker name="date" :label="_i('Data')" readonly disabled />
+            <x-larastrap::datepicker name="date" tlabel="generic.date" readonly disabled />
 
             @if($receipt->total_tax)
-                <x-larastrap::price name="total" :label="_i('Totale Imponibile')" readonly disabled />
-                <x-larastrap::price name="total_tax" :label="_i('Totale IVA')" readonly disabled />
-                <x-larastrap::price name="total_other" :label="_i('Altro')" readonly disabled />
+                <x-larastrap::price name="total" tlabel="orders.totals.taxable" readonly disabled />
+                <x-larastrap::price name="total_tax" tlabel="orders.totals.vat" readonly disabled />
+                <x-larastrap::price name="total_other" tlabel="generic.more" readonly disabled />
             @else
-                <x-larastrap::price name="total" :label="_i('Totale')" readonly disabled />
+                <x-larastrap::price name="total" tlabel="orders.totals.total" readonly disabled />
             @endif
         </div>
         <div class="col-md-6">
-            <x-larastrap::field :label="_i('Prenotazioni Coinvolte')">
+            <x-larastrap::field tlabel="generic.menu.bookings">
                 @foreach($receipt->bookings as $booking)
                     <div class="row">
                         <div class="col-md-12">

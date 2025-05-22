@@ -19,6 +19,8 @@ return array (
   'taxcode' => '',
   'card_number' => '',
   'payment_method' => '',
+  'all' => '',
+  'name' => '',
   'statuses' => 
   array (
     'active' => '',
@@ -36,6 +38,7 @@ return array (
     'notifications_instructions' => '',
     'fee' => '',
     'deposit' => '',
+    'satispay' => '',
     'remove_profile' => '',
     'remove_profile_credit_notice' => '',
   ),
@@ -46,10 +49,22 @@ return array (
   'change_friend_assignee' => '',
   'fee' => '',
   'deposit' => '',
+  'fees_status' => '',
+  'all_ceased' => '',
   'last_fee' => '',
+  'fees' => 
+  array (
+    'new' => '',
+    'change' => '',
+  ),
   'empty' => 
   array (
     'friends' => '',
   ),
+  'satispay' => 
+  array (
+    'reload' => '',
+  ),
   'remove_profile' => '',
+  'assign_aggregations' => '',
 );

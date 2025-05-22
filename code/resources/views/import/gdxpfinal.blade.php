@@ -1,12 +1,10 @@
-<x-larastrap::modal :title="_i('Importa GDXP')">
+<x-larastrap::modal>
     <div class="wizard_page">
-        <p>
-            {{ _i('Fornitori importati') }}:
-        </p>
+        <p>{{ __('imports.imported_suppliers') }}:</p>
 
         <ul class="list-group">
             @if(empty($data))
-                <li>{{ _i('Nessuno') }}</li>
+                <li>{{ __('generic.none') }}</li>
             @else
                 @foreach($data as $supplier)
                     <li class="list-group-item">{{ $supplier->printableName() }}</li>

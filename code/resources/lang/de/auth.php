@@ -11,5 +11,16 @@ return array (
   'remember' => 'Erinnere mich',
   'register' => 'Registrieren',
   'confirm_password' => 'Passwort bestätigen',
+  'help' => 
+  array (
+    'required_new_password' => 'Um fortzufahren musst du ein neues Passwort für dein Konto erstellen.',
+    'unconfirmed' => '',
+    'username' => 'Benutzername, mit dem der Nutzer sich authentifiziert (muss eindeutig sein)',
+    'email_mode' => 'Andernfalls erhalten Sie eine Einladungs-E-Mail mit dem Link, den Sie besuchen müssen, um sich zum ersten Mal anzumelden und Ihr Passwort festzulegen.',
+  ),
   'update_password' => 'Passwort bestätigen',
+  'modes' => 
+  array (
+    'email' => 'E-Mail senden',
+  ),
 );

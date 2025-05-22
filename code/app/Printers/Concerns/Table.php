@@ -53,7 +53,7 @@ trait Table
     {
         $row = [];
 
-        $row[] = _i('Totale');
+        $row[] = __('orders.totals.total');
         $row = array_merge($row, array_fill(0, count($user_columns) - 1, ''));
 
         foreach ($orders as $order) {

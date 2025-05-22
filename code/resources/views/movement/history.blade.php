@@ -1,10 +1,10 @@
 <?php $can_edit = Gate::check('movements.admin', $currentgas) || Gate::check('movements.view', $currentgas) ?>
 
-<x-larastrap::modal :title="_i('Storico Saldi')">
+<x-larastrap::modal>
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Data</th>
+                <th scope="col">{{ __('generic.date') }}</th>
                 @foreach($obj->balanceFields() as $identifier => $name)
                     <th scope="col">{{ $name }}</th>
                 @endforeach
@@ -31,8 +31,8 @@
                         <td class="text-end">
                             @if($index != 0)
 								@if(is_a($obj, App\Gas::class))
-									<x-larastrap::ambutton :label="_i('Elimina')" color="danger" :data-modal-url="route('movements.askdeletebalance', ['id' => $bal->id])" size="sm" />
-									<x-larastrap::ambutton :label="_i('Dettagli')" color="info" :data-modal-url="route('movements.history.details', ['date' => $date->format('Y-m-d')])" size="sm" />
+									<x-larastrap::ambutton tlabel="generic.remove" color="danger" :data-modal-url="route('movements.askdeletebalance', ['id' => $bal->id])" size="sm" />
+									<x-larastrap::ambutton tlabel="generic.details" color="info" :data-modal-url="route('movements.history.details', ['date' => $date->format('Y-m-d')])" size="sm" />
 								@endif
                             @endif
                         </td>

@@ -5,7 +5,7 @@
                 'template' => 'attachment.base-edit',
                 'typename' => 'attachment',
                 'target_update' => 'attachment-list-' . $supplier->id,
-                'typename_readable' => _i('File'),
+                'typename_readable' => __('generic.file'),
                 'targeturl' => 'attachments',
                 'extra' => [
                     'target_type' => 'App\Supplier',

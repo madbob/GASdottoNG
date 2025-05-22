@@ -36,7 +36,7 @@
             </x-larastrap::field>
 
             <x-larastrap::field :label="_i('Esporta database')">
-                <a href="{{ route('gas.dumpdb') }}" class="btn btn-light">{{ _i('Download') }} <i class="bi-download"></i></a>
+                <a href="{{ route('gas.dumpdb') }}" class="btn btn-light">{{ __('generic.download') }} <i class="bi-download"></i></a>
             </x-larastrap::field>
         </div>
     </div>

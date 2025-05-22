@@ -37,7 +37,7 @@ if (isset($extra_class)) {
         </div>
     @else
         <label class="{{ $class }}">
-            {{ _i('Nessuno') }}
+            {{ __('generic.none') }}
         </label>
     @endif
 </x-larastrap::field>

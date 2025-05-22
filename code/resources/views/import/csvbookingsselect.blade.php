@@ -14,8 +14,8 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">{{ _i('Utente') }}</th>
-                        <th scope="col">{{ _i('Totale') }}</th>
+                        <th scope="col">{{ __('user.name') }}</th>
+                        <th scope="col">{{ __('orders.totals.total') }}</th>
                     </tr>
                 </thead>
                 <tbody>

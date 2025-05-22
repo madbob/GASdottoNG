@@ -15,7 +15,7 @@
                 @php
 
                 $types = [
-                    'none' => _i('Nessuno'),
+                    'none' => __('generic.none'),
                 ];
 
                 $booking_payment_type = movementTypes('booking-payment');
@@ -40,19 +40,19 @@
                         'absolute' => _i('Assoluto'),
                         'percentage' => _i('Percentuale'),
 						'mass' => _i('A Peso'),
-                        'price' => (object) ['label' => _i('Prezzo Unitario'), 'disabled' => $modifier->applies_type == 'none'],
+                        'price' => (object) ['label' => __('products.prices.unit'), 'disabled' => $modifier->applies_type == 'none'],
                     ];
 
                     $applies_types = [
                         'none' => _i('Nessuna soglia'),
-                        'quantity' => _i('Quantità'),
-                        'price' => _i('Valore'),
+                        'quantity' => __('generic.quantity'),
+                        'price' => __('generic.value'),
                         'order_price' => _i("Valore dell'Ordine"),
-                        'weight' => _i('Peso'),
+                        'weight' => __('generic.weight'),
                     ];
 
                     $applies_targets = [
-                        'product' => _i('Prodotto'),
+                        'product' => __('products.name'),
                         'booking' => _i('Singola Prenotazione'),
                         'order' => _i('Ordine Complessivo'),
                     ];
@@ -70,8 +70,8 @@
 
                     $applies_types = [
                         'none' => _i('Nessuna soglia'),
-                        'price' => _i('Valore'),
-                        'weight' => _i('Peso'),
+                        'price' => __('generic.value'),
+                        'weight' => __('generic.weight'),
                     ];
 
                     $applies_targets = [
@@ -90,7 +90,7 @@
                 ?>
 
                 <x-larastrap::radios name="applies_type" :label="_i('Misura su cui applicare le soglie')" :options="$applies_types" />
-                <x-larastrap::radios name="value" :label="_i('Valore')" :options="$values" />
+                <x-larastrap::radios name="value" tlabel="generic.value" :options="$values" />
 
                 <div class="arithmetic_type_selection {{ $modifier->value == 'price' ? 'd-none' : '' }}">
                     <x-larastrap::radios name="arithmetic" :label="_i('Operazione')" :options="[

@@ -12,11 +12,11 @@
             ?>
 
             <x-larastrap::select name="type" tlabel="generic.type" :options="$types" disabled readonly />
-            <x-larastrap::price name="amount" :label="_i('Valore')" disabled readonly />
-            <x-larastrap::datepicker name="date" :label="_i('Data')" disabled readonly />
+            <x-larastrap::price name="amount" tlabel="generic.value" disabled readonly />
+            <x-larastrap::datepicker name="date" tlabel="generic.date" disabled readonly />
 
             @if(filled($obj->identifier))
-                <x-larastrap::text name="identifier" :label="_i('Identificativo')" disabled readonly />
+                <x-larastrap::text name="identifier" tlabel="generic.identifier" disabled readonly />
             @endif
 
             @if(filled($obj->notes))

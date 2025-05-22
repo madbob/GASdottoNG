@@ -51,9 +51,9 @@
         <table border="1" style="width: 100%">
             <thead>
                 <tr>
-                    <th scope="col" width="55%"><strong>{{ _i('Prodotto') }}</strong></th>
-                    <th scope="col" width="15%"><strong>{{ _i('Quantità') }}</strong></th>
-                    <th scope="col" width="15%"><strong>{{ _i('Unità Misura') }}</strong></th>
+                    <th scope="col" width="55%"><strong>{{ __('products.name') }}</strong></th>
+                    <th scope="col" width="15%"><strong>{{ __('generic.quantity') }}</strong></th>
+                    <th scope="col" width="15%"><strong>{{ __('generic.measure') }}</strong></th>
                     <th scope="col" width="15%"><strong>{{ _i('Prezzo') }}</strong></th>
                 </tr>
             </thead>
@@ -122,7 +122,7 @@
                 @endforeach
 
                 <tr>
-                    <td width="85%"><strong>{{ _i('Totale') }}</strong></td>
+                    <td width="85%"><strong>{{ __('orders.totals.total') }}</strong></td>
                     <td width="15%"><strong>{{ printablePriceCurrency($grand_total) }}</strong></td>
                 </tr>
             </tbody>

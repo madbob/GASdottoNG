@@ -5,7 +5,7 @@
 
     <ul class="list-group">
         @if(empty($objects))
-            <li>{{ _i('Nessuno') }}</li>
+            <li>{{ __('generic.none') }}</li>
         @else
             @foreach($objects as $m)
                 <li class="list-group-item">{!! $m->printableName() !!}</li>

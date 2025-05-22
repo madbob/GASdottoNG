@@ -7,7 +7,7 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    {{ _i('Notifiche') }}
+                    {{ __('generic.menu.notifications') }}
                 </div>
                 <div class="card-body">
                     @foreach($notifications as $notify)
@@ -42,12 +42,12 @@
                         <a target="_blank" href="{{ url('ordini.xml') }}"><i class="bi-rss"></i></a>
                         <a target="_blank" href="{{ url('ordini.ics') }}"><i class="bi-calendar"></i></a>
                     </p>
-                    {{ _i('Prenotazioni Aperte') }}
+                    {{ __('orders.list_open') }}
                 </div>
                 @if(count($opened) == 0)
                     <div class="card-body">
                         <x-larastrap::suggestion>
-                            {{ _i('Non ci sono prenotazioni aperte.') }}
+                            {{ __('orders.help.no_opened') }}
                         </x-larastrap::suggestion>
                     </div>
                 @else
@@ -57,12 +57,12 @@
 
             <div class="card mb-3">
                 <div class="card-header">
-                    {{ _i('Ordini in Consegna') }}
+                    {{ __('orders.list_delivering') }}
                 </div>
                 @if(count($shipping) == 0)
                     <div class="card-body">
                         <x-larastrap::suggestion>
-                            {{ _i('Non ci sono ordini in consegna.') }}
+                            {{ __('orders.help.no_delivering') }}
                         </x-larastrap::suggestion>
                     </div>
                 @else
@@ -74,7 +74,7 @@
         @if($currentgas->attachments->isEmpty() == false)
             <div class="card mb-3">
                 <div class="card-header">
-                    {{ _i('File Condivisi') }}
+                    {{ __('generic.shared_files') }}
                 </div>
                 <div class="list-group list-group-flush">
                     @foreach($currentgas->attachments as $attachment)
@@ -132,19 +132,19 @@
                     @if($configuration['current_credit'])
                         @foreach($currencies as $curr)
                             <p class="d-flex align-items-center justify-content-start">
-                                <x-larastrap::pophelp classes="me-2" :text="_i('Questo è il tuo saldo attuale nei confronti del GAS.')" />
-                                <span class="lead">{{ _i('Credito Attuale') }}: {{ printablePriceCurrency($balances[$curr->id], '.', $curr) }}</span>
+                                <x-larastrap::pophelp classes="me-2" ttext="movements.help.current_balance" />
+                                <span class="lead">{{ __('movements.current_credit') }}: {{ printablePriceCurrency($balances[$curr->id], '.', $curr) }}</span>
                             </p>
                         @endforeach
                     @endif
 
                     @if($configuration['to_pay'])
                         <p class="d-flex align-items-center justify-content-start">
-                            <x-larastrap::pophelp classes="me-2" :text="_i('Questo è il totale delle tue prenotazioni non ancora consegnate, e di cui non è dunque ancora stato registrato il pagamento.')" />
-                            <span class="lead">{{ _i('Da Pagare') }}: {{ printablePriceCurrency($to_pay) }}</span>
+                            <x-larastrap::pophelp classes="me-2" ttext="movements.help.pending_bookings_to_pay" />
+                            <span class="lead">{{ __('movements.to_pay') }}: {{ printablePriceCurrency($to_pay) }}</span>
                         </p>
                         @if(!empty($to_pay_friend))
-                            <p>{{ _i('di cui') }}</p>
+                            <p>{{ __('generic.split') }}</p>
                             @foreach($to_pay_friend as $friend_name => $friend_amount)
                                 <p>{{ $friend_name }} {{ printablePriceCurrency($friend_amount) }}</p>
                             @endforeach

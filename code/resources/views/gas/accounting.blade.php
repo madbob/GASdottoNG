@@ -1,4 +1,4 @@
-<x-larastrap::accordionitem :label="_i('Contabilità')">
+<x-larastrap::accordionitem tlabel="generic.menu.accounting">
     <x-larastrap::form :obj="$gas" classes="inner-form gas-editor" method="PUT" :action="route('gas.update', $gas->id)">
         <div class="row">
             <input type="hidden" name="group" value="banking">
@@ -42,7 +42,7 @@
                 <x-larastrap::collapse id="enable_extra_invoicing">
                     <x-larastrap::text name="extra_invoicing->business_name" :label="_i('Ragione Sociale')" :value="$gas->extra_invoicing['business_name']" />
                     <x-larastrap::text name="extra_invoicing->taxcode" :label="_i('Codice Fiscale')" :value="$gas->extra_invoicing['taxcode']" classes="required_when_triggered" data-alternative-required="extra_invoicing->vat" />
-                    <x-larastrap::text name="extra_invoicing->vat" :label="_i('Partita IVA')" :value="$gas->extra_invoicing['vat']" classes="required_when_triggered" data-alternative-required="extra_invoicing->taxcode" />
+                    <x-larastrap::text name="extra_invoicing->vat" tlabel="supplier.vat" :value="$gas->extra_invoicing['vat']" classes="required_when_triggered" data-alternative-required="extra_invoicing->taxcode" />
                     <x-larastrap::text name="extra_invoicing->address" :label="_i('Indirizzo')" :value="$gas->extra_invoicing['address']" />
                     <x-larastrap::number name="extra_invoicing->invoices_counter" :label="_i('Contatore Fatture')" :value="$gas->extra_invoicing['invoices_counter']" :pophelp="_i('Modifica questo parametro con cautela!')" />
                 </x-larastrap::collapse>

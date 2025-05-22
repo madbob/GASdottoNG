@@ -22,7 +22,7 @@
                     <th scope="col">{{ __('generic.payment') }}</th>
                     <th scope="col">{{ _i('Pagante') }}</th>
                     <th scope="col">{{ _i('Pagato') }}</th>
-                    <th scope="col">{{ _i('Valore') }}</th>
+                    <th scope="col">{{ __('generic.value') }}</th>
                     <th scope="col">{{ __('generic.notes') }}</th>
                 </tr>
             </thead>

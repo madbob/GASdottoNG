@@ -27,7 +27,7 @@ foreach(App\Currency::enabled() as $curr) {
 
 @if($movements->count() == 0)
     <x-larastrap::suggestion>
-        {{ _i('Non ci sono elementi da visualizzare.') }}
+        {{ __('generic.empty_list') }}
     </x-larastrap::suggestion>
 @else
     <div class="table-responsive">
@@ -44,7 +44,7 @@ foreach(App\Currency::enabled() as $curr) {
                     @if($exclude_target == false)
                         <th scope="col">{{ _i('Pagato') }}</th>
                     @endif
-                    <th scope="col">{{ _i('Valore') }}</th>
+                    <th scope="col">{{ __('generic.value') }}</th>
                     <th scope="col">{{ __('generic.notes') }}</th>
                     @if(Gate::check('movements.admin', $currentgas))
                         <th scope="col">{{ _i('Modifica') }}</th>

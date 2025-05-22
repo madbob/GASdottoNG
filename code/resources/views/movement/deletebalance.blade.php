@@ -1,5 +1,5 @@
-<x-larastrap::modal :title="_i('Elimina Saldo Passato')" size="lg">
-	<x-larastrap::iform classes="form-inline iblock" :action="route('movements.deletebalance', $id)" :buttons="[['color' => 'danger', 'label' => _i('Elimina'), 'attributes' => ['type' => 'submit']]]">
+<x-larastrap::modal size="lg">
+	<x-larastrap::iform classes="form-inline iblock" :action="route('movements.deletebalance', $id)" :buttons="[['color' => 'danger', 'tlabel' => 'generic.remove', 'attributes' => ['type' => 'submit']]]">
 		<input type="hidden" name="reload-whole-page" value="1">
 		<input type="hidden" name="pre-saved-function" value="passwordProtected">
 

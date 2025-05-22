@@ -19,6 +19,8 @@ return array (
   'taxcode' => 'Steuernummer',
   'card_number' => 'Mitgliedsnummer',
   'payment_method' => 'Bezahlmodus',
+  'all' => 'Benutzer',
+  'name' => 'Benutzer',
   'statuses' => 
   array (
     'active' => 'Aktiviert',
@@ -36,6 +38,7 @@ return array (
     'notifications_instructions' => 'Wähle die Lieferanten aus für die du eine Benachrichtigung erhalten möchtest bei Eröffnung einer neuen Bestellung.',
     'fee' => 'Daten im Zusammenhang des Jahresbeitrags des Nutzers. Zur Deaktivierung dieser Option gehe zu Einstellungen -> Buchhaltung',
     'deposit' => 'Daten zur Einlage, die der Nutzer im Moment des Eintritts in die Bestellgemeinschaft bezahlt hat. Zur Deaktivierung dieser Option gehe zu Einstellungen -> Buchhaltung',
+    'satispay' => 'Von hier kannst du deinen Kontostand mit Satispay aufladen. Sag wie viel du überweisen willst und ev. Noten für die Verwalter; dir wird eine Bestätigung auf dem Smartphone, innerhalb 15 min. geschickt.',
     'remove_profile' => '',
     'remove_profile_credit_notice' => '',
   ),
@@ -46,10 +49,22 @@ return array (
   'change_friend_assignee' => '',
   'fee' => 'Beitrag',
   'deposit' => 'Depot',
+  'fees_status' => 'Status',
+  'all_ceased' => 'Beendet',
   'last_fee' => '',
+  'fees' => 
+  array (
+    'new' => 'Anzahl ändern',
+    'change' => 'Anzahl ändern',
+  ),
   'empty' => 
   array (
     'friends' => 'Füge die Informationen bezüglich deiner Freunde hinzu, für die du eine Unter-Bestellung anlegen willst. Jede einzelne Bestellung ist dann autonom, wird aber behandelt als eine in der Phase der Lieferung. Jeder Freund kann auch eigene Zugangsdaten haben um sich bei GASdotto anzumelden und seine eigenen Bestellungen zu verwalten.',
   ),
+  'satispay' => 
+  array (
+    'reload' => 'Kreditaufladung mit Satispay',
+  ),
   'remove_profile' => '',
+  'assign_aggregations' => '',
 );

@@ -1,12 +1,10 @@
 <?php $repository = App::make('RemoteRepository') ?>
 
-<x-larastrap::modal :title="_i('Indice Remoto')">
+<x-larastrap::modal>
     <div class="wizard_page">
         <div class="row">
             <div class="col-12">
-                <p>
-                    {{ _i("Questa funzione permette di accedere e tenere automaticamente aggiornati i listini condivisi su %s. Attenzione: è una funzione sperimentale, usare con cautela!", [env('HUB_URL')]) }}
-                </p>
+                <p>{{ __('imports.help.remote_index', ['url' => env('HUB_URL')]) }}</p>
                 <hr>
             </div>
             <div class="col-12">
@@ -18,7 +16,7 @@
                     <thead>
                         <tr>
                             <th scope="col" width="25%">{{ __('generic.name') }}</th>
-                            <th scope="col" width="20%">{{ _i('Partita IVA') }}</th>
+                            <th scope="col" width="20%">{{ __('supplier.vat') }}</th>
                             <th scope="col" width="25%">{{ _i('Aggiornato') }}</th>
                             <th scope="col" width="25%">{{ _i('Ultima Lettura') }}</th>
                             <th scope="col" width="5%">{{ _i('Importa') }}</th>

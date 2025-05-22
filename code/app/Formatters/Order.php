@@ -31,7 +31,7 @@ class Order extends Formatter
     private static function formatQuantity()
     {
         return (object) [
-            'name' => _i('Quantità'),
+            'name' => __('generic.quantity'),
             'checked' => true,
             'format_product' => function ($product, $summary, $alternate = false) {
                 if ($alternate === false) {
@@ -67,7 +67,7 @@ class Order extends Formatter
     private static function formatMeasure()
     {
         return (object) [
-            'name' => _i('Unità di Misura'),
+            'name' => __('generic.measure'),
             'checked' => true,
             'format_product' => function ($product, $summary, $alternate = false) {
                 if ($alternate === false) {
@@ -128,14 +128,14 @@ class Order extends Formatter
             'measure' => self::formatMeasure(),
 
             'category' => (object) [
-                'name' => _i('Categoria'),
+                'name' => __('generic.category'),
                 'checked' => false,
                 'format_product' => function ($product, $summary) {
                     return $product->category ? $product->category->name : '';
                 },
             ],
             'unit_price' => (object) [
-                'name' => _i('Prezzo Unitario'),
+                'name' => __('products.prices.unit'),
                 'checked' => false,
                 'format_product' => function ($product, $summary) {
                     return printablePrice($product->getPrice());

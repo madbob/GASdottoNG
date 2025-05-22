@@ -1,5 +1,5 @@
 <div class="card-header">
-    <h3>{{ _i('Permessi') }}</h3>
+    <h3>{{ __('permissions.name') }}</h3>
 </div>
 <div class="card-body">
     <div class="row">
@@ -9,14 +9,14 @@
             <x-larastrap::form classes="auto-submit" method="PUT" :action="route('gas.update', $gas->id)" :buttons="[]">
                 <input type="hidden" name="group" value="roles">
 
-                <x-larastrap::select-model name="roles->user" :label="_i('Ruolo Utente non Privilegiato')" :options="$existing_roles" :value="roleByFunction('user')->id" :pophelp="_i('Questo ruolo sarà automaticamete assegnato ad ogni nuovo utente')" />
+                <x-larastrap::select-model name="roles->user" tlabel="permissions.unprivileged" :options="$existing_roles" :value="roleByFunction('user')->id" tpophelp="permissions.help.unprivileged" />
 
                 @if(someoneCan('users.subusers'))
-                    <x-larastrap::select-model name="roles->friend" :label="_i('Ruolo Sotto-Utente')" :options="$existing_roles" :value="roleByFunction('friend')->id" :pophelp="_i('Questo ruolo sarà automaticamente assegnato ad ogni amico degli utenti esistenti. Si consiglia di creare un ruolo dedicato, con permessi limitati alle sole prenotazioni')" />
+                    <x-larastrap::select-model name="roles->friend" tlabel="permissions.sub_user" :options="$existing_roles" :value="roleByFunction('friend')->id" tpophelp="permissions.help.sub_user" />
                 @endif
 
                 @if($currentgas->multigas)
-                    <x-larastrap::select-model name="roles->multigas" :label="_i('Ruolo Amministratore GAS Secondario')" :options="$existing_roles" :value="roleByFunction('multigas')->id" :pophelp="_i('Questo ruolo sarà automaticamente assegnato al primo utente di ogni nuovo GAS creato nel pannello Multi-GAS')" />
+                    <x-larastrap::select-model name="roles->multigas" tlabel="permissions.multigas_admin" :options="$existing_roles" :value="roleByFunction('multigas')->id" tpophelp="permissions.help.multigas_admin" />
                 @endif
             </x-larastrap::form>
         </div>
@@ -27,12 +27,12 @@
             @include('commons.addingbutton', [
                 'template' => 'permissions.base-edit',
                 'typename' => 'role',
-                'typename_readable' => _i('Ruolo'),
+                'typename_readable' => __('permissions.role'),
                 'targeturl' => 'roles',
                 'autoread' => true,
             ])
 
-            <x-larastrap::downloading :label="_i('Esporta Permessi ')" :href="route('roles.export')" />
+            <x-larastrap::downloading tlabel="generic.export" :href="route('roles.export')" />
         </div>
     </div>
 

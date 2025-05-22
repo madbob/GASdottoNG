@@ -1,16 +1,16 @@
-<x-larastrap::modal :title="_i('Verifica Contenuti')">
+<x-larastrap::modal>
     <x-larastrap::tabs>
         @foreach($invoice->orders as $index => $order)
-            <x-larastrap::tabpane :label="sprintf('%s<br><small>%s</small>', $order->printableName(), _i('Consegna: %s', printableDate($order->shipping)))" :active="$index == 0" icon="bi-file-check">
+            <x-larastrap::tabpane :label="sprintf('%s<br><small>%s</small>', $order->printableName(), __('invoices.shipping_of', ['date' => printableDate($order->shipping)]))" :active="$index == 0" icon="bi-file-check">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" width="20%">{{ _i('Prodotto') }}</th>
+                            <th scope="col" width="20%">{{ __('products.name') }}</th>
                             <th scope="col" width="15%">{{ __('products.vat_rate') }}</th>
-                            <th scope="col" width="15%">{{ _i('Quantità Consegnata') }}</th>
-                            <th scope="col" width="15%">{{ _i('Totale Imponibile') }}</th>
-                            <th scope="col" width="15%">{{ _i('Totale IVA') }}</th>
-                            <th scope="col" width="20%">{{ _i('Totale') }}</th>
+                            <th scope="col" width="15%">{{ __('orders.quantities.shipped') }}</th>
+                            <th scope="col" width="15%">{{ __('orders.totals.taxable') }}</th>
+                            <th scope="col" width="15%">{{ __('orders.totals.vat') }}</th>
+                            <th scope="col" width="20%">{{ __('orders.totals.total') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,16 +42,16 @@
         @endforeach
 
         @if($invoice->orders->count() > 1)
-            <x-larastrap::tabpane :label="_i('Aggregato')" icon="bi-files">
+            <x-larastrap::tabpane tlabel="orders.aggregate" icon="bi-files">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" width="20%">{{ _i('Prodotto') }}</th>
+                            <th scope="col" width="20%">{{ __('products.name') }}</th>
                             <th scope="col" width="15%">{{ __('products.vat_rate') }}</th>
-                            <th scope="col" width="15%">{{ _i('Quantità Consegnata') }}</th>
-                            <th scope="col" width="15%">{{ _i('Totale Imponibile') }}</th>
-                            <th scope="col" width="15%">{{ _i('Totale IVA') }}</th>
-                            <th scope="col" width="20%">{{ _i('Totale') }}</th>
+                            <th scope="col" width="15%">{{ __('orders.quantities.shipped') }}</th>
+                            <th scope="col" width="15%">{{ __('orders.totals.taxable') }}</th>
+                            <th scope="col" width="15%">{{ __('orders.totals.vat') }}</th>
+                            <th scope="col" width="20%">{{ __('orders.totals.total') }}</th>
                         </tr>
                     </thead>
                     <tbody>

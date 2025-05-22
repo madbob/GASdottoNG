@@ -33,7 +33,7 @@
                             ]
                         ],
                         [
-                            'label' => _i('Data'),
+                            'label' => __('generic.date'),
                             'field' => 'date',
                             'type' => 'datepicker',
                             'width' => 20,

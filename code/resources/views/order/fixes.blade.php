@@ -12,7 +12,7 @@
 
         @if($product->package_size != 0)
             <p>
-                {{ _i('Dimensione Confezione') }}: {{ $product->package_size }} {{ $product->printableMeasure(true) }}
+                {{ __('products.package_size') }}: {{ $product->package_size }} {{ $product->printableMeasure(true) }}
             </p>
 
             <hr/>
@@ -20,7 +20,7 @@
 
         @if($product->global_min != 0)
             <p>
-                {{ _i('Minimo Complessivo') }}: {{ $product->global_min }} {{ $product->measure->name }}
+                {{ __('products.global_min') }}: {{ $product->global_min }} {{ $product->measure->name }}
             </p>
 
             <hr/>
@@ -62,7 +62,7 @@
                 <table class="table table-striped fixes-table">
                     <thead>
                         <tr>
-                            <th scope="col" width="35%">{{ _i('Utente') }}</th>
+                            <th scope="col" width="35%">{{ __('user.name') }}</th>
                             <th scope="col" width="35%">{{ _i('Data Prenotazione') }}</th>
                             <th scope="col" width="30%">{{ _i('Quantità Prenotata') }}</th>
                         </tr>
@@ -114,7 +114,7 @@
                             <table class="table table-striped fixes-table">
                                 <thead>
                                     <tr>
-                                        <th scope="col" width="35%">{{ _i('Utente') }}</th>
+                                        <th scope="col" width="35%">{{ __('user.name') }}</th>
                                         <th scope="col" width="35%">{{ _i('Data Prenotazione') }}</th>
                                         <th scope="col" width="30%">{{ _i('Quantità Prenotata') }}</th>
                                     </tr>

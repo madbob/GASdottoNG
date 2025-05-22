@@ -10,7 +10,7 @@
     $sorting_rules['name'] = __('generic.name');
 
     $sorting_rules['category_name'] = (object) [
-        'label' => _i('Categoria'),
+        'label' => __('generic.category'),
         'has_headers' => true,
         'get_headers' => function($items) {
             $categories = $items->pluck('category_id')->toArray();

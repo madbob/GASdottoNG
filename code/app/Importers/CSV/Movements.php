@@ -17,20 +17,20 @@ class Movements extends CSVImporter
     {
         $ret = [
             'date' => (object) [
-                'label' => _i('Data'),
+                'label' => __('generic.date'),
                 'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')]),
             ],
             'amount' => (object) [
-                'label' => _i('Valore'),
+                'label' => __('generic.value'),
             ],
             'identifier' => (object) [
-                'label' => _i('Identificativo'),
+                'label' => __('generic.identifier'),
             ],
             'notes' => (object) [
                 'label' => __('generic.notes'),
             ],
             'user' => (object) [
-                'label' => _i('Utente'),
+                'label' => __('user.name'),
                 'explain' => _i('Username o indirizzo e-mail'),
             ],
             'supplier' => (object) [

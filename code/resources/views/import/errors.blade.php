@@ -2,7 +2,7 @@
 	<hr/>
 
 	<p>
-		{{ _i('Errori') }}:
+		{{ __('generic.errors') }}:
 	</p>
 
 	<ul class="list-group">

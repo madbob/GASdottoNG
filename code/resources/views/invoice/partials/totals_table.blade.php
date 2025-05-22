@@ -56,13 +56,13 @@ foreach($invoice->orders as $o) {
         <thead>
             <tr>
                 <th scope="col" width="30%"></th>
-                <th scope="col" width="35%">{{ _i('Fattura') }}</th>
-                <th scope="col" width="35%">{{ _i('Ordini Coinvolti') }}</th>
+                <th scope="col" width="35%">{{ __('generic.invoice') }}</th>
+                <th scope="col" width="35%">{{ __('invoices.orders') }}</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>{{ _i('Totale Imponibile') }}</td>
+                <td>{{ __('orders.totals.taxable') }}</td>
                 <td>
                     <x-larastrap::price name="total" classes="simple-sum" :required="$editable" :disabled="$editable == false" squeeze autocomplete="off" />
                 </td>
@@ -71,7 +71,7 @@ foreach($invoice->orders as $o) {
                 </td>
             </tr>
             <tr>
-                <td>{{ _i('Totale IVA') }}</td>
+                <td>{{ __('orders.totals.vat') }}</td>
                 <td>
                     <x-larastrap::price name="total_vat" classes="simple-sum" :required="$editable" :disabled="$editable == false" squeeze autocomplete="off" />
                 </td>
@@ -91,7 +91,7 @@ foreach($invoice->orders as $o) {
             @endforeach
 
             <tr>
-                <td>{{ _i('Totale') }}</td>
+                <td>{{ __('orders.totals.total') }}</td>
                 <td>
                     <x-larastrap::price classes="simple-sum-result" disabled squeeze autocomplete="off" :value="$invoice->total + $invoice->total_vat" />
                 </td>
@@ -102,7 +102,7 @@ foreach($invoice->orders as $o) {
 
             @if(empty($orders_other_modifiers) == false)
                 <tr class="border-top">
-                    <td colspan="3">{{ _i('Altri modificatori non destinati a questa fattura:') }}</td>
+                    <td colspan="3">{{ __('invoices.other_modifiers') }}</td>
                 </tr>
 
                 @foreach($orders_other_modifiers as $om)

@@ -17,9 +17,9 @@ $total = 0;
     <thead>
         <tr>
             <th scope="col">{{ __('orders.supplier') }}</th>
-            <th scope="col">{{ _i('Utente') }}</th>
-            <th scope="col">{{ _i('Data') }}</th>
-            <th scope="col">{{ _i('Valore') }}</th>
+            <th scope="col">{{ __('user.name') }}</th>
+            <th scope="col">{{ __('generic.date') }}</th>
+            <th scope="col">{{ __('generic.value') }}</th>
         </tr>
     </thead>
 

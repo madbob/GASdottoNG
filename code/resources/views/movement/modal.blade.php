@@ -17,12 +17,12 @@ if (!isset($amount_editable)) {
 }
 
 if (!isset($amount_label)) {
-    $amount_label = 'Valore';
+    $amount_label = __('generic.value');
 }
 
 $buttons = [];
 if ($editable && $obj && $obj->exists) {
-    $buttons[] = ['color' => 'danger', 'label' => _i('Elimina'), 'classes' => ['float-start', 'async-modal'], 'attributes' => ['data-modal-url' => route('movements.askdelete', $obj->id)]];
+    $buttons[] = ['color' => 'danger', 'tlabel' => 'generic.remove', 'classes' => ['float-start', 'async-modal'], 'attributes' => ['data-modal-url' => route('movements.askdelete', $obj->id)]];
 }
 
 $buttons[] = ['color' => 'success', 'tlabel' => 'generic.save', 'attributes' => ['type' => 'submit']];
@@ -60,7 +60,7 @@ $buttons[] = ['color' => 'success', 'tlabel' => 'generic.save', 'attributes' => 
 
         @if($obj->sender && hasTrait($obj->sender, \App\Models\Concerns\CreditableTrait::class) !== false && count($obj->sender->balanceFields()) == 1)
             <p class="sender-credit-status mb-3 alert alert-{{ $obj->amount < $obj->sender->currentBalanceAmount() ? 'success' : 'danger' }}">
-                {{ _i('Credito Attuale %s', [$obj->sender->printableName()]) }}: <span class="current-sender-credit">{{ $obj->sender->currentBalanceAmount() }}</span> {{ $currentgas->currency }}
+                {{ __('movements.current_credit') }} - {{ $obj->sender->printableName() }}: <span class="current-sender-credit">{{ $obj->sender->currentBalanceAmount() }}</span> {{ $currentgas->currency }}
             </p>
         @endif
 
@@ -81,7 +81,7 @@ $buttons[] = ['color' => 'success', 'tlabel' => 'generic.save', 'attributes' => 
         @endif
 
         <x-larastrap::datepicker name="date" :label="_i('Data')" defaults_now="true" />
-        <x-larastrap::text name="identifier" :label="_i('Identificativo')" />
+        <x-larastrap::text name="identifier" tlabel="generic.identifier" />
         <x-larastrap::textarea name="notes" tlabel="generic.notes" />
     </x-larastrap::iform>
 </x-larastrap::modal>

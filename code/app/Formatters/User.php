@@ -47,7 +47,7 @@ class User extends Formatter
 
         if ($current_gas->hasFeature('rid')) {
             $ret['rid->iban'] = (object) [
-                'name' => _i('IBAN'),
+                'name' => __('generic.iban'),
             ];
 
             $ret['rid->id'] = (object) [
@@ -55,7 +55,7 @@ class User extends Formatter
             ];
 
             $ret['rid->date'] = (object) [
-                'name' => _i('Data Mandato SEPA'),
+                'name' => __('user.sepa.date'),
             ];
         }
 
@@ -101,14 +101,14 @@ class User extends Formatter
             ];
 
             $ret['birthplace'] = (object) [
-                'name' => _i('Luogo di Nascita'),
+                'name' => __('user.birthplace'),
                 'format' => function ($obj, $context) {
                     return $obj->birthplace;
                 },
             ];
 
             $ret['birthday'] = (object) [
-                'name' => _i('Data di Nascita'),
+                'name' => __('user.birthdate'),
                 'format' => function ($obj, $context) {
                     return $obj->birthday;
                 },
@@ -117,7 +117,7 @@ class User extends Formatter
 
         if ($type == 'shipping' || $type == 'all') {
             $ret['credit'] = (object) [
-                'name' => _i('Credito Attuale'),
+                'name' => __('movements.current_credit'),
                 'format' => function ($obj, $context) {
                     return printablePriceCurrency($obj->currentBalanceAmount());
                 },
@@ -155,7 +155,7 @@ class User extends Formatter
                 },
             ],
             'username' => (object) [
-                'name' => _i('Username'),
+                'name' => __('auth.username'),
             ],
             'taxcode' => (object) [
                 'name' => _i('Codice Fiscale'),
@@ -164,13 +164,13 @@ class User extends Formatter
                 'name' => _i('Numero Tessera'),
             ],
             'status' => (object) [
-                'name' => _i('Stato'),
+                'name' => __('generic.status'),
                 'format' => function ($obj, $context) {
                     return $obj->printableStatus();
                 },
             ],
             'payment_method' => (object) [
-                'name' => _i('Modalità Pagamento'),
+                'name' => __('user.payment_method'),
                 'format' => function ($obj, $context) {
                     return $obj->payment_method->name;
                 },

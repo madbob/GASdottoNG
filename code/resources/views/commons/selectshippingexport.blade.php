@@ -17,7 +17,7 @@ if (empty($all) == false) {
 		foreach($included_metaplace as $imp) {
 			switch($imp) {
 				case 'no':
-					$options['all_by_name'] = _i('Tutti');
+					$options['all_by_name'] = __('generic.all');
 					break;
 				case 'all_by_name':
 					$options['all_by_name'] = _i('Utente');
@@ -42,13 +42,13 @@ if (empty($all) == false) {
 			'help' => '',
 		];
 
-		$global_options = ['all_by_name' => _i('Tutti')];
+		$global_options = ['all_by_name' => __('generic.all')];
 	}
 	else {
 		foreach($included_metaplace as $imp) {
 			switch($imp) {
 				case 'no':
-					$options['all_by_name'] = _i('Tutti');
+					$options['all_by_name'] = __('generic.all');
 					break;
 				case 'all_by_name':
 					$options['all_by_name'] = _i('Tutti (ordinati per utente)');

@@ -5,7 +5,7 @@
 @if(count($groups) > 1)
     <div class="row">
         <div class="col">
-            <a class="btn btn-light" disabled>{{ _i('GAS attivo: %s', [$currentgas->name]) }}</a>
+            <a class="btn btn-light" disabled>{{ __('generic.current_gas_name', ['label' => $currentgas->name]) }}</a>
             @foreach($groups as $gas)
                 @if($gas->id != $currentgas->id)
                     <a href="{{ route('multigas.goto', $gas->id) }}" class="btn btn-primary">Passa a {{ $gas->name }}</a>
@@ -18,13 +18,13 @@
 @endif
 
 <x-larastrap::tabs>
-    <x-larastrap::tabpane :label="_i('GAS')" active="true" icon="bi-people">
+    <x-larastrap::tabpane tlabel="generic.gas" active="true" icon="bi-people">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
                     'template' => 'multigas.base-edit',
                     'typename' => 'gas',
-                    'typename_readable' => _i('GAS'),
+                    'typename_readable' => __('generic.gas'),
                     'targeturl' => 'multigas'
                 ])
             </div>
@@ -43,7 +43,7 @@
         </div>
     </x-larastrap::tabpane>
 
-    <x-larastrap::tabpane :label="_i('Fornitori')" icon="bi-tags">
+    <x-larastrap::tabpane tlabel="supplier.all" icon="bi-tags">
         <div class="row">
             <div class="col">
                 <table class="table multigas-editor">
@@ -74,7 +74,7 @@
         </div>
     </x-larastrap::tabpane>
 
-    <x-larastrap::tabpane :label="_i('Ordini')" icon="bi-list-task">
+    <x-larastrap::tabpane tlabel="orders.all" icon="bi-list-task">
         <div class="row">
             <div class="col">
                 <table class="table multigas-editor">

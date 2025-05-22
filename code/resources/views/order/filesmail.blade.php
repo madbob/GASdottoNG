@@ -13,7 +13,7 @@
 
     <hr/>
 
-    <x-larastrap::check name="action" value="email" :label="_i('Inoltra Mail')" triggers_collapse="send_mail" />
+    <x-larastrap::check name="action" value="email" tlabel="generic.forward" triggers_collapse="send_mail" />
 
     <x-larastrap::collapse id="send_mail">
         <x-larastrap::field :label="_i('Destinatari')">
@@ -21,7 +21,7 @@
                 'contents' => $contacts,
                 'columns' => [
                     [
-                        'label' => _i('Valore'),
+                        'label' => __('generic.value'),
                         'field' => 'value',
                         'type' => 'email',
                         'width' => 11,

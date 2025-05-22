@@ -6,9 +6,9 @@
             <div class="col-12 col-md-6">
                 @include('commons.staticobjfield', ['obj' => $invoice, 'name' => 'supplier', 'label' => __('orders.supplier')])
                 <x-larastrap::text name="number" tlabel="generic.number" disabled readonly />
-                <x-larastrap::datepicker name="date" :label="_i('Data')" disabled readonly />
+                <x-larastrap::datepicker name="date" tlabel="generic.date" disabled readonly />
 
-                <x-larastrap::field :label="_i('Allegato')">
+                <x-larastrap::field tlabel="generic.attachment">
                     <x-larastrap::file name="file" :attributes="['data-max-size' => serverMaxUpload()]" squeeze="true" />
 
                     <div class="mt-2">
@@ -20,7 +20,7 @@
                                     </a>
                                 </div>
                                 <div class="col">
-                                    <x-larastrap::check name="delete_attachment[]" :label="_i('Elimina')" :value="$attachment->id" />
+                                    <x-larastrap::check name="delete_attachment[]" tlabel="generic.remove" :value="$attachment->id" />
                                 </div>
                             </div>
                         @endforeach
@@ -30,7 +30,7 @@
                 <hr>
 
                 @if($invoice->orders->count() > 0)
-                    <x-larastrap::field :label="_i('Ordini Coinvolti')">
+                    <x-larastrap::field tlabel="invoices.orders">
                         @foreach($invoice->orders as $o)
                             <div class="row">
                                 <div class="col-md-12">
@@ -42,7 +42,7 @@
                         @endforeach
 
                         @if($invoice->status != 'payed')
-                            <x-larastrap::ambutton :label="_i('Verifica Contenuti')" :data-modal-url="route('invoices.products', $invoice->id)" />
+                            <x-larastrap::ambutton tlabel="invoices.verify" :data-modal-url="route('invoices.products', $invoice->id)" />
                         @endif
                     </x-larastrap::field>
 
@@ -55,7 +55,7 @@
             </div>
             <div class="col-12 col-md-6">
                 <x-larastrap::textarea name="notes" tlabel="generic.notes" />
-                <x-larastrap::select name="status" :label="_i('Stato')" :options="App\Helpers\Status::invoices()" />
+                <x-larastrap::select name="status" tlabel="generic.status" :options="App\Helpers\Status::invoices()" />
 
                 @if($currentuser->can('movements.admin', $currentgas) || $currentuser->can('supplier.movements', $invoice->supplier))
                     <x-larastrap::field tlabel="generic.payment">
@@ -87,7 +87,7 @@
                         @endif
 
                         @if($invoice->status != 'payed')
-                            <x-larastrap::ambutton :label="_i('Registra Pagamento')" :attributes="['data-modal-url' => route('invoices.movements', $invoice->id)]" />
+                            <x-larastrap::ambutton tlabel="invoices.payment" :attributes="['data-modal-url' => route('invoices.movements', $invoice->id)]" />
                         @endif
                     </x-larastrap::field>
                 @endcan

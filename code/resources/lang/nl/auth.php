@@ -11,5 +11,16 @@ return array (
   'remember' => 'Onthoud mij',
   'register' => 'Registreer je',
   'confirm_password' => 'Wachtwoord bevestigen',
+  'help' => 
+  array (
+    'required_new_password' => 'Om door te gaan moet je een nieuw wachtwoord voor jouw profiel instellen.',
+    'unconfirmed' => '',
+    'username' => '',
+    'email_mode' => '',
+  ),
   'update_password' => 'Wachtwoord bevestigen',
+  'modes' => 
+  array (
+    'email' => 'Stuur e-mail',
+  ),
 );

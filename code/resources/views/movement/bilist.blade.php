@@ -1,14 +1,14 @@
 @if($movements->count() == 0)
     <x-larastrap::suggestion>
-        {{ _i('Non ci sono elementi da visualizzare.') }}
+        {{ __('generic.empty_list') }}
     </x-larastrap::suggestion>
 @else
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">{{ _i('Data') }}</th>
+                <th scope="col">{{ __('generic.date') }}</th>
                 <th scope="col">{{ __('generic.type') }}</th>
-                <th scope="col">{{ _i('Pagamento') }}</th>
+                <th scope="col">{{ __('user.payment_method') }}</th>
                 <th scope="col">{{ _i('Riferimento') }}</th>
                 <th scope="col">{{ _i('Credito') }}</th>
                 <th scope="col">{{ _i('Debito') }}</th>
@@ -21,7 +21,7 @@
 
         <tbody>
             @foreach($movements as $mov)
-                <?php
+                @php
 
                 $reference = null;
 
@@ -44,7 +44,8 @@
                     $out = $mov->amount;
                 }
 
-                ?>
+                @endphp
+
                 <tr>
                     <td>{{ printableDate($mov->date, true) }}</td>
                     <td>{{ $mov->printableType() }}</td>

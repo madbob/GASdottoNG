@@ -64,7 +64,7 @@ function readDate($date)
 function periodicCycling()
 {
     return [
-        'all' => _i('Tutti'),
+        'all' => __('generic.all'),
         'biweekly' => _i('Ogni due Settimane'),
         'month_first' => _i('Primo del Mese'),
         'month_second' => _i('Secondo del Mese'),

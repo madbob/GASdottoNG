@@ -7,12 +7,12 @@
 		<thead>
 			<tr>
 				<th scope="col">{{ _i('Tipo Movimento Contabile') }}</th>
-				<th scope="col">{{ _i('Metodo') }}</th>
-				<th scope="col">{{ _i('Data') }}</th>
-				<th scope="col">{{ _i('Valore') }}</th>
+				<th scope="col">{{ __('generic.method') }}</th>
+				<th scope="col">{{ __('generic.date') }}</th>
+				<th scope="col">{{ __('generic.value') }}</th>
 				<th scope="col">{{ _i('Pagante') }}</th>
 				<th scope="col">{{ _i('Pagato') }}</th>
-                <th scope="col">{{ _i('Identificativo') }}</th>
+                <th scope="col">{{ __('generic.identifier') }}</th>
 			</tr>
 		</thead>
 		<tbody>

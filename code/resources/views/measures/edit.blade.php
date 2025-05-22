@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="_i('Modifica Unità di Misura')">
+<x-larastrap::modal>
     <x-larastrap::iform method="PUT" :action="route('measures.update', 0)">
         <input type="hidden" name="close-modal" value="1">
         <input type="hidden" name="post-saved-function" value="reloadMeasureDiscrete">
@@ -23,9 +23,9 @@
                             ]
                         ],
                         [
-                            'label' => _i('Unità Discreta'),
+                            'label' => __('generic.measures.discrete'),
                             'field' => 'discrete',
-                            'help' => _i('Le unità discrete non sono frazionabili: sui prodotti cui viene assegnata una unità di misura etichettata con questo attributo non sarà possibile attivare proprietà come Prezzo Variabile e Pezzatura'),
+                            'help' => __('generic.help.discrete_measure'),
                             'type' => 'scheck',
                             'extra_callback' => function($content, $attributes) {
                                 $attributes['value'] = $content->id;

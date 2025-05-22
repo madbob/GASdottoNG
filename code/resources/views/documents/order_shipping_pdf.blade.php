@@ -182,7 +182,7 @@ foreach($data->contents as $d) {
                 <div class="extended"><strong>{{ $bm_key }}: {{ printablePriceCurrency($bm_value, ',') }}</strong></div>
             @endforeach
 
-            <div class="extended"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></div>
+            <div class="extended"><strong>{{ __('orders.totals.total') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></div>
 
             @if($preferred_style == 'breakup')
                         </td>
@@ -197,6 +197,6 @@ foreach($data->contents as $d) {
             <div class="extended"><strong>{{ $fm_key }}: {{ printablePriceCurrency($fm_value, ',') }}</strong></div>
         @endforeach
 
-        <div class="extended"><strong>{{ _i('Totale') }}: {{ printablePriceCurrency($total, ',') }}</strong></div>
+        <div class="extended"><strong>{{ __('orders.totals.total') }}: {{ printablePriceCurrency($total, ',') }}</strong></div>
     </body>
 </html>

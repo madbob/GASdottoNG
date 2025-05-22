@@ -15,15 +15,15 @@
             @endcan
 
             @can('categories.admin', $currentgas)
-                <x-larastrap::ambutton id="category_admin" :label="_i('Amministra Categorie')" :data-modal-url="route('categories.index')" />
+                <x-larastrap::ambutton id="category_admin" tlabel="supplier.admin_categories" :data-modal-url="route('categories.index')" />
             @endcan
 
             @can('measures.admin', $currentgas)
-                <x-larastrap::ambutton id="unit_measure_admin" :label="_i('Amministra Unità di Misura')" :data-modal-url="route('measures.index')" />
+                <x-larastrap::ambutton id="unit_measure_admin" tlabel="supplier.admin_measures" :data-modal-url="route('measures.index')" />
             @endcan
 
             @if($currentgas->getConfig('es_integration'))
-                <x-larastrap::ambutton :label="_i('Indice Remoto')" :data-modal-url="route('import.esmodal')" />
+                <x-larastrap::ambutton tlabel="supplier.remote_index" :data-modal-url="route('import.esmodal')" />
             @endif
         </div>
     </div>
@@ -43,7 +43,7 @@
                 'filters' => [
                     'deleted_at' => (object)[
                         'icon' => 'inbox',
-                        'label' => _i('Cessati'),
+                        'label' => __('user.all_ceased'),
                         'value' => null
                     ]
                 ]

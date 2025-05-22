@@ -1,7 +1,7 @@
 @if($aggregate->isRunning() == false)
     @if(empty($aggregate->bookings))
         <x-larastrap::suggestion>
-            {{ _i('Non ci sono elementi da visualizzare.') }}
+            {{ __('generic.empty_list') }}
         </x-larastrap::suggestion>
     @else
         <?php

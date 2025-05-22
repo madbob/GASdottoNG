@@ -7,7 +7,7 @@
         <div class="row mb-4">
             <div class="col">
                 <div class="alert alert-danger">
-                    {{ _i('Ci sono ordini chiusi da oltre un anno ma non archiviati: cercali usando la funzione di ricerca qui sotto. È raccomandato archiviare i vecchi ordini, in modo che non siano più visualizzati nella dashboard ed il caricamento delle pagine sia più veloce. Gli ordini archiviati possono comunque essere sempre recuperati con la funzione di ricerca.') }}
+                    {{ __('orders.help.unarchived_notice') }}
                 </div>
             </div>
         </div>
@@ -18,12 +18,12 @@
             @include('commons.addingbutton', [
                 'dynamic_url' => route('orders.create'),
                 'typename' => 'order',
-                'typename_readable' => _i('Ordine'),
+                'typename_readable' => __('orders.name'),
             ])
 
-            <x-larastrap::ambutton :label="_i('Aggrega Ordini')" :attributes="['data-modal-url' => route('aggregates.create')]" />
-            <x-larastrap::ambutton :label="_i('Gestione Date')" :attributes="['data-modal-url' => route('dates.index')]" />
-            <x-larastrap::ambutton :label="_i('Gestione Ordini Automatici')" :attributes="['data-modal-url' => route('dates.orders')]" />
+            <x-larastrap::ambutton tlabel="orders.do_aggregate" :attributes="['data-modal-url' => route('aggregates.create')]" />
+            <x-larastrap::ambutton tlabel="orders.admin_dates" :attributes="['data-modal-url' => route('dates.index')]" />
+            <x-larastrap::ambutton tlabel="orders.admin_automatics" :attributes="['data-modal-url' => route('dates.orders')]" />
         </div>
     </div>
 
@@ -38,7 +38,7 @@
                     'end_date' => strtotime('+6 months'),
                 ])
 
-                <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentgas->suppliers" :extra_options="[0 => _i('Tutti')]" />
+                <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentgas->suppliers" :extra_options="[0 => __('generic.all')]" />
 
                 @php
 
@@ -52,7 +52,7 @@
 
                 @endphp
 
-                <x-larastrap::checks name="status" :label="_i('Stato')" :options="$statuses" :value="['open', 'suspended', 'closed', 'shipped']" />
+                <x-larastrap::checks name="status" tlabel="generic.status" :options="$statuses" :value="['open', 'suspended', 'closed', 'shipped']" />
             </x-filler>
         </div>
     </div>
@@ -71,9 +71,9 @@
             ],
             'sorting_rules' => [
                 'supplier_name' => __('orders.supplier'),
-                'start' => _i('Data Apertura'),
-                'end' => _i('Data Chiusura'),
-                'shipping' => _i('Data Consegna'),
+                'start' => __('orders.dates.start'),
+                'end' => __('orders.dates.end'),
+                'shipping' => __('orders.dates.shipping'),
             ]
         ])
     </div>

@@ -31,7 +31,7 @@ unset($display_columns['notes']);
     <div class="row d-none d-md-flex mb-1">
         <div class="col flowbox">
             <div class="form-group mainflow d-none d-xl-block">
-                <input type="text" class="form-control table-text-filter" data-table-target="#{{ $table_identifier }}" placeholder="{{ _i('Filtra') }}">
+                <input type="text" class="form-control table-text-filter" data-table-target="#{{ $table_identifier }}" tplaceholder="generic.do_filter">
             </div>
 
             @include('commons.columns', [
@@ -115,7 +115,7 @@ unset($display_columns['notes']);
                             </td>
 
                             <td class="order-cell-weight {{ in_array('weight', $columns) ? '' : 'hidden' }}">
-                                <label class="order-summary-product-weight">{{ $summary->products[$product->id]->weight ?? 0 }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
+                                <label class="order-summary-product-weight">{{ $summary->products[$product->id]->weight ?? 0 }} {{ $product->measure->discrete ? __('generic.kilos') : $product->measure->name }}</label>
                             </td>
 
                             <td class="order-cell-total_price {{ in_array('total_price', $columns) ? '' : 'hidden' }}">
@@ -127,7 +127,7 @@ unset($display_columns['notes']);
                             </td>
 
                             <td class="order-cell-weight_delivered {{ in_array('weight_delivered', $columns) ? '' : 'hidden' }}">
-                                <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]->weight_delivered ?? 0 }} {{ $product->measure->discrete ? _i('Chili') : $product->measure->name }}</label>
+                                <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]->weight_delivered ?? 0 }} {{ $product->measure->discrete ? __('generic.kilos') : $product->measure->name }}</label>
                             </td>
 
                             <td class="order-cell-price_delivered {{ in_array('price_delivered', $columns) ? '' : 'hidden' }}">
@@ -160,11 +160,11 @@ unset($display_columns['notes']);
                                     @break
 
                                 @case('weight')
-                                    {{ $summary->weight ?? 0 }} {{ _i('Chili') }}
+                                    {{ $summary->weight ?? 0 }} {{ __('generic.kilos') }}
                                     @break
 
                                 @case('weight_delivered')
-                                    {{ $summary->weight_delivered ?? 0 }} {{ _i('Chili') }}
+                                    {{ $summary->weight_delivered ?? 0 }} {{ __('generic.kilos') }}
                                     @break
 
                             @endswitch

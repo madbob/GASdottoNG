@@ -28,7 +28,7 @@ class Product extends IconsMap
     {
         return [
             'th' => (object) [
-                'text' => _i('Categoria'),
+                'text' => __('generic.category'),
                 'assign' => function ($obj) {
                     return ['hidden-cat-' . $obj->category_id];
                 },

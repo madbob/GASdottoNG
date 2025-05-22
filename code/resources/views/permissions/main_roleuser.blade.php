@@ -2,13 +2,13 @@
     <div class="row">
         <div class="col">
             <ul class="list-group">
-                <?php
+                @php
 
                 $r = $user->roles()->where('roles.id', $role->id)->first();
                 $targets = $role->targets;
                 $last_class = null;
 
-                ?>
+                @endphp
 
                 @foreach($targets as $target)
                     @if ($last_class != get_class($target))
@@ -19,9 +19,9 @@
 
 						@if($targets->count() > 1)
 	                        <li class="list-group-item list-group-item-danger">
-	                            {{ _i('Tutti (%s)', [$last_class::commonClassName()]) }}<br/>
+	                            {{ __('generic.composable_all', ['label' => $last_class::commonClassName()]) }}<br/>
 	                            <small>
-	                                {{ _i("Questo permesso speciale si applica automaticamente a tutti i soggetti (presenti e futuri) e permette di agire su tutti, benché l'utente assegnatario non sarà esplicitamente visibile dagli altri.") }}
+	                                {{ __('permissions.help.global_permission_notice') }}
 	                            </small>
 	                            <span class="float-end">
 	                                <input type="checkbox" class="all-{{ $user->id }}-{{ $role->id }}" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="*" data-target-class="{{ $last_class }}" {{ $r->appliesAll($last_class) ? 'checked' : '' }}>
@@ -49,10 +49,10 @@
         <div class="col">
             @if($role->enabledAction('gas.permissions') && $user->id == $currentuser->id)
                 <x-larastrap::suggestion>
-                    {{ _i('Non puoi auto-revocarti questo ruolo amministrativo') }}
+                    {{ __('permissions.help.blocked_autoremove') }}
                 </x-larastrap::suggestion>
             @else
-                <button class="btn btn-danger remove-role" data-role="{{ $role->id }}" data-user="{{ $user->id }}">{{ _i('Revoca Ruolo') }} {{ $role->name }} a {{ $user->printableName() }}</button>
+                <button class="btn btn-danger remove-role" data-role="{{ $role->id }}" data-user="{{ $user->id }}">{{ __('permissions.revoke') }} {{ $role->name }} a {{ $user->printableName() }}</button>
             @endif
         </div>
     </div>

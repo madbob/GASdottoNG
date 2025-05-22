@@ -232,7 +232,7 @@ function mainFormButtons($params)
         $buttons[] = [
             'color' => 'danger',
             'classes' => ['delete-button'],
-            'label' => $obj && $obj->deleted_at != null ? _i('Elimina Definitivamente') : _i('Elimina'),
+            'label' => $obj && $obj->deleted_at != null ? _i('Elimina Definitivamente') : __('generic.remove'),
         ];
     }
 

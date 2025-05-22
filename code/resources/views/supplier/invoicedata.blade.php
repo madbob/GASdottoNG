@@ -8,7 +8,9 @@ if (!empty($payment_method)) {
 }
 
 foreach (App\Currency::enabled() as $currency) {
-    $data[] = _i('Saldo Attuale: %s', printablePriceCurrency($supplier->currentBalanceAmount($currency), '.', $currency));
+    $data[] = __('movements.current_balance_amount', [
+        'amount' => printablePriceCurrency($supplier->currentBalanceAmount($currency), '.', $currency)
+    ]);
 }
 
 echo join('<br>', $data);

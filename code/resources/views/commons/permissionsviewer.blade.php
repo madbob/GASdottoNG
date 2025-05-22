@@ -15,7 +15,7 @@ permessi, cfr. permissions.user-edit
                     $final = [];
 
                     if ($role->appliesAll())
-                        $final[] = 'Tutti';
+                        $final[] = __('generic.all');
 
                     foreach($role->applications() as $targets)
                         $final[] = $targets->printableName();

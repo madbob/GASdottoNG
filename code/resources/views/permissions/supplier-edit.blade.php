@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="_i('Configura Ruoli per %s', $supplier->printableName())" classes="inner-modal">
+<x-larastrap::modal classes="inner-modal">
     <input type="hidden" name="reload-portion" value="#permissions-list-{{ sanitizeId($supplier->id) }}">
 
 	@php
@@ -12,7 +12,7 @@
 
 	@if($roles->isEmpty())
 		<p class="alert alert-danger">
-			{{ _i('Non sei autorizzato a gestire nessun ruolo.') }}
+			{{ __('permissions.help.admin_not_authorized') }}
 		</p>
 	@else
 	    @foreach($roles as $role)
@@ -22,7 +22,7 @@
     	            @include('commons.completionrows', [
     	                'objects' => $role->usersByTarget($supplier),
     	                'source' => route('users.search'),
-    	                'adding_label' => _i('Aggiungi Nuovo Utente'),
+    	                'adding_label' => __('generic.add_new'),
     	                'add_callback' => 'supplierAttachUser',
     	                'remove_callback' => 'supplierDetachUser',
     	                'extras' => [

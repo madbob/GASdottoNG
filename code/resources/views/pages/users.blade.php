@@ -8,7 +8,7 @@
             @include('commons.addingbutton', [
                 'template' => 'user.base-edit',
                 'typename' => 'user',
-                'typename_readable' => _i('Utente'),
+                'typename_readable' => __('user.name'),
                 'targeturl' => 'users'
             ])
 
@@ -17,32 +17,33 @@
                 'import_target' => 'users'
             ])
 
-            <x-larastrap::mbutton :label="_i('Esporta CSV')" triggers_modal="exportCSVusers" />
-            <x-larastrap::modal id="exportCSVusers" :title="_i('Esporta CSV')" classes="close-on-submit">
-                <x-larastrap::iform method="GET" :action="url('users/export')" :buttons="[['label' => _i('Download'), 'type' => 'submit']]">
+            <x-larastrap::mbutton tlabel="generic.exports.csv" triggers_modal="exportCSVusers" />
+            <x-larastrap::modal id="exportCSVusers" classes="close-on-submit">
+                <x-larastrap::iform method="GET" :action="url('users/export')" :buttons="[['tlabel' => 'generic.download', 'type' => 'submit']]">
                     <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
                     <input type="hidden" name="collectFilteredUsers" value="#user-list">
                     <input type="hidden" name="pre-saved-function" value="formToDownload">
 
-                    <p>
-                        {!! _i("Per la consultazione e l'elaborazione dei files in formato CSV (<i>Comma-Separated Values</i>) si consiglia l'uso di <a target=\"_blank\" href=\"http://it.libreoffice.org/\">LibreOffice</a>.") !!}
-                    </p>
+                    <p>{{ __('export.help_csv_libreoffice') }}</p>
 
                     <hr/>
 
-                    <x-larastrap::structchecks name="fields" :label="_i('Colonne')" :options="App\Formatters\User::formattableColumns('export')" />
-                    <x-larastrap::radios name="exportables" :label="_i('Esporta')" :options="['all' => _i('Tutti'), 'selected' => _i('Solo selezionati')]" value="all" />
+                    <x-larastrap::structchecks name="fields" tlabel="export.data.columns" :options="App\Formatters\User::formattableColumns('export')" />
+                    <x-larastrap::radios name="exportables" tlabel="generic.export" :options="[
+                        'all' => __('generic.all'),
+                        'selected' => __('generic.only_selected')
+                    ]" value="all" />
                 </x-larastrap::iform>
             </x-larastrap::modal>
 
             @if(Gate::check('users.admin', $currentgas) || Gate::check('users.movements', $currentgas))
                 @if($currentgas->getConfig('annual_fee_amount') != 0)
-                    <x-larastrap::ambutton :label="_i('Stato Quote')" :attributes="['data-modal-url' => route('users.fees')]" />
+                    <x-larastrap::ambutton tlabel="user.fees_status" :attributes="['data-modal-url' => route('users.fees')]" />
                 @endif
             @endif
 
             @if(Gate::check('users.admin', $currentgas) && App\Group::where('context', 'user')->count() > 0)
-                <x-larastrap::ambutton :label="_i('Assegna Aggregazioni')" :data-modal-url="route('groups.matrix')" />
+                <x-larastrap::ambutton tlabel="user.assign_aggregations" :data-modal-url="route('groups.matrix')" />
             @endif
         </div>
     </div>
@@ -63,7 +64,7 @@
                 'filters' => [
                     'deleted_at' => (object) [
                         'icon' => 'inbox',
-                        'label' => _i('Cessati'),
+                        'label' => __('user.all_ceased'),
                         'value' => null
                     ]
                 ]

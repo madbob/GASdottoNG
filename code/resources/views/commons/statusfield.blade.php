@@ -22,7 +22,7 @@ $postfix = $postfix ?? false;
 
 ?>
 
-<x-larastrap::field :pophelp="$help_popover" :label="_i('Stato')" :squeeze="$squeeze" classes="status-selector">
+<x-larastrap::field :pophelp="$help_popover" tlabel="generic.status" :squeeze="$squeeze" classes="status-selector">
     <x-larastrap::radios name="status" :npostfix="$postfix" :options="['active' => _i('Attivo'), 'suspended' => _i('Sospeso'), 'deleted' => _i('Cessato')]" :value="$status" squeeze />
     <x-larastrap::datepicker name="deleted_at" :hidden="$hide_delete" squeeze />
     <x-larastrap::datepicker name="suspended_at" :hidden="$hide_suspend" squeeze />

@@ -5,13 +5,13 @@
 <div class="row">
     <div class="col">
         <x-larastrap::tabs>
-            <x-larastrap::tabpane :label="_i('Movimenti')" active="true" icon="bi-piggy-bank">
+            <x-larastrap::tabpane tlabel="movements.all" active="true" icon="bi-piggy-bank">
                 @can('movements.admin', $currentgas)
                     <div class="row">
                         <div class="col">
                             @include('commons.addingbutton', [
                                 'typename' => 'movement',
-                                'typename_readable' => _i('Movimento'),
+                                'typename_readable' => __('movements.name'),
                                 'dynamic_url' => route('movements.create')
                             ])
 
@@ -20,8 +20,8 @@
                                 'import_target' => 'movements',
                             ])
 
-                            <x-larastrap::ambutton :label="_i('Stato Crediti')" :data-modal-url="route('movements.credits', ['type' => 'credits'])" />
-                            <x-larastrap::ambutton :label="_i('Stato Fornitori')" :data-modal-url="route('movements.credits', ['type' => 'suppliers'])" />
+                            <x-larastrap::ambutton tlabel="movements.credits_status" :data-modal-url="route('movements.credits', ['type' => 'credits'])" />
+                            <x-larastrap::ambutton tlabel="movements.suppliers_status" :data-modal-url="route('movements.credits', ['type' => 'suppliers'])" />
                         </div>
                     </div>
 
@@ -30,27 +30,27 @@
 
                 <div class="row">
                     <div class="col-12 order-2 order-md-1 col-md-6">
-                        <x-filler :data-action="route('movements.index')" data-fill-target="#movements-in-range" :download-buttons="[['link' => route('movements.index', ['format' => 'csv']), 'label' => _i('Esporta CSV')], ['link' => route('movements.index', ['format' => 'pdf']), 'label' => _i('Esporta PDF')], ['link' => route('movements.index', ['format' => 'balance']), 'label' => _i('Esporta Bilancio')]]">
+                        <x-filler :data-action="route('movements.index')" data-fill-target="#movements-in-range" :download-buttons="[['link' => route('movements.index', ['format' => 'csv']), 'label' => __('generic.exports.csv')], ['link' => route('movements.index', ['format' => 'pdf']), 'label' => __('export.do_pdf')], ['link' => route('movements.index', ['format' => 'balance']), 'label' => __('export.do_balance')]]">
                             @include('commons.genericdaterange', ['start_date' => strtotime('-1 weeks')])
                             @include('commons.selectmovementtypefield', ['show_all' => true])
                             <x-larastrap::radios name="method" tlabel="generic.payment" :options="paymentsSimple()" value="none" />
-                            <x-larastrap::select-model name="user_id" :label="_i('Utente')" :options="$currentgas->users()->topLevel()->get()" :extra_options="[0 => _i('Nessuno')]" />
-                            <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentuser->targetsByAction('movements.admin,supplier.orders,supplier.movements')" :extra_options="[0 => _i('Nessuno')]" />
-                            <x-larastrap::text name="identifier" :label="_i('Identificativo')" />
+                            <x-larastrap::select-model name="user_id" tlabel="user.name" :options="$currentgas->users()->topLevel()->get()" :extra_options="[0 => __('generic.none')]" />
+                            <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentuser->targetsByAction('movements.admin,supplier.orders,supplier.movements')" :extra_options="[0 => __('generic.none')]" />
+                            <x-larastrap::text name="identifier" tlabel="generic.identifier" />
                             <x-larastrap::text name="notes" tlabel="generic.notes" />
 
-                            <x-larastrap::field :label="_i('Importo')">
+                            <x-larastrap::field tlabel="movements.amount">
                                 <div class="input-group">
-                                    <div class="input-group-text">{{ _i('Da') }}</div>
+                                    <div class="input-group-text">{{ __('generic.since') }}</div>
                                     <input type="number" class="form-control" name="amountstart" autocomplete="off" step="0.01">
-                                    <div class="input-group-text">{{ _i('a') }}</div>
+                                    <div class="input-group-text">{{ __('generic.to') }}</div>
                                     <input type="number" class="form-control" name="amountend" autocomplete="off" step="0.01">
                                 </div>
                             </x-larastrap::field>
 
                             <?php $currencies = App\Currency::enabled() ?>
                             @if($currencies->count() > 1)
-                                <x-larastrap::select-model name="currency_id" :label="_i('Valuta')" :options="$currencies" :extra_options="[0 => _i('Tutte')]" />
+                                <x-larastrap::select-model name="currency_id" tlabel="movements.currency" :options="$currencies" :extra_options="[0 => __('generic.all')]" />
                             @endif
                         </x-filler>
                     </div>
@@ -70,15 +70,12 @@
             </x-larastrap::tabpane>
 
             @can('movements.types', $currentgas)
-                <x-larastrap::tabpane :label="_i('Tipi Movimenti')" icon="bi-zoom-in">
+                <x-larastrap::tabpane tlabel="movements.types" icon="bi-zoom-in">
                     <div class="row">
                         <div class="col">
                             <div class="alert alert-danger">
                                 <p>
-                                    {{ _i('Attenzione! Modifica i comportamenti dei tipi di movimento contabile con molta cautela!') }}
-                                </p>
-                                <p>
-                                    {{ _i('Prima di modificare il comportamento di un tipo esistente, e magari già assegnato a qualche movimento contabile registrato, si raccomanda di usare la funzione "Archivia Saldi" in modo che i movimenti precedentemente contabilizzati non vengano rielaborati usando il nuovo comportamento (producendo saldi completamente diversi da quelli attuali).') }}
+                                    {{ __('movements.help.main_types_warning') }}
                                 </p>
                             </div>
                         </div>
@@ -91,7 +88,7 @@
                             @include('commons.addingbutton', [
                                 'template' => 'movementtypes.base-edit',
                                 'typename' => 'movementtype',
-                                'typename_readable' => _i('Tipo Movimento Contabile'),
+                                'typename_readable' => __('movements.type'),
                                 'targeturl' => 'movtypes'
                             ])
                         </div>
@@ -111,12 +108,12 @@
             @endcan
 
             @if($currentuser->can('movements.admin', $currentgas) || $currentuser->can('supplier.movements', null) || $currentuser->can('supplier.invoices', null))
-                <x-larastrap::remotetabpane :label="_i('Fatture')" :button_attributes="['data-tab-url' => route('invoices.index')]" icon="bi-files">
+                <x-larastrap::remotetabpane tlabel="movements.invoices" :button_attributes="['data-tab-url' => route('invoices.index')]" icon="bi-files">
                 </x-larastrap::remotetabpane>
             @endif
 
 			@if($currentgas->hasFeature('extra_invoicing'))
-				<x-larastrap::remotetabpane :label="_i('Ricevute')" :button_attributes="['data-tab-url' => route('receipts.index')]" icon="bi-files">
+				<x-larastrap::remotetabpane tlabel="generic.menu.receipts" :button_attributes="['data-tab-url' => route('receipts.index')]" icon="bi-files">
 	            </x-larastrap::remotetabpane>
 			@endif
         </x-larastrap::tabs>
