@@ -21,7 +21,7 @@
 
     @if(!empty($effective_dates))
         <p>
-            {{ _i('Prossime date in calendario:') }}
+            {{ __('notifications.next_dates') }}
         </p>
         <ul>
             @foreach($effective_dates as $d)
@@ -32,7 +32,7 @@
 
     @if(!empty($automatic_dates))
         <p>
-            {{ _i('Prossime aperture ordini automatici:') }}
+            {{ __('notifications.next_auto_orders') }}
         </p>
         <ul>
             @foreach($automatic_dates as $d)

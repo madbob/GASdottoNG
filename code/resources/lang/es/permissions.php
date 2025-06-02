@@ -45,6 +45,7 @@ return array (
     'missing_elements_warning' => '',
   ),
   'revoke' => '',
+  'change_roles' => '',
   'parent_role' => '',
   'add_user' => '',
   'unprivileged' => '',

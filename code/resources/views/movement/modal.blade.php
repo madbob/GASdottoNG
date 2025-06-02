@@ -29,7 +29,7 @@ $buttons[] = ['color' => 'success', 'tlabel' => 'generic.save', 'attributes' => 
 
 ?>
 
-<x-larastrap::modal :title="_i('Modifica Movimento')" :id="sprintf('editMovement-%s', $dom_id)" classes="movement-modal">
+<x-larastrap::modal :id="sprintf('editMovement-%s', $dom_id)" classes="movement-modal">
     <x-larastrap::iform :obj="$obj" method="POST" :action="$obj->exists ? route('movements.update', $obj->id) : route('movements.store')" :buttons="$buttons">
         <input type="hidden" name="void-form" value="1">
         <input type="hidden" name="test-feedback" value="1">
@@ -71,16 +71,16 @@ $buttons[] = ['color' => 'success', 'tlabel' => 'generic.save', 'attributes' => 
         @endif
 
         @if($obj && empty($obj->valid_payments))
-            <x-larastrap::field :label="_i('Metodo')">
+            <x-larastrap::field tlabel="generic.method">
                 <div class="alert alert-danger">
-                    {{ _i('Attenzione! Nessun metodo di pagamento è attivo per questo tipo di movimento (%s)! Si raccomanda di modificare le impostazioni nel pannello Contabilità -> Tipi Movimenti, o non sarà possibile salvare correttamente questo movimento!', [$obj->printableType()]) }}
+                    {{ __('movements.help.missing_method_for_movement', ['name' => $obj->printableType()]) }}
                 </div>
             </x-larastrap::field>
         @else
-            <x-larastrap::radios name="method" :label="_i('Metodo')" :options="$obj ? $obj->valid_payments : paymentTypes()" />
+            <x-larastrap::radios name="method" tlabel="generic.method" :options="$obj ? $obj->valid_payments : paymentTypes()" />
         @endif
 
-        <x-larastrap::datepicker name="date" :label="_i('Data')" defaults_now="true" />
+        <x-larastrap::datepicker name="date" tlabel="generic.date" defaults_now="true" />
         <x-larastrap::text name="identifier" tlabel="generic.identifier" />
         <x-larastrap::textarea name="notes" tlabel="generic.notes" />
     </x-larastrap::iform>

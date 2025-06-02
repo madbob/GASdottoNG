@@ -8,11 +8,20 @@
         @include('commons.selectshippingexport', ['aggregate' => $order->aggregate, 'included_metaplace' => ['no', 'all_by_place']])
 
         <?php list($options, $values) = flaxComplexOptions(App\Formatters\Order::formattableColumns('summary')) ?>
-        <x-larastrap::checks name="fields" :label="_i('Colonne')" :options="$options" :value="$values" />
+        <x-larastrap::checks name="fields" tlabel="export.data.columns" :options="$options" :value="$values" />
 
-        <x-larastrap::radios name="status" tlabel="generic.quantity" :options="['pending' => _i('Prenotate'), 'shipped' => _i('Consegnate')]" value="pending" />
+        <x-larastrap::radios name="status" tlabel="generic.quantity" :options="[
+            'pending' => __('orders.booking.statuses.booked'),
+            'shipped' => __('orders.booking.statuses.shipped')
+        ]" value="pending" />
+
         @include('order.partials.export.modifiers', ['order' => $order])
-        <x-larastrap::radios name="format" :label="_i('Formato')" :options="['pdf' => _i('PDF'), 'csv' => _i('CSV'), 'gdxp' => _i('GDXP')]" value="pdf" />
+
+        <x-larastrap::radios name="format" tlabel="export.data.format" :options="[
+            'pdf' => __('export.data.formats.pdf'),
+            'csv' => __('export.data.formats.csv'),
+            'gdxp' => __('export.data.formats.gdxp')
+        ]" value="pdf" />
 
         @include('order.filesmail', ['contacts' => $order->supplier->involvedEmails()])
     </x-larastrap::form>

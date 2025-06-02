@@ -80,4 +80,10 @@ return array (
     ),
     'template' => 'Se :value :target :scale',
   ),
+  'all' => 'Modificatori',
+  'name' => 'Modificatore',
+  'help' => 
+  array (
+    'no_modifiers_for_element' => 'Non ci sono modificatori assegnabili a questo tipo di elemento.',
+  ),
 );

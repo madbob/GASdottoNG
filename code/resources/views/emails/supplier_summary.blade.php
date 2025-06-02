@@ -4,10 +4,10 @@
     </p>
 @else
     <p>
-        {{ _i("In allegato il file per l'ordine di %s.", $currentuser->gas->printableName) }}
+        {{ __('notifications.notices.attached_order', ['gasname' => $currentuser->gas->printableName]) }}
     </p>
     <p>
-        {{ _i('Cordiali saluti') }},<br>
+        {{ __('notifications.greetings') }},<br>
         {{ $currentuser->printableName() }}
     </p>
 @endif

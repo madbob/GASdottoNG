@@ -38,38 +38,38 @@ $master_summary = $aggregate->reduxData();
         <div class="col-12">
             <div class="row gray-row order-extras mb-3">
                 <div class="col-6">
-                    <?php
+                    @php
 
                     if ($shippable_status) {
-                        $send_mail_label = _i('Invia Riepiloghi Prenotazioni');
-                        $send_mail_hint = _i("Questa mail verrà inviata a coloro che hanno partecipato all'ordine ma la cui prenotazione non è ancora stata consegnata.");
+                        $send_mail_label = __('orders.send_booking_summaries');
+                        $send_mail_hint = __('orders.help.send_booking_summaries');
                     }
                     else {
-                        $send_mail_label = _i('Invia Riepiloghi Consegne');
-                        $send_mail_hint = _i("Questa mail verrà inviata a coloro che hanno partecipato all'ordine e la cui prenotazione è stata effettivamente consegnata.");
+                        $send_mail_label = __('orders.send_delivery_summaries');
+                        $send_mail_hint = __('orders.help.send_delivery_summaries');
                     }
 
-                    ?>
+                    @endphp
 
-                    <x-larastrap::field margins="0 0 0 0" :label="$send_mail_label" :pophelp="_i('Invia a tutti gli utenti che hanno partecipato all\'ordine una mail riassuntiva della propria prenotazione. È possibile aggiungere un messaggio da allegare a tutti, per eventuali segnalazioni addizionali. Il messaggio di riepilogo viene automaticamente inviato alla chiusura dell\'ordine, automatica o manuale che sia, se configurato dal pannello Configurazioni.')">
-                        <x-larastrap::mbutton :label="_i('Invia Mail')" :triggers_modal="sprintf('notify-aggregate-%s', $aggregate->id)" />
-                        <small>{{ _i('Ultime notifiche inviate') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></small>
+                    <x-larastrap::field margins="0 0 0 0" :label="$send_mail_label" tpophelp="orders.help.send_summaries">
+                        <x-larastrap::mbutton tlabel="generic.send_mail" :triggers_modal="sprintf('notify-aggregate-%s', $aggregate->id)" />
+                        <small>{{ __('orders.last_summaries_date') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></small>
                     </x-larastrap::field>
 
-                    <x-larastrap::modal :title="_i('Notifiche Mail')" :id="sprintf('notify-aggregate-%s', $aggregate->id)">
+                    <x-larastrap::modal :id="sprintf('notify-aggregate-%s', $aggregate->id)">
                         <x-larastrap::iform method="POST" :action="url('aggregates/notify/' . $aggregate->id)">
                             <x-larastrap::suggestion>
                                 <p>
                                     {{ $send_mail_hint }}
                                 </p>
                                 <p>
-                                    {{ _i('Utenti che riceveranno la mail: %s', [count($aggregate->notifiableBookings())]) }}
+                                    {{ __('orders.summaries_recipients_count', ['count' => count($aggregate->notifiableBookings())]) }}
                                 </p>
                             </x-larastrap::suggestion>
 
                             <input type="hidden" name="update-field" value="last-notification-date-{{ $aggregate->id }}">
                             <input type="hidden" name="close-modal" value="1">
-                            <x-larastrap::textarea name="message" :label="_i('Messaggio (Opzionale)')" rows="5" />
+                            <x-larastrap::textarea name="message" tlabel="generic.optional_message" rows="5" />
                         </x-larastrap::iform>
                     </x-larastrap::modal>
                 </div>
@@ -90,22 +90,22 @@ $master_summary = $aggregate->reduxData();
             @endforeach
 
             @if($controllable && $more_orders)
-				<x-larastrap::tabpane :label="_i('Aggregato')" icon="bi-plus-circle">
+				<x-larastrap::tabpane tlabel="orders.aggregate" icon="bi-plus-circle">
 					@include('aggregate.details', ['aggregate' => $aggregate, 'master_summary' => $master_summary])
 				</x-larastrap::tabpane>
             @endif
 
             @if($multi_gas)
-                <x-larastrap::remotetabpane :label="_i('Multi-GAS')" :button_attributes="['data-tab-url' => route('aggregates.multigas', $aggregate->id)]" icon="bi-people">
+                <x-larastrap::remotetabpane tlabel="generic.menu.multigas" :button_attributes="['data-tab-url' => route('aggregates.multigas', $aggregate->id)]" icon="bi-people">
                 </x-larastrap::remotetabpane>
             @endif
 
             @can('supplier.shippings', $aggregate)
-                <x-larastrap::remotetabpane :label="_i('Consegne')" :button_attributes="['data-tab-url' => url('/booking/' . $aggregate->id . '/user')]" icon="bi-truck">
+                <x-larastrap::remotetabpane tlabel="orders.deliveries" :button_attributes="['data-tab-url' => url('/booking/' . $aggregate->id . '/user')]" icon="bi-truck">
                 </x-larastrap::remotetabpane>
 
                 @if($fast_shipping_enabled)
-                    <x-larastrap::remotetabpane :label="_i('Consegne Veloci')" :button_attributes="['data-tab-url' => url('/deliveries/' . $aggregate->id . '/fast')]" icon="bi-rocket-takeoff">
+                    <x-larastrap::remotetabpane tlabel="orders.fast_deliveries" :button_attributes="['data-tab-url' => url('/deliveries/' . $aggregate->id . '/fast')]" icon="bi-rocket-takeoff">
                     </x-larastrap::remotetabpane>
                 @endif
             @endcan

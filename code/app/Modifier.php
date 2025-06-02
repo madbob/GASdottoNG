@@ -83,7 +83,7 @@ class Modifier extends Model
     public function getNameAttribute()
     {
         if (!$this->active) {
-            return _i('Nessun Valore');
+            return __('generic.no_value');
         }
 
         $data = $this->definitions;
@@ -101,7 +101,7 @@ class Modifier extends Model
             }
 
             if ($this->value == 'mass') {
-                $postfix = $postfix . ' ' . _i('al KG');
+                $postfix = $postfix . ' ' . __('generic.by_kg');
             }
 
             $ret[] = sprintf('%s %s', $amount, $postfix);

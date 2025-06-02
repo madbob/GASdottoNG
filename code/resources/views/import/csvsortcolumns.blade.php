@@ -1,4 +1,4 @@
-<?php
+@php
 
 if (!isset($next_step)) {
     $next_step = 'run';
@@ -12,7 +12,7 @@ if (!isset($extra_description)) {
     $extra_description = [];
 }
 
-?>
+@endphp
 
 <x-larastrap::modal>
     <div class="wizard_page">

@@ -80,4 +80,10 @@ return array (
     ),
     'template' => 'Si :value :target :scale',
   ),
+  'all' => 'Éditer',
+  'name' => 'Éditer',
+  'help' => 
+  array (
+    'no_modifiers_for_element' => '',
+  ),
 );

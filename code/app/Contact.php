@@ -40,7 +40,7 @@ class Contact extends Model
     public static function types()
     {
         $ret = [
-            'address' => _i('Indirizzo'),
+            'address' => __('generic.address'),
             'referent' => _i('Referente'),
             'email' => __('generic.email'),
             'skip_email' => _i('E-Mail (no notifiche)'),

@@ -1,7 +1,7 @@
 <x-larastrap::enclose :obj="$obj">
     <div class="row">
         <div class="col">
-            <?php
+            @php
 
             $types = [];
 
@@ -9,7 +9,7 @@
                 $types[$info->id] = $info->name;
             }
 
-            ?>
+            @endphp
 
             <x-larastrap::select name="type" tlabel="generic.type" :options="$types" disabled readonly />
             <x-larastrap::price name="amount" tlabel="generic.value" disabled readonly />
@@ -24,11 +24,11 @@
             @endif
         </div>
         <div class="col">
-            <x-larastrap::datepicker name="registration_date" :label="_i('Registrato Il')" disabled readonly />
-            <x-larastrap::text name="registerer" :label="_i('Registrato Da')" :value="$obj->automatic ? _i('Automatico') : $obj->registerer->printableName()" disabled readonly />
+            <x-larastrap::datepicker name="registration_date" tlabel="movements.registration_date" disabled readonly />
+            <x-larastrap::text name="registerer" tlabel="movements.registrar" :value="$obj->automatic ? __('movements.automatic') : $obj->registerer->printableName()" disabled readonly />
 
             @if($obj->related->isEmpty() == false)
-                <x-larastrap::field :label="_i('Movimenti Correlati')">
+                <x-larastrap::field tlabel="generic.related">
                     @foreach($obj->related as $rel)
                         @include('commons.staticmovementfield', ['obj' => $rel, 'label' => __('generic.payment'), 'squeeze' => true])
                     @endforeach

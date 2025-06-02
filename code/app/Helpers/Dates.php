@@ -5,7 +5,7 @@ use Carbon\Carbon;
 function printableDate($value, $short = false)
 {
     if (blank($value)) {
-        $ret = _i('Mai');
+        $ret = __('generic.never');
     }
     else {
         if (is_numeric($value)) {
@@ -31,7 +31,7 @@ function printableDate($value, $short = false)
             }
         }
         else {
-            $ret = _i('Mai');
+            $ret = __('generic.never');
         }
     }
 
@@ -214,7 +214,7 @@ function decodeDate($date)
 {
     $date = trim($date);
 
-    if ($date == '' || $date == _i('Mai')) {
+    if ($date == '' || $date == __('generic.never')) {
         return null;
     }
 

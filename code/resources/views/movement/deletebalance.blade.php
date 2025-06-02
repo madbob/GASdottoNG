@@ -5,7 +5,7 @@
 
 		<div class="alert alert-danger">
 			<p>
-				{{ _i("Attenzione! I saldi passati possono essere rimossi ma con prudenza, l'operazione non è reversibile, e non sarà più possibile ricalcolare questi valori in nessun modo!") }}
+				{{ __('movements.help.removing_balance_warning') }}
 			</p>
 		</div>
 	</x-larastrap::iform>

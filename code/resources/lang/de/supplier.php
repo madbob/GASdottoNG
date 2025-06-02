@@ -3,6 +3,11 @@
 return array (
   'payment_method' => 'Bezahlmodus',
   'all' => 'Lieferanten',
+  'products_list' => 
+  array (
+    'pdf' => 'Preisliste PDF (automatisch erstellt)',
+    'csv' => 'Preisliste CSV (automatisch erstellt)',
+  ),
   'attachments' => 'Dateien und Bilder',
   'remote_index' => '',
   'vat' => 'USt.-IDNr',
@@ -23,6 +28,8 @@ return array (
   ),
   'enable_no_quantities' => 'Schnelle Lieferung zulassen',
   'export_products' => 'Exportieren',
+  'referents' => 'Ansprechperson',
+  'products_list_heading' => 'Preisliste :supplier der :date',
   'admin_categories' => 'Kategorien verwalten',
   'admin_measures' => 'Maßeinheiten verwalten',
   'legal_name' => 'Firmenname',

@@ -80,4 +80,10 @@ return array (
     ),
     'template' => 'If :value :target :scale',
   ),
+  'all' => 'Modifiers',
+  'name' => 'Modifier',
+  'help' => 
+  array (
+    'no_modifiers_for_element' => '',
+  ),
 );

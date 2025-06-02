@@ -1,23 +1,23 @@
-<?php
+@php
 
 $display_shipping_date = true;
 
 switch($booking->status) {
     case 'shipped':
-        $intro_text = _i('Di seguito il riassunto dei prodotti che ti sono stati consegnati:');
+        $intro_text = __('orders.booking_description.shipped');
         $display_shipping_date = false;
         $attribute = 'delivered';
         $get_value = 'delivered';
         break;
 
     case 'saved':
-        $intro_text = _i('Di seguito il riassunto dei prodotti che ti saranno consegnati:');
+        $intro_text = __('orders.booking_description.saved');
         $attribute = 'delivered';
         $get_value = 'delivered';
         break;
 
     case 'pending':
-        $intro_text = _i('Di seguito il riassunto dei prodotti che hai ordinato:');
+        $intro_text = __('orders.booking_description.pending');
         $attribute = 'quantity';
         $get_value = 'booked';
         break;
@@ -26,7 +26,7 @@ switch($booking->status) {
 $global_total = 0;
 $bookings_tot = 0;
 
-?>
+@endphp
 
 @if(!empty($txt_message))
     <p>
@@ -74,7 +74,7 @@ $bookings_tot = 0;
     @include('emails.bookingtable', ['booking' => $b, 'redux' => $redux, 'tot' => $tot])
 
     @if($b->friends_bookings->isEmpty() == false)
-        <h5>{{ _i('Gli ordini dei tuoi amici') }}</h5>
+        <h5>{{ __('orders.bookings_from_friends') }}</h5>
 
         @foreach($b->friends_bookings as $fb)
             <p>{{ $fb->user->printableName() }}</p>
@@ -93,7 +93,7 @@ $bookings_tot = 0;
     @if($contacts->isEmpty() == false)
         <br>
         <p>
-            {{ _i("Per comunicazioni su quest'ordine, si raccomanda di contattare:") }}
+            {{ __('orders.communications_points') }}
         </p>
         <ul>
             @foreach($contacts as $contact)
@@ -107,7 +107,7 @@ $bookings_tot = 0;
     <br>
     <br>
     <p>
-        {{ _i('Totale da pagare: %s', [printablePriceCurrency($global_total)]) }}
+        {{ __('orders.booking_total_amount', ['amount' => printablePriceCurrency($global_total)]) }}
     </p>
 @endif
 
@@ -115,6 +115,6 @@ $bookings_tot = 0;
     <br>
     <br>
     <p>
-        {{ _i('La consegna avverrà %s.', [$b->order->printableDate('shipping')]) }}
+        {{ __('orders.formatted_delivery_date', ['date' => $b->order->printableDate('shipping')]) }}
     </p>
 @endif

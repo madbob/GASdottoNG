@@ -1,7 +1,7 @@
 <ul>
     @if($modifier->definitions->isEmpty())
         <li>
-            {{ _i('Nessun Valore') }}
+            {{ __('generic.no_value') }}
         </li>
     @else
         <?php

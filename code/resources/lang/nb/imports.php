@@ -15,6 +15,8 @@ return array (
   'index_column' => '',
   'column' => '',
   'imported_suppliers' => '',
+  'updated' => '',
+  'last_read' => '',
   'error_main' => '',
   'error_retry' => '',
   'existing_products_action' => 'Produkt',

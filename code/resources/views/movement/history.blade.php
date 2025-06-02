@@ -19,7 +19,7 @@
 				<?php $date = \Carbon\Carbon::parse($bal->date) ?>
 
                 <tr class="{{ $index == 0 ? 'current-balance' : '' }}">
-                    <td>{{ $index == 0 ? _i('Saldo Corrente') : ucwords($date->isoFormat('D MMMM YYYY')) }}</td>
+                    <td>{{ $index == 0 ? __('movements.current_balance') : ucwords($date->isoFormat('D MMMM YYYY')) }}</td>
 
                     @foreach($obj->balanceFields() as $identifier => $name)
                         <td class="{{ $index == 0 ? $identifier : '' }}">

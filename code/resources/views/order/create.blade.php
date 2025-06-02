@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="_i('Crea Ordine')" id="createOrder">
+<x-larastrap::modal id="createOrder">
     <x-larastrap::iform method="POST" action="orders">
         <input type="hidden" name="void-form" value="1">
         <input type="hidden" name="test-feedback" value="1">

@@ -45,6 +45,7 @@ return array (
     'missing_elements_warning' => '',
   ),
   'revoke' => 'Rol herroepen',
+  'change_roles' => 'Rollen bewerken',
   'parent_role' => 'Rol superieur',
   'add_user' => 'Nieuwe gebruiker toevoegen',
   'unprivileged' => 'Niet-geprivilegieerde gebruikersrol',

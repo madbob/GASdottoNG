@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="_i('Note e Quantità')" classes="order-fixes-modal" data-reload-url="{{ url('orders/fixes/' . $order->id . '/' . $product->id) }}">
+<x-larastrap::modal classes="order-fixes-modal" data-reload-url="{{ url('orders/fixes/' . $order->id . '/' . $product->id) }}">
     @php
     $bookings = $order->bookings->sortByUserName();
     $measure = $product->printableMeasure();
@@ -26,13 +26,13 @@
             <hr/>
         @endif
 
-        <x-larastrap::textarea name="notes" :label="_i('Note per il Fornitore')" rows="5" maxlength="500" :value="$product->pivot->notes" />
+        <x-larastrap::textarea name="notes" tlabel="orders.notes_to_supplier" rows="5" maxlength="500" :value="$product->pivot->notes" />
 
         <hr/>
 
         @if($bookings->isEmpty())
             <x-larastrap::suggestion>
-                {{ _i("Da qui è possibile modificare la quantità prenotata di questo prodotto per ogni prenotazione, ma nessun utente ha ancora partecipato all'ordine.") }}
+                {{ __('orders.help.manual_fixes_explain') }}
             </x-larastrap::suggestion>
         @else
             <div class="d-flex flowbox mb-3">
@@ -42,17 +42,17 @@
 
                 <div class="btn-group table-sorter" data-table-target=".fixes-table">
                     <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
-                        {{ _i('Ordina Per') }} <span class="caret"></span>
+                        {{ __('generic.sort_by') }} <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="#" class="dropdown-item" data-sort-by="name">{{ __('generic.notes') }}</a>
                         </li>
                         <li>
-                            <a href="#" class="dropdown-item" data-sort-by="date">{{ _i('Data Prenotazione') }}</a>
+                            <a href="#" class="dropdown-item" data-sort-by="date">{{ __('generic.date') }}</a>
                         </li>
                         <li>
-                            <a href="#" class="dropdown-item" data-sort-by="quantity">{{ _i('Quantità Prenotata') }}</a>
+                            <a href="#" class="dropdown-item" data-sort-by="quantity">{{ __('orders.quantities.booked') }}</a>
                         </li>
                     </ul>
                 </div>
@@ -63,8 +63,8 @@
                     <thead>
                         <tr>
                             <th scope="col" width="35%">{{ __('user.name') }}</th>
-                            <th scope="col" width="35%">{{ _i('Data Prenotazione') }}</th>
-                            <th scope="col" width="30%">{{ _i('Quantità Prenotata') }}</th>
+                            <th scope="col" width="35%">{{ __('generic.date') }}</th>
+                            <th scope="col" width="30%">{{ __('orders.quantities.booked') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,8 +115,8 @@
                                 <thead>
                                     <tr>
                                         <th scope="col" width="35%">{{ __('user.name') }}</th>
-                                        <th scope="col" width="35%">{{ _i('Data Prenotazione') }}</th>
-                                        <th scope="col" width="30%">{{ _i('Quantità Prenotata') }}</th>
+                                        <th scope="col" width="35%">{{ __('generic.date') }}</th>
+                                        <th scope="col" width="30%">{{ __('orders.quantities.booked') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,7 +165,7 @@
                         @if($other_gas->id != $currentuser->gas->id)
                             <tr>
                                 <td>
-                                    <label>{{ _i('Multi-GAS: %s', [$other_gas->name]) }}</label>
+                                    <label>{{ __('generic.named_multigas', ['name' => $other_gas->name]) }}</label>
                                 </td>
                                 <td class="text-end">
                                     <label>

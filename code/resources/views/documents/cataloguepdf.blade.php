@@ -9,7 +9,7 @@
     </head>
 
     <body>
-        <h3>{{ _i('Listino %s del %s', [$supplier->name, date('d/m/Y')]) }}</h3>
+        <h3>{{ __('supplier.products_list_heading', [$supplier->name, date('d/m/Y')]) }}</h3>
 
         <hr/>
 

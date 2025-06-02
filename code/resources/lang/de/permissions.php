@@ -45,6 +45,7 @@ return array (
     'missing_elements_warning' => '',
   ),
   'revoke' => 'Rolle wiederrufen',
+  'change_roles' => 'Rollen verwalten',
   'parent_role' => 'Rolle auf höherem Niveau',
   'add_user' => 'Neuen Benutzer hinzufügen',
   'unprivileged' => 'Rolle Benutzer ohne Sonderrechte',

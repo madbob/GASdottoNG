@@ -45,6 +45,7 @@ return array (
     'missing_elements_warning' => '',
   ),
   'revoke' => 'Révoquer le rôle',
+  'change_roles' => 'Éditer les rôles',
   'parent_role' => 'Rôle principal',
   'add_user' => 'Ajouter un nouvel utilisateur',
   'unprivileged' => 'Rôle utilisateur sans privilèges',

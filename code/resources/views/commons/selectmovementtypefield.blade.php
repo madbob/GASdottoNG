@@ -17,7 +17,7 @@ if (!isset($current_pophelp)) {
 }
 
 if (!isset($empty_label)) {
-    $empty_label = _i('Seleziona un Tipo');
+    $empty_label = __('generic.select');
 }
 
 $types = [

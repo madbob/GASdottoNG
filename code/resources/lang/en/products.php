@@ -15,8 +15,10 @@ return array (
   'max_quantity' => 'Suggested Maximum',
   'available' => 'Available',
   'list' => 'Products',
+  'sorting' => 'Sorting',
   'help' => 
   array (
+    'available_explain' => 'The maximum amount of product that can be collectively booked in one order',
     'bookable' => 'Specifies if the product is available for ordering within the upcoming supplier orders',
     'pending_orders_change_price' => 'There are pending orders and archived ones where the product whose price you just modified is listed. Please choose those in which you want the new price to be applied (for the product and/or any price differences in potential variants).',
     'pending_orders_change_price_second' => 'If you modify the prices and there are reservations in the order that have already been delivered, you will need to manually re-save those deliveries to regenerate the updated accounting transactions.',

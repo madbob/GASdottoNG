@@ -45,6 +45,7 @@ return array (
     'missing_elements_warning' => '',
   ),
   'revoke' => 'Revoke role',
+  'change_roles' => 'Edit Roles',
   'parent_role' => 'Mayor Role',
   'add_user' => 'Search and Add User',
   'unprivileged' => 'Non-privileged User Role',

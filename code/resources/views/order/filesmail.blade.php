@@ -2,7 +2,7 @@
     <?php
 
     if (!isset($default_subject)) {
-        $default_subject = _i('Documento allegato');
+        $default_subject = __('generic.attachment');
     }
 
     if (!isset($default_text)) {
@@ -16,7 +16,7 @@
     <x-larastrap::check name="action" value="email" tlabel="generic.forward" triggers_collapse="send_mail" />
 
     <x-larastrap::collapse id="send_mail">
-        <x-larastrap::field :label="_i('Destinatari')">
+        <x-larastrap::field tlabel="generic.recipients">
             @include('commons.manyrows', [
                 'contents' => $contacts,
                 'columns' => [
@@ -33,7 +33,7 @@
             ])
         </x-larastrap::field>
 
-        <x-larastrap::text name="subject_mail" :label="_i('Soggetto')" :value="$default_subject" />
-        <x-larastrap::textarea name="body_mail" :label="_i('Testo')" :value="$default_text" />
+        <x-larastrap::text name="subject_mail" tlabel="generic.mailfield.subject" :value="$default_subject" />
+        <x-larastrap::textarea name="body_mail" tlabel="generic.mailfield.body" :value="$default_text" />
     </x-larastrap::collapse>
 @endif

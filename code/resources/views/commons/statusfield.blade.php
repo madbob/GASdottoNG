@@ -1,4 +1,4 @@
-<?php
+@php
 
 $hide_delete = true;
 $hide_suspend = true;
@@ -15,15 +15,20 @@ switch ($status) {
 }
 
 if (is_a($target, 'App\User')) {
-    $help_popover = _i('Gli utenti Sospesi e Cessati non possono accedere alla piattaforma, pur restando registrati. È necessario specificare una data di cessazione/sospensione.');
+    $help_popover = __('user.help.suspended');
 }
 
 $postfix = $postfix ?? false;
 
-?>
+@endphp
 
 <x-larastrap::field :pophelp="$help_popover" tlabel="generic.status" :squeeze="$squeeze" classes="status-selector">
-    <x-larastrap::radios name="status" :npostfix="$postfix" :options="['active' => _i('Attivo'), 'suspended' => _i('Sospeso'), 'deleted' => _i('Cessato')]" :value="$status" squeeze />
+    <x-larastrap::radios name="status" :npostfix="$postfix" :options="[
+        'active' => __('user.statuses.active'),
+        'suspended' => __('user.statuses.suspended'),
+        'deleted' => __('user.statuses.deleted')
+    ]" :value="$status" squeeze />
+
     <x-larastrap::datepicker name="deleted_at" :hidden="$hide_delete" squeeze />
     <x-larastrap::datepicker name="suspended_at" :hidden="$hide_suspend" squeeze />
 </x-larastrap::field>

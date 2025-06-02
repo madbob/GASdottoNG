@@ -80,4 +80,10 @@ return array (
     ),
     'template' => '',
   ),
+  'all' => 'Wijzigen',
+  'name' => 'Wijzigen',
+  'help' => 
+  array (
+    'no_modifiers_for_element' => '',
+  ),
 );

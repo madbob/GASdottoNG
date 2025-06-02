@@ -10,9 +10,9 @@ $modal_id = sprintf('calculator-modal-%s', $rand);
 </div>
 
 @push('postponed')
-    <x-larastrap::modal :title="_i('Calcola Quantità')" classes="inline-calculator" :id="$modal_id" size="md">
+    <x-larastrap::modal classes="inline-calculator" :id="$modal_id" size="md">
         <x-larastrap::suggestion>
-            Indica qui il peso dei singoli pezzi coinvolti nella consegna per ottenere la somma.
+            {{ __('orders.notices.calculator') }}
         </x-larastrap::suggestion>
 
         <x-larastrap::form>

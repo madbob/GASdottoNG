@@ -4,12 +4,15 @@
             <div class="col-md-12">
                 @include('groups.base-edit')
 
-                <x-larastrap::radios :label="_i('Contesto')" name="context" :options="['user' => _i('Utente'), 'booking' => _i('Prenotazione')]" classes="selective-display" :attributes="['data-target' => '.optional']" :pophelp="_i('<ul><li>Utente: i Gruppi di questa Aggregazione sono assegnabili a ciascun utente, a priori, e valgono per tutti gli Ordini. Utile per partizionare gli utenti.</li><li>Prenotazione: i Gruppi di questa Aggregazione sono assegnabili a ciascuna Prenotazione da parte degli utenti. Utile per gestire la logistica, ad esempio in caso di molteplici punti di consegna arbitrariamente selezionabili dagli utenti.</li></ul>')" />
+                <x-larastrap::radios tlabel="aggregations.context" name="context" :options="[
+                    'user' => __('user.name'),
+                    'booking' => __('aggregations.by_booking')
+                ]" classes="selective-display" :attributes="['data-target' => '.optional']" tpophelp="aggregations.help.context" />
 
                 <div class="optional" data-type="user">
-                    <x-larastrap::radios :label="_i('Ogni Utente può stare in')" name="cardinality" :options="['single' => _i('un solo Gruppo'), 'many' => _i('diversi Gruppi')]" />
-                    <x-larastrap::check :label="_i('Selezionabile dall\'Utente')" name="user_selectable" />
-                    <x-larastrap::check :label="_i('Limita accesso Ordini')" name="filters_orders" :pophelp="_i('Se selezionato, sarà possibile scegliere uno o più Gruppi di questa Aggregazione nel contesto di ogni Ordine. Così facendo, l\'Ordine stesso sarà accessibile solo agli utenti che sono stati assegnati ai Gruppi stessi.')" />
+                    <x-larastrap::radios tlabel="aggregations.cardinality" name="cardinality" :options="['single' => __('aggregations.cardinality_one'), 'many' => __('aggregations.cardinality_many')]" />
+                    <x-larastrap::check tlabel="aggregations.user_selectable" name="user_selectable" />
+                    <x-larastrap::check tlabel="aggregations.limit_access" name="filters_orders" tpophelp="aggregations.help.limit_access" />
                 </div>
             </div>
         </div>
@@ -23,7 +26,7 @@
             @include('commons.addingbutton', [
                 'template' => 'circles.base-edit',
                 'typename' => 'circle',
-                'typename_readable' => _i('Gruppo'),
+                'typename_readable' => __('aggregations.group'),
                 'targeturl' => 'circles',
                 'target_update' => 'circle-list-' . $group->id,
                 'extra' => [

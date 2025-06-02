@@ -1,5 +1,5 @@
 <p>
-    {{ _i('Nuova notifica da parte di %s', $notification->creator->printableName()) }}:
+    {{ __('notifications.notices.new_notification_from', ['author' => $notification->creator->printableName()]) }}:
 </p>
 
 {!! nl2br($notification->content) !!}

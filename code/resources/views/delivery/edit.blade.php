@@ -1,4 +1,4 @@
-<?php
+@php
 
 $more_orders = ($aggregate->orders->count() > 1);
 $handling_movements = someoneCan('movements.admin', $currentgas);
@@ -16,7 +16,7 @@ $other_bookings = $user->morePendingBookings($aggregate);
 */
 app()->make('AggregationSwitch')->setEnforced(true);
 
-?>
+@endphp
 
 <div class="row">
     <div class="col">
@@ -34,7 +34,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
 
             <div class="row">
                 <div class="col-md-6">
-                    @include('commons.staticobjfield', ['target_obj' => $user, 'label' => _i('Prenotato Da')])
+                    @include('commons.staticobjfield', ['target_obj' => $user, 'label' => __('orders.booked_by')])
                 </div>
                 <div class="col-md-6">
                     @foreach($user->contacts as $contact)
@@ -99,8 +99,8 @@ app()->make('AggregationSwitch')->setEnforced(true);
                 @if($o->status == 'shipped')
                     <div class="row">
                         <div class="col-md-6">
-                            @include('commons.staticobjfield', ['obj' => $o, 'name' => 'deliverer', 'label' => _i('Consegnato Da')])
-                            <x-larastrap::datepicker :label="_i('Data Consegna')" :value="$o->delivery" disabled readonly />
+                            @include('commons.staticobjfield', ['obj' => $o, 'name' => 'deliverer', 'label' => __('orders.delivered_by')])
+                            <x-larastrap::datepicker tlabel="orders.dates.shipping" :value="$o->delivery" disabled readonly />
                         </div>
                         <div class="col-md-6">
                             @include('commons.staticmovementfield', ['obj' => $o->payment, 'label' => __('generic.payment'), 'rand' => $rand])
@@ -127,7 +127,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                         <div class="row">
                             <div class="col">
                                 <x-larastrap::suggestion>
-                                    {!! _i('I prezzi di alcuni prodotti sono cambiati rispetto alla prenotazione. Sotto, puoi scegliere quale prezzo adottare in caso di rettifica della consegna: quello applicato originariamente o quello nel listino attuale.') !!}
+                                    {{ __('orders.help.prices_changed') }}
                                 </x-larastrap::suggestion>
                             </div>
                         </div>
@@ -197,7 +197,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                                         {{ $combo->printableName() }}
                                                     @else
                                                         {{ $product->product->printableName() }}<br>
-                                                        <small>{{ _i('Nota bene: la variante selezionata in prenotazione non è più nel listino') }}</small>
+                                                        <small>{{ __('orders.help.variant_no_longer_active') }}</small>
                                                     @endif
 
                                                     <input type="hidden" name="{{ $product->product->id }}" value="1" />
@@ -253,7 +253,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                     <tr class="hidden booking-product fit-add-product">
                                         <td>
                                             <select class="fit-add-product-select form-select">
-                                                <option value="-1">{{ _i('Seleziona un Prodotto') }}</option>
+                                                <option value="-1">{{ __('generic.select') }}</option>
                                                 @foreach($order->products as $product)
                                                     <option value="{{ $product->id }}">{{ $product->name }}</option>
                                                 @endforeach
@@ -276,7 +276,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                 <tr>
                                     <td>
                                         @if($order->isActive())
-                                            <button class="btn btn-warning add-booking-product">{{ _i('Aggiungi Prodotto') }}</button>
+                                            <button class="btn btn-warning add-booking-product">{{ __('generic.add_new') }}</button>
                                         @endif
                                     </td>
                                     <td></td>
@@ -284,9 +284,9 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                     <td></td>
 
                                     @if($currentgas->unmanaged_shipping == '1' && $order->supplier->unmanaged_shipping_enabled)
-                                        <td class="text-end fw-bold"><x-larastrap::price :label="_i('Totale Manuale')" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" data-manual-change="0" /></td>
+                                        <td class="text-end fw-bold"><x-larastrap::price tlabel="orders.totals.manual" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" data-manual-change="0" /></td>
                                     @else
-                                        <td class="text-end fw-bold">{{ _i('Totale') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</td>
+                                        <td class="text-end fw-bold">{{ __('orders.totals.total') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</td>
                                     @endif
                                 </tr>
                             </tfoot>
@@ -301,7 +301,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                         <tr>
                             <td>
                                 <div class="float-end">
-                                    <strong>{{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> {{ $currency_symbol }}</strong>
+                                    <strong>{{ __('orders.totals.complete') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> {{ $currency_symbol }}</strong>
                                 </div>
                             </td>
                         </tr>
@@ -314,11 +314,11 @@ app()->make('AggregationSwitch')->setEnforced(true);
                     <div class="col">
                         <div class="btn-group float-end main-form-buttons" role="group">
                             @if($existing)
-                                <button class="btn btn-light preload-quantities">{{ _i('Carica Quantità Prenotate') }}</button>
-                                <button type="submit" class="btn btn-info info-button">{{ _i('Salva Informazioni') }}</button>
+                                <button class="btn btn-light preload-quantities">{{ __('orders.load_booked_quantities') }}</button>
+                                <button type="submit" class="btn btn-info info-button">{{ __('orders.save_delivery') }}</button>
                             @endif
 
-                            <button type="submit" class="btn btn-success saving-button">{{ _i('Consegna') }}</button>
+                            <button type="submit" class="btn btn-success saving-button">{{ __('orders.do_delivery') }}</button>
                         </div>
                     </div>
                 </div>
@@ -345,7 +345,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
             'dom_id' => $rand,
             'obj' => null, // qui gestisco sempre un movimento di pagamento come nuovo, eventualmente la pre-callback di 'booking-payment' provvederà a caricare quelli esistenti assegnati alle prenotazioni contemplate
             'default' => \App\Movement::generate('booking-payment', $user, $aggregate, $tot_amount),
-            'amount_label' => _i('Importo da Pagare'),
+            'amount_label' => __('orders.totals.to_pay'),
             'extra' => [
                 'delivering-status' => json_encode($tot_delivered)
             ],

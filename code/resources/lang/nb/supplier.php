@@ -3,6 +3,11 @@
 return array (
   'payment_method' => '',
   'all' => '',
+  'products_list' => 
+  array (
+    'pdf' => '',
+    'csv' => '',
+  ),
   'attachments' => '',
   'remote_index' => '',
   'vat' => '',
@@ -23,6 +28,8 @@ return array (
   ),
   'enable_no_quantities' => '',
   'export_products' => 'Eksporter',
+  'referents' => '',
+  'products_list_heading' => '',
   'admin_categories' => 'Kategori',
   'admin_measures' => 'Måleenhet',
   'legal_name' => 'Firmanavn',

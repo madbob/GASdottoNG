@@ -4,7 +4,7 @@
     @if($aggregate->isActive())
         <div class="flowbox mb-1">
             <div>
-                <x-larastrap::mbutton :label="_i('Aggiungi Utente')" :triggers_modal="sprintf('addBooking-%s', $aggregate->id)" color="warning" />
+                <x-larastrap::mbutton tlabel="generic.add_new" :triggers_modal="sprintf('addBooking-%s', $aggregate->id)" color="warning" />
 
 				@include('commons.importcsv', [
 					'modal_id' => 'importCSVdeliveries',
@@ -15,11 +15,11 @@
 				])
             </div>
 
-            <x-larastrap::modal :title="_i('Aggiungi Utente')" classes="add-booking-while-shipping" :id="sprintf('addBooking-%s', $aggregate->id)">
+            <x-larastrap::modal classes="add-booking-while-shipping" :id="sprintf('addBooking-%s', $aggregate->id)">
                 <div class="fillable-booking-space">
                     <div class="row">
                         <div class="col">
-                            <input type="text" data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ _i('Cerca Utente') }}" />
+                            <input type="text" data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ __('generic.search.users') }}" />
                         </div>
                     </div>
 
@@ -42,7 +42,7 @@
 		<div class="row">
 	        <div class="col">
 				<div class="alert alert-danger mb-2">
-					{{ _i("Attenzione: alcuni prodotti sono stati modificati dopo essere stati consegnati all'interno di questo ordine. Se sono stati alterati i prezzi, è necessario rieseguire le consegne coinvolte per consolidare i nuovi totali e rielaborare i relativi movimenti contabili.") }}
+					{{ __('orders.help.changed_products') }}
 				</div>
 			</div>
 		</div>
@@ -62,7 +62,7 @@
     </div>
 @else
     <div class="alert alert-danger mb-3">
-        {{ _i('Questo pannello sarà attivo quando tutte le prenotazioni saranno chiuse') }}
+        {{ __('orders.help.waiting_closing_for_deliveries') }}
     </div>
 
     <div class="row">
@@ -71,10 +71,10 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">{{ _i('Utente') }}</th>
-                            <th scope="col">{{ _i('Data Creazione') }}</th>
-                            <th scope="col">{{ _i('Ultima Modifica') }}</th>
-                            <th scope="col">{{ _i('Totale Prenotato') }}</th>
+                            <th scope="col">{{ __('user.name') }}</th>
+                            <th scope="col">{{ __('generic.created_at') }}</th>
+                            <th scope="col">{{ __('generic.updated_at') }}</th>
+                            <th scope="col">{{ __('orders.totals.booked') }}</th>
                         </tr>
                     </thead>
                     <tbody>

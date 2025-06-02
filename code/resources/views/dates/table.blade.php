@@ -1,9 +1,9 @@
 <?php $suppliers = $currentuser->targetsByAction('supplier.orders') ?>
 
-<x-larastrap::modal :title="_i('Gestione Date')" size="fullscreen">
+<x-larastrap::modal size="fullscreen">
     <div class="row">
         <div class="col-md-12">
-            {{ _i("Da qui è possibile aggiungere date arbitrarie al calendario delle consegne, anche per ordini non ancora esistenti. Questa funzione è consigliata per facilitare il coordinamento di diversi referenti all'interno del GAS e pianificare le attività a lungo termine.") }}
+            {{ __('notifications.help.arbitrary_dates') }}
         </div>
     </div>
 
@@ -42,13 +42,13 @@
                             ]
                         ],
                         [
-                            'label' => _i('Ricorrenza'),
+                            'label' => __('notifications.recurrence'),
                             'field' => 'recurring',
                             'type' => 'periodic',
                             'width' => 30,
                         ],
                         [
-                            'label' => _i('Descrizione'),
+                            'label' => __('generic.description'),
                             'field' => 'description',
                             'type' => 'text',
                             'width' => 20,

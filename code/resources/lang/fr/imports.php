@@ -15,6 +15,8 @@ return array (
   'index_column' => 'Colonne',
   'column' => 'Colonne',
   'imported_suppliers' => 'Fournisseurs importés',
+  'updated' => 'Actualiser',
+  'last_read' => '',
   'error_main' => 'Erreur durant le téléversement ou la lecture du fichier.',
   'error_retry' => 'Veuillez essayer de nouveau. Si le problème persiste, merci de le signaler aux développeurs de GASdotto : info@madbob.org',
   'existing_products_action' => 'Produits des commandes',

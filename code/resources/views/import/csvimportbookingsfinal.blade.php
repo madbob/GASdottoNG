@@ -1,4 +1,4 @@
-<x-larastrap::modal :buttons="[['color' => 'success', 'label' => _i('Chiudi'), 'classes' => ['reloader'], 'attributes' => ['data-bs-dismiss' => 'modal']]]">
+<x-larastrap::modal :buttons="[['color' => 'success', 'label' => __('generic.close'), 'classes' => ['reloader'], 'attributes' => ['data-bs-dismiss' => 'modal']]]">
     <p>
         {{ $title }}:
     </p>

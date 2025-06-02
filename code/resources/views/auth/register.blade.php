@@ -14,18 +14,18 @@
         <x-larastrap::text name="verify" :label="$captcha" required />
 
         @if(App\Gas::count() > 1)
-            <x-larastrap::select-model name="gas_id" :label="_('GAS')" required :options="App\Gas::orderBy('name', 'asc')->get()" />
+            <x-larastrap::select-model name="gas_id" tlabel="generic.gas" required :options="App\Gas::orderBy('name', 'asc')->get()" />
         @else
             <input type="hidden" name="gas_id" value="{{ currentAbsoluteGas()->id }}">
         @endif
 
         @if (!empty(currentAbsoluteGas()->public_registrations['privacy_link']))
-            <?php $privacy_claim = __('auth.accept_privacy', [currentAbsoluteGas()->public_registrations['privacy_link']]) ?>
+            <?php $privacy_claim = __('auth.accept_privacy', ['link' => currentAbsoluteGas()->public_registrations['privacy_link']]) ?>
             <x-larastrap::check name="privacy" :label="ue('<span>' . $privacy_claim . '</span>')" required />
         @endif
 
         @if (!empty(currentAbsoluteGas()->public_registrations['terms_link']))
-            <?php $terms_claim = __('auth.accept_conditions', [currentAbsoluteGas()->public_registrations['terms_link']]) ?>
+            <?php $terms_claim = __('auth.accept_conditions', ['link' => currentAbsoluteGas()->public_registrations['terms_link']]) ?>
             <x-larastrap::check name="terms" :label="ue('<span>' . $terms_claim . '</span>')" required />
         @endif
     </x-larastrap::form>

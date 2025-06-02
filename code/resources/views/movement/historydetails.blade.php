@@ -1,8 +1,8 @@
-<x-larastrap::modal :title="_i('Storico Saldi')">
+<x-larastrap::modal>
 	<?php $currencies = App\Currency::enabled() ?>
 
 	<x-larastrap::tabs active="0">
-		<x-larastrap::tabpane :label="_i('Utenti')">
+		<x-larastrap::tabpane tlabel="user.all">
 			<div class="row">
 				<div class="col">
 					<a href="{{ route('movements.history.details', ['date' => $date, 'format' => 'csv', 'target' => 'users']) }}" class="btn btn-light">{{ __('generic.exports.csv') }} <i class="bi-download"></i></a>
@@ -17,7 +17,7 @@
 						<tr>
 							<th scope="col" width="70%">{{ __('generic.name') }}</th>
 							@foreach($currencies as $curr)
-								<th scope="col" width="{{ round(30 / $currencies->count(), 2) }}%">{{ _i('Credito') }}</th>
+								<th scope="col" width="{{ round(30 / $currencies->count(), 2) }}%">{{ __('movements.credit') }}</th>
 							@endforeach
 						</tr>
 					</thead>
@@ -40,7 +40,7 @@
 			</div>
 		</x-larastrap::tabpane>
 
-		<x-larastrap::tabpane :label="_i('Fornitori')">
+		<x-larastrap::tabpane tlabel="supplier.all">
 			<div class="row">
 				<div class="col">
 					<a href="{{ route('movements.history.details', ['date' => $date, 'format' => 'csv', 'target' => 'suppliers']) }}" class="btn btn-light">{{ __('generic.exports.csv') }} <i class="bi-download"></i></a>
@@ -56,7 +56,7 @@
 							<th scope="col" width="70%">{{ __('generic.name') }}</th>
 
 							@foreach($currencies as $curr)
-								<th scope="col" width="{{ round(30 / $currencies->count(), 2) }}%">{{ _i('Saldo') }}</th>
+								<th scope="col" width="{{ round(30 / $currencies->count(), 2) }}%">{{ __('movements.balance') }}</th>
 							@endforeach
 						</tr>
 					</thead>

@@ -15,8 +15,10 @@ return array (
   'max_quantity' => '',
   'available' => '',
   'list' => 'Productos',
+  'sorting' => '',
   'help' => 
   array (
+    'available_explain' => '',
     'bookable' => '',
     'pending_orders_change_price' => '',
     'pending_orders_change_price_second' => '',

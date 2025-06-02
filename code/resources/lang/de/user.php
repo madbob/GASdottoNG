@@ -1,9 +1,23 @@
 <?php
 
 return array (
+  'help' => 
+  array (
+    'suspended' => 'Suspendierte oder gesperrte Benutzer können nicht auf das Bestellsystem zugreifen, auch wenn sie registriert bleiben.',
+    'waiting_approval' => '',
+    'promote_friend' => '',
+    'promote_friend_enforce_mail' => '',
+    'reassign_friend' => '',
+    'notifications_instructions' => 'Wähle die Lieferanten aus für die du eine Benachrichtigung erhalten möchtest bei Eröffnung einer neuen Bestellung.',
+    'fee' => 'Daten im Zusammenhang des Jahresbeitrags des Nutzers. Zur Deaktivierung dieser Option gehe zu Einstellungen -> Buchhaltung',
+    'deposit' => 'Daten zur Einlage, die der Nutzer im Moment des Eintritts in die Bestellgemeinschaft bezahlt hat. Zur Deaktivierung dieser Option gehe zu Einstellungen -> Buchhaltung',
+    'satispay' => 'Von hier kannst du deinen Kontostand mit Satispay aufladen. Sag wie viel du überweisen willst und ev. Noten für die Verwalter; dir wird eine Bestätigung auf dem Smartphone, innerhalb 15 min. geschickt.',
+    'remove_profile' => '',
+    'remove_profile_credit_notice' => '',
+  ),
   'firstname' => 'Vorname',
   'lastname' => 'Nachname',
-  'change_friend' => 'Meine Vorbestellung',
+  'change_friend' => '',
   'sepa' => 
   array (
     'date' => 'SEPA-Bewegung Datum',
@@ -28,29 +42,25 @@ return array (
     'deleted' => '',
   ),
   'friend' => 'Freund',
+  'removed_user' => '',
+  'booking_friend_header' => 'Hat bestellt :amount',
+  'pending_deliveries' => '',
   'personal_data' => 'Profil',
-  'help' => 
-  array (
-    'waiting_approval' => '',
-    'promote_friend' => '',
-    'promote_friend_enforce_mail' => '',
-    'change_friend' => '',
-    'notifications_instructions' => 'Wähle die Lieferanten aus für die du eine Benachrichtigung erhalten möchtest bei Eröffnung einer neuen Bestellung.',
-    'fee' => 'Daten im Zusammenhang des Jahresbeitrags des Nutzers. Zur Deaktivierung dieser Option gehe zu Einstellungen -> Buchhaltung',
-    'deposit' => 'Daten zur Einlage, die der Nutzer im Moment des Eintritts in die Bestellgemeinschaft bezahlt hat. Zur Deaktivierung dieser Option gehe zu Einstellungen -> Buchhaltung',
-    'satispay' => 'Von hier kannst du deinen Kontostand mit Satispay aufladen. Sag wie viel du überweisen willst und ev. Noten für die Verwalter; dir wird eine Bestätigung auf dem Smartphone, innerhalb 15 min. geschickt.',
-    'remove_profile' => '',
-    'remove_profile_credit_notice' => '',
-  ),
   'approve' => '',
   'do_not_approve' => '',
   'family_members' => 'Familienmitglieder',
   'promote_friend' => 'Neuer Benutzer registriert',
+  'reassign_friend' => 'Meine Vorbestellung',
   'change_friend_assignee' => '',
   'fee' => 'Beitrag',
   'deposit' => 'Depot',
   'fees_status' => 'Status',
   'all_ceased' => 'Beendet',
+  'notices' => 
+  array (
+    'new_user' => 'Neuer Benutzer registriert :gasname:',
+    'pending_approval' => '',
+  ),
   'last_fee' => '',
   'fees' => 
   array (

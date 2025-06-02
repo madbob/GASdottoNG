@@ -1,5 +1,5 @@
 <p>
-    {{ _i("I seguenti ordini sono stati chiusi:") }}
+    {{ __('orders.notices.closed_orders') }}
 </p>
 <ul>
     @foreach($orders as $order)
@@ -7,5 +7,5 @@
     @endforeach
 </ul>
 <p>
-    {{ _i("In allegato i relativi riassunti prodotti, in PDF e CSV.") }}
+    {{ __('orders.notices.email_attachments') }}
 </p>

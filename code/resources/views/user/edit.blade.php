@@ -195,13 +195,13 @@ if ($user->isFriend() && $admin_editable) {
                                 @endif
                             </x-larastrap::mform>
                         </x-larastrap::accordionitem>
-                        <x-larastrap::accordionitem tlabel="user.change_friend" active="false">
+                        <x-larastrap::accordionitem tlabel="user.reassign_friend" active="false">
                             <x-larastrap::mform :action="route('users.reassign', $user->id)" keep_buttons="true" nodelete="true">
                                 <x-larastrap::hidden name="close-modal" value="1" />
                                 <x-larastrap::hidden name="reload-portion" :value="sprintf('#friends-tab-%s', $user->parent_id)" />
 
                                 <p>
-                                    {{ __('user.help.change_friend', ['ex_parent' => $user->parent->printableName()]) }}
+                                    {{ __('user.help.reassign_friend', ['ex_parent' => $user->parent->printableName()]) }}
                                 </p>
 
 								<x-larastrap::select-model tlabel="user.change_friend_assignee" name="parent_id" :options="App\User::where('id', '!=', $user->parent_id)->with(['gas'])->topLevel()->sorted()->get()->filter(fn($u) => $u->can('users.subusers', $u->gas))" />

@@ -1,4 +1,4 @@
-<x-larastrap::modal :title="_i('Aggrega Ordini')">
+<x-larastrap::modal>
     <x-larastrap::form method="POST" :action="route('aggregates.store')" id="orderAggregator">
         <input type="hidden" name="update-select" value="category_id">
 
@@ -7,14 +7,14 @@
                 {{ __('generic.empty_list') }}
             </p>
             <p>
-                {{ _i("Una volta aggregati, gli ordini verranno visualizzati come uno solo pur mantenendo ciascuno i suoi attributi. Questa funzione è consigliata per facilitare l'amministrazione di ordini che, ad esempio, vengono consegnati nella stessa data.") }}
+                {{ __('orders.help.explain_aggregations') }}
             </p>
         @else
             <p>
-                {{ _i("Clicca e trascina gli ordini nella stessa cella per aggregarli, o in una cella vuota per disaggregarli.") }}
+                {{ __('orders.help.aggregation_instructions') }}
             </p>
             <p>
-                {{ _i("Una volta aggregati, gli ordini verranno visualizzati come uno solo pur mantenendo ciascuno i suoi attributi. Questa funzione è consigliata per facilitare l'amministrazione di ordini che, ad esempio, vengono consegnati nella stessa data.") }}
+                {{ __('orders.help.explain_aggregations') }}
             </p>
 
             <hr/>

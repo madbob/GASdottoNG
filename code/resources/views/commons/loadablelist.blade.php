@@ -1,4 +1,4 @@
-<?php
+@php
 
 if(isset($legend) == false) {
     $legend = null;
@@ -36,18 +36,18 @@ foreach($sorting_rules as $attribute => $info) {
 
 $no_filters = (empty($sorting_rules) && empty($filters) && is_null($legend));
 
-?>
+@endphp
 
 <div class="row d-none d-md-flex mb-1">
     <div class="col flowbox">
         <div class="form-group {{ $no_filters ? 'w-100' : 'mainflow' }} d-none d-xl-block">
-            <input type="text" class="form-control list-text-filter" data-list-target="#{{ $identifier }}" placeholder="{{ _i('Filtra') }}">
+            <input type="text" class="form-control list-text-filter" data-list-target="#{{ $identifier }}" placeholder="{{ __('generic.do_filter') }}">
         </div>
 
         @if(!empty($sorting_rules))
             <div class="dropdown loadablelist-sorter" data-list-target="#{{ $identifier }}">
                 <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
-                    {{ _i('Ordina Per') }} <span class="caret"></span>
+                    {{ __('generic.sort_by') }} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     @foreach($sorting_rules as $attribute => $info)

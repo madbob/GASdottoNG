@@ -39,7 +39,7 @@ function formatDateToComponent($component, $params)
     $formatted_value = $formatted_value[0] ?? '';
 
     $params['value'] = printableDate($formatted_value);
-    if ($params['value'] == _i('Mai') && $mandatory) {
+    if ($params['value'] == __('generic.never') && $mandatory) {
         $params['value'] = '';
     }
 

@@ -3,7 +3,7 @@
         <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
 
         <p>
-            {{ _i("Ci sono ordini non ancora consegnati ed archiviati per questo fornitore, che non hanno attivato il modificatore appena modificato. Seleziona gli ordini per i quali vuoi attivare questo modificatore (o clicca 'Chiudi' per non attivarlo su nessuno).") }}
+            {{ __('movements.help.opened_orders_with_modifier') }}
         </p>
         <p>
             @foreach($modifier->target->active_orders as $order)

@@ -25,7 +25,7 @@ $grand_total = 0;
 
         @if($contacts->isEmpty() == false)
             <x-larastrap::suggestion>
-                {{ _i('Per segnalazioni relative a questo ordine si può contattare:') }}
+                {{ __('orders.help.contacts_notice') }}
                 <ul>
                     @foreach($contacts as $contact)
                         <li>{{ $contact->printableName() }} - {{ join(', ', App\Formatters\User::format($contact, ['email', 'phone', 'mobile'])) }}</li>
@@ -43,7 +43,7 @@ $grand_total = 0;
             <thead>
                 <tr>
                     <th class="text-end">
-                        {{ _i('Totale Complessivo') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}
+                        {{ __('orders.totals.complete') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currentgas->currency }}
                     </th>
                 </tr>
             </thead>

@@ -1,6 +1,17 @@
 <?php
 
 return array (
+  'import' => 
+  array (
+    'csv' => '',
+    'gdxp' => '',
+  ),
+  'help' => 
+  array (
+    'csv_instructions' => '',
+    'selection_instructions' => '',
+    'img_csv_instructions' => '',
+  ),
   'help_csv_libreoffice' => '',
   'data' => 
   array (
@@ -17,7 +28,10 @@ return array (
     'products' => '',
     'split_friends' => '',
   ),
-  'do_pdf' => '',
+  'export' => 
+  array (
+    'database' => '',
+  ),
   'help_split_friends' => '',
   'help_aggregate_export_summary' => '',
   'flags' => 
@@ -25,4 +39,6 @@ return array (
     'include_unbooked' => '',
   ),
   'do_balance' => '',
+  'movements_heading' => '',
+  'accepted_columns' => '',
 );

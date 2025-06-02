@@ -30,7 +30,7 @@
 
                 <div class="row">
                     <div class="col-12 order-2 order-md-1 col-md-6">
-                        <x-filler :data-action="route('movements.index')" data-fill-target="#movements-in-range" :download-buttons="[['link' => route('movements.index', ['format' => 'csv']), 'label' => __('generic.exports.csv')], ['link' => route('movements.index', ['format' => 'pdf']), 'label' => __('export.do_pdf')], ['link' => route('movements.index', ['format' => 'balance']), 'label' => __('export.do_balance')]]">
+                        <x-filler :data-action="route('movements.index')" data-fill-target="#movements-in-range" :download-buttons="[['link' => route('movements.index', ['format' => 'csv']), 'label' => __('generic.exports.csv')], ['link' => route('movements.index', ['format' => 'pdf']), 'label' => __('generic.exports.pdf')], ['link' => route('movements.index', ['format' => 'balance']), 'label' => __('export.do_balance')]]">
                             @include('commons.genericdaterange', ['start_date' => strtotime('-1 weeks')])
                             @include('commons.selectmovementtypefield', ['show_all' => true])
                             <x-larastrap::radios name="method" tlabel="generic.payment" :options="paymentsSimple()" value="none" />

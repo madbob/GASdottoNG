@@ -15,6 +15,8 @@ return array (
   'index_column' => 'Kolom',
   'column' => 'Kolom',
   'imported_suppliers' => 'Geïmporteerde leveranciers',
+  'updated' => '',
+  'last_read' => '',
   'error_main' => 'Fout in het laden of het lezen van het bestand.',
   'error_retry' => 'Probeer het opnieuw of leg het probleem voor aan de ontwikkelaars van GASdotto: info@madbob.org',
   'existing_products_action' => 'Geïmporteerde producten',

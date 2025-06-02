@@ -1,6 +1,20 @@
 <?php
 
 return array (
+  'help' => 
+  array (
+    'suspended' => '',
+    'waiting_approval' => '',
+    'promote_friend' => '',
+    'promote_friend_enforce_mail' => '',
+    'reassign_friend' => '',
+    'notifications_instructions' => '',
+    'fee' => '',
+    'deposit' => '',
+    'satispay' => '',
+    'remove_profile' => '',
+    'remove_profile_credit_notice' => '',
+  ),
   'firstname' => 'Navn',
   'lastname' => '',
   'change_friend' => '',
@@ -28,29 +42,25 @@ return array (
     'deleted' => '',
   ),
   'friend' => '',
+  'removed_user' => '',
+  'booking_friend_header' => '',
+  'pending_deliveries' => '',
   'personal_data' => '',
-  'help' => 
-  array (
-    'waiting_approval' => '',
-    'promote_friend' => '',
-    'promote_friend_enforce_mail' => '',
-    'change_friend' => '',
-    'notifications_instructions' => '',
-    'fee' => '',
-    'deposit' => '',
-    'satispay' => '',
-    'remove_profile' => '',
-    'remove_profile_credit_notice' => '',
-  ),
   'approve' => '',
   'do_not_approve' => '',
   'family_members' => '',
   'promote_friend' => '',
+  'reassign_friend' => '',
   'change_friend_assignee' => '',
   'fee' => '',
   'deposit' => '',
   'fees_status' => 'Tilstand',
   'all_ceased' => '',
+  'notices' => 
+  array (
+    'new_user' => '',
+    'pending_approval' => '',
+  ),
   'last_fee' => '',
   'fees' => 
   array (

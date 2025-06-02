@@ -2,7 +2,7 @@
 	<thead>
 		<th scope="col" style="width:50%; text-align: left">{{ __('products.name') }}</th>
 		<th scope="col" style="width:25%; text-align: left">{{ __('generic.quantity') }}</th>
-		<th scope="col" style="width:25%; text-align: left">{{ _i('Prezzo') }}</th>
+		<th scope="col" style="width:25%; text-align: left">{{ __('generic.price') }}</th>
 	</thead>
 
 	<tbody>

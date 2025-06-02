@@ -25,10 +25,10 @@
                 {{ trim($gas_data['address']) }}<br>
             @endif
             @if(!empty($gas_data['taxcode']))
-                {{ _i('C.F. %s', trim($gas_data['taxcode'])) }}<br>
+                {{ __('user.taxcode') }} {{ trim($gas_data['taxcode']) }}<br>
             @endif
             @if(!empty($gas_data['vat']))
-                {{ _i('P.IVA %s', trim($gas_data['vat'])) }}
+                {{ __('supplier.vat') }} {{ trim($gas_data['vat']) }}<br>
             @endif
         </p>
 
@@ -54,7 +54,7 @@
                     <th scope="col" width="55%"><strong>{{ __('products.name') }}</strong></th>
                     <th scope="col" width="15%"><strong>{{ __('generic.quantity') }}</strong></th>
                     <th scope="col" width="15%"><strong>{{ __('generic.measure') }}</strong></th>
-                    <th scope="col" width="15%"><strong>{{ _i('Prezzo') }}</strong></th>
+                    <th scope="col" width="15%"><strong>{{ __('generic.price') }}</strong></th>
                 </tr>
             </thead>
             <tbody>
@@ -116,7 +116,7 @@
             <tbody>
                 @foreach($rates as $id => $total)
                     <tr>
-                        <td width="85%">{{ _i('IVA %s%%', App\VatRate::findOrFail($id)->percentage) }}</td>
+                        <td width="85%">{{ __('generic.vat') }} {{ App\VatRate::findOrFail($id)->percentage) }}%</td>
                         <td width="15%">{{ printablePriceCurrency($total) }}</td>
                     </tr>
                 @endforeach

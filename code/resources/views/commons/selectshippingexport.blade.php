@@ -20,10 +20,10 @@ if (empty($all) == false) {
 					$options['all_by_name'] = __('generic.all');
 					break;
 				case 'all_by_name':
-					$options['all_by_name'] = _i('Utente');
+					$options['all_by_name'] = __('user.name');
 					break;
 				case 'all_by_place':
-					$options['all_by_place'] = _i('Aggregazioni/Gruppi');
+					$options['all_by_place'] = __('generic.aggregations_and_groups');
 					break;
                 case 'specific':
                     foreach($all as $meta) {
@@ -36,7 +36,7 @@ if (empty($all) == false) {
 			}
 		}
 
-		$actual_groups[_i('Ordina per')] = (object) [
+		$actual_groups[__('generic.sort_by')] = (object) [
 			'id' => 'master_sorting',
 			'options' => $options,
 			'help' => '',
@@ -51,10 +51,10 @@ if (empty($all) == false) {
 					$options['all_by_name'] = __('generic.all');
 					break;
 				case 'all_by_name':
-					$options['all_by_name'] = _i('Tutti (ordinati per utente)');
+					$options['all_by_name'] = __('generic.sortings.all_by_user');
 					break;
 				case 'all_by_place':
-					$options['all_by_place'] = _i('Tutti (ordinati per gruppo)');
+					$options['all_by_place'] = __('generic.sortings.all_by_group');
 					break;
 			}
 		}
@@ -83,7 +83,7 @@ if (empty($all) == false) {
 			$test_no_shipping = count($test_no_shipping);
 
 			if ($test_no_shipping > 0) {
-				$shipping_warning = _i('Attenzione: %d utenti non hanno un gruppi assegnato per %s', [$test_no_shipping, $meta->group->printableName()]);
+				$shipping_warning = __('generic.help.unassigned_group_warning', ['count' => $test_no_shipping, 'group' => $meta->group->printableName()]);
 			}
 		}
 

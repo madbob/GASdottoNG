@@ -34,20 +34,20 @@ foreach(App\Currency::enabled() as $curr) {
         <table class="table" data-classes="table table-no-bordered">
             <thead>
                 <tr>
-                    <th scope="col">{{ _i('Data Registrazione') }}</th>
-                    <th scope="col">{{ _i('Data Movimento') }}</th>
+                    <th scope="col">{{ __('movements.registration_date') }}</th>
+                    <th scope="col">{{ __('movements.execution_date') }}</th>
                     <th scope="col">{{ __('generic.type') }}</th>
                     <th scope="col">{{ __('generic.payment') }}</th>
                     @if($exclude_sender == false)
-                        <th scope="col">{{ _i('Pagante') }}</th>
+                        <th scope="col">{{ __('movements.paying') }}</th>
                     @endif
                     @if($exclude_target == false)
-                        <th scope="col">{{ _i('Pagato') }}</th>
+                        <th scope="col">{{ __('movements.payed') }}</th>
                     @endif
                     <th scope="col">{{ __('generic.value') }}</th>
                     <th scope="col">{{ __('generic.notes') }}</th>
                     @if(Gate::check('movements.admin', $currentgas))
-                        <th scope="col">{{ _i('Modifica') }}</th>
+                        <th scope="col">{{ __('generic.change') }}</th>
                     @endif
                 </tr>
             </thead>

@@ -80,4 +80,10 @@ return array (
     ),
     'template' => 'Wenn :value :target :scale',
   ),
+  'all' => 'Ändern',
+  'name' => 'Ändern',
+  'help' => 
+  array (
+    'no_modifiers_for_element' => '',
+  ),
 );

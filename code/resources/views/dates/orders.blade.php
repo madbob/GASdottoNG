@@ -37,26 +37,26 @@
                             ]
                         ],
                         [
-                            'label' => _i('Ricorrenza'),
+                            'label' => __('notifications.recurrence'),
                             'field' => 'recurring',
                             'type' => 'periodic',
                             'width' => 20,
                         ],
                         [
-                            'label' => _i('Azione'),
+                            'label' => __('generic.to_do'),
                             'field' => 'action',
                             'type' => 'select',
                             'width' => 9,
                             'extra' => [
                                 'options' => [
-                                    'open' => _i('Apertura'),
-                                    'close' => _i('Chiusura'),
-                                    'ship' => _i('Consegna'),
+                                    'open' => __('generic.opening'),
+                                    'close' => __('generic.closing'),
+                                    'ship' => __('orders.do_delivery'),
                                 ]
                             ]
                         ],
                         [
-                            'label' => _i('Riferimento data'),
+                            'label' => __('notifications.date_reference'),
                             'field' => 'first_offset',
                             'type' => 'number',
                             'width' => 18,
@@ -64,17 +64,17 @@
                                 'textprepend' => 'X',
                                 'textappend' => 'X',
                                 'attributes' => [
-                                    'data-prelabel-open' => _('chiudi'),
-                                    'data-postlabel-open' => _('giorni dopo'),
-                                    'data-prelabel-close' => _('apri'),
-                                    'data-postlabel-close' => _('giorni prima'),
-                                    'data-prelabel-ship' => _('apri'),
-                                    'data-postlabel-ship' => _('giorni prima'),
+                                    'data-prelabel-open' => __('orders.automatic_labels.close'),
+                                    'data-postlabel-open' => __('orders.automatic_labels.days_after'),
+                                    'data-prelabel-close' => __('orders.automatic_labels.open'),
+                                    'data-postlabel-close' => __('orders.automatic_labels.days_before'),
+                                    'data-prelabel-ship' => __('orders.automatic_labels.open'),
+                                    'data-postlabel-ship' => __('orders.automatic_labels.days_before'),
                                 ]
                             ]
                         ],
                         [
-                            'label' => _i('Riferimento data'),
+                            'label' => __('notifications.date_reference'),
                             'field' => 'second_offset',
                             'type' => 'number',
                             'width' => 18,
@@ -82,12 +82,12 @@
                                 'textprepend' => 'X',
                                 'textappend' => 'X',
 								'attributes' => [
-                                    'data-prelabel-open' => _('consegna'),
-                                    'data-postlabel-open' => _('giorni dopo'),
-                                    'data-prelabel-close' => _('consegna'),
-                                    'data-postlabel-close' => _('giorni dopo'),
-                                    'data-prelabel-ship' => _('chiudi'),
-                                    'data-postlabel-ship' => _('giorni prima'),
+                                    'data-prelabel-open' => __('orders.automatic_labels.delivery'),
+                                    'data-postlabel-open' => __('orders.automatic_labels.days_after'),
+                                    'data-prelabel-close' => __('orders.automatic_labels.delivery'),
+                                    'data-postlabel-close' => __('orders.automatic_labels.days_after'),
+                                    'data-prelabel-ship' => __('orders.automatic_labels.close'),
+                                    'data-postlabel-ship' => __('orders.automatic_labels.days_before'),
 								]
                             ]
                         ],
@@ -101,11 +101,11 @@
                             ]
                         ],
                         [
-                            'label' => _i('Sospendi'),
+                            'label' => __('generic.suspend'),
                             'field' => 'suspend',
                             'type' => 'check',
                             'width' => 5,
-                            'help' => _i("Se un ordine automatico viene sospeso, le prossime aperture verranno ignorate. Usa questa opzione per gestire i periodi di inattività del GAS, ad esempio durante le festività."),
+                            'help' => __('notifications.help.suspend'),
                             'extra' => [
                                 'reviewCallback' => function($component, $params) {
                                     $params['hidden'] = $params['obj'] ? false : true;

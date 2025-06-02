@@ -314,8 +314,7 @@ class Product extends Model
         if ($gas->manual_products_sorting) {
             $ret = [
                 'sorting' => (object) [
-                    'label' => _i('Ordinamento'),
-                    'help' => _i('Ordinamento del prodotto'),
+                    'label' => __('products.sorting'),
                     'width' => 5,
                 ],
             ];
@@ -323,8 +322,7 @@ class Product extends Model
 
         $ret = $ret + [
             'selection' => (object) [
-                'label' => _i('Selezione'),
-                'help' => _i('Per selezionare il prodotto e compiere operazioni di gruppo'),
+                'label' => __('generic.selection'),
                 'width' => 5,
             ],
             'name' => (object) [
@@ -345,7 +343,7 @@ class Product extends Model
             ],
             'max_available' => (object) [
                 'label' => __('products.available'),
-                'help' => _i('Quantità massima di prodotto che complessivamente può essere prenotata in un ordine'),
+                'help' => __('products.help.available_explain'),
                 'width' => 10,
             ],
             'active' => (object) [

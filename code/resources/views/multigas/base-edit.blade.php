@@ -1,10 +1,10 @@
-<x-larastrap::text name="name" :label="_i('Nome del nuovo GAS')" required />
+<x-larastrap::text name="name" tlabel="generic.multigas_name" required />
 
 <hr>
 
 <x-larastrap::field label="">
     <div class="form-text">
-        {{ _i('Ogni GAS ha i suoi utenti, e qui puoi definire le credenziali per il primo utente del nuovo GAS. Gli verrà assegnato il "Ruolo Amministratore Multi-GAS" definito nel pannello delle configurazioni dei permessi.') }}
+        {{ __('generic.help.multigas_admin_instructions') }}
     </div>
 </x-larastrap::field>
 

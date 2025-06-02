@@ -1,11 +1,11 @@
 <x-larastrap::accordion always_open="true">
-    <x-larastrap::accordionitem :label="_i('Aggregazioni')">
+    <x-larastrap::accordionitem tlabel="aggregations.all">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
                     'template' => 'groups.base-edit',
                     'typename' => 'group',
-                    'typename_readable' => _i('Aggregazione'),
+                    'typename_readable' => __('aggregations.name'),
                     'targeturl' => 'groups'
                 ])
             </div>
@@ -16,20 +16,20 @@
                 @include('commons.loadablelist', [
                     'identifier' => 'group-list',
                     'items' => App\Group::orderBy('name', 'asc')->get(),
-                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi sarà possibile dividere logicamente gli utenti in molteplici aggregazioni, in modo da separare le prenotazioni, organizzare la logistica delle consegne, applicare modificatori speciali e molto altro.')
+                    'empty_message' => __('aggregations.empty_list'),
                 ])
             </div>
         </div>
     </x-larastrap::accordionitem>
 
-    <x-larastrap::accordionitem :label="_i('File Condivisi')">
+    <x-larastrap::accordionitem tlabel="generic.shared_files">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
                     'template' => 'attachment.base-edit',
                     'typename' => 'attachment',
                     'target_update' => 'attachment-list-' . $gas->id,
-                    'typename_readable' => _i('File'),
+                    'typename_readable' => __('generic.file'),
                     'targeturl' => 'attachments',
                     'extra' => [
                         'target_type' => 'App\Gas',
@@ -44,13 +44,13 @@
                 @include('commons.loadablelist', [
                     'identifier' => 'attachment-list-' . $gas->id,
                     'items' => $gas->attachments,
-                    'empty_message' => _i('Non ci sono elementi da visualizzare.<br/>I files qui aggiunti saranno accessibili a tutti gli utenti dalla dashboard: utile per condividere documenti di interesse comune.')
+                    'empty_message' => __('gas.help.empty_list_shared_files'),
                 ])
             </div>
         </div>
     </x-larastrap::accordionitem>
 
-    <x-larastrap::accordionitem :label="_i('Aliquote IVA')">
+    <x-larastrap::accordionitem tlabel="movements.vat_rates">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
@@ -68,19 +68,19 @@
                 @include('commons.loadablelist', [
                     'identifier' => 'vatrate-list',
                     'items' => App\VatRate::orderBy('name', 'asc')->get(),
-                    'empty_message' => _i("Non ci sono elementi da visualizzare.<br/>Le aliquote potranno essere assegnate ai diversi prodotti nei listini dei fornitori, e vengono usate per scorporare automaticamente l'IVA dai totali delle fatture caricate in <strong>Contabilità -> Fatture</strong>.")
+                    'empty_message' => __('movements.help.empty_list_vat_rates'),
                 ])
             </div>
         </div>
     </x-larastrap::accordionitem>
 
-    <x-larastrap::accordionitem :label="_i('Modificatori')">
+    <x-larastrap::accordionitem tlabel="modifiers.all">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
                     'template' => 'modifiertype.base-edit',
                     'typename' => 'modtype',
-                    'typename_readable' => _i('Modificatore'),
+                    'typename_readable' => __('modifiers.name'),
                     'targeturl' => 'modtypes',
                     'autoread' => true,
                 ])
@@ -97,21 +97,21 @@
         </div>
     </x-larastrap::accordionitem>
 
-    <x-larastrap::accordionitem :label="_i('Log')">
+    <x-larastrap::accordionitem tlabel="generic.logs">
         <?php $logs = App\InnerLog::orderBy('created_at', 'desc')->take(20)->get() ?>
 
         <div class="row">
             <div class="col">
                 @if($logs->isEmpty())
                     <x-larastrap::suggestion>
-                        {{ _i('Non ci sono log.') }}
+                        {{ __('generic.empty_list') }}
                     </x-larastrap::suggestion>
                 @else
                     <table class="table">
                         <thead>
                             <tr>
                                 <th scope="col" width="30%">{{ __('generic.date') }}</th>
-                                <th scope="col" width="70%">{{ _i('Messaggio') }}</th>
+                                <th scope="col" width="70%">{{ __('generic.message') }}</th>
                             </tr>
                         </thead>
                         <tbody>

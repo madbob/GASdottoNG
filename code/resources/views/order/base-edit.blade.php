@@ -3,10 +3,10 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
 @endphp
 
 @if($currentuser->gas->hasFeature('auto_aggregates'))
-    <x-larastrap::field tlabel="orders.supplier" :pophelp="_i('Selezionando diversi fornitori, verranno generati i rispettivi ordini e saranno automaticamente aggregati. Questa funzione viene attivata se nel database sono presenti almeno 3 aggregati con almeno %d ordini ciascuno.', aggregatesConvenienceLimit())">
+    <x-larastrap::field tlabel="orders.supplier" :pophelp="__('orders.help.supplier_multi_select', ['theshold' => aggregatesConvenienceLimit()])">
         @include('commons.manyrows', [
             'contents' => $order ? collect([$order]) : new Illuminate\Support\Collection(),
-            'new_label' => _i('Aggiungi'),
+            'new_label' => __('generic.add_new'),
             'columns' => [
                 [
                     'label' => __('orders.supplier'),
@@ -23,9 +23,9 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
     <x-larastrap::select-model name="supplier" tlabel="orders.supplier" :options="$suppliers" required />
 @endif
 
-<x-larastrap::textarea name="comment" :label="_i('Commento')" maxlength="190" rows="2" :pophelp="_i('Eventuale testo informativo da visualizzare nel titolo dell\'ordine. Se più lungo di %d caratteri, il testo viene invece incluso nel pannello delle relative prenotazioni.', [longCommentLimit()])" />
-<x-larastrap::datepicker name="start" tlabel="orders.dates.start" defaults_now="true" required :pophelp="_i('Impostando qui una data futura, e lo stato In Sospeso, questo ordine sarà automaticamente aperto nella data specificata')" />
-<x-larastrap::datepicker name="end" tlabel="orders.dates.end" defaults_now="true" required data-enforce-after=".date[name=start]" :pophelp="_i('Data di chiusura dell\'ordine. Al termine del giorno qui indicato, l\'ordine sarà automaticamente impostato nello stato Prenotazioni Chiuse')" />
+<x-larastrap::textarea name="comment" tlabel="generic.comment" maxlength="190" rows="2" :pophelp="__('orders.help.comment', ['limit' => longCommentLimit()])" />
+<x-larastrap::datepicker name="start" tlabel="orders.dates.start" defaults_now="true" required tpophelp="orders.help.start" />
+<x-larastrap::datepicker name="end" tlabel="orders.dates.end" defaults_now="true" required data-enforce-after=".date[name=start]" tpophelp="orders.help.end" />
 <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" defaults_now="true" required data-enforce-after=".date[name=end]" />
 
 <x-larastrap::field>

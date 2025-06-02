@@ -98,6 +98,6 @@
     @endif
 @else
     <div class="alert alert-danger">
-        {{ _i('Questo pannello sarà attivo quando le prenotazioni saranno chiuse') }}
+        {{ __('orders.help.waiting_closing_for_deliveries') }}
     </div>
 @endif

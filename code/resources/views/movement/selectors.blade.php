@@ -23,6 +23,6 @@
     @include('commons.pricecurrency', ['allow_negative' => $allow_negative])
 @endif
 
-<x-larastrap::radios name="method" :label="_i('Metodo')" :options="$payments" :value="$default_method" required />
+<x-larastrap::radios name="method" tlabel="generic.method" :options="$payments" :value="$default_method" required />
 <x-larastrap::text name="identifier" tlabel="generic.identifier" />
 <x-larastrap::textarea name="notes" tlabel="generic.notes" :value="$default_notes" />

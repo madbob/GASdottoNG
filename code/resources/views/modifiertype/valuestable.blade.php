@@ -54,7 +54,7 @@ $total = 0;
             <tr>
                 <td colspan="4">
                     <x-larastrap::suggestion>
-                        {{ _i('Il modificatore non è stato applicato in questo intervallo di date.') }}
+                        {{ __('movements.help.modifier_not_applied_in_time_range') }}
                     </x-larastrap::suggestion>
                 </td>
             </tr>

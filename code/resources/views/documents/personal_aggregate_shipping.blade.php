@@ -57,9 +57,9 @@
 
                             <tr>
                                 <td width="40%"><strong>{{ __('products.name') }}</strong></td>
-                                <td width="15%"><strong>{{ _i('Prenotato') }}</strong></td>
+                                <td width="15%"><strong>{{ __('orders.booking.statuses.booked') }}</strong></td>
                                 <td width="15%">&nbsp;</td>
-                                <td width="15%"><strong>{{ _i('Consegnato') }}</strong></td>
+                                <td width="15%"><strong>{{ __('orders.booking.statuses.shipped') }}</strong></td>
                                 <td width="15%">&nbsp;</td>
                             </tr>
 
@@ -104,10 +104,10 @@
                     @endforeach
 
                     <tr>
-                        <th scope="row" colspan="5"><strong>{{ _i('Totale Prenotato') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
+                        <th scope="row" colspan="5"><strong>{{ __('orders.totals.booked') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
                     </tr>
                     <tr>
-                        <th scope="row" colspan="5"><strong>{{ _i('Totale Consegnato') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
+                        <th scope="row" colspan="5"><strong>{{ __('orders.totals.shipped') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
                     </tr>
                 </tbody>
             </table>
@@ -149,9 +149,9 @@
 
                                 <tr>
                                     <td width="40%"><strong>{{ __('products.name') }}</strong></td>
-                                    <td width="15%"><strong>{{ _i('Prenotato') }}</strong></td>
+                                    <td width="15%"><strong>{{ __('orders.booking.statuses.booked') }}</strong></td>
                                     <td width="15%">&nbsp;</td>
-                                    <td width="15%"><strong>{{ _i('Consegnato') }}</strong></td>
+                                    <td width="15%"><strong>{{ __('orders.booking.statuses.shipped') }}</strong></td>
                                     <td width="15%">&nbsp;</td>
                                 </tr>
 
@@ -190,10 +190,10 @@
                         @endforeach
 
                         <tr>
-                            <th scope="row" colspan="5"><strong>{{ _i('Totale Prenotato') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
+                            <th scope="row" colspan="5"><strong>{{ __('orders.totals.booked') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
                         </tr>
                         <tr>
-                            <th scope="row" colspan="5"><strong>{{ _i('Totale Consegnato') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
+                            <th scope="row" colspan="5"><strong>{{ __('orders.totals.shipped') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
                         </tr>
                     </tbody>
                 </table>

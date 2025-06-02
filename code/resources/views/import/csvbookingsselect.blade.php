@@ -1,11 +1,14 @@
-<x-larastrap::modal :title="_i('Importa consegne')" size="fullscreen">
+<x-larastrap::modal size="fullscreen">
     <div class="wizard_page">
         <x-larastrap::wizardform :action="url('import/csv?type=deliveries&step=run')">
 			<input type="hidden" name="aggregate_id" value="{{ $aggregate_id }}">
 			<input type="hidden" name="order_id" value="{{ $order_id }}">
 			<input type="hidden" name="data" value="{{ json_encode($data) }}">
 
-			<x-larastrap::radios name="action" :label="_i('Comportamento')" :options="['save' => _i('Assegna le quantità come salvate ma non chiudere le consegne'), 'close' => _i('Marca le prenotazioni come consegnate e genera i movimenti contabili di pagamento')]" value="save" />
+			<x-larastrap::radios name="action" tlabel="generic.behavior" :options="[
+                'save' => __('orders.importing.save'),
+                'close' => __('orders.importing.close')
+            ]" value="save" />
 
             @include('import.errors', ['errors' => $errors])
 

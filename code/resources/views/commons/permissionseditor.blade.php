@@ -4,7 +4,7 @@ permessi, cfr. permissions.supplier-edit
 -->
 <div class="card mt-4" id="permissions-list-{{ sanitizeId($object->id) }}" data-reload-url="{{ route('roles.suppliertable', $object->id) }}">
     <div class="card-header">
-        {{ _i('Permessi') }}
+        {{ __('permissions.name') }}
     </div>
     <div class="card-body">
         @foreach(rolesByClass(get_class($object)) as $role)
@@ -26,7 +26,7 @@ permessi, cfr. permissions.supplier-edit
         @endforeach
 
         @if($editable && (Gate::check('supplier.modify', $object) || Gate::check('gas.permissions', $currentgas)))
-            <x-larastrap::ambutton :label="_i('Edita Ruoli')" :data-modal-url="url('/roles/supplier/' . $object->id)" classes="float-end" />
+            <x-larastrap::ambutton tlabel="permissions.change_roles" :data-modal-url="url('/roles/supplier/' . $object->id)" classes="float-end" />
         @endif
     </div>
 </div>

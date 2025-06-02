@@ -15,8 +15,10 @@ return array (
   'max_quantity' => 'Aanbevolen maximum',
   'available' => 'beschikbaar',
   'list' => 'Producten',
+  'sorting' => '',
   'help' => 
   array (
+    'available_explain' => '',
     'bookable' => '',
     'pending_orders_change_price' => '',
     'pending_orders_change_price_second' => '',

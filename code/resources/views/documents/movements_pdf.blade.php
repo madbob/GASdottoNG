@@ -9,19 +9,19 @@
     </head>
 
     <body>
-        <h3>{{ _i('Esportazione Movimenti del GAS al %s', [date('d/m/Y')]) }}</h3>
+        <h3>{{ __('export.movements_heading', ['date' => date('d/m/Y')]) }}</h3>
 
         <hr/>
 
         <table border="1" style="width: 100%" cellpadding="5">
             <thead>
                 <tr>
-                    <th scope="col">{{ _i('Data Registrazione') }}</th>
-                    <th scope="col">{{ _i('Data Movimento') }}</th>
+                    <th scope="col">{{ __('movements.registration_date') }}</th>
+                    <th scope="col">{{ __('movements.execution_date') }}</th>
                     <th scope="col">{{ __('generic.type') }}</th>
                     <th scope="col">{{ __('generic.payment') }}</th>
-                    <th scope="col">{{ _i('Pagante') }}</th>
-                    <th scope="col">{{ _i('Pagato') }}</th>
+                    <th scope="col">{{ __('movements.paying') }}</th>
+                    <th scope="col">{{ __('movements.payed') }}</th>
                     <th scope="col">{{ __('generic.value') }}</th>
                     <th scope="col">{{ __('generic.notes') }}</th>
                 </tr>

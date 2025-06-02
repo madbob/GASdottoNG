@@ -114,12 +114,12 @@ class Supplier extends Model
     protected function defaultAttachments()
     {
         $cataloguepdf = new Attachment();
-        $cataloguepdf->name = _i('Listino PDF (autogenerato)');
+        $cataloguepdf->name = __('supplier.products_list.pdf');
         $cataloguepdf->url = route('suppliers.catalogue', ['id' => $this->id, 'format' => 'pdf']);
         $cataloguepdf->internal = true;
 
         $cataloguecsv = new Attachment();
-        $cataloguecsv->name = _i('Listino CSV (autogenerato)');
+        $cataloguecsv->name = __('supplier.products_list.csv');
         $cataloguecsv->url = route('suppliers.catalogue', ['id' => $this->id, 'format' => 'csv']);
         $cataloguecsv->internal = true;
 
@@ -197,7 +197,7 @@ class Supplier extends Model
     public function balanceFields()
     {
         return [
-            'bank' => _i('Ordini'),
+            'bank' => __('orders.all'),
         ];
     }
 

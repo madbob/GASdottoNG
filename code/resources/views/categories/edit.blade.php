@@ -25,13 +25,11 @@ function categoryDescent($category, $toplevel)
 
 ?>
 
-<x-larastrap::modal :title="_i('Modifica Categorie')" classes="close-on-submit">
+<x-larastrap::modal classes="close-on-submit">
     <x-larastrap::form classes="dynamic-tree-box" method="PUT" :action="url('categories/0')">
         <div class="row">
             <div class="col">
-                <p>
-                    {{ _i("Clicca e trascina le categorie nell'elenco per ordinarle gerarchicamente.") }}
-                </p>
+                <p>{{ __('generic.help.categories_instructions') }}</p>
             </div>
         </div>
         <div class="row">
@@ -48,10 +46,10 @@ function categoryDescent($category, $toplevel)
 
         <div class="row mt-2 form-group dynamic-tree-add-row">
             <div class="col-md-10">
-                <x-larastrap::text name="new_category" squeeze :placeholder="_i('Crea Nuova Categoria')" />
+                <x-larastrap::text name="new_category" squeeze tplaceholder="generic.create" />
             </div>
             <div class="col-md-2">
-                <button class="float-end btn btn-warning dynamic-tree-add">{{ _i('Crea') }}</button>
+                <button class="float-end btn btn-warning dynamic-tree-add">{{ __('generic.create') }}</button>
             </div>
         </div>
     </x-larastrap::form>

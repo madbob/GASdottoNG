@@ -1,10 +1,10 @@
-<?php
+@php
 
 $categories = App\Category::orderBy('name', 'asc')->whereNull('parent_id')->with('children')->get();
 $measures = App\Measure::orderBy('name', 'asc')->get();
 $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
 
-?>
+@endphp
 
 <x-larastrap::modal size="fullscreen">
     <div class="wizard_page">

@@ -1,11 +1,11 @@
-<x-larastrap::accordionitem :label="_i('E-Mail')">
+<x-larastrap::accordionitem tlabel="generic.email">
     <x-larastrap::form :obj="$gas" classes="inner-form gas-editor" method="PUT" :action="route('gas.update', $gas->id)">
         <div class="row">
             <input type="hidden" name="group" value="mails">
 
             <div class="col">
                 <x-larastrap::suggestion>
-                    {{ _i('Da questa tabella puoi attivare specifiche tipologie di notifiche mail legate agli ordini, da inviare a diversi destinatari in base allo stato di ciascun ordine.') }}
+                    {{ __('orders.help.mail_order_notification') }}
                 </x-larastrap::suggestion>
 
                 <div class="table-responsive">
@@ -13,31 +13,31 @@
                         <thead>
                             <tr>
                                 <th scope="col" width="20%">&nbsp;</th>
-                                <th scope="col" width="20%">{{ _i('Aperto') }}</th>
-                                <th scope="col" width="40%">{{ _i('In Chiusura') }}</th>
-                                <th scope="col" width="20%">{{ _i('Chiuso') }}</th>
+                                <th scope="col" width="20%">{{ __('orders.statuses.open') }}</th>
+                                <th scope="col" width="40%">{{ __('orders.statuses.closing') }}</th>
+                                <th scope="col" width="20%">{{ __('orders.statuses.closed') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th scope="row">{{ _i('Utenti') }}</th>
+                                <th scope="row">{{ __('user.all') }}</th>
                                 <td>
                                     <x-larastrap::check name="notify_all_new_orders" squeeze />
-                                    <x-larastrap::pophelp :text="_i('Se questa opzione non viene abilitata, gli utenti ricevono solo le notifiche email per gli ordini dei fornitori che hanno individualmente abilitato dal proprio pannello di configurazione personale. Se viene abilitata, tutti gli utenti ricevono una notifica email ogni volta che un ordine viene aperto')" />
+                                    <x-larastrap::pophelp ttext="orders.help.target_supplier_notifications" />
                                 </td>
                                 <td>
                                     <x-larastrap::check name="enable_send_order_reminder" squeeze triggers_collapse="send_order_reminder" :value="$gas->hasFeature('send_order_reminder')" />
                                     <x-larastrap::collapse id="send_order_reminder" label_width="8" input_width="4">
-                                        <x-larastrap::number :margins="[0,0,0,0]" name="send_order_reminder" :label="_i('Quanti giorni prima?')" />
+                                        <x-larastrap::number :margins="[0,0,0,0]" name="send_order_reminder" tlabel="orders.notify_days_before" />
                                     </x-larastrap::collapse>
                                 </td>
                                 <td>
                                     <x-larastrap::check name="auto_user_order_summary" squeeze />
-                                    <x-larastrap::pophelp :text="_i('La notifica viene inviata solo agli utenti che hanno partecipato all\'ordine')" />
+                                    <x-larastrap::pophelp ttext="orders.help.notify_only_partecipants" />
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row">{{ _i('Referenti') }}</th>
+                                <th scope="row">{{ __('supplier.referents') }}</th>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
                                 <td>
@@ -52,13 +52,13 @@
 
                 <x-larastrap::suggestion>
                     <p>
-                        {{ _i('Da qui puoi modificare i testi delle mail in uscita da GASdotto. Per ogni tipologia sono previsti dei placeholders, che saranno sostituiti con gli opportuni valori al momento della generazione: per aggiungerli nei testi, usare la sintassi %[nome_placeholder]') }}
+                        {{ __('gas.help.custom_emails') }}
                     </p>
                     <p>
-                        {{ _i('Placeholder globali, che possono essere usati in tutti i messaggi:') }}
+                        {{ __('gas.help.global_placeholders') }}
                     </p>
                     <ul>
-                        <li>gas_name: {{ _i('Nome del GAS') }}</li>
+                        <li>gas_name: {{ __('gas.attribute_name') }}</li>
                     </ul>
                 </x-larastrap::suggestion>
 
@@ -80,8 +80,8 @@
                         {{ $metadata->description() }}
                     </p>
 
-                    <x-larastrap::text :name="'custom_mails_' . $identifier . '_subject'" :label="_i('Soggetto')" :value="$current_subject" />
-                    <x-larastrap::textarea :name="'custom_mails_' . $identifier . '_body'" :label="_i('Testo')" :value="$current_body" :help="$mail_help" />
+                    <x-larastrap::text :name="'custom_mails_' . $identifier . '_subject'" tlabel="generic.mailfield.subject" :value="$current_subject" />
+                    <x-larastrap::textarea :name="'custom_mails_' . $identifier . '_body'" tlabel="generic.mailfield.body" :value="$current_body" :help="$mail_help" />
 
                     <hr>
                 @endforeach

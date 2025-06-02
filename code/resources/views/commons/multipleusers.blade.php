@@ -3,7 +3,7 @@
 $selections = [];
 
 foreach(App\Role::orderBy('name', 'asc')->get() as $role) {
-    $selections['special::role::' . $role->id] = _i('Tutti gli utenti con ruolo "%s"', [$role->name]);
+    $selections['special::role::' . $role->id] = __('notifications.global_filter.roles', ['role' => $role->name]);
 }
 
 $aggregates = $currentgas->aggregates()->with('orders')->whereHas('orders', function($query) {
@@ -13,7 +13,7 @@ $aggregates = $currentgas->aggregates()->with('orders')->whereHas('orders', func
 foreach ($aggregates as $aggregate) {
     foreach($aggregate->orders as $order) {
         if ($order->status != 'archived') {
-            $selections['special::order::'.$order->id] = _i("Tutti i Partecipanti all'ordine %s %s", $order->supplier->name, $order->internal_number);
+            $selections['special::order::'.$order->id] = __('notifications.global_filter.orders', ['supplier' => $order->supplier->name, 'number' => $order->internal_number]);
         }
     }
 }
@@ -31,4 +31,4 @@ else {
 
 ?>
 
-<x-larastrap::select :name="$name" :label="$label" :options="$selections" multiple :value="$selected" :help="_i('Se nessun utente viene selezionato, l\'elemento sarà visibile a tutti.')" />
+<x-larastrap::select :name="$name" :label="$label" :options="$selections" multiple :value="$selected" thelp="notifications.help.visibility_by_selection" />

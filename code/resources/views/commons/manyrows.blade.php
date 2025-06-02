@@ -1,7 +1,7 @@
-<?php
+@php
 
 if (isset($new_label) == false) {
-    $new_label = _i('Aggiungi Nuovo');
+    $new_label = __('generic.add_new');
 }
 
 if (isset($show_columns) == false) {
@@ -17,7 +17,7 @@ if (isset($extra_class)) {
     $class .= ' ' . $extra_class;
 }
 
-?>
+@endphp
 
 <table class="{{ $class }}">
     @if($show_columns == true)

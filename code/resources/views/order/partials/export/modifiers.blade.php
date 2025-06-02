@@ -13,7 +13,7 @@ foreach($modifiers as $modifier) {
 @endphp
 
 @if($modifier_export_select)
-	<x-larastrap::radios name="extra_modifiers" :label="_i('Includi tutti i modificatori')" :options="['0' => _i('No'), '1' => _i('Sì')]" value="0" :pophelp="_i('Usa questa funzione per includere o meno i modificatori che non sono destinati al fornitore. È consigliato selezionare \'No\' se il documento sarà inoltrato al fornitore, e \'Si\' se il documento viene usato per le consegne da parte degli addetti.')" />
+	<x-larastrap::radios name="extra_modifiers" tlabel="orders.include_all_modifiers" :options="['0' => __('generic.no'), '1' => __('generic.yes')]" value="0" tpophelp="orders.help.include_all_modifiers" />
 @else
 	<x-larastrap::hidden name="extra_modifiers" value="1" />
 @endif

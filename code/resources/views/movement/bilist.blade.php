@@ -9,12 +9,12 @@
                 <th scope="col">{{ __('generic.date') }}</th>
                 <th scope="col">{{ __('generic.type') }}</th>
                 <th scope="col">{{ __('user.payment_method') }}</th>
-                <th scope="col">{{ _i('Riferimento') }}</th>
-                <th scope="col">{{ _i('Credito') }}</th>
-                <th scope="col">{{ _i('Debito') }}</th>
+                <th scope="col">{{ __('generic.reference') }}</th>
+                <th scope="col">{{ __('movements.credit') }}</th>
+                <th scope="col">{{ __('movements.debit') }}</th>
                 <th scope="col">{{ __('generic.notes') }}</th>
                 @if(Gate::check('movements.admin', $currentgas))
-                    <th scope="col">{{ _i('Modifica') }}</th>
+                    <th scope="col">{{ __('generic.change') }}</th>
                 @endif
             </tr>
         </thead>

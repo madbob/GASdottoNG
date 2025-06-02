@@ -80,4 +80,10 @@ return array (
     ),
     'template' => '',
   ),
+  'all' => '',
+  'name' => '',
+  'help' => 
+  array (
+    'no_modifiers_for_element' => '',
+  ),
 );

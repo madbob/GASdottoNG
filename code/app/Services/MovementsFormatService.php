@@ -55,14 +55,14 @@ class MovementsFormatService extends BaseService
         $filename = sanitizeFilename(_i('Esportazione bilancio %s.csv', [date('d/m/Y')]));
 
         $headers = [
-            _i('Data Registrazione'),
-            _i('Data Movimento'),
+            __('movements.registration_date'),
+            __('movements.execution_date'),
             __('generic.type'),
             __('generic.payment'),
             __('generic.identifier'),
             __('generic.notes'),
-            _i('Pagante'),
-            _i('Pagato'),
+            __('movements.paying'),
+            __('movements.payed'),
         ];
 
         $balance_type = [];

@@ -1,7 +1,7 @@
-<x-larastrap::modal :title="_i('Conferma Operazione')" id="password-protection-dialog" size="md">
+<x-larastrap::modal id="password-protection-dialog" size="md">
     <x-larastrap::form method="POST" :action="url('dashboard/verify')">
         <div class="alert alert-danger">
-            {{ _i('Per confermare questa operazione devi immettere la tua password utente') }}
+            {{ __('generic.help.insert_password_notice') }}
         </div>
 
         <br/>

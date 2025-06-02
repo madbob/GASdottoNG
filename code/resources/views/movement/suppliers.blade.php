@@ -4,22 +4,22 @@
     <div class="modal-dialog modal-xl modal-fullscreen-md-down modal-dialog-scrollable">
         <div class="modal-content credits-modal">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _i('Stato Fornitori') }}</h5>
+                <h5 class="modal-title">{{ __('movements.suppliers_status') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
                 <div class="row">
                     <div class="col">
-                        <x-larastrap::field :label="_i('Saldo Attuale')">
+                        <x-larastrap::field tlabel="movements.current_balance">
                             <div class="input-group table-number-filters" data-table-target="#suppliersTable">
                                 <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" value="min" name="filter_mode">&nbsp;{{ _i('Minore di') }}
+                                    <input class="form-check-input mt-0" type="radio" value="min" name="filter_mode">&nbsp;{{ __('generic.minor_than') }}
                                 </div>
                                 <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" value="max" name="filter_mode">&nbsp;{{ _i('Maggiore di') }}
+                                    <input class="form-check-input mt-0" type="radio" value="max" name="filter_mode">&nbsp;{{ __('generic.major_than') }}
                                 </div>
-                                <input type="number" class="form-control table-number-filter" placeholder="{{ _i('Filtra Credito') }}">
+                                <input type="number" class="form-control table-number-filter" placeholder="{{ __('generic.do_filter') }}">
                                 <div class="input-group-text">
                                     {{ defaultCurrency()->symbol }}
                                 </div>
@@ -41,7 +41,7 @@
 										<th scope="col" width="50%">{{ __('generic.name') }}</th>
 
 										@foreach($currencies as $curr)
-											<th scope="col" width="{{ round(50 / $currencies->count(), 2) }}%">{{ _i('Saldo Attuale') }}</th>
+											<th scope="col" width="{{ round(50 / $currencies->count(), 2) }}%">{{ __('movements.current_balance') }}</th>
 										@endforeach
 									</tr>
 								</thead>
@@ -73,13 +73,13 @@
                 </form>
 
                 @if($currentgas->hasFeature('integralces'))
-                    <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#exportIntegralCES">{{ _i('Esporta IntegralCES') }}<span class="caret"></span></a>
+                    <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#exportIntegralCES">{{ __('generic.exports.integralces') }}<span class="caret"></span></a>
 
                     <div class="collapse well" id="exportIntegralCES">
                         <form class="form-horizontal inner-form" action="{{ url('movements/document/suppliers/integralces?download=1') }}" method="GET">
                             <input type="hidden" name="pre-saved-function" value="formToDownload">
-                            <x-larastrap::text name="body" :label="_i('Causale')" :value="_i('Versamento GAS')" />
-                            <button type="submit" class="btn btn-success">{{ _i('Esporta IntegralCES') }}</button>
+                            <x-larastrap::text name="body" tlabel="movements.causal" :value="__('movements.generic_causal')" />
+                            <button type="submit" class="btn btn-success">{{ __('generic.exports.integralces') }}</button>
                         </form>
                     </div>
                 @endif

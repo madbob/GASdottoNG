@@ -1,5 +1,5 @@
 <p>
-    {{ _i('Nuovo utente registrato su %s:', $user->gas->name) }}
+    {{ __('user.notices.new_user', ['gasname' => $user->gas->name]) }}
 </p>
 <p>
     {{ $user->printableName() }}<br>
@@ -12,7 +12,7 @@
 
 @if($user->pending)
     <p>
-        {{ _i('Il nuovo utente è in attesa di revisione: consulta il pannello di amministrazione per approvarlo o eliminarlo.') }}<br>
+        {{ __('user.notices.pending_approval') }}<br>
         {{ route('users.index') }}
     </p>
 @endif

@@ -25,7 +25,7 @@ foreach($classes as $class => $name) {
         <div class="row mb-4">
             <div class="col">
                 <div class="alert alert-danger">
-                    {{ _i('Questo è un tipo di movimento contabile indispensabile per il funzionamento del sistema: non può essere eliminato e può essere modificato solo parzialmente.') }}
+                    {{ __('movements.help.system_type_notice') }}
                 </div>
             </div>
         </div>
@@ -43,16 +43,16 @@ foreach($classes as $class => $name) {
         <div class="col-12 col-md-6">
             @if($type->system)
                 <x-larastrap::text name="name" tlabel="generic.notes" required />
-                <x-larastrap::check name="allow_negative" :label="_i('Accetta Valori Negativi')" :pophelp="_i('Se disabilitato, impedisce di immettere un ammontare negativo per il movimento contabile')" />
-                <x-larastrap::price name="fixed_value" :label="_i('Valore Fisso')" disabled readonly />
-                <x-larastrap::select name="sender_type" :label="_i('Pagante')" :options="$target_classes" disabled readonly />
-                <x-larastrap::select name="target_type" :label="_i('Pagato')" :options="$target_classes" disabled readonly />
+                <x-larastrap::check name="allow_negative" tlabel="movements.accepts_negative_value" tpophelp="movements.help.accepts_negative_value" />
+                <x-larastrap::price name="fixed_value" tlabel="movements.fixed_value" disabled readonly />
+                <x-larastrap::select name="sender_type" tlabel="movements.paying" :options="$target_classes" disabled readonly />
+                <x-larastrap::select name="target_type" tlabel="movements.payed" :options="$target_classes" disabled readonly />
             @else
                 @include('movementtypes.base-edit', ['movementtype' => $type])
             @endif
         </div>
         <div class="col-12 col-md-6">
-            <x-larastrap::textarea name="default_notes" :label="_i('Note di Default')" />
+            <x-larastrap::textarea name="default_notes" tlabel="generic.default_notes" />
         </div>
 
         <?php
@@ -106,7 +106,7 @@ foreach($classes as $class => $name) {
                                     <input type="checkbox" name="{{ $pay_id }}" class="form-check-input" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}>
                                 </div>
                                 <div class="form-check form-switch p-0">
-                                    <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}> {{ _i('Default') }}
+                                    <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}> {{ __('generic.default') }}
                                 </div>
                             </th>
                         @endforeach
@@ -152,7 +152,7 @@ foreach($classes as $class => $name) {
                             'peer' => 'sender',
                             'classname' => $classname,
                             'fields' => $fields,
-                            'label' => sprintf('%s - %s', _i('Pagante'), $label),
+                            'label' => sprintf('%s - %s', __('movements.paying'), $label),
                             'visible' => $classname == $type->sender_type,
                         ];
 
@@ -160,7 +160,7 @@ foreach($classes as $class => $name) {
                             'peer' => 'target',
                             'classname' => $classname,
                             'fields' => $fields,
-                            'label' => sprintf('%s - %s', _i('Pagato'), $label),
+                            'label' => sprintf('%s - %s', __('movements.payed'), $label),
                             'visible' => $classname == $type->target_type,
                         ];
                     }

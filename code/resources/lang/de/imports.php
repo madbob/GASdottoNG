@@ -15,6 +15,8 @@ return array (
   'index_column' => 'Spalte',
   'column' => 'Spalte',
   'imported_suppliers' => 'Importierte Lieferanten',
+  'updated' => 'Aktualisiere',
+  'last_read' => 'Letzte Bestellung',
   'error_main' => 'Fehler beim Laden oder Lesen der Datei.',
   'error_retry' => 'Bitte erneut versuchen, oder sich mit den Entwicklern von GASdotto in Verbindung zu setzen: info@madbob.org',
   'existing_products_action' => 'bestellte Produkte',

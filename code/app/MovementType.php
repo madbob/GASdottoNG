@@ -59,7 +59,7 @@ class MovementType extends Model
         }
 
         if (is_null($obj)) {
-            Log::error(_i('Applicazione movimento su oggetto nullo: %s', $movement->id));
+            Log::error('Applicazione movimento su oggetto nullo: ' . $movement->id);
 
             return;
         }

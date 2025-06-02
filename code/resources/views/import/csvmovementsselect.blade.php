@@ -1,4 +1,4 @@
-<?php
+@php
 
 $methods = [];
 
@@ -21,7 +21,7 @@ $currencies = App\Currency::enabled();
 $users = App\User::sorted()->get();
 $suppliers = App\Supplier::orderBy('name', 'asc')->get();
 
-?>
+@endphp
 
 <x-larastrap::modal size="fullscreen">
     <input type="hidden" name="matching_methods_for_movement_types" value='{!! json_encode($methods) !!}'>

@@ -105,7 +105,7 @@ class User extends Authenticatable
 
             if (! $ret) {
                 $ret = (object) [
-                    'name' => _i('Non Specificato'),
+                    'name' => __('generic.unspecified'),
                     'valid_config' => function ($target) {
                         return true;
                     },
@@ -121,7 +121,7 @@ class User extends Authenticatable
     public function printableName()
     {
         if ($this->plainStatus() == 'removed') {
-            return _i('Utente Rimosso');
+            return __('user.removed_user');
         }
 
         $ret = $this->lastname . ' ' . $this->firstname;
@@ -165,7 +165,7 @@ class User extends Authenticatable
         }
 
         if ($tot != 0) {
-            $ret .= '<div class="pull-right">' . _i('Ha ordinato %s', printablePriceCurrency($tot)) . '</div>';
+            $ret .= '<div class="pull-right">' . __('user.booking_friend_header', ['amount' => printablePriceCurrency($tot)]) . '</div>';
         }
 
         return $ret;
@@ -234,7 +234,7 @@ class User extends Authenticatable
         })->get();
 
         if ($other_bookings->isEmpty() === false) {
-            $notice = _i('Questa persona oggi deve ritirare anche altre prenotazioni:');
+            $notice = __('user.pending_deliveries');
             $notice .= '<ul>';
 
             foreach ($other_bookings as $ob) {
@@ -265,8 +265,8 @@ class User extends Authenticatable
         }
 
         $this->forceFill([
-            'firstname' => __('user.name'),
-            'lastname' => _i('Rimosso'),
+            'firstname' => __('user.removed_user'),
+            'lastname' => '',
             'suspended_at' => now(),
             'birthday' => '1900-01-01',
             'birthplace' => '',

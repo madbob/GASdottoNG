@@ -1,4 +1,4 @@
-<?php
+@php
 
 if (!isset($modal_extras)) {
     $modal_extras = [];
@@ -7,11 +7,11 @@ if (!isset($modal_extras)) {
 $importer = \App\Importers\CSV\CSVImporter::getImporter($import_target);
 $explain_extras = $importer->extraInformations();
 
-?>
+@endphp
 
-<x-larastrap::mbutton classes="d-none d-md-inline-block" :label="_i('Importa CSV')" :triggers_modal="$modal_id" />
+<x-larastrap::mbutton classes="d-none d-md-inline-block" tlabel="export.import.csv" :triggers_modal="$modal_id" />
 
-<x-larastrap::modal :title="_i('Importa CSV')" id="{{ $modal_id }}">
+<x-larastrap::modal id="{{ $modal_id }}">
     <div class="wizard_page">
         <x-larastrap::form method="POST" :action="url('import/csv?type=' . $import_target . '&step=guess')" :buttons="[]">
             @foreach($modal_extras as $name => $value)
@@ -26,16 +26,13 @@ $explain_extras = $importer->extraInformations();
 				<hr>
 			@endif
 
-            <p>
-                {{ _i('Sono ammessi solo files in formato CSV. Si raccomanda di formattare la propria tabella in modo omogeneo, senza usare celle unite, celle vuote, intestazioni: ogni riga deve contenere tutte le informazioni relative al soggetto. Eventuali prezzi e somme vanno espresse senza includere il simbolo dell\'euro.') }}
-            </p>
+            <p>{{ __('export.help.csv_instructions') }}</p>
 
             <p class="text-center">
-                <img src="{{ url('images/csv_explain.png') }}" alt="Istruzioni formattazione CSV" />
+                <img src="{{ url('images/csv_explain.png') }}" alt="{{ __('export.help.img_csv_instructions') }}" />
             </p>
-            <p>
-                {{ _i('Una volta caricato il file sarà possibile specificare quale attributo rappresenta ogni colonna trovata nel documento. Non è necessario specificare tutte le colonne previste, tranne quelle obbligatorie.') }}
-            </p>
+
+            <p>{{ __('export.help.selection_instructions') }}</p>
 
             <hr/>
 
@@ -48,14 +45,13 @@ $explain_extras = $importer->extraInformations();
 
             ?>
 
-            <x-larastrap::file name="file" :label="_i('File da Caricare')" classes="immediate-run" required :data-url="sprintf('import/csv?type=%s&step=guess', $import_target)" :data-form-data="json_encode($data)" />
+            <x-larastrap::file name="file" tlabel="generic.file" classes="immediate-run" required :data-url="sprintf('import/csv?type=%s&step=guess', $import_target)" :data-form-data="json_encode($data)" />
 
             <hr />
 
             <div class="small">
-                <p>
-                    {{ _i('Le colonne ammesse per questo tipo di CSV sono:') }}
-                </p>
+                <p>{{ __('export.accepted_columns') }}</p>
+
                 <ul>
                     @foreach($importer->fields() as $meta)
                         <li>
@@ -66,7 +62,7 @@ $explain_extras = $importer->extraInformations();
                             @endif
 
                             @if(isset($meta->mandatory) && $meta->mandatory)
-                                <span class="badge text-bg-danger">{{ _i('Obbligatorio') }}</span>
+                                <span class="badge text-bg-danger">{{ __('generic.mandatory') }}</span>
                             @endif
                         </li>
                     @endforeach

@@ -1,14 +1,14 @@
-<?php
+@php
 
 $users = App\User::topLevel()->sorted()->get();
 $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
 
-?>
+@endphp
 
-<x-larastrap::modal :title="_i('Assegna Aggregazioni')" size="xl">
+<x-larastrap::modal size="xl">
     @if($groups->isEmpty())
         <div class="alert alert-info">
-            {{ _i('Non ci sono ancora aggregazioni assegnabili direttamente agli utenti.') }}
+            {{ __('aggregations.help.no_user_aggregations') }}
         </div>
     @else
         <x-larastrap::iform :action="route('groups.matrix.save')">

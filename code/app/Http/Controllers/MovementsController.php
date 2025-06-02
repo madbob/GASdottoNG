@@ -98,13 +98,13 @@ class MovementsController extends BackedController
 
         if ($format == 'csv') {
             $headers = [
-                _i('Data Registrazione'),
-                _i('Data Movimento'),
+                __('movements.registration_date'),
+                __('movements.execution_date'),
                 __('generic.type'),
                 __('generic.payment'),
                 __('generic.identifier'),
-                _i('Pagante'),
-                _i('Pagato'),
+                __('movements.paying'),
+                __('movements.payed'),
                 __('generic.value'),
                 __('generic.notes')
             ];

@@ -100,7 +100,7 @@ trait BookerTrait
     public function balanceFields()
     {
         return [
-            'bank' => _i('Credito'),
+            'bank' => __('movements.credito'),
         ];
     }
 }

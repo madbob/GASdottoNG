@@ -17,9 +17,9 @@
                         <tr>
                             <th scope="col" width="25%">{{ __('generic.name') }}</th>
                             <th scope="col" width="20%">{{ __('supplier.vat') }}</th>
-                            <th scope="col" width="25%">{{ _i('Aggiornato') }}</th>
-                            <th scope="col" width="25%">{{ _i('Ultima Lettura') }}</th>
-                            <th scope="col" width="5%">{{ _i('Importa') }}</th>
+                            <th scope="col" width="25%">{{ __('imports.updated') }}</th>
+                            <th scope="col" width="25%">{{ __('imports.last_read') }}</th>
+                            <th scope="col" width="5%">{{ __('imports.do') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,12 +29,12 @@
                                 <td><span class="text-filterable-cell">{{ $entry->name }} ({{ $entry->locality }})</span></td>
                                 <td><span class="text-filterable-cell">{{ $entry->vat }}</span></td>
                                 <td>{{ printableDate($entry->lastchange) }}</td>
-                                <td>{{ $mine ? printableDate($mine->remote_lastimport) : _i('Mai') }}</td>
+                                <td>{{ $mine ? printableDate($mine->remote_lastimport) : __('generic.never') }}</td>
                                 <td>
                                     <form action="{{ url('import/gdxp') }}" method="POST">
                                         <input type="hidden" name="step" value="read">
                                         <input type="hidden" name="url" value="{{ $repository->getSupplierLink($entry->vat) }}">
-                                        <button type="submit" class="btn btn-sm btn-success">{{ $mine ? _i('Aggiorna') : _i('Importa') }}</button>
+                                        <button type="submit" class="btn btn-sm btn-success">{{ $mine ? __('generic.update') : __('imports.do') }}</button>
                                     </form>
                                 </td>
                             </tr>

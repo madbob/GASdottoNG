@@ -33,7 +33,7 @@ if (filled($mailtype)) {
 @endif
 
 @if($select_users)
-    @include('commons.multipleusers', ['obj' => $notification, 'name' => 'users', 'label' => _i('Destinatari')])
+    @include('commons.multipleusers', ['obj' => $notification, 'name' => 'users', 'label' => __('generic.recipients')])
 @else
     @if($notification)
         @foreach($notification->users as $user)
@@ -42,12 +42,12 @@ if (filled($mailtype)) {
     @endif
 @endif
 
-<x-larastrap::textarea name="content" :label="_i('Contenuto')" :help="$content_help" required />
-<x-larastrap::datepicker name="start_date" :label="_i('Inizio')" defaults_now required />
-<x-larastrap::datepicker name="end_date" :label="_i('Scadenza')" defaults_now required />
+<x-larastrap::textarea name="content" tlabel="generic.mailfield.body" :help="$content_help" required />
+<x-larastrap::datepicker name="start_date" tlabel="generic.start" defaults_now required />
+<x-larastrap::datepicker name="end_date" tlabel="generic.expiration" defaults_now required />
 
 @if($notification && $notification->attachments->isEmpty() == false)
-    <x-larastrap::field :label="_i('Allegato')">
+    <x-larastrap::field tlabel="generic.attachment">
         @foreach($notification->attachments as $attachment)
             <a class="btn btn-info" href="{{ $attachment->download_url }}">
                 {{ $attachment->name }} <i class="bi-download"></i>
@@ -55,7 +55,7 @@ if (filled($mailtype)) {
         @endforeach
     </x-larastrap::field>
 @else
-    <x-larastrap::file name="file" :label="_i('Allegato')" />
+    <x-larastrap::file name="file" tlabel="generic.attachment" />
 @endif
 
 <?php
@@ -65,13 +65,13 @@ if ($instant == true) {
 }
 else {
     if ($notification && $notification->mailed) {
-        $mail_help = _i('Questa notifica è già stata inoltrata via mail. Salvandola mantenendo questo flag attivo verrà inviata una nuova mail.');
+        $mail_help = __('notifications.help.repeat_mail_warning');
     }
     else {
-        $mail_help = _i('Se abiliti questa opzione la notifica sarà subito inoltrata via mail. Se intendi modificarla prima di inoltrarla, attiva questa opzione solo dopo aver salvato e modificato la notifica.');
+        $mail_help = __('notifications.help.sending_mail_warning');
     }
 }
 
 ?>
 
-<x-larastrap::check name="mailed" :label="_i('Invia Mail')" :help="$mail_help" />
+<x-larastrap::check name="mailed" tlabel="generic.send_mail" :help="$mail_help" />

@@ -1,7 +1,7 @@
 <?php
 
 return array (
-  'accept_privacy' => 'Ho letto e accetto l\'<a href="%s" target="_blank">Informativa sulla Privacy</a>.',
+  'accept_privacy' => 'Ho letto e accetto l\'<a href=":link" target="_blank">Informativa sulla Privacy</a>.',
   'username' => 'Username',
   'reset_username' => 'Username o indirizzo e-mail',
   'password' => 'Password',

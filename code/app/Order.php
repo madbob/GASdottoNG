@@ -55,7 +55,7 @@ class Order extends Model
 
     public static function commonClassName()
     {
-        return _i('Ordine');
+        return __('orders.name');
     }
 
     public function supplier(): BelongsTo
@@ -183,10 +183,10 @@ class Order extends Model
     {
         $start = $this->start;
         $end = $this->end;
-        $string = _i('da %s a %s', [printableDate($start), printableDate($end)]);
+        $string = __('orders.formatted_name', ['start' => printableDate($start), 'end' => printableDate($end)]);
         if ($this->shipping != null && $this->shipping != '0000-00-00') {
             $shipping = $this->shipping;
-            $string .= _i(', in consegna %s', [printableDate($shipping)]);
+            $string .= __('orders.formatted_delivery_in_name', ['delivery' => printableDate($shipping)]);
         }
 
         return $string;
@@ -631,8 +631,8 @@ class Order extends Model
     {
         $ret = [
             'selection' => (object) [
-                'label' => _i('Selezione'),
-                'help' => _i("Per abilitare o disabilitare prodotti del listino fornitore all'interno dell'ordine"),
+                'label' => __('generic.selection'),
+                'help' => __('orders.help.product_selection'),
                 'width' => 3,
             ],
             'name' => (object) [
@@ -645,7 +645,6 @@ class Order extends Model
             ],
             'available' => (object) [
                 'label' => __('products.available'),
-                'help' => _i('Quantità disponibile del prodotto'),
                 'width' => 5,
             ],
         ];
@@ -661,14 +660,14 @@ class Order extends Model
         $products_modifiers = ModifierType::byClass(Product::class);
         foreach ($products_modifiers as $pmod) {
             $ret['modifier-pending-' . $pmod->id] = (object) [
-                'label' => sprintf('%s (%s)', $pmod->name, _i('Prenotato')),
-                'help' => _i("Modificatore Prodotto, sul Prenotato. Mostrato solo se il modificatore è attivo per un qualche prodotto nell'ordine"),
+                'label' => sprintf('%s (%s)', $pmod->name, __('orders.booking.statuses.booked')),
+                'help' => __('orders.help.booked_modifier_column'),
                 'width' => 7,
             ];
 
             $ret['modifier-shipped-' . $pmod->id] = (object) [
-                'label' => sprintf('%s (%s)', $pmod->name, _i('Consegnato')),
-                'help' => _i("Modificatore Prodotto, sul Consegnato. Mostrato solo se il modificatore è attivo per un qualche prodotto nell'ordine"),
+                'label' => sprintf('%s (%s)', $pmod->name, __('orders.booking.statuses.shipped')),
+                'help' => __('orders.help.delivered_modifier_column'),
                 'width' => 7,
             ];
         }
@@ -676,42 +675,35 @@ class Order extends Model
         $ret = $ret + [
             'unit_measure' => (object) [
                 'label' => __('generic.measure'),
-                'help' => _i('Unità di misura assegnata al prodotto'),
                 'width' => 9,
             ],
             'quantity' => (object) [
-                'label' => _i('Quantità Prenotata'),
-                'help' => _i('Quantità complessivamente prenotata del prodotto'),
+                'label' => __('orders.quantities.booked'),
                 'width' => 8,
             ],
             'weight' => (object) [
-                'label' => _i('Peso Prenotato'),
-                'help' => _i('Peso complessivamente prenotato del prodotto'),
+                'label' => __('orders.weights.booked'),
                 'width' => 8,
             ],
             'total_price' => (object) [
-                'label' => _i('Totale Prezzo'),
-                'help' => _i('Totale prezzo della quantità prenotata'),
+                'label' => __('orders.totals.total'),
                 'width' => 8,
             ],
             'quantity_delivered' => (object) [
                 'label' => __('orders.quantities.shipped'),
-                'help' => _i('Quantità complessivamente consegnata del prodotto'),
                 'width' => 8,
             ],
             'weight_delivered' => (object) [
-                'label' => _i('Peso Consegnato'),
-                'help' => _i('Peso complessivamente consegnato del prodotto'),
+                'label' => __('orders.weights.delivered'),
                 'width' => 8,
             ],
             'price_delivered' => (object) [
-                'label' => _i('Totale Consegnato'),
-                'help' => _i('Totale prezzo della quantità consegnata'),
+                'label' => __('orders.totals.shipped'),
                 'width' => 8,
             ],
             'notes' => (object) [
                 'label' => __('generic.notes'),
-                'help' => _i('Pannello da cui modificare direttamente le quantità di prodotto in ogni prenotazione, ed aggiungere note per il fornitore'),
+                'help' => __('orders.help.fixes_column'),
                 'width' => 3,
             ],
         ];

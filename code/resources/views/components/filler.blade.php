@@ -2,7 +2,7 @@
     {{ $slot }}
 
     <x-larastrap::field label="">
-        <button type="submit" class="btn btn-info">{{ _i('Ricerca') }}</button>
+        <button type="submit" class="btn btn-info">{{ __('generic.search.all') }}</button>
 
 		@foreach($actionButtons as $button)
             <button type="submit" data-action="{{ $button['link'] }}" class="btn btn-info form-action">{{ $button['label'] }}</button>

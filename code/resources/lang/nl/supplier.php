@@ -3,6 +3,11 @@
 return array (
   'payment_method' => 'Betaalwijze',
   'all' => 'Leveranciers',
+  'products_list' => 
+  array (
+    'pdf' => 'PDF-lijst (automatisch gegenereerd)',
+    'csv' => 'CSV-lijst (automatisch gegenereerd)',
+  ),
   'attachments' => 'Bestanden en afbeeldingen',
   'remote_index' => '',
   'vat' => 'BTW-tarief',
@@ -23,6 +28,8 @@ return array (
   ),
   'enable_no_quantities' => 'Snelle leveringen activeren',
   'export_products' => 'Exporteren',
+  'referents' => 'Contactpersoon',
+  'products_list_heading' => 'Prijslijst :supplier van :date',
   'admin_categories' => 'De categoprieën beheren',
   'admin_measures' => 'Meeteenheden beheren',
   'legal_name' => 'Bedrijfsnaam',

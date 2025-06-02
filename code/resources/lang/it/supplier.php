@@ -3,6 +3,11 @@
 return array (
   'payment_method' => 'Modalità Pagamento',
   'all' => 'Fornitori',
+  'products_list' => 
+  array (
+    'pdf' => 'Listino PDF (autogenerato)',
+    'csv' => 'Listino CSV (autogenerato)',
+  ),
   'attachments' => 'File e Immagini',
   'remote_index' => 'Indice Remoto',
   'vat' => 'Partita IVA',
@@ -23,6 +28,8 @@ return array (
   ),
   'enable_no_quantities' => 'Abilita Consegne Senza Quantità',
   'export_products' => 'Esporta Listino',
+  'referents' => 'Referenti',
+  'products_list_heading' => 'Listino :supplier del :date',
   'admin_categories' => 'Amministra Categorie',
   'admin_measures' => 'Amministra Unità di Misura',
   'legal_name' => 'Ragione Sociale',

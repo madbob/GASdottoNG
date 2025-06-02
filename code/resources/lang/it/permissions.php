@@ -45,6 +45,7 @@ return array (
     'missing_elements_warning' => 'A questo ruolo manca l\'assegnazione a uno o più elementi per i quali sono concessi permessi, ed il comportamento potrebbe non essere quello desiderato',
   ),
   'revoke' => 'Revoca Ruolo',
+  'change_roles' => 'Edita Ruoli',
   'parent_role' => 'Ruolo Superiore',
   'add_user' => 'Cerca e Aggiungi Nuovo Utente',
   'unprivileged' => 'Ruolo Utente non Privilegiato',

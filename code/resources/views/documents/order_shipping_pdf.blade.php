@@ -79,10 +79,14 @@ foreach($data->contents as $d) {
 
     <body>
         @if(isset($order))
-            <h3>{{ _i('Dettaglio Consegne Ordine %s a %s del %s', [$order->internal_number, $order->supplier->printableName(), $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')]) }}</h3>
+            <h3>{{ __('orders.documents.shipping.heading', [
+                'identifier' => $order->internal_number,
+                'supplier' => $order->supplier->printableName(),
+                'date' => $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')
+            ]) }}</h3>
         @else
             <h3>
-                {{ _i('Dettaglio Consegne del %s', [$aggregate->shipping ? date('d/m/Y', strtotime($aggregate->shipping)) : date('d/m/Y')]) }}<br/>
+                {{ __('orders.documents.shipping.short_heading', ['date' => $aggregate->shipping ? date('d/m/Y', strtotime($aggregate->shipping)) : date('d/m/Y')]) }}<br/>
                 @if($aggregate->orders()->count() <= aggregatesConvenienceLimit())
                     @foreach($aggregate->orders as $order)
                         {{ $order->supplier->name }} {{ $order->internal_number }}<br/>

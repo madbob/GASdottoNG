@@ -15,8 +15,10 @@ return array (
   'max_quantity' => 'Massimo Consigliato',
   'available' => 'Disponibile',
   'list' => 'Prodotti',
+  'sorting' => 'Ordinamento',
   'help' => 
   array (
+    'available_explain' => 'Quantità massima di prodotto che complessivamente può essere prenotata in un ordine',
     'bookable' => 'Indica se il prodotto potrà essere ordinato o meno all\'interno dei nuovi ordini per il fornitore',
     'pending_orders_change_price' => 'Ci sono ordini non ancora consegnati e archiviati in cui appare il prodotto di cui ha appena modificato il prezzo. Seleziona quelli in cui vuoi che venga applicato il nuovo prezzo (del prodotto e/o le differenze prezzi delle eventuali varianti).',
     'pending_orders_change_price_second' => 'Se modifichi i prezzi e nell\'ordine ci sono prenotazioni che sono già state consegnate, dovrai manualmente salvare nuovamente tali consegne affinché vengano rigenerati i nuovi movimenti contabili aggiornati.',

@@ -1,3 +1,6 @@
-<x-larastrap::radios name="type" classes="notification-type-switch" tlabel="generic.type" :options="['notification' => _i('Notifica'), 'date' => _i('Data sul Calendario')]" value="notification" />
+<x-larastrap::radios name="type" classes="notification-type-switch" tlabel="generic.type" :options="[
+    'notification' => __('notifications.name'),
+    'date' => __('notifications.calendar_date')
+]" value="notification" />
 
 @include('notification.base-edit', ['notification' => null])

@@ -1,11 +1,11 @@
-<x-larastrap::modal :title="_i('Operazione non permessa')">
+<x-larastrap::modal>
     <p>
-        {{ _i("L'ordine %s ha attualmente delle prenotazioni attive, e non può essere pertanto rimosso.", [$order->printableName()]) }}
+        {{ __('orders.help.unremovable_warning', ['name' => $order->printableName()]) }}
     </p>
     <p>
-        {!! _i('Si raccomanda di accedere al <a href="%s">pannello delle prenotazioni per questo ordine</a> e, con lo strumento "Prenotazioni per Altri Utenti", invalidare le prenotazioni esistenti.', [$order->getBookingURL()]) !!}
+        {!! __('orders.help.unremovable_instructions', ['link' => $order->getBookingURL()]) !!}
     </p>
     <p>
-        {{ _i("Questo meccanismo è deliberatemente non automatico e volutamente complesso, per evitare la perdita involontaria di dati.") }}
+        {{ __('orders.help.unremovable_notice') }}
     </p>
 </x-larastrap::modal>
