@@ -29,8 +29,8 @@ return array (
   'help' => 
   array (
     'orders' => 'Choose the orders that are associated with this invoice. When the invoice is marked as paid, the reference to the payment accounting transaction will be added to them and they will be automatically archived',
-    'no_orders' => '',
-    'filtered_orders' => '',
+    'no_orders' => 'There are no orders assignable to this invoice. Orders must: refer to the same supplier as the invoice; not have a payment to the supplier already registered; be in "Delivered" or "Archived" status; have at least one "Delivered" reservation (the total of delivered reservations is used to calculate the actual payment).',
+    'filtered_orders' => 'Here you will see orders that: belong to the supplier to whom the invoice is addressed; are in Delivered or Archived status; have at least one reservation marked as Delivered. Totals are calculated on the quantities actually delivered, not on the reservations.',
   ),
   'change_orders' => 'Edit Orders',
   'verify' => 'Verify Contents',

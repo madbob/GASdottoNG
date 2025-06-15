@@ -210,4 +210,5 @@ return array (
   'opening' => 'Apertura',
   'closing' => 'Chiusura',
   'mandatory' => 'Obbligatorio',
+  'waiting' => 'In Attesa',
 );

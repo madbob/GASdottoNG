@@ -1,43 +1,43 @@
 <?php
 
 return array (
-  'help' => 
+  'help' =>
   array (
     'removed_email_log' => '',
     'send_error' => 'Es war nicht möglich, die E-Mail an :email: :message weiterzuleiten',
   ),
-  'summary' => 
+  'summary' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'GAS-Buchungsübersicht: :supplier – Lieferung :delivery',
     ),
   ),
-  'closed' => 
+  'closed' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Automatisch geschlossene Bestellung',
     ),
   ),
-  'notification' => 
+  'notification' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Neue Benachrichtigung von :gas',
     ),
   ),
-  'new_user_notification' => 
+  'new_user_notification' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Neuer Benutzer registriert',
     ),
   ),
   'contacts_prefix' => '',
-  'approved' => 
+  'approved' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Willkommen!',
       'body' => 'Willkommen im Bestellsystem von %[gas_name]!
@@ -49,39 +49,22 @@ Eine Benachrichtigungs-E-Mail wurde an die Administrator*innen geschickt.',
     'username' => 'Benutzername des neuen Nutzers',
     'link' => 'Link zur Anmeldungseite',
   ),
-  'declined' => 
+  'declined' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
       'body' => '',
     ),
     'description' => '',
   ),
-  'mail' => 
+  'order' =>
   array (
-    'welcome' => 
-    array (
-      'defaults' => 
-      array (
-        'body' => 'Sie sind zu %[gas_name] eingeladen worden!
-
-Für den erstmaligen Zugang klicken Sie auf den unten stehenden Link.
-%[gas_access_link].
-
-In Zukunft können Sie sich über diesen anderen Link, den Benutzernamen „%[username]“ und das von Ihnen gewählte Passwort anmelden.
-%[gas_login_link]
-',
-      ),
-    ),
-  ),
-  'order' => 
-  array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Neue Bestellung eröffnet für %[supplier_name]',
       'body' => 'Eine neue Bestellung wurde eröffnet von der %[gas_name] für den Lieferanten %[supplier_name].
-Um daran teilzunehmen, melde dich über folgenden Link an: 
+Um daran teilzunehmen, melde dich über folgenden Link an:
 %[gas_booking_link]
 Die Bestellfrist endet am %[closing_date]',
     ),
@@ -90,9 +73,9 @@ Die Bestellfrist endet am %[closing_date]',
     'link' => 'Link zu den Bestellungen',
     'mails' => 'E-Mail-Adressen der Ansprechpartner für die Bestellung',
   ),
-  'reminder' => 
+  'reminder' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
       'body' => '',
@@ -100,9 +83,9 @@ Die Bestellfrist endet am %[closing_date]',
     'description' => '',
     'list' => '',
   ),
-  'password' => 
+  'password' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'body' => 'Es wurde eine Anfrage zur Aktualisierung deines GASdotto-Passwortes gestellt.
 Klicke unten auf den Link, um das Passwort zu aktualisieren. Falls du das Neusetzen des Passwortes nicht angefragt hast, ignoriere diese E-Mail.
@@ -111,18 +94,18 @@ Klicke unten auf den Link, um das Passwort zu aktualisieren. Falls du das Neuset
     'description' => 'Benachrichtigung zum Neusetzen des Passwortes.',
     'link' => 'Link zur Zurücksetzung des Passwortes',
   ),
-  'receipt' => 
+  'receipt' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Neue Rechnung von %[gas_name]',
       'body' => 'Im Anhang die letzte Rechnung von %[gas_name]',
     ),
     'description' => 'Begleit-E-Mail für Quittungen.',
   ),
-  'supplier' => 
+  'supplier' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Bestellung',
       'body' => 'Guten Tag.
@@ -132,16 +115,27 @@ Danke.',
     ),
     'description' => 'Benachrichtigung der Lieferanten über den automatischen Auftragsabschluss.',
   ),
-  'credit' => 
+  'credit' =>
   array (
     'current' => 'Aktueller Kredit',
   ),
-  'welcome' => 
+  'welcome' =>
   array (
     'description' => 'Benachrichtigung an neue Nutzer, deren Account über das Backend des Bestellsystems hinzugefügt wurde.',
     'link' => 'Link für den erstmaligen Zugang',
+    'defaults' =>
+    array (
+      'body' => 'Sie sind zu %[gas_name] eingeladen worden!
+
+Für den erstmaligen Zugang klicken Sie auf den unten stehenden Link.
+%[gas_access_link].
+
+In Zukunft können Sie sich über diesen anderen Link, den Benutzernamen „%[username]“ und das von Ihnen gewählte Passwort anmelden.
+%[gas_login_link]
+',
+    ),
   ),
-  'newuser' => 
+  'newuser' =>
   array (
     'description_manual' => '',
     'description' => 'Benachrichtigung an Nutzer, die sich neu im Bestellsystem angemeldet haben.',

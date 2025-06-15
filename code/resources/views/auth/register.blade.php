@@ -25,7 +25,7 @@
         @endif
 
         @if (!empty(currentAbsoluteGas()->public_registrations['terms_link']))
-            <?php $terms_claim = __('auth.accept_conditions', ['link' => currentAbsoluteGas()->public_registrations['terms_link']]) ?>
+            <?php $terms_claim = __('commons.accept_conditions', ['link' => currentAbsoluteGas()->public_registrations['terms_link']]) ?>
             <x-larastrap::check name="terms" :label="ue('<span>' . $terms_claim . '</span>')" required />
         @endif
     </x-larastrap::form>

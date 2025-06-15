@@ -1,43 +1,43 @@
 <?php
 
 return array (
-  'help' => 
+  'help' =>
   array (
     'removed_email_log' => 'Adresse électronique retirée :address',
     'send_error' => 'Impossible de transférer le message à :email: :message',
   ),
-  'summary' => 
+  'summary' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Résumé des réservations du GAS : :supplier - consegna :delivery',
     ),
   ),
-  'closed' => 
+  'closed' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Commande fermée automatiquement',
     ),
   ),
-  'notification' => 
+  'notification' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Nouvelle notification de :gas',
     ),
   ),
-  'new_user_notification' => 
+  'new_user_notification' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Nouvel utilisateur enregistré',
     ),
   ),
   'contacts_prefix' => '',
-  'approved' => 
+  'approved' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Bienvenue !',
       'body' => 'Bienvenue dans %[gas_name] !
@@ -49,35 +49,18 @@ Un courriel de notification a été envoyé aux administrateurs.',
     'username' => 'Identifiant assigné au nouvel utilisateur',
     'link' => 'Lien vers la page de connexion',
   ),
-  'declined' => 
+  'declined' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
       'body' => '',
     ),
     'description' => '',
   ),
-  'mail' => 
+  'order' =>
   array (
-    'welcome' => 
-    array (
-      'defaults' => 
-      array (
-        'body' => 'Vous avez été invité·e à %[gas_name] !
-
-Pour vous connecter la première fois, cliquez sur le lien ci-dessous.
-%[gas_access_link].
-
-À l\'avenir, vous pourrez vous connecter en utilisant cet autre lien, le nom d\'utilisateur « %[username] » et le mot de passe que vous avez choisi.
-%[gas_login_link]
-',
-      ),
-    ),
-  ),
-  'order' => 
-  array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Nouvelle commande ouverte pour %[supplier_name]',
       'body' => 'Une nouvelle commande a été ouverte sur %[gas_name] pour le fournisseur %[supplier_name].
@@ -90,9 +73,9 @@ Les réservations seront fermées le %[closing_date]',
     'link' => 'Lien vers la réservation',
     'mails' => 'Adresses courriel des personnes de contact de la commande',
   ),
-  'reminder' => 
+  'reminder' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
       'body' => '',
@@ -100,9 +83,9 @@ Les réservations seront fermées le %[closing_date]',
     'description' => '',
     'list' => '',
   ),
-  'password' => 
+  'password' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'body' => 'La mise à jour de votre mot de passe a été demandée sur GASdotto.
 Cliquez sur le lien ci-dessous pour mettre à jour votre mot de passe ou ignorer ce courriel si vous n\'avez pas demandé cette opération.
@@ -111,18 +94,18 @@ Cliquez sur le lien ci-dessous pour mettre à jour votre mot de passe ou ignorer
     'description' => 'Message pour la récupération du mot de passe.',
     'link' => 'Lien pour la réinitialisation du mot de passe',
   ),
-  'receipt' => 
+  'receipt' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Nouvelle facture de %[gas_name]',
       'body' => 'Ci-joint la dernière facture de% [gas_name]',
     ),
     'description' => 'Courriel d\'accompagnement pour les reçus.',
   ),
-  'supplier' => 
+  'supplier' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Réservation de la commande %[gas_name]',
       'body' => 'Bonjour.
@@ -132,16 +115,27 @@ Merci.',
     ),
     'description' => 'Notification aux fournisseurs de la fermeture automatique des commandes.',
   ),
-  'credit' => 
+  'credit' =>
   array (
     'current' => '',
   ),
-  'welcome' => 
+  'welcome' =>
   array (
     'description' => 'Message envoyé aux nouveaux utilisateurs créés sur la plateforme.',
     'link' => 'Lien pour se connecter la première fois',
+    'defaults' =>
+    array (
+      'body' => 'Vous avez été invité·e à %[gas_name] !
+
+Pour vous connecter la première fois, cliquez sur le lien ci-dessous.
+%[gas_access_link].
+
+À l\'avenir, vous pourrez vous connecter en utilisant cet autre lien, le nom d\'utilisateur « %[username] » et le mot de passe que vous avez choisi.
+%[gas_login_link]
+',
+    ),
   ),
-  'newuser' => 
+  'newuser' =>
   array (
     'description_manual' => '',
     'description' => 'Message envoyé aux nouveaux membres inscrits sur la plateforme.',

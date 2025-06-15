@@ -77,7 +77,7 @@ return array (
     'supplier_has_orders' => 'Ci sono ordini aperti per questo fornitore',
     'unremovable_warning' => 'L\'ordine :name ha attualmente delle prenotazioni attive, e non può essere pertanto rimosso.',
     'unremovable_instructions' => 'Si raccomanda di accedere al <a href=":link">pannello delle prenotazioni per questo ordine</a> e, con lo strumento "Prenotazioni per Altri Utenti", invalidare le prenotazioni esistenti.',
-    'unremovable_notice' => 'Questo meccanismo è deliberatemente non automatico e volutamente complesso, per evitare la perdita involontaria di dati.',
+    'unremovable_notice' => 'Questo meccanismo è deliberatamente non automatico e volutamente complesso, per evitare la perdita involontaria di dati.',
   ),
   'booking_description' => 
   array (

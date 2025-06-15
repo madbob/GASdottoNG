@@ -15,8 +15,15 @@ return array (
     'fee' => 'Data relating to the user\'s membership fee, which expires each year. To disable this option, go to Configurations -> Accounting',
     'deposit' => 'Data relating to the deposit paid by the user when registering for the GAS. To disable this option, go to Configurations -> Accounting',
     'satispay' => 'From here you can increase your credit using Satispay. Specify how much you want to pay and any notes for the administrators, you will receive a notification on your smartphone, to be confirmed within 15 minutes.',
-    'remove_profile' => '',
-    'remove_profile_credit_notice' => '',
+    'remove_profile' => 'Do you really want to delete this account? All personal data will be anonymized, although your booking history will be preserved.',
+    'remove_profile_credit_notice' => 'Before proceeding, it is advisable to contact the GAS representatives to settle the credit accounts.',
+    'importing' => 
+    array (
+      'user' => 
+      array (
+        'balance' => 'Warning! Use this attribute only during the initial user import, and only for new users, or the balances will always be inconsistent!',
+      ),
+    ),
   ),
   'firstname' => 'Name',
   'lastname' => 'Surname',
@@ -54,7 +61,7 @@ return array (
     'active' => 'Active',
     'suspended' => 'Suspended',
     'deleted' => 'Removed',
-    'removed' => '',
+    'removed' => 'Deleted',
   ),
   'friend' => 'Friend',
   'removed_user' => 'Removed User',
@@ -94,6 +101,6 @@ return array (
   array (
     'reload' => 'Charge Credit with Satispay',
   ),
-  'remove_profile' => '',
-  'assign_aggregations' => '',
+  'remove_profile' => 'Delete profile',
+  'assign_aggregations' => 'Assign Aggregations',
 );

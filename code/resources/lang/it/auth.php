@@ -29,4 +29,6 @@ return array (
   array (
     'email' => 'Invia E-Mail',
   ),
+  'failed' => 'Credenziali non valide.',
+  'throttle' => 'Troppo tentativi di accesso. Riprova tra :seconds secondi.',
 );

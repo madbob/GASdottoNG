@@ -42,5 +42,5 @@ return array (
     'appointments' => 'Appointments',
   ),
   'calendar_date' => 'Date on Calendar',
-  'date_reference' => '',
+  'date_reference' => 'Reference date',
 );

@@ -53,7 +53,7 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
             ?>
 
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
-                <x-larastrap::textarea name="comment" tlabel="generic.comment" maxlength="190" rows="2" :pophelp="__('help.comment', ['limit' => longCommentLimit()])" />
+                <x-larastrap::textarea name="comment" tlabel="generic.comment" maxlength="190" rows="2" :pophelp="__('orders.comment', ['limit' => longCommentLimit()])" />
                 <x-larastrap::datepicker name="start" tlabel="orders.dates.start" required />
                 <x-larastrap::datepicker name="end" tlabel="orders.dates.end" required :attributes="['data-enforce-after' => '.date[name=start]']" tpophelp="orders.help.end" />
                 <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" :attributes="['data-enforce-after' => '.date[name=end]']" />

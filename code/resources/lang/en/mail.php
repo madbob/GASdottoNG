@@ -1,43 +1,43 @@
 <?php
 
 return array (
-  'help' => 
+  'help' =>
   array (
     'removed_email_log' => 'Removed mail address :address',
     'send_error' => 'Could not forward e-mail to :email: :message',
   ),
-  'summary' => 
+  'summary' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'GAS booking summary: :supplier – delivery :delivery',
     ),
   ),
-  'closed' => 
+  'closed' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Order automatically closed',
     ),
   ),
-  'notification' => 
+  'notification' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'New notification from :gas',
     ),
   ),
-  'new_user_notification' => 
+  'new_user_notification' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'New user registered',
     ),
   ),
   'contacts_prefix' => 'For info: :contacts',
-  'approved' => 
+  'approved' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Welcome!',
       'body' => 'Welcome to %[gas_name]!
@@ -48,35 +48,18 @@ From now on, you can access it via the link below with the username ‘%[usernam
     'username' => 'Username assigned to the new user',
     'link' => 'Login page link',
   ),
-  'declined' => 
+  'declined' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'You have not been approved!',
       'body' => 'Sorry, but your account has not been approved by %[gas_name].',
     ),
     'description' => 'Message for unapproved users.',
   ),
-  'mail' => 
+  'order' =>
   array (
-    'welcome' => 
-    array (
-      'defaults' => 
-      array (
-        'body' => 'You have been invited to %[gas_name]!
-
-To access the first time, click the link below.
-%[gas_access_link]
-
-Then you will be able to access thorugh this other link, using the username "%[username]" and the password you have choose.
-%[gas_login_link]
-',
-      ),
-    ),
-  ),
-  'order' => 
-  array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'New order opened for %[supplier_name]',
       'body' => '%[gas_name] just opened a new order for %[supplier_name].
@@ -89,9 +72,9 @@ Reservations will be closed on %[closing_date]',
     'link' => 'Link for reservations',
     'mails' => 'E-mail addresses of the referents for the order',
   ),
-  'reminder' => 
+  'reminder' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Closing orders for %[gas_name]',
       'body' => 'Orders opened by %[gas_name] for those suppliers will be closed within a few days:
@@ -101,9 +84,9 @@ Reservations will be closed on %[closing_date]',
     'description' => 'Notification for closing orders (sent to users who explicitely enabled notifications for the supplier).',
     'list' => 'List of closing orders',
   ),
-  'password' => 
+  'password' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'body' => 'The reset of your GASdotto password has been required.
 Click the link below to update your password, or ignore this e-email if you have not required this operation.
@@ -112,18 +95,18 @@ Click the link below to update your password, or ignore this e-email if you have
     'description' => 'Message for password reset.',
     'link' => 'Password reset link',
   ),
-  'receipt' => 
+  'receipt' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'New Invoice from %[gas_name]',
       'body' => 'In attachment, the last invoice from %[gas_name]',
     ),
     'description' => 'E-mail for receipts.',
   ),
-  'supplier' => 
+  'supplier' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Booking order %[gas_name]',
       'body' => 'Hello.
@@ -133,16 +116,27 @@ Thank you.',
     ),
     'description' => 'Notification for suppliers when the order is automatically closed.',
   ),
-  'credit' => 
+  'credit' =>
   array (
     'current' => 'Current credit for the user',
   ),
-  'welcome' => 
+  'welcome' =>
   array (
     'description' => 'Message for users newly created on the platform.',
     'link' => 'Link to access the first time',
+    'defaults' =>
+    array (
+      'body' => 'You have been invited to %[gas_name]!
+
+To access the first time, click the link below.
+%[gas_access_link]
+
+Then you will be able to access thorugh this other link, using the username "%[username]" and the password you have choose.
+%[gas_login_link]
+',
+    ),
   ),
-  'newuser' => 
+  'newuser' =>
   array (
     'description_manual' => 'Message for users newly subscribed to the platform, waiting for approval.',
     'description' => 'Message for users newly subscribed to the platform.',

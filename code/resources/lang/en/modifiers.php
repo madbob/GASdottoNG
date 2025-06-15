@@ -35,8 +35,8 @@ return array (
       ),
       'circle' => 
       array (
-        'booking' => '',
-        'order' => '',
+        'booking' => 'of the booking assigned to group',
+        'order' => 'of portion of the order assigned to the group',
       ),
     ),
     'scale' => 
@@ -90,6 +90,6 @@ return array (
   'name' => 'Modifier',
   'help' => 
   array (
-    'no_modifiers_for_element' => '',
+    'no_modifiers_for_element' => 'There are no modifiers assignable to this element type.',
   ),
 );

@@ -1,43 +1,43 @@
 <?php
 
 return array (
-  'help' => 
+  'help' =>
   array (
     'removed_email_log' => 'Rimosso indirizzo email :address',
     'send_error' => 'Impossibile inoltrare mail a :email: :message',
   ),
-  'summary' => 
+  'summary' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Riassunto prenotazione del GAS: :supplier - consegna :delivery',
     ),
   ),
-  'closed' => 
+  'closed' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Ordini chiusi automaticamente',
     ),
   ),
-  'notification' => 
+  'notification' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Nuova notifica da :gas',
     ),
   ),
-  'new_user_notification' => 
+  'new_user_notification' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Nuovo utente registrato',
     ),
   ),
   'contacts_prefix' => 'Per informazioni: :contacts',
-  'approved' => 
+  'approved' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Benvenuto!',
       'body' => 'Benvenuto in %[gas_name]!
@@ -48,35 +48,18 @@ In futuro potrai accedere usando il link qui sotto, lo username "%[username]" e 
     'username' => 'Username assegnato al nuovo utente',
     'link' => 'Link della pagina di login',
   ),
-  'declined' => 
+  'declined' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Non sei stato approvato!',
       'body' => 'Spiacente, ma il tuo account non è stato approvato da %[gas_name].',
     ),
     'description' => 'Messaggio inviato agli iscritti non approvati.',
   ),
-  'mail' => 
+  'order' =>
   array (
-    'welcome' => 
-    array (
-      'defaults' => 
-      array (
-        'body' => 'Sei stato invitato a %[gas_name]!
-
-Per accedere la prima volta clicca il link qui sotto.
-%[gas_access_link]
-
-In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e la password che avrai scelto.
-%[gas_login_link]
-',
-      ),
-    ),
-  ),
-  'order' => 
-  array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Nuovo Ordine Aperto per %[supplier_name]',
       'body' => 'È stato aperto da %[gas_name] un nuovo ordine per il fornitore %[supplier_name].
@@ -89,9 +72,9 @@ Le prenotazioni verranno chiuse %[closing_date]',
     'link' => 'Link per le prenotazioni',
     'mails' => 'Indirizzi email dei referenti dell\'ordine',
   ),
-  'reminder' => 
+  'reminder' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Ordini in chiusura per %[gas_name]',
       'body' => 'Tra pochi giorni si chiuderanno gli ordini aperti da %[gas_name] per i seguenti fornitori:
@@ -101,9 +84,9 @@ Le prenotazioni verranno chiuse %[closing_date]',
     'description' => 'Notifica di promemoria per gli ordini in chiusura (inviato agli utenti che hanno esplicitamente abilitato le notifiche per il fornitore).',
     'list' => 'Elenco degli ordini in chiusura',
   ),
-  'password' => 
+  'password' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'body' => 'È stato chiesto l\'aggiornamento della tua password su GASdotto.
 Clicca il link qui sotto per aggiornare la tua password, o ignora la mail se non hai chiesto tu questa operazione.
@@ -112,18 +95,18 @@ Clicca il link qui sotto per aggiornare la tua password, o ignora la mail se non
     'description' => 'Messaggio per il ripristino della password.',
     'link' => 'Link per il reset della password',
   ),
-  'receipt' => 
+  'receipt' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Nuova fattura da %[gas_name]',
       'body' => 'In allegato l\'ultima fattura da %[gas_name]',
     ),
     'description' => 'Mail di accompagnamento per le ricevute.',
   ),
-  'supplier' => 
+  'supplier' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => 'Prenotazione ordine %[gas_name]',
       'body' => 'Buongiorno.
@@ -133,16 +116,27 @@ Grazie.',
     ),
     'description' => 'Notifica destinata ai fornitori alla chiusura automatica dell\'ordine.',
   ),
-  'credit' => 
+  'credit' =>
   array (
     'current' => 'Credito corrente dell\'utente',
   ),
-  'welcome' => 
+  'welcome' =>
   array (
     'description' => 'Messaggio inviato ai nuovi utenti creati sulla piattaforma.',
     'link' => 'Link per accedere la prima volta',
+    'defaults' =>
+    array (
+      'body' => 'Sei stato invitato a %[gas_name]!
+
+Per accedere la prima volta clicca il link qui sotto.
+%[gas_access_link]
+
+In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e la password che avrai scelto.
+%[gas_login_link]
+',
+    ),
   ),
-  'newuser' => 
+  'newuser' =>
   array (
     'description_manual' => 'Messaggio inviato ai nuovi iscritti registrati sulla piattaforma, in attesa di approvazione.',
     'description' => 'Messaggio inviato ai nuovi iscritti registrati sulla piattaforma.',

@@ -1,6 +1,9 @@
 <?php
 
 return array (
+  'failed' => 'These credentials do not match our records.',
+  'password' => 'Password',
+  'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
   'accept_privacy' => 'I have read and agree to the <a href="%s" target="_blank">Privacy Policy</a>.',
   'username' => 'Username',
   'help' => 
@@ -12,12 +15,11 @@ return array (
     'suspended_account_notice' => 'Your account has been suspended, and you cannot submit new bookings. Check your payments, your credit or notifications sent from administrators.',
     'invalid_username' => 'Invalid username',
     'required_new_password' => 'To proceed, you have to set a new password for your account.',
-    'unconfirmed' => '',
+    'unconfirmed' => 'Your account has not yet been validated by administrators. When reviewed, you will receive a notification via email.',
     'username' => 'Username used for authentication. Must be unique. Can be the same of email address',
     'email_mode' => 'An invitation email will be sent, with the link to access the first time and choose own password.',
   ),
   'reset_username' => 'Username or e-mail address',
-  'password' => 'Password',
   'password_request_link' => 'Recover password',
   'maintenance_notice' => 'Maintenance mode: access is restricted to administrators',
   'login' => 'Login',

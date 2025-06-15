@@ -17,6 +17,13 @@ return array (
     'satispay' => 'Da qui puoi ricaricare il tuo credito utilizzando Satispay. Specifica quanto vuoi versare ed eventuali note per gli amministratori; riceverai una notifica sul tuo smartphone per confermare, entro 15 minuti, il versamento.',
     'remove_profile' => 'Vuoi davvero eliminare questo account? Tutti i dati personali saranno anonimizzati, benché sarà preservato lo storico delle prenotazioni.',
     'remove_profile_credit_notice' => 'Prima di procedere, è consigliato contattare i referenti del GAS per regolare i conti sul credito.',
+    'importing' => 
+    array (
+      'user' => 
+      array (
+        'balance' => 'Attenzione! Usare questo attributo solo in fase di importazione iniziale degli utenti, e solo per i nuovi utenti, o i saldi risulteranno sempre incoerenti!',
+      ),
+    ),
   ),
   'firstname' => 'Nome',
   'lastname' => 'Cognome',

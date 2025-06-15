@@ -35,8 +35,8 @@ return array (
       ),
       'circle' => 
       array (
-        'booking' => 'della prenotazione assegnata al cerchio',
-        'order' => 'della porzione di ordine destinata al cerchio',
+        'booking' => 'della prenotazione assegnata al gruppo',
+        'order' => 'della porzione di ordine destinata al gruppo',
       ),
     ),
     'scale' => 

@@ -1,43 +1,43 @@
 <?php
 
 return array (
-  'help' => 
+  'help' =>
   array (
     'removed_email_log' => '',
     'send_error' => '',
   ),
-  'summary' => 
+  'summary' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
     ),
   ),
-  'closed' => 
+  'closed' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
     ),
   ),
-  'notification' => 
+  'notification' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
     ),
   ),
-  'new_user_notification' => 
+  'new_user_notification' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
     ),
   ),
   'contacts_prefix' => '',
-  'approved' => 
+  'approved' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
       'body' => '',
@@ -46,28 +46,18 @@ return array (
     'username' => '',
     'link' => '',
   ),
-  'declined' => 
+  'declined' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
       'body' => '',
     ),
     'description' => '',
   ),
-  'mail' => 
+  'order' =>
   array (
-    'welcome' => 
-    array (
-      'defaults' => 
-      array (
-        'body' => '',
-      ),
-    ),
-  ),
-  'order' => 
-  array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
       'body' => '',
@@ -77,9 +67,9 @@ return array (
     'link' => '',
     'mails' => '',
   ),
-  'reminder' => 
+  'reminder' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
       'body' => '',
@@ -87,43 +77,47 @@ return array (
     'description' => '',
     'list' => '',
   ),
-  'password' => 
+  'password' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'body' => '',
     ),
     'description' => '',
     'link' => '',
   ),
-  'receipt' => 
+  'receipt' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
       'body' => '',
     ),
     'description' => '',
   ),
-  'supplier' => 
+  'supplier' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'subject' => '',
       'body' => '',
     ),
     'description' => '',
   ),
-  'credit' => 
+  'credit' =>
   array (
     'current' => '',
   ),
-  'welcome' => 
+  'welcome' =>
   array (
     'description' => '',
     'link' => '',
+    'defaults' =>
+    array (
+      'body' => '',
+    ),
   ),
-  'newuser' => 
+  'newuser' =>
   array (
     'description_manual' => '',
     'description' => '',

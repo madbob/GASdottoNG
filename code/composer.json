@@ -11,6 +11,7 @@
         "aws/aws-sdk-php": "^3.67",
         "barryvdh/laravel-debugbar": "^3.8",
         "barryvdh/laravel-dompdf": "^2.0.0",
+        "barryvdh/laravel-translation-manager": "^0.6.8",
         "debril/feed-io": "^5.0",
         "eluceo/ical": "^2.0",
         "genealabs/laravel-model-caching": "^12.0",

@@ -35,7 +35,7 @@
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="action" value="adjust" id="action-adjust" required>
                 <label class="form-check-label" for="action-adjust">
-                    {{ __('orders.orders.modifiers_redistribution.recalculate') }}
+                    {{ __('orders.modifiers_redistribution.recalculate') }}
                 </label>
             </div>
         </p>
