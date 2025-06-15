@@ -3,9 +3,9 @@
         @include('commons.staticmovementfield', [
             'obj' => $user->fee,
             'name' => 'fee_id',
-            'label' => __('user.fee'),
+            'label' => __('texts.user.fee'),
             'default' => \App\Movement::generate('annual-fee', $user, $user->gas, 0),
-            'help_popover' => __('user.help.fee'),
+            'help_popover' => __('texts.user.help.fee'),
         ])
     @endif
 
@@ -24,9 +24,9 @@
         @include($deposit_template, [
             'obj' => $user->deposit,
             'name' => 'deposit_id',
-            'label' => __('user.deposit'),
+            'label' => __('texts.user.deposit'),
             'default' => \App\Movement::generate('deposit-pay', $user, $user->gas, 0),
-            'help_popover' => __('user.help.deposit'),
+            'help_popover' => __('texts.user.help.deposit'),
         ])
     @endif
 @endif

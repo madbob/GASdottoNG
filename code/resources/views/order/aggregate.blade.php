@@ -41,19 +41,19 @@ $master_summary = $aggregate->reduxData();
                     @php
 
                     if ($shippable_status) {
-                        $send_mail_label = __('orders.send_booking_summaries');
-                        $send_mail_hint = __('orders.help.send_booking_summaries');
+                        $send_mail_label = __('texts.orders.send_booking_summaries');
+                        $send_mail_hint = __('texts.orders.help.send_booking_summaries');
                     }
                     else {
-                        $send_mail_label = __('orders.send_delivery_summaries');
-                        $send_mail_hint = __('orders.help.send_delivery_summaries');
+                        $send_mail_label = __('texts.orders.send_delivery_summaries');
+                        $send_mail_hint = __('texts.orders.help.send_delivery_summaries');
                     }
 
                     @endphp
 
                     <x-larastrap::field margins="0 0 0 0" :label="$send_mail_label" tpophelp="orders.help.send_summaries">
                         <x-larastrap::mbutton tlabel="generic.send_mail" :triggers_modal="sprintf('notify-aggregate-%s', $aggregate->id)" />
-                        <small>{{ __('orders.last_summaries_date') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></small>
+                        <small>{{ __('texts.orders.last_summaries_date') }}: <span class="last-date" data-updatable-name="last-notification-date-{{ $aggregate->id }}">{{ $aggregate->printableDate('last_notify') }}</span></small>
                     </x-larastrap::field>
 
                     <x-larastrap::modal :id="sprintf('notify-aggregate-%s', $aggregate->id)">
@@ -63,7 +63,7 @@ $master_summary = $aggregate->reduxData();
                                     {{ $send_mail_hint }}
                                 </p>
                                 <p>
-                                    {{ __('orders.summaries_recipients_count', ['count' => count($aggregate->notifiableBookings())]) }}
+                                    {{ __('texts.orders.summaries_recipients_count', ['count' => count($aggregate->notifiableBookings())]) }}
                                 </p>
                             </x-larastrap::suggestion>
 

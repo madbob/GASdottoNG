@@ -16,7 +16,7 @@ class Multiple extends Constraint
         $field = $this->identifier();
 
         if ($product->$field > 1) {
-            return __('orders.constraints.relative_multiple_formatted', [
+            return __('texts.orders.constraints.relative_multiple_formatted', [
                 'quantity' => sprintf('%.02f', $product->$field),
             ]);
         }
@@ -30,7 +30,7 @@ class Multiple extends Constraint
 
         if ($product->multiple != 0) {
             if (fmod($quantity, $product->multiple) != 0) {
-                throw new InvalidQuantityConstraint(__('orders.constraints.relative_multiple'), 2);
+                throw new InvalidQuantityConstraint(__('texts.orders.constraints.relative_multiple'), 2);
             }
         }
     }

@@ -19,7 +19,7 @@
                 <div class="fillable-booking-space">
                     <div class="row">
                         <div class="col">
-                            <input type="text" data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ __('generic.search.users') }}" />
+                            <input type="text" data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ __('texts.generic.search.users') }}" />
                         </div>
                     </div>
 
@@ -42,7 +42,7 @@
 		<div class="row">
 	        <div class="col">
 				<div class="alert alert-danger mb-2">
-					{{ __('orders.help.changed_products') }}
+					{{ __('texts.orders.help.changed_products') }}
 				</div>
 			</div>
 		</div>
@@ -62,7 +62,7 @@
     </div>
 @else
     <div class="alert alert-danger mb-3">
-        {{ __('orders.help.waiting_closing_for_deliveries') }}
+        {{ __('texts.orders.help.waiting_closing_for_deliveries') }}
     </div>
 
     <div class="row">
@@ -71,10 +71,10 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">{{ __('user.name') }}</th>
-                            <th scope="col">{{ __('generic.created_at') }}</th>
-                            <th scope="col">{{ __('generic.updated_at') }}</th>
-                            <th scope="col">{{ __('orders.totals.booked') }}</th>
+                            <th scope="col">{{ __('texts.user.name') }}</th>
+                            <th scope="col">{{ __('texts.generic.created_at') }}</th>
+                            <th scope="col">{{ __('texts.generic.updated_at') }}</th>
+                            <th scope="col">{{ __('texts.orders.totals.booked') }}</th>
                         </tr>
                     </thead>
                     <tbody>

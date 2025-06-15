@@ -23,7 +23,7 @@ class AggregateBooking extends Printer
         }
 
         $names = implode(' / ', $names);
-        $filename = sanitizeFilename(__('orders.documents.shipping.filename', ['suppliers' => $names]));
+        $filename = sanitizeFilename(__('texts.orders.documents.shipping.filename', ['suppliers' => $names]));
 
         $pdf = PDF::loadView('documents.personal_aggregate_shipping', [
             'aggregate' => $obj->aggregate,

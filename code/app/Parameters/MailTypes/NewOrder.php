@@ -11,17 +11,17 @@ class NewOrder extends MailType
 
     public function description()
     {
-        return __('mail.order.description');
+        return __('texts.mail.order.description');
     }
 
     public function params()
     {
         return [
-            'supplier_name' => __('orders.supplier'),
-            'order_comment' => __('mail.order.comment'),
-            'gas_booking_link' => __('mail.order.link'),
-            'contacts' => __('mail.order.mails'),
-            'closing_date' => __('orders.dates.end'),
+            'supplier_name' => __('texts.orders.supplier'),
+            'order_comment' => __('texts.mail.order.comment'),
+            'gas_booking_link' => __('texts.mail.order.link'),
+            'contacts' => __('texts.mail.order.mails'),
+            'closing_date' => __('texts.orders.dates.end'),
         ];
     }
 

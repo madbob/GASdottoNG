@@ -1,16 +1,16 @@
 <x-larastrap::modal>
     <x-larastrap::tabs>
         @foreach($invoice->orders as $index => $order)
-            <x-larastrap::tabpane :label="sprintf('%s<br><small>%s</small>', $order->printableName(), __('invoices.shipping_of', ['date' => printableDate($order->shipping)]))" :active="$index == 0" icon="bi-file-check">
+            <x-larastrap::tabpane :label="sprintf('%s<br><small>%s</small>', $order->printableName(), __('texts.invoices.shipping_of', ['date' => printableDate($order->shipping)]))" :active="$index == 0" icon="bi-file-check">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" width="20%">{{ __('products.name') }}</th>
-                            <th scope="col" width="15%">{{ __('products.vat_rate') }}</th>
-                            <th scope="col" width="15%">{{ __('orders.quantities.shipped') }}</th>
-                            <th scope="col" width="15%">{{ __('orders.totals.taxable') }}</th>
-                            <th scope="col" width="15%">{{ __('orders.totals.vat') }}</th>
-                            <th scope="col" width="20%">{{ __('orders.totals.total') }}</th>
+                            <th scope="col" width="20%">{{ __('texts.products.name') }}</th>
+                            <th scope="col" width="15%">{{ __('texts.products.vat_rate') }}</th>
+                            <th scope="col" width="15%">{{ __('texts.orders.quantities.shipped') }}</th>
+                            <th scope="col" width="15%">{{ __('texts.orders.totals.taxable') }}</th>
+                            <th scope="col" width="15%">{{ __('texts.orders.totals.vat') }}</th>
+                            <th scope="col" width="20%">{{ __('texts.orders.totals.total') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,12 +46,12 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col" width="20%">{{ __('products.name') }}</th>
-                            <th scope="col" width="15%">{{ __('products.vat_rate') }}</th>
-                            <th scope="col" width="15%">{{ __('orders.quantities.shipped') }}</th>
-                            <th scope="col" width="15%">{{ __('orders.totals.taxable') }}</th>
-                            <th scope="col" width="15%">{{ __('orders.totals.vat') }}</th>
-                            <th scope="col" width="20%">{{ __('orders.totals.total') }}</th>
+                            <th scope="col" width="20%">{{ __('texts.products.name') }}</th>
+                            <th scope="col" width="15%">{{ __('texts.products.vat_rate') }}</th>
+                            <th scope="col" width="15%">{{ __('texts.orders.quantities.shipped') }}</th>
+                            <th scope="col" width="15%">{{ __('texts.orders.totals.taxable') }}</th>
+                            <th scope="col" width="15%">{{ __('texts.orders.totals.vat') }}</th>
+                            <th scope="col" width="20%">{{ __('texts.orders.totals.total') }}</th>
                         </tr>
                     </thead>
                     <tbody>

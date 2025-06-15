@@ -39,7 +39,7 @@ function formatDateToComponent($component, $params)
     $formatted_value = $formatted_value[0] ?? '';
 
     $params['value'] = printableDate($formatted_value);
-    if ($params['value'] == __('generic.never') && $mandatory) {
+    if ($params['value'] == __('texts.generic.never') && $mandatory) {
         $params['value'] = '';
     }
 
@@ -215,7 +215,7 @@ function appendSaveNotifier($params)
                 <button class="btn btn-success" type="submit">%s</button>
             </div>
         </div>
-    </div>', __('generic.help.save_reminder'), __('generic.save'));
+    </div>', __('texts.generic.help.save_reminder'), __('texts.generic.save'));
 
     return $params;
 }
@@ -232,7 +232,7 @@ function mainFormButtons($params)
         $buttons[] = [
             'color' => 'danger',
             'classes' => ['delete-button'],
-            'label' => $obj && $obj->deleted_at != null ? __('generic.definitive_delete') : __('generic.remove'),
+            'label' => $obj && $obj->deleted_at != null ? __('texts.generic.definitive_delete') : __('texts.generic.remove'),
         ];
     }
 
@@ -241,7 +241,7 @@ function mainFormButtons($params)
         $buttons[] = [
             'color' => 'success',
             'classes' => ['save-button'],
-            'label' => __('generic.save'),
+            'label' => __('texts.generic.save'),
             'attributes' => ['type' => 'submit'],
         ];
     }

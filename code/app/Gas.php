@@ -141,11 +141,11 @@ class Gas extends Model
     {
         $ret = [
             'suppliers' => (object) [
-                'label' => __('supplier.all'),
+                'label' => __('texts.supplier.all'),
                 'class' => Supplier::class,
             ],
             'users' => (object) [
-                'label' => __('user.all'),
+                'label' => __('texts.user.all'),
                 'class' => User::class,
             ],
         ];
@@ -174,10 +174,10 @@ class Gas extends Model
     public function balanceFields()
     {
         $ret = [
-            'bank' => __('movements.bank_account'),
-            'cash' => __('movements.cash_account'),
-            'gas' => __('generic.gas'),
-            'deposits' => __('movements.deposits'),
+            'bank' => __('texts.movements.bank_account'),
+            'cash' => __('texts.movements.cash_account'),
+            'gas' => __('texts.generic.gas'),
+            'deposits' => __('texts.movements.deposits'),
         ];
 
         $gas = currentAbsoluteGas();

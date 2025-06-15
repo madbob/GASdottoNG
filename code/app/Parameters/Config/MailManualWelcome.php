@@ -17,8 +17,8 @@ class MailManualWelcome extends Config
     public function default()
     {
         return (object) [
-            'subject' => __('mail.approved.defaults.subject'),
-            'body' => __('mail.welcome.defaults.body'),
+            'subject' => __('texts.mail.approved.defaults.subject'),
+            'body' => __('texts.mail.welcome.defaults.body'),
         ];
     }
 }

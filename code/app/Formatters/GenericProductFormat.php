@@ -13,20 +13,20 @@ trait GenericProductFormat
     protected static function genericColumns()
     {
         $attributes = [
-            'name' => __('user.firstname'),
-            'supplier_code' => __('products.code'),
-            'measure' => __('generic.measure'),
-            'category' => __('generic.category'),
-            'price' => __('products.prices.unit'),
-            'active' => __('products.bookable'),
-            'vat_rate' => __('products.vat_rate'),
-            'portion_quantity' => __('products.portion_quantity'),
-            'package_size' => __('products.package_size'),
-            'weight' => __('generic.weight'),
-            'multiple' => __('products.multiple'),
-            'min_quantity' => __('products.min_quantity'),
-            'max_quantity' => __('products.max_quantity'),
-            'max_available' => __('products.available'),
+            'name' => __('texts.user.firstname'),
+            'supplier_code' => __('texts.products.code'),
+            'measure' => __('texts.generic.measure'),
+            'category' => __('texts.generic.category'),
+            'price' => __('texts.products.prices.unit'),
+            'active' => __('texts.products.bookable'),
+            'vat_rate' => __('texts.products.vat_rate'),
+            'portion_quantity' => __('texts.products.portion_quantity'),
+            'package_size' => __('texts.products.package_size'),
+            'weight' => __('texts.generic.weight'),
+            'multiple' => __('texts.products.multiple'),
+            'min_quantity' => __('texts.products.min_quantity'),
+            'max_quantity' => __('texts.products.max_quantity'),
+            'max_available' => __('texts.products.available'),
         ];
 
         $ret = [];

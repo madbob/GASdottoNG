@@ -56,7 +56,7 @@ class Order extends Printer
 
         $data = $this->formatShipping($obj, $fields, $status, $isolate_friends, $circles, $extra_modifiers);
 
-        $title = __('orders.documents.shipping.heading', [
+        $title = __('texts.orders.documents.shipping.heading', [
             'identifier' => $obj->internal_number,
             'supplier' => $obj->supplier->name,
             'date' => $obj->shipping ? date('d/m/Y', strtotime($obj->shipping)) : date('d/m/Y'),
@@ -139,7 +139,7 @@ class Order extends Printer
         $subtype = $request['format'] ?? 'pdf';
         $extra_modifiers = $request['extra_modifiers'] ?? 0;
 
-        $title = __('orders.documents.summary.heading', [
+        $title = __('texts.orders.documents.summary.heading', [
             'identifier' => $obj->internal_number,
             'supplier' => $obj->supplier->name,
         ]);
@@ -179,7 +179,7 @@ class Order extends Printer
 
             $document = new Document($subtype);
 
-            $document_title = __('orders.documents.summary.heading', [
+            $document_title = __('texts.orders.documents.summary.heading', [
                 'identifier' => $obj->internal_number,
                 'supplier' => $obj->supplier->printableName(),
             ]);
@@ -273,7 +273,7 @@ class Order extends Printer
             Genero documento
         */
 
-        $filename = sanitizeFilename(__('orders.documents.table.filename', [
+        $filename = sanitizeFilename(__('texts.orders.documents.table.filename', [
             'identifier' => $obj->internal_number,
             'supplier' => $obj->supplier->name,
         ]));

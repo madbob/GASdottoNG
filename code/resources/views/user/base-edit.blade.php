@@ -6,7 +6,7 @@
 
 <x-larastrap::collapse classes="alternate_behavior" open>
     <x-larastrap::suggestion>
-        {{ __('auth.help.email_mode') }}
+        {{ __('texts.auth.help.email_mode') }}
     </x-larastrap::suggestion>
 
     <x-larastrap::email name="email" tlabel="generic.email" />
@@ -16,7 +16,7 @@
     @include('commons.passwordfield', [
         'obj' => $user,
         'name' => 'password',
-        'label' => __('auth.password'),
+        'label' => __('texts.auth.password'),
         'classes' => 'required_when_triggered',
     ])
 </x-larastrap::collapse>

@@ -11,7 +11,7 @@ class Admin extends Role
 
     public function initNew($type)
     {
-        $type->name = __('permissions.roles.admin');
+        $type->name = __('texts.permissions.roles.admin');
         $type->system = true;
         $type->actions = 'gas.access,gas.permissions,gas.config,supplier.view,supplier.add,users.admin,users.movements,movements.admin,movements.types,categories.admin,measures.admin,gas.statistics,notifications.admin';
 

@@ -8,9 +8,9 @@
             @endphp
 
             @if($current_orders->isEmpty())
-                {{ __('orders.help.supplier_no_orders') }}
+                {{ __('texts.orders.help.supplier_no_orders') }}
             @else
-                {{ __('orders.help.supplier_has_orders') }}
+                {{ __('texts.orders.help.supplier_has_orders') }}
                 @foreach($current_orders as $current_order)
                     <x-larastrap::link class="btn btn-info" :href="$current_order->getBookingURL()" :label="$current_order->printableName()" />
                 @endforeach

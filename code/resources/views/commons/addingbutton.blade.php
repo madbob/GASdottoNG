@@ -5,7 +5,7 @@ if (isset($target_update) == false) {
 }
 
 if (isset($button_label) == false) {
-    $button_label = __('generic.create_format', ['type' => $typename_readable]);
+    $button_label = __('texts.generic.create_format', ['type' => $typename_readable]);
 }
 
 if (isset($autoread) == false) {

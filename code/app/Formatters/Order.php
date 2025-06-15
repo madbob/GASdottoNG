@@ -13,7 +13,7 @@ class Order extends Formatter
     private static function formatCode()
     {
         return (object) [
-            'name' => __('products.code'),
+            'name' => __('texts.products.code'),
             'format_product' => function ($product, $summary) {
                 return $product->supplier_code;
             },
@@ -31,7 +31,7 @@ class Order extends Formatter
     private static function formatQuantity()
     {
         return (object) [
-            'name' => __('generic.quantity'),
+            'name' => __('texts.generic.quantity'),
             'checked' => true,
             'format_product' => function ($product, $summary, $alternate = false) {
                 if ($alternate === false) {
@@ -47,7 +47,7 @@ class Order extends Formatter
     private static function formatBoxes()
     {
         return (object) [
-            'name' => __('orders.boxes'),
+            'name' => __('texts.orders.boxes'),
             'format_product' => function ($product, $summary, $alternate = false) {
                 if ($product->package_size != 0) {
                     if ($alternate === false) {
@@ -67,7 +67,7 @@ class Order extends Formatter
     private static function formatMeasure()
     {
         return (object) [
-            'name' => __('generic.measure'),
+            'name' => __('texts.generic.measure'),
             'checked' => true,
             'format_product' => function ($product, $summary, $alternate = false) {
                 if ($alternate === false) {
@@ -88,7 +88,7 @@ class Order extends Formatter
     private static function formatPrice()
     {
         return (object) [
-            'name' => __('generic.price'),
+            'name' => __('texts.generic.price'),
             'checked' => true,
             'format_product' => function ($product, $summary, $alternate = false) {
                 if ($alternate === false) {
@@ -105,7 +105,7 @@ class Order extends Formatter
     {
         $ret = [
             'name' => (object) [
-                'name' => __('user.firstname'),
+                'name' => __('texts.user.firstname'),
                 'checked' => true,
                 'format_product' => function ($product, $summary) {
                     return $product->printableName();
@@ -115,7 +115,7 @@ class Order extends Formatter
                 },
             ],
             'supplier' => (object) [
-                'name' => __('orders.supplier'),
+                'name' => __('texts.orders.supplier'),
                 'checked' => false,
                 'format_product' => function ($product, $summary) {
                     return $product->supplier->printableName();
@@ -128,14 +128,14 @@ class Order extends Formatter
             'measure' => self::formatMeasure(),
 
             'category' => (object) [
-                'name' => __('generic.category'),
+                'name' => __('texts.generic.category'),
                 'checked' => false,
                 'format_product' => function ($product, $summary) {
                     return $product->category ? $product->category->name : '';
                 },
             ],
             'unit_price' => (object) [
-                'name' => __('products.prices.unit'),
+                'name' => __('texts.products.prices.unit'),
                 'checked' => false,
                 'format_product' => function ($product, $summary) {
                     return printablePrice($product->getPrice());
@@ -148,7 +148,7 @@ class Order extends Formatter
             'price' => self::formatPrice(),
 
             'time' => (object) [
-                'name' => __('orders.booking_date_time'),
+                'name' => __('texts.orders.booking_date_time'),
                 'checked' => false,
                 'format_product' => function ($product, $summary) {
                     return $summary->booked->created_at->format('d/m/Y H:i');
@@ -161,7 +161,7 @@ class Order extends Formatter
 
         if ($type == 'summary') {
             $ret['notes'] = (object) [
-                'name' => __('generic.notes'),
+                'name' => __('texts.generic.notes'),
                 'format_product' => function ($product, $summary) {
                     return $product->pivot->notes;
                 },

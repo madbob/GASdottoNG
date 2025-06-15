@@ -29,7 +29,7 @@ if (is_null($order)) {
 
     @if($limiting->isEmpty() == false || $selectable->isEmpty() == false)
         <div class="card mb-4">
-            <div class="card-header">{{ __('aggregations.all') }}</div>
+            <div class="card-header">{{ __('texts.aggregations.all') }}</div>
             <div class="card-body">
                 @if($limiting->isEmpty() == false)
                     <x-larastrap::checklist-model tlabel="aggregations.limit_access" name="circles" :options="$limiting" :readonly="$readonly" :disabled="$readonly" tpophelp="aggregations.help.limit_access_to_order" />

@@ -2,7 +2,7 @@
     <?php
 
     if (!isset($default_subject)) {
-        $default_subject = __('generic.attachment');
+        $default_subject = __('texts.generic.attachment');
     }
 
     if (!isset($default_text)) {
@@ -21,7 +21,7 @@
                 'contents' => $contacts,
                 'columns' => [
                     [
-                        'label' => __('generic.value'),
+                        'label' => __('texts.generic.value'),
                         'field' => 'value',
                         'type' => 'email',
                         'width' => 11,

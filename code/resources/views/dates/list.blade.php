@@ -21,7 +21,7 @@
 
     @if(!empty($effective_dates))
         <p>
-            {{ __('notifications.next_dates') }}
+            {{ __('texts.notifications.next_dates') }}
         </p>
         <ul>
             @foreach($effective_dates as $d)
@@ -32,7 +32,7 @@
 
     @if(!empty($automatic_dates))
         <p>
-            {{ __('notifications.next_auto_orders') }}
+            {{ __('texts.notifications.next_auto_orders') }}
         </p>
         <ul>
             @foreach($automatic_dates as $d)

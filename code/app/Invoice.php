@@ -36,7 +36,7 @@ class Invoice extends Model implements Datable
 
     public static function commonClassName()
     {
-        return __('generic.invoice');
+        return __('texts.generic.invoice');
     }
 
     public function supplier(): BelongsTo
@@ -133,7 +133,7 @@ class Invoice extends Model implements Datable
     public function balanceFields()
     {
         return [
-            'bank' => __('invoices.balances.supplier'),
+            'bank' => __('texts.invoices.balances.supplier'),
         ];
     }
 

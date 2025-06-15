@@ -10,10 +10,10 @@ class Modifier
     {
         return [
             'none' => '',
-            'quantity' => __('modifiers.dynamics.values.quantity'),
-            'price' => __('modifiers.dynamics.values.price'),
-            'order_price' => __('modifiers.dynamics.values.order_price'),
-            'weight' => __('modifiers.dynamics.values.weight'),
+            'quantity' => __('texts.modifiers.dynamics.values.quantity'),
+            'price' => __('texts.modifiers.dynamics.values.price'),
+            'order_price' => __('texts.modifiers.dynamics.values.order_price'),
+            'weight' => __('texts.modifiers.dynamics.values.weight'),
         ];
     }
 
@@ -21,25 +21,25 @@ class Modifier
     {
         return [
             'product,product' => '',
-            'product,booking' => __('modifiers.dynamics.targets.product.booking'),
-            'product,order' => __('modifiers.dynamics.targets.product.order'),
+            'product,booking' => __('texts.modifiers.dynamics.targets.product.booking'),
+            'product,order' => __('texts.modifiers.dynamics.targets.product.order'),
             'order,product' => '',
-            'order,booking' => __('modifiers.dynamics.targets.order.booking'),
-            'order,order' => __('modifiers.dynamics.targets.order.order'),
+            'order,booking' => __('texts.modifiers.dynamics.targets.order.booking'),
+            'order,order' => __('texts.modifiers.dynamics.targets.order.order'),
             'aggregate,product' => '',
-            'aggregate,booking' => __('modifiers.dynamics.targets.aggregate.booking'),
-            'aggregate,order' => __('modifiers.dynamics.targets.aggregate.order'),
+            'aggregate,booking' => __('texts.modifiers.dynamics.targets.aggregate.booking'),
+            'aggregate,order' => __('texts.modifiers.dynamics.targets.aggregate.order'),
             'circle,product' => '',
-            'circle,booking' => __('modifiers.dynamics.targets.circle.booking'),
-            'circle,order' => __('modifiers.dynamics.targets.circle.order'),
+            'circle,booking' => __('texts.modifiers.dynamics.targets.circle.booking'),
+            'circle,order' => __('texts.modifiers.dynamics.targets.circle.order'),
         ];
     }
 
     private static function scaleLabels()
     {
         return [
-            'minor' => __('modifiers.dynamics.scale.minor'),
-            'major' => __('modifiers.dynamics.scale.major'),
+            'minor' => __('texts.modifiers.dynamics.scale.minor'),
+            'major' => __('texts.modifiers.dynamics.scale.major'),
         ];
     }
 
@@ -51,7 +51,7 @@ class Modifier
             $quantity_label = $target->measure->name;
         }
         else {
-            $quantity_label = __('products.list');
+            $quantity_label = __('texts.products.list');
         }
 
         return [
@@ -63,7 +63,7 @@ class Modifier
             'quantity' => $quantity_label,
             'price' => $currency,
             'order_price' => $currency,
-            'weight' => __('generic.kilos'),
+            'weight' => __('texts.generic.kilos'),
         ];
     }
 
@@ -72,39 +72,39 @@ class Modifier
         $currency = defaultCurrency()->symbol;
 
         return [
-            'sum,product,absolute' => [__('modifiers.dynamics.distribution.sum.product'), $currency],
-            'sum,booking,absolute' => [__('modifiers.dynamics.distribution.sum.booking'), $currency],
-            'sum,order,absolute' => [__('modifiers.dynamics.distribution.sum.order'), $currency],
-            'sum,product,percentage' => [__('modifiers.dynamics.distribution.sum.product'), '%'],
-            'sum,booking,percentage' => [__('modifiers.dynamics.distribution.sum.booking'), '%'],
-            'sum,order,percentage' => [__('modifiers.dynamics.distribution.sum.order'), '%'],
-            'sum,product,mass' => [__('modifiers.dynamics.distribution.sum.product_kg'), $currency],
-            'sum,booking,mass' => [__('modifiers.dynamics.distribution.sum.booking_kg'), $currency],
-            'sum,order,mass' => [__('modifiers.dynamics.distribution.sum.order_kg'), $currency],
+            'sum,product,absolute' => [__('texts.modifiers.dynamics.distribution.sum.product'), $currency],
+            'sum,booking,absolute' => [__('texts.modifiers.dynamics.distribution.sum.booking'), $currency],
+            'sum,order,absolute' => [__('texts.modifiers.dynamics.distribution.sum.order'), $currency],
+            'sum,product,percentage' => [__('texts.modifiers.dynamics.distribution.sum.product'), '%'],
+            'sum,booking,percentage' => [__('texts.modifiers.dynamics.distribution.sum.booking'), '%'],
+            'sum,order,percentage' => [__('texts.modifiers.dynamics.distribution.sum.order'), '%'],
+            'sum,product,mass' => [__('texts.modifiers.dynamics.distribution.sum.product_kg'), $currency],
+            'sum,booking,mass' => [__('texts.modifiers.dynamics.distribution.sum.booking_kg'), $currency],
+            'sum,order,mass' => [__('texts.modifiers.dynamics.distribution.sum.order_kg'), $currency],
 
-            'sub,product,absolute' => [__('modifiers.dynamics.distribution.sub.product'), $currency],
-            'sub,booking,absolute' => [__('modifiers.dynamics.distribution.sub.booking'), $currency],
-            'sub,order,absolute' => [__('modifiers.dynamics.distribution.sub.order'), $currency],
-            'sub,product,percentage' => [__('modifiers.dynamics.distribution.sub.product'), '%'],
-            'sub,booking,percentage' => [__('modifiers.dynamics.distribution.sub.booking'), '%'],
-            'sub,order,percentage' => [__('modifiers.dynamics.distribution.sub.order'), '%'],
-            'sub,product,mass' => [__('modifiers.dynamics.distribution.sub.product_kg'), $currency],
-            'sub,booking,mass' => [__('modifiers.dynamics.distribution.sub.booking_kg'), $currency],
-            'sub,order,mass' => [__('modifiers.dynamics.distribution.sub.order_kg'), $currency],
+            'sub,product,absolute' => [__('texts.modifiers.dynamics.distribution.sub.product'), $currency],
+            'sub,booking,absolute' => [__('texts.modifiers.dynamics.distribution.sub.booking'), $currency],
+            'sub,order,absolute' => [__('texts.modifiers.dynamics.distribution.sub.order'), $currency],
+            'sub,product,percentage' => [__('texts.modifiers.dynamics.distribution.sub.product'), '%'],
+            'sub,booking,percentage' => [__('texts.modifiers.dynamics.distribution.sub.booking'), '%'],
+            'sub,order,percentage' => [__('texts.modifiers.dynamics.distribution.sub.order'), '%'],
+            'sub,product,mass' => [__('texts.modifiers.dynamics.distribution.sub.product_kg'), $currency],
+            'sub,booking,mass' => [__('texts.modifiers.dynamics.distribution.sub.booking_kg'), $currency],
+            'sub,order,mass' => [__('texts.modifiers.dynamics.distribution.sub.order_kg'), $currency],
 
-            'passive,product,absolute' => [__('modifiers.dynamics.distribution.passive.product'), $currency],
-            'passive,booking,absolute' => [__('modifiers.dynamics.distribution.passive.booking'), $currency],
-            'passive,order,absolute' => [__('modifiers.dynamics.distribution.passive.order'), $currency],
-            'passive,product,percentage' => [__('modifiers.dynamics.distribution.passive.product'), '%'],
-            'passive,booking,percentage' => [__('modifiers.dynamics.distribution.passive.booking'), '%'],
-            'passive,order,percentage' => [__('modifiers.dynamics.distribution.passive.order'), '%'],
-            'passive,product,mass' => [__('modifiers.dynamics.distribution.passive.product_kg'), $currency],
-            'passive,booking,mass' => [__('modifiers.dynamics.distribution.passive.booking_kg'), $currency],
-            'passive,order,mass' => [__('modifiers.dynamics.distribution.passive.order_kg'), $currency],
+            'passive,product,absolute' => [__('texts.modifiers.dynamics.distribution.passive.product'), $currency],
+            'passive,booking,absolute' => [__('texts.modifiers.dynamics.distribution.passive.booking'), $currency],
+            'passive,order,absolute' => [__('texts.modifiers.dynamics.distribution.passive.order'), $currency],
+            'passive,product,percentage' => [__('texts.modifiers.dynamics.distribution.passive.product'), '%'],
+            'passive,booking,percentage' => [__('texts.modifiers.dynamics.distribution.passive.booking'), '%'],
+            'passive,order,percentage' => [__('texts.modifiers.dynamics.distribution.passive.order'), '%'],
+            'passive,product,mass' => [__('texts.modifiers.dynamics.distribution.passive.product_kg'), $currency],
+            'passive,booking,mass' => [__('texts.modifiers.dynamics.distribution.passive.booking_kg'), $currency],
+            'passive,order,mass' => [__('texts.modifiers.dynamics.distribution.passive.order_kg'), $currency],
 
-            'apply,product,price' => [__('modifiers.dynamics.distribution.apply.product'), $currency],
-            'apply,booking,price' => [__('modifiers.dynamics.distribution.apply.product'), $currency],
-            'apply,order,price' => [__('modifiers.dynamics.distribution.apply.product'), $currency],
+            'apply,product,price' => [__('texts.modifiers.dynamics.distribution.apply.product'), $currency],
+            'apply,booking,price' => [__('texts.modifiers.dynamics.distribution.apply.product'), $currency],
+            'apply,order,price' => [__('texts.modifiers.dynamics.distribution.apply.product'), $currency],
         ];
     }
 
@@ -112,9 +112,9 @@ class Modifier
     {
         return [
             'none' => '',
-            'quantity' => __('modifiers.dynamics.types.quantity'),
-            'price' => __('modifiers.dynamics.types.price'),
-            'weight' => __('modifiers.dynamics.types.weight'),
+            'quantity' => __('texts.modifiers.dynamics.types.quantity'),
+            'price' => __('texts.modifiers.dynamics.types.price'),
+            'weight' => __('texts.modifiers.dynamics.types.weight'),
         ];
     }
 
@@ -143,7 +143,7 @@ class Modifier
                             foreach ($distribution_types as $dt => $dts) {
                                 $key = sprintf('%s,%s,%s,%s,%s,%s', $vl, $tl, $sl, $vu, $dl, $dt);
                                 $labels[$key] = [
-                                    __('modifiers.dynamics.template', ['value' => $vs, 'target' => $ts, 'scale' => $ss]),
+                                    __('texts.modifiers.dynamics.template', ['value' => $vs, 'target' => $ts, 'scale' => $ss]),
                                     $vus,
                                     $ds[0],
                                     $ds[1],

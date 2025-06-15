@@ -13,7 +13,7 @@ class DepositReturn extends MovementType
 
     public function initNew($type)
     {
-        $type->name = __('movements.defaults.deposit_return');
+        $type->name = __('texts.movements.defaults.deposit_return');
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\User';
         $type->system = true;

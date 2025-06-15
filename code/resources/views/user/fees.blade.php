@@ -10,7 +10,7 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
             <div class="col-12 col-md-6">
                 <x-larastrap::radios
                     name="actual_status"
-                    :options="['all' => __('generic.all'), 'active' => __('user.statuses.active'), 'suspended' => __('user.statuses.suspended'), 'deleted' => __('user.statuses.deleted')]"
+                    :options="['all' => __('texts.generic.all'), 'active' => __('texts.user.statuses.active'), 'suspended' => __('texts.user.statuses.suspended'), 'deleted' => __('texts.user.statuses.deleted')]"
                     tlabel="generic.status"
                     classes="table-filters"
                     value="active"
@@ -24,7 +24,7 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
                         :label="$group->printableName()"
                         classes="table-filters"
                         data-table-target="#usersStatusTable"
-                        :extra_options="['all' => __('generic.all')]" />
+                        :extra_options="['all' => __('texts.generic.all')]" />
                 @endforeach
             </div>
         </div>
@@ -36,9 +36,9 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
                 <table class="table align-middle" id="usersStatusTable">
                     <thead>
                         <tr>
-                            <th scope="col" width="20%">{{ __('generic.name') }}</th>
-                            <th scope="col" width="30%">{{ __('user.last_fee') }}</th>
-                            <th scope="col" width="30%">{{ __('generic.status') }}</th>
+                            <th scope="col" width="20%">{{ __('texts.generic.name') }}</th>
+                            <th scope="col" width="30%">{{ __('texts.user.last_fee') }}</th>
+                            <th scope="col" width="30%">{{ __('texts.generic.status') }}</th>
                             <th scope="col" width="20%"></th>
                         </tr>
                     </thead>

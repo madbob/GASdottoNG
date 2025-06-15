@@ -3,10 +3,10 @@
         <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
 
         <p>
-            {{ __('products.help.pending_orders_change_price') }}
+            {{ __('texts.products.help.pending_orders_change_price') }}
         </p>
         <p>
-            {{ __('products.help.pending_orders_change_price_second') }}
+            {{ __('texts.products.help.pending_orders_change_price_second') }}
         </p>
 
         <p>

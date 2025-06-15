@@ -23,7 +23,7 @@ if (!isset($extra_description)) {
                 <input type="hidden" class="wizard_field" name="{{ $name }}" value="{{ $value }}" />
             @endforeach
 
-            <p>{{ __('imports.help.main') }}</p>
+            <p>{{ __('texts.imports.help.main') }}</p>
 
             @foreach($extra_description as $ed)
                 <p>{{ $ed }}</p>
@@ -35,7 +35,7 @@ if (!isset($extra_description)) {
                 <div class="col-4">
                     <ul class="list-group">
                         @foreach($columns as $index => $column)
-                            <li class="list-group-item">{{ __('imports.index_column', ['index' => $index + 1]) }} - {{ empty($column) ? '&nbsp;' : $column }}</li>
+                            <li class="list-group-item">{{ __('texts.imports.index_column', ['index' => $index + 1]) }} - {{ empty($column) ? '&nbsp;' : $column }}</li>
                         @endforeach
                     </ul>
                 </div>
@@ -43,14 +43,14 @@ if (!isset($extra_description)) {
                     <ul class="list-group">
                         @foreach($selected as $index => $sel)
                             <li class="list-group-item im_droppable">
-                                {{ __('imports.column') }} <span class="columns_index">{{ $index + 1 }}</span>: <span class="column_content"><input type="hidden" name="column[]" value="{{ $sel->name }}" />{{ $sel->label }}</span>
+                                {{ __('texts.imports.column') }} <span class="columns_index">{{ $index + 1 }}</span>: <span class="column_content"><input type="hidden" name="column[]" value="{{ $sel->name }}" />{{ $sel->label }}</span>
                             </li>
                         @endforeach
                     </ul>
                 </div>
                 <div class="col-4">
                     <ul class="list-group">
-                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="none" />{{ __('imports.ignore_slot') }}</li>
+                        <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="none" />{{ __('texts.imports.ignore_slot') }}</li>
 
                         @foreach($sorting_fields as $name => $metadata)
                             <li class="list-group-item im_draggable"><input type="hidden" name="wannabe_column[]" value="{{ $name }}" />

@@ -78,7 +78,7 @@ abstract class CSVImporter
                 }
                 else {
                     $selected[] = (object) [
-                        'label' => __('imports.ignore_slot'),
+                        'label' => __('texts.imports.ignore_slot'),
                         'name' => 'none',
                     ];
                 }
@@ -87,7 +87,7 @@ abstract class CSVImporter
         else {
             foreach ($parameters['columns'] as $c) {
                 $selected[] = (object) [
-                    'label' => __('imports.ignore_slot'),
+                    'label' => __('texts.imports.ignore_slot'),
                     'name' => 'none',
                 ];
             }

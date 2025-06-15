@@ -16,20 +16,20 @@
                 <x-larastrap::field tlabel="orders.supplier">
                     <div class="radio">
                         <label>
-                            <input type="radio" name="supplier_source" value="new" {{ $existing ? '' : 'checked' }}> {{ __('generic.create') }}: {{ $supplier->name }}
+                            <input type="radio" name="supplier_source" value="new" {{ $existing ? '' : 'checked' }}> {{ __('texts.generic.create') }}: {{ $supplier->name }}
                         </label>
                     </div>
                     <div class="radio">
                         <label>
-                            <input type="radio" name="supplier_source" value="update" {{ $existing ? 'checked' : '' }}> {{ __('imports.update_supplier') }}
+                            <input type="radio" name="supplier_source" value="update" {{ $existing ? 'checked' : '' }}> {{ __('texts.imports.update_supplier') }}
                         </label>
-                        <x-larastrap::select-model name="supplier_update" squeeze :options="$currentgas->suppliers" :extra_options="[0 => __('imports.select_supplier')]" :value="$existing ? $existing->id : 0" />
+                        <x-larastrap::select-model name="supplier_update" squeeze :options="$currentgas->suppliers" :extra_options="[0 => __('texts.imports.select_supplier')]" :value="$existing ? $existing->id : 0" />
                     </div>
                 </x-larastrap::field>
 
                 <x-larastrap::field tlabel="products.list">
                     <label class="static-label text-body-secondary">
-                        {{ __('imports.products_count', ['count' => $supplier->products->count()]) }}
+                        {{ __('texts.imports.products_count', ['count' => $supplier->products->count()]) }}
                     </label>
                 </x-larastrap::field>
             @endforeach

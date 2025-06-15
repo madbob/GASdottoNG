@@ -4,7 +4,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">{{ __('generic.date') }}</th>
+                <th scope="col">{{ __('texts.generic.date') }}</th>
                 @foreach($obj->balanceFields() as $identifier => $name)
                     <th scope="col">{{ $name }}</th>
                 @endforeach
@@ -19,7 +19,7 @@
 				<?php $date = \Carbon\Carbon::parse($bal->date) ?>
 
                 <tr class="{{ $index == 0 ? 'current-balance' : '' }}">
-                    <td>{{ $index == 0 ? __('movements.current_balance') : ucwords($date->isoFormat('D MMMM YYYY')) }}</td>
+                    <td>{{ $index == 0 ? __('texts.movements.current_balance') : ucwords($date->isoFormat('D MMMM YYYY')) }}</td>
 
                     @foreach($obj->balanceFields() as $identifier => $name)
                         <td class="{{ $index == 0 ? $identifier : '' }}">

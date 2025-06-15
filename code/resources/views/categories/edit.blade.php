@@ -29,7 +29,7 @@ function categoryDescent($category, $toplevel)
     <x-larastrap::form classes="dynamic-tree-box" method="PUT" :action="url('categories/0')">
         <div class="row">
             <div class="col">
-                <p>{{ __('generic.help.categories_instructions') }}</p>
+                <p>{{ __('texts.generic.help.categories_instructions') }}</p>
             </div>
         </div>
         <div class="row">
@@ -49,7 +49,7 @@ function categoryDescent($category, $toplevel)
                 <x-larastrap::text name="new_category" squeeze tplaceholder="generic.create" />
             </div>
             <div class="col-md-2">
-                <button class="float-end btn btn-warning dynamic-tree-add">{{ __('generic.create') }}</button>
+                <button class="float-end btn btn-warning dynamic-tree-add">{{ __('texts.generic.create') }}</button>
             </div>
         </div>
     </x-larastrap::form>

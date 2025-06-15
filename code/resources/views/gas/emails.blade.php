@@ -5,7 +5,7 @@
 
             <div class="col">
                 <x-larastrap::suggestion>
-                    {{ __('orders.help.mail_order_notification') }}
+                    {{ __('texts.orders.help.mail_order_notification') }}
                 </x-larastrap::suggestion>
 
                 <div class="table-responsive">
@@ -13,14 +13,14 @@
                         <thead>
                             <tr>
                                 <th scope="col" width="20%">&nbsp;</th>
-                                <th scope="col" width="20%">{{ __('orders.statuses.open') }}</th>
-                                <th scope="col" width="40%">{{ __('orders.statuses.closing') }}</th>
-                                <th scope="col" width="20%">{{ __('orders.statuses.closed') }}</th>
+                                <th scope="col" width="20%">{{ __('texts.orders.statuses.open') }}</th>
+                                <th scope="col" width="40%">{{ __('texts.orders.statuses.closing') }}</th>
+                                <th scope="col" width="20%">{{ __('texts.orders.statuses.closed') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <th scope="row">{{ __('user.all') }}</th>
+                                <th scope="row">{{ __('texts.user.all') }}</th>
                                 <td>
                                     <x-larastrap::check name="notify_all_new_orders" squeeze />
                                     <x-larastrap::pophelp ttext="orders.help.target_supplier_notifications" />
@@ -37,7 +37,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row">{{ __('supplier.referents') }}</th>
+                                <th scope="row">{{ __('texts.supplier.referents') }}</th>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
                                 <td>
@@ -52,13 +52,13 @@
 
                 <x-larastrap::suggestion>
                     <p>
-                        {{ __('gas.help.custom_emails') }}
+                        {{ __('texts.gas.help.custom_emails') }}
                     </p>
                     <p>
-                        {{ __('gas.help.global_placeholders') }}
+                        {{ __('texts.gas.help.global_placeholders') }}
                     </p>
                     <ul>
-                        <li>gas_name: {{ __('gas.attribute_name') }}</li>
+                        <li>gas_name: {{ __('texts.gas.attribute_name') }}</li>
                     </ul>
                 </x-larastrap::suggestion>
 

@@ -11,7 +11,7 @@
 <div class="col-12 col-md-6 offset-md-3">
     <hr/>
     <p>
-        <a href="{{ route('login') }}">{{ __('auth.login') }}</a>
+        <a href="{{ route('login') }}">{{ __('texts.auth.login') }}</a>
     </p>
 </div>
 

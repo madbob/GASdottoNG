@@ -18,7 +18,7 @@ class ShippingAdjust extends ModifierType
 
     public function initNew($type)
     {
-        $type->name = __('modifiers.defaults.rounding');
+        $type->name = __('texts.modifiers.defaults.rounding');
         $type->system = true;
         $type->hidden = true;
         $type->classes = [];

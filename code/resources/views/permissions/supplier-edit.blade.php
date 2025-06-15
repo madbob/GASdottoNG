@@ -12,7 +12,7 @@
 
 	@if($roles->isEmpty())
 		<p class="alert alert-danger">
-			{{ __('permissions.help.admin_not_authorized') }}
+			{{ __('texts.permissions.help.admin_not_authorized') }}
 		</p>
 	@else
 	    @foreach($roles as $role)
@@ -22,7 +22,7 @@
     	            @include('commons.completionrows', [
     	                'objects' => $role->usersByTarget($supplier),
     	                'source' => route('users.search'),
-    	                'adding_label' => __('generic.add_new'),
+    	                'adding_label' => __('texts.generic.add_new'),
     	                'add_callback' => 'supplierAttachUser',
     	                'remove_callback' => 'supplierDetachUser',
     	                'extras' => [

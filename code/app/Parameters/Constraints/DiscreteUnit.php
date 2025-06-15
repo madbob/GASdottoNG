@@ -29,7 +29,7 @@ class DiscreteUnit extends Constraint
     {
         if ($booked->product->measure->discrete) {
             if (filter_var((float) $quantity, FILTER_VALIDATE_INT) === false) {
-                throw new InvalidQuantityConstraint(__('orders.constraints.discrete'), 6);
+                throw new InvalidQuantityConstraint(__('texts.orders.constraints.discrete'), 6);
             }
         }
     }

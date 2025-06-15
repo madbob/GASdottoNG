@@ -29,7 +29,7 @@ class ClosedOrdersNotification extends ManyMailNotification
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
-        $message->subject(__('mail.closed.defaults.subject'))->view('emails.closedorder', ['orders' => $this->orders]);
+        $message->subject(__('texts.mail.closed.defaults.subject'))->view('emails.closedorder', ['orders' => $this->orders]);
 
         foreach ($this->files as $file) {
             $message->attach($file);

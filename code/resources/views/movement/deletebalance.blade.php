@@ -5,7 +5,7 @@
 
 		<div class="alert alert-danger">
 			<p>
-				{{ __('movements.help.removing_balance_warning') }}
+				{{ __('texts.movements.help.removing_balance_warning') }}
 			</p>
 		</div>
 	</x-larastrap::iform>

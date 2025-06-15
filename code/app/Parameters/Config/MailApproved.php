@@ -17,8 +17,8 @@ class MailApproved extends Config
     public function default()
     {
         return (object) [
-            'subject' => __('mail.approved.defaults.subject'),
-            'body' => __('mail.approved.defaults.body'),
+            'subject' => __('texts.mail.approved.defaults.subject'),
+            'body' => __('texts.mail.approved.defaults.body'),
         ];
     }
 }

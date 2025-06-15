@@ -17,22 +17,22 @@ class Users extends CSVImporter
     private function essentialFields(&$ret)
     {
         $ret['firstname'] = (object) [
-            'label' => __('user.firstname'),
+            'label' => __('texts.user.firstname'),
             'mandatory' => true,
         ];
 
         $ret['lastname'] = (object) [
-            'label' => __('user.lastname'),
+            'label' => __('texts.user.lastname'),
             'mandatory' => true,
         ];
 
         $ret['username'] = (object) [
-            'label' => __('auth.username'),
+            'label' => __('texts.auth.username'),
             'mandatory' => true,
         ];
 
         $ret['password'] = (object) [
-            'label' => __('auth.password'),
+            'label' => __('texts.auth.password'),
         ];
     }
 
@@ -46,15 +46,15 @@ class Users extends CSVImporter
             */
             if ($identifier == 'address') {
                 $ret['address_0'] = (object) [
-                    'label' => __('user.address_part.street'),
+                    'label' => __('texts.user.address_part.street'),
                 ];
 
                 $ret['address_1'] = (object) [
-                    'label' => __('user.address_part.city'),
+                    'label' => __('texts.user.address_part.city'),
                 ];
 
                 $ret['address_2'] = (object) [
-                    'label' => __('user.address_part.zip'),
+                    'label' => __('texts.user.address_part.zip'),
                 ];
             }
             else {
@@ -68,48 +68,48 @@ class Users extends CSVImporter
     private function otherFields(&$ret)
     {
         $ret['birthplace'] = (object) [
-            'label' => __('user.birthplace'),
+            'label' => __('texts.user.birthplace'),
         ];
 
         $ret['birthday'] = (object) [
-            'label' => __('user.birthdate'),
-            'explain' => __('generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
+            'label' => __('texts.user.birthdate'),
+            'explain' => __('texts.generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
         ];
 
         $ret['taxcode'] = (object) [
-            'label' => __('user.taxcode'),
+            'label' => __('texts.user.taxcode'),
         ];
 
         $ret['member_since'] = (object) [
-            'label' => __('user.member_since'),
-            'explain' => __('generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
+            'label' => __('texts.user.member_since'),
+            'explain' => __('texts.generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
         ];
 
         $ret['card_number'] = (object) [
-            'label' => __('user.card_number'),
+            'label' => __('texts.user.card_number'),
         ];
 
         $ret['last_login'] = (object) [
-            'label' => __('user.last_login'),
-            'explain' => __('generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
+            'label' => __('texts.user.last_login'),
+            'explain' => __('texts.generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
         ];
 
         $groups = Group::where('context', 'user')->orderBy('name', 'asc')->get();
         foreach ($groups as $group) {
             $ret['group_' . $group->id] = (object) [
-                'label' => __('user.formatted_aggregation', ['name' => $group->name]),
-                'explain' => __('export.help.importing.user.aggregation'),
+                'label' => __('texts.user.formatted_aggregation', ['name' => $group->name]),
+                'explain' => __('texts.export.help.importing.user.aggregation'),
             ];
         }
 
         $ret['ceased'] = (object) [
-            'label' => __('user.statuses.deleted'),
-            'explain' => __('export.help.importing.user.deleted'),
+            'label' => __('texts.user.statuses.deleted'),
+            'explain' => __('texts.export.help.importing.user.deleted'),
         ];
 
         $ret['credit'] = (object) [
-            'label' => __('movements.current_credit'),
-            'explain' => __('user.help.importing.user.balance'),
+            'label' => __('texts.movements.current_credit'),
+            'explain' => __('texts.user.help.importing.user.balance'),
         ];
     }
 
@@ -135,7 +135,7 @@ class Users extends CSVImporter
         return $this->storeUploadedFile($request, [
             'type' => 'users',
             'extra_description' => [
-                __('export.help.importing.user.instruction'),
+                __('texts.export.help.importing.user.instruction'),
             ],
             'sorting_fields' => $this->fields(),
         ]);
@@ -290,7 +290,7 @@ class Users extends CSVImporter
         DB::commit();
 
         return [
-            'title' => __('imports.imported_users'),
+            'title' => __('texts.imports.imported_users'),
             'objects' => $users,
             'errors' => $errors,
         ];

@@ -3,13 +3,13 @@
 
     @if($orders->isEmpty())
         <div class="alert alert-danger">
-            {{ __('invoices.help.no_orders') }}
+            {{ __('texts.invoices.help.no_orders') }}
         </div>
     @else
         <x-larastrap::iform method="POST" :action="url('invoices/wire/review/' . $invoice->id)">
             <input type="hidden" name="close-modal" value="1" />
             <input type="hidden" name="reload-loadable" value="#invoice-list" />
-            <p>{{ __('invoices.help.filtered_orders') }}</p>
+            <p>{{ __('texts.invoices.help.filtered_orders') }}</p>
 
             <hr>
 
@@ -17,10 +17,10 @@
                 <thead>
                     <tr>
                         <th scope="col" width="10%"></th>
-                        <th scope="col" width="30%">{{ __('orders.name') }}</th>
-                        <th scope="col" width="20%">{{ __('orders.totals.taxable') }}</th>
-                        <th scope="col" width="20%">{{ __('orders.totals.vat') }}</th>
-                        <th scope="col" width="20%">{{ __('orders.totals.total') }}</th>
+                        <th scope="col" width="30%">{{ __('texts.orders.name') }}</th>
+                        <th scope="col" width="20%">{{ __('texts.orders.totals.taxable') }}</th>
+                        <th scope="col" width="20%">{{ __('texts.orders.totals.vat') }}</th>
+                        <th scope="col" width="20%">{{ __('texts.orders.totals.total') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,7 +49,7 @@
 
                 <tr class="orders-in-invoice-total">
                     <td>&nbsp;</td>
-                    <td>{{ __('orders.totals.selected') }}</td>
+                    <td>{{ __('texts.orders.totals.selected') }}</td>
                     <td>
                         <span class="taxable">0</span> {{ currentAbsoluteGas()->currency }}
                     </td>
@@ -63,7 +63,7 @@
 
                 <tr>
                     <td>&nbsp;</td>
-                    <td>{{ __('generic.invoice') }}</td>
+                    <td>{{ __('texts.generic.invoice') }}</td>
                     <td>
                         <span>{{ $invoice->total }}</span> {{ currentAbsoluteGas()->currency }}
                     </td>

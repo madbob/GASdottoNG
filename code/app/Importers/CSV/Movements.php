@@ -17,33 +17,33 @@ class Movements extends CSVImporter
     {
         $ret = [
             'date' => (object) [
-                'label' => __('generic.date'),
-                'explain' => __('generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
+                'label' => __('texts.generic.date'),
+                'explain' => __('texts.generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
             ],
             'amount' => (object) [
-                'label' => __('generic.value'),
+                'label' => __('texts.generic.value'),
             ],
             'identifier' => (object) [
-                'label' => __('generic.identifier'),
+                'label' => __('texts.generic.identifier'),
             ],
             'notes' => (object) [
-                'label' => __('generic.notes'),
+                'label' => __('texts.generic.notes'),
             ],
             'user' => (object) [
-                'label' => __('user.name'),
-                'explain' => __('auth.reset_username'),
+                'label' => __('texts.user.name'),
+                'explain' => __('texts.auth.reset_username'),
             ],
             'supplier' => (object) [
-                'label' => __('orders.supplier'),
-                'explain' => __('imports.name_or_vat'),
+                'label' => __('texts.orders.supplier'),
+                'explain' => __('texts.imports.name_or_vat'),
             ],
         ];
 
         $currencies = Currency::enabled();
         if ($currencies->count() > 1) {
             $ret['currency'] = (object) [
-                'label' => __('movements.currency'),
-                'explain' => __('imports.help.currency_id', [
+                'label' => __('texts.movements.currency'),
+                'explain' => __('texts.imports.help.currency_id', [
                     'default' => defaultCurrency()->symbol,
                     'values' => $currencies->pluck('symbol')->join(' / '),
                 ]),
@@ -66,7 +66,7 @@ class Movements extends CSVImporter
             'type' => 'movements',
             'next_step' => 'select',
             'extra_description' => [
-                __('imports.help.unique_user_id'),
+                __('texts.imports.help.unique_user_id'),
             ],
             'sorting_fields' => $this->fields(),
         ]);
@@ -118,7 +118,7 @@ class Movements extends CSVImporter
 
                                 if (is_null($user)) {
                                     $save_me = false;
-                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('imports.help.no_user_found', $name);
+                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_user_found', $name);
 
                                     continue;
                                 }
@@ -142,7 +142,7 @@ class Movements extends CSVImporter
 
                                 if (is_null($supplier)) {
                                     $save_me = false;
-                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('imports.help.no_supplier_found', $name);
+                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_supplier_found', $name);
 
                                     continue;
                                 }
@@ -167,7 +167,7 @@ class Movements extends CSVImporter
                         }
                         else {
                             $save_me = false;
-                            $errors[] = implode($target_separator, $line) . '<br/>' . __('imports.help.no_currency_found', $value);
+                            $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_currency_found', $value);
 
                             continue;
                         }
@@ -289,7 +289,7 @@ class Movements extends CSVImporter
         DB::commit();
 
         return [
-            'title' => __('imports.help.imported_movements_notice'),
+            'title' => __('texts.imports.help.imported_movements_notice'),
             'objects' => $movements,
             'errors' => $errors,
         ];

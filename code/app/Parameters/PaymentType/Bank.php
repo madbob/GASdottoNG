@@ -12,7 +12,7 @@ class Bank extends PaymentType
     public function definition()
     {
         return (object) [
-            'name' => __('movements.methods.bank'),
+            'name' => __('texts.movements.methods.bank'),
             'identifier' => true,
             'icon' => 'bank',
             'active_for' => null,

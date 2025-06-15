@@ -11,15 +11,15 @@ class ManualWelcome extends MailType
 
     public function description()
     {
-        return __('mail.welcome.description');
+        return __('texts.mail.welcome.description');
     }
 
     public function params()
     {
         return [
-            'username' => __('mail.approved.username'),
-            'gas_access_link' => __('mail.welcome.link'),
-            'gas_login_link' => __('mail.approved.link'),
+            'username' => __('texts.mail.approved.username'),
+            'gas_access_link' => __('texts.mail.welcome.link'),
+            'gas_login_link' => __('texts.mail.approved.link'),
         ];
     }
 

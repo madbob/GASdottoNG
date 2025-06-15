@@ -15,18 +15,18 @@ class Welcome extends MailType
         $manual = $gas->hasFeature('public_registrations') && $gas->public_registrations['manual'] == true;
 
         if ($manual) {
-            return __('mail.newuser.description_manual');
+            return __('texts.mail.newuser.description_manual');
         }
         else {
-            return __('mail.newuser.description');
+            return __('texts.mail.newuser.description');
         }
     }
 
     public function params()
     {
         return [
-            'username' => __('auth.username'),
-            'gas_login_link' => __('mail.approved.link'),
+            'username' => __('texts.auth.username'),
+            'gas_login_link' => __('texts.mail.approved.link'),
         ];
     }
 

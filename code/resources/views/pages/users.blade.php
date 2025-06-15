@@ -8,7 +8,7 @@
             @include('commons.addingbutton', [
                 'template' => 'user.base-edit',
                 'typename' => 'user',
-                'typename_readable' => __('user.name'),
+                'typename_readable' => __('texts.user.name'),
                 'targeturl' => 'users'
             ])
 
@@ -24,14 +24,14 @@
                     <input type="hidden" name="collectFilteredUsers" value="#user-list">
                     <input type="hidden" name="pre-saved-function" value="formToDownload">
 
-                    <p>{{ __('export.help_csv_libreoffice') }}</p>
+                    <p>{{ __('texts.export.help_csv_libreoffice') }}</p>
 
                     <hr/>
 
                     <x-larastrap::structchecks name="fields" tlabel="export.data.columns" :options="App\Formatters\User::formattableColumns('export')" />
                     <x-larastrap::radios name="exportables" tlabel="generic.export" :options="[
-                        'all' => __('generic.all'),
-                        'selected' => __('generic.only_selected')
+                        'all' => __('texts.generic.all'),
+                        'selected' => __('texts.generic.only_selected')
                     ]" value="all" />
                 </x-larastrap::iform>
             </x-larastrap::modal>
@@ -64,7 +64,7 @@
                 'filters' => [
                     'deleted_at' => (object) [
                         'icon' => 'inbox',
-                        'label' => __('user.all_ceased'),
+                        'label' => __('texts.user.all_ceased'),
                         'value' => null
                     ]
                 ]

@@ -1,6 +1,6 @@
 <x-larastrap::modal classes="close-on-submit order-document-download-modal">
     <x-larastrap::form classes="direct-submit" method="GET" :action="url('orders/document/' . $order->id . '/shipping')">
-        <p>{{ __('orders.help_order_export_shipping') }}</p>
+        <p>{{ __('texts.orders.help_order_export_shipping') }}</p>
 
         <hr/>
 
@@ -12,15 +12,15 @@
         <?php list($options, $values) = flaxComplexOptions(App\Formatters\Order::formattableColumns('shipping')) ?>
         <x-larastrap::checks name="fields" tlabel="export.data.products" :options="$options" :value="$currentgas->orders_shipping_product_columns" />
 
-        <x-larastrap::radios name="status" tlabel="export.data.status" :options="['pending' => __('orders.booking.statuses.booked'), 'shipped' => __('orders.booking.statuses.shipped')]" value="pending" />
+        <x-larastrap::radios name="status" tlabel="export.data.status" :options="['pending' => __('texts.orders.booking.statuses.booked'), 'shipped' => __('texts.orders.booking.statuses.shipped')]" value="pending" />
 
         @include('order.partials.export.modifiers', ['order' => $order])
 
         @if(someoneCan('users.subusers'))
-            <x-larastrap::radios name="isolate_friends" tlabel="export.data.split_friends" :options="['0' => __('generic.no'), '1' => __('generic.yes')]" value="0" tpophelp="export.help_split_friends" />
+            <x-larastrap::radios name="isolate_friends" tlabel="export.data.split_friends" :options="['0' => __('texts.generic.no'), '1' => __('texts.generic.yes')]" value="0" tpophelp="export.help_split_friends" />
         @endif
 
-        <x-larastrap::radios name="format" tlabel="export.data.format" :options="['pdf' => __('export.data.formats.pdf'), 'csv' => __('export.data.formats.csv')]" value="pdf" />
+        <x-larastrap::radios name="format" tlabel="export.data.format" :options="['pdf' => __('texts.export.data.formats.pdf'), 'csv' => __('texts.export.data.formats.csv')]" value="pdf" />
 
         @include('order.filesmail', ['contacts' => $order->supplier->involvedEmails()])
     </x-larastrap::form>

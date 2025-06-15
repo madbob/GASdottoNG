@@ -16,48 +16,48 @@ class Products extends CSVImporter
     {
         return [
             'name' => (object) [
-                'label' => __('generic.name'),
+                'label' => __('texts.generic.name'),
             ],
             'description' => (object) [
-                'label' => __('generic.description'),
+                'label' => __('texts.generic.description'),
             ],
             'price' => (object) [
-                'label' => __('products.prices.unit'),
+                'label' => __('texts.products.prices.unit'),
             ],
             'price_without_vat' => (object) [
-                'label' => __('products.prices.unit_no_vat'),
-                'explain' => __('products.help.unit_no_vat'),
+                'label' => __('texts.products.prices.unit_no_vat'),
+                'explain' => __('texts.products.help.unit_no_vat'),
             ],
             'vat' => (object) [
-                'label' => __('products.vat_rate'),
+                'label' => __('texts.products.vat_rate'),
             ],
             'category' => (object) [
-                'label' => __('generic.category'),
+                'label' => __('texts.generic.category'),
             ],
             'measure' => (object) [
-                'label' => __('generic.measure'),
+                'label' => __('texts.generic.measure'),
             ],
             'supplier_code' => (object) [
-                'label' => __('products.code'),
+                'label' => __('texts.products.code'),
             ],
             'package_size' => (object) [
-                'label' => __('products.package_size'),
+                'label' => __('texts.products.package_size'),
             ],
             'package_price' => (object) [
-                'label' => __('products.prices.package'),
-                'explain' => __('products.help.package_price'),
+                'label' => __('texts.products.prices.package'),
+                'explain' => __('texts.products.help.package_price'),
             ],
             'weight' => (object) [
-                'label' => __('products.weight_with_measure'),
+                'label' => __('texts.products.weight_with_measure'),
             ],
             'min_quantity' => (object) [
-                'label' => __('products.min_quantity'),
+                'label' => __('texts.products.min_quantity'),
             ],
             'multiple' => (object) [
-                'label' => __('products.multiple'),
+                'label' => __('texts.products.multiple'),
             ],
             'portion_quantity' => (object) [
-                'label' => __('products.portion_quantity'),
+                'label' => __('texts.products.portion_quantity'),
             ],
         ];
     }
@@ -82,7 +82,7 @@ class Products extends CSVImporter
             'type' => 'products',
             'next_step' => 'select',
             'extra_fields' => ['supplier_id' => $s->id],
-            'extra_description' => [__('products.help.importing_categories_and_measures')],
+            'extra_description' => [__('texts.products.help.importing_categories_and_measures')],
             'sorting_fields' => $this->fields(),
             'sorted_fields' => json_decode($s->import_template),
         ]);
@@ -300,7 +300,7 @@ class Products extends CSVImporter
         DB::commit();
 
         return [
-            'title' => __('products.help.imported_notice'),
+            'title' => __('texts.products.help.imported_notice'),
             'objects' => $products,
             'errors' => $errors,
             'extra_closing_attributes' => ['data-reload-target' => '#supplier-list'],

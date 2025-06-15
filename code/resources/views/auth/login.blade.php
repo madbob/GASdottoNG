@@ -12,7 +12,7 @@
 
     @if($gas->restricted == '1')
         <div class="alert alert-warning text-center mt-3">
-            {{ __('auth.maintenance_notice') }}
+            {{ __('texts.auth.maintenance_notice') }}
         </div>
         <hr/>
     @endif
@@ -43,9 +43,9 @@
     <hr/>
     <p>
         @if($gas->hasFeature('public_registrations'))
-            <a href="{{ route('register') }}">{{ __('auth.register') }}</a>
+            <a href="{{ route('register') }}">{{ __('texts.auth.register') }}</a>
         @endif
-        <a class="float-end" href="{{ route('password.request') }}">{{ __('auth.password_request_link') }}</a>
+        <a class="float-end" href="{{ route('password.request') }}">{{ __('texts.auth.password_request_link') }}</a>
     </p>
     <br>
     <br>

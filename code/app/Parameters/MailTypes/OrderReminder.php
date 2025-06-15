@@ -11,13 +11,13 @@ class OrderReminder extends MailType
 
     public function description()
     {
-        return __('mail.reminder.description');
+        return __('texts.mail.reminder.description');
     }
 
     public function params()
     {
         return [
-            'orders_list' => __('mail.reminder.list'),
+            'orders_list' => __('texts.mail.reminder.list'),
         ];
     }
 

@@ -11,7 +11,7 @@ class UserCredit extends MovementType
 
     public function initNew($type)
     {
-        $type->name = __('movements.defaults.credit');
+        $type->name = __('texts.movements.defaults.credit');
         $type->sender_type = null;
         $type->target_type = 'App\User';
         $type->system = true;

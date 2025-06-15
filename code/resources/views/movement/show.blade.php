@@ -25,12 +25,12 @@
         </div>
         <div class="col">
             <x-larastrap::datepicker name="registration_date" tlabel="movements.registration_date" disabled readonly />
-            <x-larastrap::text name="registerer" tlabel="movements.registrar" :value="$obj->automatic ? __('movements.automatic') : $obj->registerer->printableName()" disabled readonly />
+            <x-larastrap::text name="registerer" tlabel="movements.registrar" :value="$obj->automatic ? __('texts.movements.automatic') : $obj->registerer->printableName()" disabled readonly />
 
             @if($obj->related->isEmpty() == false)
                 <x-larastrap::field tlabel="generic.related">
                     @foreach($obj->related as $rel)
-                        @include('commons.staticmovementfield', ['obj' => $rel, 'label' => __('generic.payment'), 'squeeze' => true])
+                        @include('commons.staticmovementfield', ['obj' => $rel, 'label' => __('texts.generic.payment'), 'squeeze' => true])
                     @endforeach
                 </x-larastrap::field>
             @endif

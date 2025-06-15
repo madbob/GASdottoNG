@@ -27,7 +27,7 @@ if (!isset($mandatory)) {
             @endif
 
             @if(is_null($obj) == false)
-                placeholder="{{ __('generic.help.unchange_password') }}"
+                placeholder="{{ __('texts.generic.help.unchange_password') }}"
             @endif
 
             name="{{ $name }}">

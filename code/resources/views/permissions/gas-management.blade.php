@@ -1,5 +1,5 @@
 <div class="card-header">
-    <h3>{{ __('permissions.name') }}</h3>
+    <h3>{{ __('texts.permissions.name') }}</h3>
 </div>
 <div class="card-body">
     <div class="row">
@@ -27,7 +27,7 @@
             @include('commons.addingbutton', [
                 'template' => 'permissions.base-edit',
                 'typename' => 'role',
-                'typename_readable' => __('permissions.role'),
+                'typename_readable' => __('texts.permissions.role'),
                 'targeturl' => 'roles',
                 'autoread' => true,
             ])

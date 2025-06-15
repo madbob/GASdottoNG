@@ -61,12 +61,12 @@ foreach(localeMonths() as $month => $offset) {
 
     <div class="row">
         <div class="col-md-3">
-            <a class="calendar-shipping-open">{{ __('orders.list_open') }}</a>
-            <a class="calendar-shipping-closed">{{ __('notifications.list.closed_orders') }}</a>
+            <a class="calendar-shipping-open">{{ __('texts.orders.list_open') }}</a>
+            <a class="calendar-shipping-closed">{{ __('texts.notifications.list.closed_orders') }}</a>
             @if(App\Date::count())
-                <a class="calendar-date-confirmed">{{ __('notifications.list.confirmed_dates') }}</a>
-                <a class="calendar-date-temp">{{ __('notifications.list.temporary_dates') }}</a>
-                <a class="calendar-date-internal">{{ __('notifications.list.appointments') }}</a>
+                <a class="calendar-date-confirmed">{{ __('texts.notifications.list.confirmed_dates') }}</a>
+                <a class="calendar-date-temp">{{ __('texts.notifications.list.temporary_dates') }}</a>
+                <a class="calendar-date-internal">{{ __('texts.notifications.list.appointments') }}</a>
             @endif
         </div>
     </div>

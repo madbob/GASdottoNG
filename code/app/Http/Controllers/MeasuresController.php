@@ -37,7 +37,7 @@ class MeasuresController extends Controller
 
         $user = Auth::user();
         if ($user->can('measures.admin', $user->gas) === false) {
-            return $this->errorResponse(__('generic.unauthorized'));
+            return $this->errorResponse(__('texts.generic.unauthorized'));
         }
 
         $measure = new Measure();
@@ -58,7 +58,7 @@ class MeasuresController extends Controller
 
         $user = Auth::user();
         if ($user->can('measures.admin', $user->gas) === false) {
-            return $this->errorResponse(__('generic.unauthorized'));
+            return $this->errorResponse(__('texts.generic.unauthorized'));
         }
 
         $ids = $request->input('id', []);

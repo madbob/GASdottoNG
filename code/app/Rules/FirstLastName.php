@@ -20,6 +20,6 @@ class FirstLastName implements Rule
 
     public function message()
     {
-        return __('user.help.duplicated_name_error');
+        return __('texts.user.help.duplicated_name_error');
     }
 }

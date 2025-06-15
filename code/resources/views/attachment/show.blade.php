@@ -6,7 +6,7 @@
                     <img src="{{ $attachment->download_url }}" class="img-fluid mb-2" alt="{{ $attachment->name }}">
                 @endif
 
-                <a class="btn btn-light" href="{{ $attachment->download_url }}">{{ __('generic.click_here') }} <i class="bi-download"></i></a>
+                <a class="btn btn-light" href="{{ $attachment->download_url }}">{{ __('texts.generic.click_here') }} <i class="bi-download"></i></a>
             </x-larastrap::field>
         </div>
     </div>

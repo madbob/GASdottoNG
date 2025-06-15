@@ -34,7 +34,7 @@ $count_total = $count_total * -1;
                 <urn1:NbOfTxs>{{ $count_rows }}</urn1:NbOfTxs>
                 <urn1:CtrlSum>{{ $count_total }}</urn1:CtrlSum>
                 <urn1:InitgPty>
-                    <urn1:Nm>{{ __('generic.uppercare_gas_heading') }}</urn1:Nm>
+                    <urn1:Nm>{{ __('texts.generic.uppercare_gas_heading') }}</urn1:Nm>
                     <urn1:Id>
                         <urn1:OrgId>
                             <urn1:Othr>

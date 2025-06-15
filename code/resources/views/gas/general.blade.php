@@ -7,7 +7,7 @@
             <div class="col">
                 <x-larastrap::text name="name" tlabel="gas.attribute_name" required maxlength="20" />
                 <x-larastrap::email name="email" tlabel="generic.email" required />
-                @include('commons.imagefield', ['obj' => $gas, 'name' => 'logo', 'label' => __('gas.logo'), 'valuefrom' => 'logo_url'])
+                @include('commons.imagefield', ['obj' => $gas, 'name' => 'logo', 'label' => __('texts.gas.logo'), 'valuefrom' => 'logo_url'])
                 <x-larastrap::textarea name="message" tlabel="gas.home_message" tpophelp="gas.help.home_message" />
                 <x-larastrap::select name="language" tlabel="gas.language" :options="getLanguages()" />
                 <x-larastrap::text name="currency" tlabel="movements.currency" tpophelp="gas.help.currency" :value="defaultCurrency()->symbol" />

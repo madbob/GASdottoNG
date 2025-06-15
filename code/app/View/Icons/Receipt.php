@@ -11,7 +11,7 @@ class Receipt extends IconsMap
                 'test' => function ($obj) {
                     return $obj->mailed;
                 },
-                'text' => __('invoices.forwarded'),
+                'text' => __('texts.invoices.forwarded'),
             ],
         ];
     }

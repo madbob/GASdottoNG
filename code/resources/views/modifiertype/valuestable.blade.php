@@ -16,10 +16,10 @@ $total = 0;
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">{{ __('orders.supplier') }}</th>
-            <th scope="col">{{ __('user.name') }}</th>
-            <th scope="col">{{ __('generic.date') }}</th>
-            <th scope="col">{{ __('generic.value') }}</th>
+            <th scope="col">{{ __('texts.orders.supplier') }}</th>
+            <th scope="col">{{ __('texts.user.name') }}</th>
+            <th scope="col">{{ __('texts.generic.date') }}</th>
+            <th scope="col">{{ __('texts.generic.value') }}</th>
         </tr>
     </thead>
 
@@ -54,7 +54,7 @@ $total = 0;
             <tr>
                 <td colspan="4">
                     <x-larastrap::suggestion>
-                        {{ __('movements.help.modifier_not_applied_in_time_range') }}
+                        {{ __('texts.movements.help.modifier_not_applied_in_time_range') }}
                     </x-larastrap::suggestion>
                 </td>
             </tr>

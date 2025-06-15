@@ -52,17 +52,17 @@ class MovementsFormatService extends BaseService
 
     public function formatAsBalance($movements)
     {
-        $filename = sanitizeFilename(__('export.balance_csv_filename', ['date' => date('d/m/Y')]));
+        $filename = sanitizeFilename(__('texts.export.balance_csv_filename', ['date' => date('d/m/Y')]));
 
         $headers = [
-            __('movements.registration_date'),
-            __('movements.execution_date'),
-            __('generic.type'),
-            __('generic.payment'),
-            __('generic.identifier'),
-            __('generic.notes'),
-            __('movements.paying'),
-            __('movements.payed'),
+            __('texts.movements.registration_date'),
+            __('texts.movements.execution_date'),
+            __('texts.generic.type'),
+            __('texts.generic.payment'),
+            __('texts.generic.identifier'),
+            __('texts.generic.notes'),
+            __('texts.movements.paying'),
+            __('texts.movements.payed'),
         ];
 
         $balance_type = [];
@@ -74,9 +74,9 @@ class MovementsFormatService extends BaseService
         foreach ($fields as $field_id => $field_meta) {
             $classmap[$field_meta->class] = $field_id;
 
-            $headers[] = __('movements.formatted_revenues', ['name' => $field_meta->label]);
+            $headers[] = __('texts.movements.formatted_revenues', ['name' => $field_meta->label]);
             $reference_row['increment_' . $field_id] = '';
-            $headers[] = __('movements.formatted_expenses', ['name' => $field_meta->label]);
+            $headers[] = __('texts.movements.formatted_expenses', ['name' => $field_meta->label]);
             $reference_row['decrement_' . $field_id] = '';
         }
 

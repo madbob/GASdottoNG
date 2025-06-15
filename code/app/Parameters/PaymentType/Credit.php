@@ -12,7 +12,7 @@ class Credit extends PaymentType
     public function definition()
     {
         return (object) [
-            'name' => __('movements.methods.credit'),
+            'name' => __('texts.movements.methods.credit'),
             'identifier' => false,
             'icon' => 'person-badge',
             'active_for' => 'App\User',

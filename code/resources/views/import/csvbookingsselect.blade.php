@@ -6,8 +6,8 @@
 			<input type="hidden" name="data" value="{{ json_encode($data) }}">
 
 			<x-larastrap::radios name="action" tlabel="generic.behavior" :options="[
-                'save' => __('orders.importing.save'),
-                'close' => __('orders.importing.close')
+                'save' => __('texts.orders.importing.save'),
+                'close' => __('texts.orders.importing.close')
             ]" value="save" />
 
             @include('import.errors', ['errors' => $errors])
@@ -17,8 +17,8 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">{{ __('user.name') }}</th>
-                        <th scope="col">{{ __('orders.totals.total') }}</th>
+                        <th scope="col">{{ __('texts.user.name') }}</th>
+                        <th scope="col">{{ __('texts.orders.totals.total') }}</th>
                     </tr>
                 </thead>
                 <tbody>

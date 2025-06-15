@@ -14,7 +14,7 @@ class Discount extends ModifierType
 
     public function initNew($type)
     {
-        $type->name = __('modifiers.defaults.discount');
+        $type->name = __('texts.modifiers.defaults.discount');
         $type->system = true;
         $type->identifier = 'discount';
         $type->classes = [Product::class, Supplier::class];

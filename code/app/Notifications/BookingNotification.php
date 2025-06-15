@@ -40,7 +40,7 @@ class BookingNotification extends ManyMailNotification
         $message = $this->initMailMessage($notifiable);
         $strings = $booking->convenient_strings;
 
-        $message->subject(__('mail.summary.defaults.subject', [
+        $message->subject(__('texts.mail.summary.defaults.subject', [
             'supplier' => $strings['suppliers'],
             'delivery' => $strings['shipping'],
         ]))->view('emails.booking', [

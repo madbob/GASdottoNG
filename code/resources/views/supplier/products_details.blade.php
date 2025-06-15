@@ -4,13 +4,13 @@
     $sorting_rules = [];
 
     if ($currentgas->manual_products_sorting) {
-        $sorting_rules['sorting'] = __('generic.sortings.manual');
+        $sorting_rules['sorting'] = __('texts.generic.sortings.manual');
     }
 
-    $sorting_rules['name'] = __('generic.name');
+    $sorting_rules['name'] = __('texts.generic.name');
 
     $sorting_rules['category_name'] = (object) [
-        'label' => __('generic.category'),
+        'label' => __('texts.generic.category'),
         'has_headers' => true,
         'get_headers' => function($items) {
             $categories = $items->pluck('category_id')->toArray();

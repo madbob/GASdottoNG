@@ -2,9 +2,9 @@
 
 <div class="distribution_type_selection {{ $modifier->applies_target != 'order' || $modifier->value == 'price' ? 'd-none' : '' }}">
     <x-larastrap::radios name="distribution_type" tlabel="movements.distribute_on" :options="[
-        'none' => (object) ['label' => __('generic.none'), 'hidden' => true],
-        'quantity' => __('generic.quantity'),
-        'price' => __('generic.value'),
-        'weight' => __('generic.weight')
+        'none' => (object) ['label' => __('texts.generic.none'), 'hidden' => true],
+        'quantity' => __('texts.generic.quantity'),
+        'price' => __('texts.generic.value'),
+        'weight' => __('texts.generic.weight')
     ]" />
 </div>

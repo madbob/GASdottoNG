@@ -1,11 +1,11 @@
-<x-larastrap::modal :buttons="[['color' => 'success', 'label' => __('generic.close'), 'classes' => ['reloader'], 'attributes' => ['data-bs-dismiss' => 'modal']]]">
+<x-larastrap::modal :buttons="[['color' => 'success', 'label' => __('texts.generic.close'), 'classes' => ['reloader'], 'attributes' => ['data-bs-dismiss' => 'modal']]]">
     <p>
         {{ $title }}:
     </p>
 
 	<ul class="list-group">
         @if(empty($objects))
-            <li>{{ __('generic.none') }}</li>
+            <li>{{ __('texts.generic.none') }}</li>
         @else
             @foreach($objects as $b)
                 <li class="list-group-item">{{ $b->user->printableName() }}</li>

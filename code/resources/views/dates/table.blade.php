@@ -3,7 +3,7 @@
 <x-larastrap::modal size="fullscreen">
     <div class="row">
         <div class="col-md-12">
-            {{ __('notifications.help.arbitrary_dates') }}
+            {{ __('texts.notifications.help.arbitrary_dates') }}
         </div>
     </div>
 
@@ -19,12 +19,12 @@
                     'show_columns' => true,
                     'columns' => [
                         [
-                            'label' => __('generic.id'),
+                            'label' => __('texts.generic.id'),
                             'field' => 'id',
                             'type' => 'hidden',
                         ],
                         [
-                            'label' => __('orders.supplier'),
+                            'label' => __('texts.orders.supplier'),
                             'field' => 'target_id',
                             'type' => 'select-model',
                             'width' => 15,
@@ -33,7 +33,7 @@
                             ]
                         ],
                         [
-                            'label' => __('generic.date'),
+                            'label' => __('texts.generic.date'),
                             'field' => 'date',
                             'type' => 'datepicker',
                             'width' => 20,
@@ -42,19 +42,19 @@
                             ]
                         ],
                         [
-                            'label' => __('notifications.recurrence'),
+                            'label' => __('texts.notifications.recurrence'),
                             'field' => 'recurring',
                             'type' => 'periodic',
                             'width' => 30,
                         ],
                         [
-                            'label' => __('generic.description'),
+                            'label' => __('texts.generic.description'),
                             'field' => 'description',
                             'type' => 'text',
                             'width' => 20,
                         ],
                         [
-                            'label' => __('generic.type'),
+                            'label' => __('texts.generic.type'),
                             'field' => 'type',
                             'type' => 'select',
                             'width' => 10,

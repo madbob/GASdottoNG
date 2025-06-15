@@ -5,7 +5,7 @@ use Carbon\Carbon;
 function printableDate($value, $short = false)
 {
     if (blank($value)) {
-        $ret = __('generic.never');
+        $ret = __('texts.generic.never');
     }
     else {
         if (is_numeric($value)) {
@@ -31,7 +31,7 @@ function printableDate($value, $short = false)
             }
         }
         else {
-            $ret = __('generic.never');
+            $ret = __('texts.generic.never');
         }
     }
 
@@ -64,13 +64,13 @@ function readDate($date)
 function periodicCycling()
 {
     return [
-        'all' => __('generic.all'),
-        'biweekly' => __('notifications.cycle.two_weeks'),
-        'month_first' => __('notifications.cycle.first_of_month'),
-        'month_second' => __('notifications.cycle.second_of_month'),
-        'month_third' => __('notifications.cycle.third_of_month'),
-        'month_fourth' => __('notifications.cycle.fourth_of_month'),
-        'month_last' => __('notifications.cycle.last_of_month'),
+        'all' => __('texts.generic.all'),
+        'biweekly' => __('texts.notifications.cycle.two_weeks'),
+        'month_first' => __('texts.notifications.cycle.first_of_month'),
+        'month_second' => __('texts.notifications.cycle.second_of_month'),
+        'month_third' => __('texts.notifications.cycle.third_of_month'),
+        'month_fourth' => __('texts.notifications.cycle.fourth_of_month'),
+        'month_last' => __('texts.notifications.cycle.last_of_month'),
     ];
 }
 
@@ -214,7 +214,7 @@ function decodeDate($date)
 {
     $date = trim($date);
 
-    if ($date == '' || $date == __('generic.never')) {
+    if ($date == '' || $date == __('texts.generic.never')) {
         return null;
     }
 

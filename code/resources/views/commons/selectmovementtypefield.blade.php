@@ -9,7 +9,7 @@ if (!isset($field_name)) {
 }
 
 if (!isset($current_label)) {
-    $current_label = __('generic.type');
+    $current_label = __('texts.generic.type');
 }
 
 if (!isset($current_pophelp)) {
@@ -17,7 +17,7 @@ if (!isset($current_pophelp)) {
 }
 
 if (!isset($empty_label)) {
-    $empty_label = __('generic.select');
+    $empty_label = __('texts.generic.select');
 }
 
 $types = [

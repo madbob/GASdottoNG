@@ -24,19 +24,19 @@ class Supplier extends IconsMap
                 'test' => function ($obj) use ($user) {
                     return $user->can('supplier.modify', $obj);
                 },
-                'text' => __('permissions.supplier.change'),
+                'text' => __('texts.permissions.supplier.change'),
             ],
             'card-list' => (object) [
                 'test' => function ($obj) use ($user) {
                     return $user->can('supplier.orders', $obj);
                 },
-                'text' => __('permissions.supplier.orders'),
+                'text' => __('texts.permissions.supplier.orders'),
             ],
             'arrow-down' => (object) [
                 'test' => function ($obj) use ($user) {
                     return $user->can('supplier.shippings', $obj);
                 },
-                'text' => __('permissions.supplier.deliveries'),
+                'text' => __('texts.permissions.supplier.deliveries'),
             ],
         ];
 

@@ -28,7 +28,7 @@ class MailController extends Controller
 
                     if ($db_failures[0]->count >= 3 || $event == 'blocked') {
                         $db->delete("UPDATE contacts SET type = 'skip_email' WHERE type = 'email' and value = '$email'");
-                        $message = __('mail.help.removed_email_log', ['address' => $email]);
+                        $message = __('texts.mail.help.removed_email_log', ['address' => $email]);
                         $db->insert("INSERT INTO inner_logs (level, type, message, created_at, updated_at) VALUES ('error', 'mailsuppression', '$message', '$now', '$now')");
                         Log::info($message);
                     }
@@ -42,7 +42,7 @@ class MailController extends Controller
 
     private function registerBounce($event, $email, $message)
     {
-        $message = sprintf(__('mail.help.send_error', [
+        $message = sprintf(__('texts.mail.help.send_error', [
             'email' => $email,
             'message' => $message,
         ]));

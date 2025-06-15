@@ -19,7 +19,7 @@ class CheckRemoteProducts extends Command
 
     private function notify($supplier, $e)
     {
-        $body = __('imports.help.new_remote_products_list', [
+        $body = __('texts.imports.help.new_remote_products_list', [
             'supplier' => $supplier->printableName(),
             'date' => printableDate($e->lastchange),
         ]);

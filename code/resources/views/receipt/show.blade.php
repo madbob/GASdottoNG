@@ -1,7 +1,7 @@
-<x-larastrap::mform :obj="$receipt" classes="receipt-editor" nosave nodelete :other_buttons="[['label' => __('generic.download'), 'classes' => ['link-button'], 'attributes' => ['data-link' => route('receipts.download', $receipt->id)]]]">
+<x-larastrap::mform :obj="$receipt" classes="receipt-editor" nosave nodelete :other_buttons="[['label' => __('texts.generic.download'), 'classes' => ['link-button'], 'attributes' => ['data-link' => route('receipts.download', $receipt->id)]]]">
     <div class="row">
         <div class="col-md-6">
-            @include('commons.staticobjfield', ['obj' => $receipt, 'name' => 'user', 'label' => __('user.name')])
+            @include('commons.staticobjfield', ['obj' => $receipt, 'name' => 'user', 'label' => __('texts.user.name')])
             <x-larastrap::text name="number" tlabel="generic.number" readonly disabled />
             <x-larastrap::datepicker name="date" tlabel="generic.date" readonly disabled />
 

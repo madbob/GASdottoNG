@@ -5,6 +5,6 @@
 @include('commons.passwordfield', [
     'obj' => $user,
     'name' => 'password',
-    'label' => __('auth.password'),
+    'label' => __('texts.auth.password'),
     'mandatory' => true,
 ])

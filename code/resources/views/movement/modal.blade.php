@@ -17,7 +17,7 @@ if (!isset($amount_editable)) {
 }
 
 if (!isset($amount_label)) {
-    $amount_label = __('generic.value');
+    $amount_label = __('texts.generic.value');
 }
 
 $buttons = [];
@@ -60,7 +60,7 @@ $buttons[] = ['color' => 'success', 'tlabel' => 'generic.save', 'attributes' => 
 
         @if($obj->sender && hasTrait($obj->sender, \App\Models\Concerns\CreditableTrait::class) !== false && count($obj->sender->balanceFields()) == 1)
             <p class="sender-credit-status mb-3 alert alert-{{ $obj->amount < $obj->sender->currentBalanceAmount() ? 'success' : 'danger' }}">
-                {{ __('movements.current_credit') }} - {{ $obj->sender->printableName() }}: <span class="current-sender-credit">{{ $obj->sender->currentBalanceAmount() }}</span> {{ $currentgas->currency }}
+                {{ __('texts.movements.current_credit') }} - {{ $obj->sender->printableName() }}: <span class="current-sender-credit">{{ $obj->sender->currentBalanceAmount() }}</span> {{ $currentgas->currency }}
             </p>
         @endif
 
@@ -73,7 +73,7 @@ $buttons[] = ['color' => 'success', 'tlabel' => 'generic.save', 'attributes' => 
         @if($obj && empty($obj->valid_payments))
             <x-larastrap::field tlabel="generic.method">
                 <div class="alert alert-danger">
-                    {{ __('movements.help.missing_method_for_movement', ['name' => $obj->printableType()]) }}
+                    {{ __('texts.movements.help.missing_method_for_movement', ['name' => $obj->printableType()]) }}
                 </div>
             </x-larastrap::field>
         @else

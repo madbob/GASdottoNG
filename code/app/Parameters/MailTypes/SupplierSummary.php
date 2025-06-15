@@ -11,14 +11,14 @@ class SupplierSummary extends MailType
 
     public function description()
     {
-        return __('mail.supplier.description');
+        return __('texts.mail.supplier.description');
     }
 
     public function params()
     {
         return [
-            'supplier_name' => __('orders.supplier'),
-            'order_number' => __('orders.help.number'),
+            'supplier_name' => __('texts.orders.supplier'),
+            'order_number' => __('texts.orders.help.number'),
         ];
     }
 

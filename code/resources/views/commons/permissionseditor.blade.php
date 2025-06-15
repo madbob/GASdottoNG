@@ -4,7 +4,7 @@ permessi, cfr. permissions.supplier-edit
 -->
 <div class="card mt-4" id="permissions-list-{{ sanitizeId($object->id) }}" data-reload-url="{{ route('roles.suppliertable', $object->id) }}">
     <div class="card-header">
-        {{ __('permissions.name') }}
+        {{ __('texts.permissions.name') }}
     </div>
     <div class="card-body">
         @foreach(rolesByClass(get_class($object)) as $role)

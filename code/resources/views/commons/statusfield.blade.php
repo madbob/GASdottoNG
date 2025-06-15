@@ -15,7 +15,7 @@ switch ($status) {
 }
 
 if (is_a($target, 'App\User')) {
-    $help_popover = __('user.help.suspended');
+    $help_popover = __('texts.user.help.suspended');
 }
 
 $postfix = $postfix ?? false;
@@ -24,9 +24,9 @@ $postfix = $postfix ?? false;
 
 <x-larastrap::field :pophelp="$help_popover" tlabel="generic.status" :squeeze="$squeeze" classes="status-selector">
     <x-larastrap::radios name="status" :npostfix="$postfix" :options="[
-        'active' => __('user.statuses.active'),
-        'suspended' => __('user.statuses.suspended'),
-        'deleted' => __('user.statuses.deleted')
+        'active' => __('texts.user.statuses.active'),
+        'suspended' => __('texts.user.statuses.suspended'),
+        'deleted' => __('texts.user.statuses.deleted')
     ]" :value="$status" squeeze />
 
     <x-larastrap::datepicker name="deleted_at" :hidden="$hide_delete" squeeze />

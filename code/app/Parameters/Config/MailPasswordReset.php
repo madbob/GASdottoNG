@@ -17,8 +17,8 @@ class MailPasswordReset extends Config
     public function default()
     {
         return (object) [
-            'subject' => __('auth.password_request_link'),
-            'body' => __('mail.password.defaults.body'),
+            'subject' => __('texts.auth.password_request_link'),
+            'body' => __('texts.mail.password.defaults.body'),
         ];
     }
 }

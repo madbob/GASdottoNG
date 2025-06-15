@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-12 col-md-6">
                 @if($invoice->status == 'payed')
-                    @include('commons.staticobjfield', ['obj' => $invoice, 'name' => 'supplier', 'label' => __('orders.supplier')])
+                    @include('commons.staticobjfield', ['obj' => $invoice, 'name' => 'supplier', 'label' => __('texts.orders.supplier')])
                     <x-larastrap::text name="number" tlabel="generic.number" disabled readonly />
                     <x-larastrap::datepicker name="date" tlabel="generic.date" disabled readonly />
                 @else

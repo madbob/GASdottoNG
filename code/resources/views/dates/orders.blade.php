@@ -1,6 +1,6 @@
 <x-larastrap::modal size="fullscreen">
     <div class="row">
-        <div class="col-md-12">{{ __('orders.help.automatic_instructions') }}</div>
+        <div class="col-md-12">{{ __('texts.orders.help.automatic_instructions') }}</div>
     </div>
 
     <hr>
@@ -15,12 +15,12 @@
                     'show_columns' => true,
                     'columns' => [
                         [
-                            'label' => __('generic.id'),
+                            'label' => __('texts.generic.id'),
                             'field' => 'id',
                             'type' => 'hidden',
                         ],
                         [
-                            'label' => __('generic.type'),
+                            'label' => __('texts.generic.type'),
                             'field' => 'type',
                             'type' => 'hidden',
                             'extra' => [
@@ -28,7 +28,7 @@
                             ]
                         ],
                         [
-                            'label' => __('orders.supplier'),
+                            'label' => __('texts.orders.supplier'),
                             'field' => 'target_id',
                             'type' => 'select-model',
                             'width' => 15,
@@ -37,26 +37,26 @@
                             ]
                         ],
                         [
-                            'label' => __('notifications.recurrence'),
+                            'label' => __('texts.notifications.recurrence'),
                             'field' => 'recurring',
                             'type' => 'periodic',
                             'width' => 20,
                         ],
                         [
-                            'label' => __('generic.to_do'),
+                            'label' => __('texts.generic.to_do'),
                             'field' => 'action',
                             'type' => 'select',
                             'width' => 9,
                             'extra' => [
                                 'options' => [
-                                    'open' => __('generic.opening'),
-                                    'close' => __('generic.closing'),
-                                    'ship' => __('orders.do_delivery'),
+                                    'open' => __('texts.generic.opening'),
+                                    'close' => __('texts.generic.closing'),
+                                    'ship' => __('texts.orders.do_delivery'),
                                 ]
                             ]
                         ],
                         [
-                            'label' => __('notifications.date_reference'),
+                            'label' => __('texts.notifications.date_reference'),
                             'field' => 'first_offset',
                             'type' => 'number',
                             'width' => 18,
@@ -64,17 +64,17 @@
                                 'textprepend' => 'X',
                                 'textappend' => 'X',
                                 'attributes' => [
-                                    'data-prelabel-open' => __('orders.automatic_labels.close'),
-                                    'data-postlabel-open' => __('orders.automatic_labels.days_after'),
-                                    'data-prelabel-close' => __('orders.automatic_labels.open'),
-                                    'data-postlabel-close' => __('orders.automatic_labels.days_before'),
-                                    'data-prelabel-ship' => __('orders.automatic_labels.open'),
-                                    'data-postlabel-ship' => __('orders.automatic_labels.days_before'),
+                                    'data-prelabel-open' => __('texts.orders.automatic_labels.close'),
+                                    'data-postlabel-open' => __('texts.orders.automatic_labels.days_after'),
+                                    'data-prelabel-close' => __('texts.orders.automatic_labels.open'),
+                                    'data-postlabel-close' => __('texts.orders.automatic_labels.days_before'),
+                                    'data-prelabel-ship' => __('texts.orders.automatic_labels.open'),
+                                    'data-postlabel-ship' => __('texts.orders.automatic_labels.days_before'),
                                 ]
                             ]
                         ],
                         [
-                            'label' => __('notifications.date_reference'),
+                            'label' => __('texts.notifications.date_reference'),
                             'field' => 'second_offset',
                             'type' => 'number',
                             'width' => 18,
@@ -82,17 +82,17 @@
                                 'textprepend' => 'X',
                                 'textappend' => 'X',
 								'attributes' => [
-                                    'data-prelabel-open' => __('orders.automatic_labels.delivery'),
-                                    'data-postlabel-open' => __('orders.automatic_labels.days_after'),
-                                    'data-prelabel-close' => __('orders.automatic_labels.delivery'),
-                                    'data-postlabel-close' => __('orders.automatic_labels.days_after'),
-                                    'data-prelabel-ship' => __('orders.automatic_labels.close'),
-                                    'data-postlabel-ship' => __('orders.automatic_labels.days_before'),
+                                    'data-prelabel-open' => __('texts.orders.automatic_labels.delivery'),
+                                    'data-postlabel-open' => __('texts.orders.automatic_labels.days_after'),
+                                    'data-prelabel-close' => __('texts.orders.automatic_labels.delivery'),
+                                    'data-postlabel-close' => __('texts.orders.automatic_labels.days_after'),
+                                    'data-prelabel-ship' => __('texts.orders.automatic_labels.close'),
+                                    'data-postlabel-ship' => __('texts.orders.automatic_labels.days_before'),
 								]
                             ]
                         ],
                         [
-                            'label' => __('generic.comment'),
+                            'label' => __('texts.generic.comment'),
                             'field' => 'comment',
                             'type' => 'text',
                             'width' => 10,
@@ -101,11 +101,11 @@
                             ]
                         ],
                         [
-                            'label' => __('generic.suspend'),
+                            'label' => __('texts.generic.suspend'),
                             'field' => 'suspend',
                             'type' => 'check',
                             'width' => 5,
-                            'help' => __('notifications.help.suspend'),
+                            'help' => __('texts.notifications.help.suspend'),
                             'extra' => [
                                 'reviewCallback' => function($component, $params) {
                                     $params['hidden'] = $params['obj'] ? false : true;

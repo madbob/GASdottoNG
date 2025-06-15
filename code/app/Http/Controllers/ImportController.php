@@ -30,7 +30,7 @@ class ImportController extends Controller
         $importer = CSVImporter::getImporter($type);
 
         if ($importer->testAccess($request) === false) {
-            return $this->errorResponse(__('generic.unauthorized'));
+            return $this->errorResponse(__('texts.generic.unauthorized'));
         }
 
         try {
@@ -48,7 +48,7 @@ class ImportController extends Controller
                     }
                     catch (MissingFieldException $e) {
                         return view('import.csvimportfinal', [
-                            'title' => __('imports.help.failure_notice'),
+                            'title' => __('texts.imports.help.failure_notice'),
                             'objects' => [],
                             'errors' => [$e->getMessage()],
                         ]);
@@ -68,7 +68,7 @@ class ImportController extends Controller
             return $this->errorResponse($e->getMessage());
         }
 
-        return $this->errorResponse(__('imports.help.invalid_command', [
+        return $this->errorResponse(__('texts.imports.help.invalid_command', [
             'type' => $type,
             'step' => $step,
         ]));

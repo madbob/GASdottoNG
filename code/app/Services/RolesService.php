@@ -225,7 +225,7 @@ class RolesService extends BaseService
 
     public function export()
     {
-        $filename = sprintf('%s.csv', __('permissions.name'));
+        $filename = sprintf('%s.csv', __('texts.permissions.name'));
 
         $headers = [''];
         $data = [];

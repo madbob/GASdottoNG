@@ -1,5 +1,5 @@
 <x-larastrap::modal id="delete-confirm-modal" size="lg">
-    <x-larastrap::iform method="DELETE" :action="$url ?? ''" id="form-delete-confirm-modal" :buttons="[['type' => 'submit', 'color' => 'danger', 'tlabel' => __('generic.confirm')]]">
+    <x-larastrap::iform method="DELETE" :action="$url ?? ''" id="form-delete-confirm-modal" :buttons="[['type' => 'submit', 'color' => 'danger', 'tlabel' => __('texts.generic.confirm')]]">
         @if($password_protected)
             <input type="hidden" name="pre-saved-function" value="passwordProtected">
         @endif
@@ -10,7 +10,7 @@
         @php
 
         if (isset($text) == false) {
-            $text = __('generic.delete_confirmation');
+            $text = __('texts.generic.delete_confirmation');
         }
 
         @endphp

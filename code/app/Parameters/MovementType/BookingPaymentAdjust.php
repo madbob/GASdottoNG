@@ -11,7 +11,7 @@ class BookingPaymentAdjust extends MovementType
 
     public function initNew($type)
     {
-        $type->name = __('movements.defaults.booking_adjust');
+        $type->name = __('texts.movements.defaults.booking_adjust');
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Booking';
         $type->allow_negative = true;

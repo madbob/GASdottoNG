@@ -40,14 +40,14 @@ class Contact extends Model
     public static function types()
     {
         $ret = [
-            'address' => __('generic.address'),
-            'referent' => __('supplier.referent'),
-            'email' => __('generic.email'),
-            'skip_email' => __('generic.email_no_notifications'),
-            'phone' => __('generic.phone'),
-            'mobile' => __('generic.cellphone'),
-            'fax' => __('generic.fax'),
-            'website' => __('generic.website'),
+            'address' => __('texts.generic.address'),
+            'referent' => __('texts.supplier.referent'),
+            'email' => __('texts.generic.email'),
+            'skip_email' => __('texts.generic.email_no_notifications'),
+            'phone' => __('texts.generic.phone'),
+            'mobile' => __('texts.generic.cellphone'),
+            'fax' => __('texts.generic.fax'),
+            'website' => __('texts.generic.website'),
         ];
 
         if (currentAbsoluteGas()->hasFeature('integralces')) {

@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl modal-fullscreen-md-down modal-dialog-scrollable">
         <div class="modal-content credits-modal">
             <div class="modal-header">
-                <h5 class="modal-title">{{ __('movements.credits_status') }}</h5>
+                <h5 class="modal-title">{{ __('texts.movements.credits_status') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
@@ -12,12 +12,12 @@
                         <x-larastrap::field tlabel="movements.credit">
                             <div class="input-group table-number-filters" data-table-target="#creditsTable">
                                 <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" value="min" name="filter_mode">&nbsp;{{ __('generic.minor_than') }}
+                                    <input class="form-check-input mt-0" type="radio" value="min" name="filter_mode">&nbsp;{{ __('texts.generic.minor_than') }}
                                 </div>
                                 <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" value="max" name="filter_mode">&nbsp;{{ __('generic.major_than') }}
+                                    <input class="form-check-input mt-0" type="radio" value="max" name="filter_mode">&nbsp;{{ __('texts.generic.major_than') }}
                                 </div>
-                                <input type="number" class="form-control table-number-filter" placeholder="{{ __('generic.do_filter') }}">
+                                <input type="number" class="form-control table-number-filter" placeholder="{{ __('texts.generic.do_filter') }}">
                                 <div class="input-group-text">
                                     {{ defaultCurrency()->symbol }}
                                 </div>
@@ -27,8 +27,8 @@
 						@php
 
 						$payment_options = [
-							'all' => __('generic.all'),
-							'none' => __('generic.unspecified'),
+							'all' => __('texts.generic.all'),
+							'none' => __('texts.generic.unspecified'),
 						];
 
 						foreach(paymentTypes() as $payment_identifier => $payment_meta) {
@@ -41,7 +41,7 @@
 
 						<x-larastrap::radios
                             name="payment_method"
-                            :label="__('user.payment_method')"
+                            :label="__('texts.user.payment_method')"
                             :options="$payment_options"
                             value="all"
                             classes="table-filters"
@@ -55,7 +55,7 @@
                                 :label="$group->printableName()"
                                 classes="table-filters"
                                 data-table-target="#creditsTable"
-                                :extra_options="['all' => __('generic.all')]" />
+                                :extra_options="['all' => __('texts.generic.all')]" />
                         @endforeach
                     </div>
                 </div>
@@ -70,11 +70,11 @@
 
 								<thead>
 									<tr>
-										<th scope="col" width="40%">{{ __('generic.name') }}</th>
+										<th scope="col" width="40%">{{ __('texts.generic.name') }}</th>
 										@foreach($currencies as $curr)
-											<th scope="col" width="{{ round(35 / $currencies->count(), 2) }}%">{{ __('movements.credit') }}</th>
+											<th scope="col" width="{{ round(35 / $currencies->count(), 2) }}%">{{ __('texts.movements.credit') }}</th>
 										@endforeach
-										<th scope="col" width="25%">{{ __('user.payment_method') }}</th>
+										<th scope="col" width="25%">{{ __('texts.user.payment_method') }}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -123,26 +123,26 @@
                     <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
                     <input type="hidden" name="collectFilteredUsers" value="#creditsTable">
                     <input type="hidden" name="pre-saved-function" value="formToDownload">
-                    <button type="submit" class="btn btn-success">{{ __('generic.exports.csv') }} <i class="bi-download"></i></button>
+                    <button type="submit" class="btn btn-success">{{ __('texts.generic.exports.csv') }} <i class="bi-download"></i></button>
                 </form>
 
                 @if($currentgas->hasFeature('rid'))
-                    <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#exportRID">{{ __('generic.exports.sepa') }}<span class="caret"></span></a>
+                    <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#exportRID">{{ __('texts.generic.exports.sepa') }}<span class="caret"></span></a>
                 @endif
 
                 @if($currentgas->hasFeature('integralces'))
-                    <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#exportIntegralCES">{{ __('generic.exports.integralces') }}<span class="caret"></span></a>
+                    <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#exportIntegralCES">{{ __('texts.generic.exports.integralces') }}<span class="caret"></span></a>
                 @endif
 
-                <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#sendCreditsMail">{{ __('notifications.send_to_current_users') }}<span class="caret"></span></a>
+                <a type="button" class="btn btn-success" data-bs-toggle="collapse" href="#sendCreditsMail">{{ __('texts.notifications.send_to_current_users') }}<span class="caret"></span></a>
 
                 @if($currentgas->hasFeature('rid'))
                     <div class="collapse well" id="exportRID">
                         <form class="form-horizontal inner-form" action="{{ url('movements/document/credits/rid?download=1') }}" method="GET">
                             <input type="hidden" name="pre-saved-function" value="formToDownload">
                             <x-larastrap::datepicker name="date" tlabel="generic.date" requird defaults_now />
-                            <x-larastrap::text name="body" tlabel="movements.causal" :value="__('movements.generic_causal')" />
-                            <button type="submit" class="btn btn-success">{{ __('generic.exports.sepa') }}</button>
+                            <x-larastrap::text name="body" tlabel="movements.causal" :value="__('texts.movements.generic_causal')" />
+                            <button type="submit" class="btn btn-success">{{ __('texts.generic.exports.sepa') }}</button>
                         </form>
                     </div>
                 @endif
@@ -151,8 +151,8 @@
                     <div class="collapse well" id="exportIntegralCES">
                         <form class="form-horizontal inner-form" action="{{ url('movements/document/credits/integralces?download=1') }}" method="GET">
                             <input type="hidden" name="pre-saved-function" value="formToDownload">
-                            <x-larastrap::text name="body" tlabel="movements.causal" :value="__('movements.generic_causal')" />
-                            <button type="submit" class="btn btn-success">{{ __('generic.exports.integralces') }}</button>
+                            <x-larastrap::text name="body" tlabel="movements.causal" :value="__('texts.movements.generic_causal')" />
+                            <button type="submit" class="btn btn-success">{{ __('texts.generic.exports.integralces') }}</button>
                         </form>
                     </div>
                 @endif
@@ -171,7 +171,7 @@
 							'mailtype' => 'credit_notification',
 						])
 
-                        <button type="submit" class="btn btn-success">{{ __('notifications.name') }}</button>
+                        <button type="submit" class="btn btn-success">{{ __('texts.notifications.name') }}</button>
                     </form>
                 </div>
             </div>

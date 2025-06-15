@@ -7,7 +7,7 @@
 
     <div class="row multigas-editor">
         <div class="col">
-            <h4>{{ __('supplier.all') }}</h4>
+            <h4>{{ __('texts.supplier.all') }}</h4>
             <ul class="list-group">
                 @foreach(App\Supplier::orderBy('name', 'asc')->get() as $supplier)
                     <li class="list-group-item">
@@ -20,7 +20,7 @@
             </ul>
         </div>
         <div class="col">
-            <h4>{{ __('orders.all') }}</h4>
+            <h4>{{ __('texts.orders.all') }}</h4>
             <ul class="list-group">
                 @foreach(App\Aggregate::whereHas('orders', function($query) {
                     $query->whereIn('status', ['open', 'closed', 'suspended']);

@@ -7,7 +7,7 @@
         <div class="row mb-4">
             <div class="col">
                 <div class="alert alert-danger">
-                    {{ __('orders.help.unarchived_notice') }}
+                    {{ __('texts.orders.help.unarchived_notice') }}
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
             @include('commons.addingbutton', [
                 'dynamic_url' => route('orders.create'),
                 'typename' => 'order',
-                'typename_readable' => __('orders.name'),
+                'typename_readable' => __('texts.orders.name'),
             ])
 
             <x-larastrap::ambutton tlabel="orders.do_aggregate" :attributes="['data-modal-url' => route('aggregates.create')]" />
@@ -38,7 +38,7 @@
                     'end_date' => strtotime('+6 months'),
                 ])
 
-                <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentgas->suppliers" :extra_options="[0 => __('generic.all')]" />
+                <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentgas->suppliers" :extra_options="[0 => __('texts.generic.all')]" />
 
                 @php
 
@@ -70,10 +70,10 @@
                 'class' => App\Aggregate::class
             ],
             'sorting_rules' => [
-                'supplier_name' => __('orders.supplier'),
-                'start' => __('orders.dates.start'),
-                'end' => __('orders.dates.end'),
-                'shipping' => __('orders.dates.shipping'),
+                'supplier_name' => __('texts.orders.supplier'),
+                'start' => __('texts.orders.dates.start'),
+                'end' => __('texts.orders.dates.end'),
+                'shipping' => __('texts.orders.dates.shipping'),
             ]
         ])
     </div>

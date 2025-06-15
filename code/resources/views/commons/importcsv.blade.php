@@ -26,13 +26,13 @@ $explain_extras = $importer->extraInformations();
 				<hr>
 			@endif
 
-            <p>{{ __('export.help.csv_instructions') }}</p>
+            <p>{{ __('texts.export.help.csv_instructions') }}</p>
 
             <p class="text-center">
-                <img src="{{ url('images/csv_explain.png') }}" alt="{{ __('export.help.img_csv_instructions') }}" />
+                <img src="{{ url('images/csv_explain.png') }}" alt="{{ __('texts.export.help.img_csv_instructions') }}" />
             </p>
 
-            <p>{{ __('export.help.selection_instructions') }}</p>
+            <p>{{ __('texts.export.help.selection_instructions') }}</p>
 
             <hr/>
 
@@ -50,7 +50,7 @@ $explain_extras = $importer->extraInformations();
             <hr />
 
             <div class="small">
-                <p>{{ __('export.accepted_columns') }}</p>
+                <p>{{ __('texts.export.accepted_columns') }}</p>
 
                 <ul>
                     @foreach($importer->fields() as $meta)
@@ -62,7 +62,7 @@ $explain_extras = $importer->extraInformations();
                             @endif
 
                             @if(isset($meta->mandatory) && $meta->mandatory)
-                                <span class="badge text-bg-danger">{{ __('generic.mandatory') }}</span>
+                                <span class="badge text-bg-danger">{{ __('texts.generic.mandatory') }}</span>
                             @endif
                         </li>
                     @endforeach

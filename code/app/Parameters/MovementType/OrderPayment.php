@@ -13,7 +13,7 @@ class OrderPayment extends MovementType
 
     public function initNew($type)
     {
-        $type->name = __('movements.defaults.order');
+        $type->name = __('texts.movements.defaults.order');
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\Order';
         $type->visibility = false;

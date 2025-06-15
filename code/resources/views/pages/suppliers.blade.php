@@ -9,7 +9,7 @@
                 @include('commons.addingbutton', [
                     'template' => 'supplier.base-edit',
                     'typename' => 'supplier',
-                    'typename_readable' => __('orders.supplier'),
+                    'typename_readable' => __('texts.orders.supplier'),
                     'targeturl' => 'suppliers'
                 ])
             @endcan
@@ -43,7 +43,7 @@
                 'filters' => [
                     'deleted_at' => (object)[
                         'icon' => 'inbox',
-                        'label' => __('user.all_ceased'),
+                        'label' => __('texts.user.all_ceased'),
                         'value' => null
                     ]
                 ]

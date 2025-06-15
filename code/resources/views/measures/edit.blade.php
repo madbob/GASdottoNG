@@ -10,12 +10,12 @@
                     'show_columns' => true,
                     'columns' => [
                         [
-                            'label' => __('generic.id'),
+                            'label' => __('texts.generic.id'),
                             'field' => 'id',
                             'type' => 'hidden',
                         ],
                         [
-                            'label' => __('generic.name'),
+                            'label' => __('texts.generic.name'),
                             'field' => 'name',
                             'type' => 'text',
                             'extra' => [
@@ -23,9 +23,9 @@
                             ]
                         ],
                         [
-                            'label' => __('generic.measures.discrete'),
+                            'label' => __('texts.generic.measures.discrete'),
                             'field' => 'discrete',
-                            'help' => __('generic.help.discrete_measure'),
+                            'help' => __('texts.generic.help.discrete_measure'),
                             'type' => 'scheck',
                             'extra_callback' => function($content, $attributes) {
                                 $attributes['value'] = $content->id;
@@ -38,7 +38,7 @@
                             }
                         ],
                         [
-                            'label' => __('products.list'),
+                            'label' => __('texts.products.list'),
                             'field' => 'id',
                             'type' => 't',
                             'extra_callback' => function($content, $attributes) {

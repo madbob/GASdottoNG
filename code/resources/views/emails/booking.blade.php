@@ -4,20 +4,20 @@ $display_shipping_date = true;
 
 switch($booking->status) {
     case 'shipped':
-        $intro_text = __('orders.booking_description.shipped');
+        $intro_text = __('texts.orders.booking_description.shipped');
         $display_shipping_date = false;
         $attribute = 'delivered';
         $get_value = 'delivered';
         break;
 
     case 'saved':
-        $intro_text = __('orders.booking_description.saved');
+        $intro_text = __('texts.orders.booking_description.saved');
         $attribute = 'delivered';
         $get_value = 'delivered';
         break;
 
     case 'pending':
-        $intro_text = __('orders.booking_description.pending');
+        $intro_text = __('texts.orders.booking_description.pending');
         $attribute = 'quantity';
         $get_value = 'booked';
         break;
@@ -74,7 +74,7 @@ $bookings_tot = 0;
     @include('emails.bookingtable', ['booking' => $b, 'redux' => $redux, 'tot' => $tot])
 
     @if($b->friends_bookings->isEmpty() == false)
-        <h5>{{ __('orders.bookings_from_friends') }}</h5>
+        <h5>{{ __('texts.orders.bookings_from_friends') }}</h5>
 
         @foreach($b->friends_bookings as $fb)
             <p>{{ $fb->user->printableName() }}</p>
@@ -93,7 +93,7 @@ $bookings_tot = 0;
     @if($contacts->isEmpty() == false)
         <br>
         <p>
-            {{ __('orders.communications_points') }}
+            {{ __('texts.orders.communications_points') }}
         </p>
         <ul>
             @foreach($contacts as $contact)
@@ -107,7 +107,7 @@ $bookings_tot = 0;
     <br>
     <br>
     <p>
-        {{ __('orders.booking_total_amount', ['amount' => printablePriceCurrency($global_total)]) }}
+        {{ __('texts.orders.booking_total_amount', ['amount' => printablePriceCurrency($global_total)]) }}
     </p>
 @endif
 
@@ -115,6 +115,6 @@ $bookings_tot = 0;
     <br>
     <br>
     <p>
-        {{ __('orders.formatted_delivery_date', ['date' => $b->order->printableDate('shipping')]) }}
+        {{ __('texts.orders.formatted_delivery_date', ['date' => $b->order->printableDate('shipping')]) }}
     </p>
 @endif

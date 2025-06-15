@@ -5,7 +5,7 @@
                 @include('commons.addingbutton', [
                     'template' => 'groups.base-edit',
                     'typename' => 'group',
-                    'typename_readable' => __('aggregations.name'),
+                    'typename_readable' => __('texts.aggregations.name'),
                     'targeturl' => 'groups'
                 ])
             </div>
@@ -16,7 +16,7 @@
                 @include('commons.loadablelist', [
                     'identifier' => 'group-list',
                     'items' => App\Group::orderBy('name', 'asc')->get(),
-                    'empty_message' => __('aggregations.empty_list'),
+                    'empty_message' => __('texts.aggregations.empty_list'),
                 ])
             </div>
         </div>
@@ -29,7 +29,7 @@
                     'template' => 'attachment.base-edit',
                     'typename' => 'attachment',
                     'target_update' => 'attachment-list-' . $gas->id,
-                    'typename_readable' => __('generic.file'),
+                    'typename_readable' => __('texts.generic.file'),
                     'targeturl' => 'attachments',
                     'extra' => [
                         'target_type' => 'App\Gas',
@@ -44,7 +44,7 @@
                 @include('commons.loadablelist', [
                     'identifier' => 'attachment-list-' . $gas->id,
                     'items' => $gas->attachments,
-                    'empty_message' => __('gas.help.empty_list_shared_files'),
+                    'empty_message' => __('texts.gas.help.empty_list_shared_files'),
                 ])
             </div>
         </div>
@@ -56,7 +56,7 @@
                 @include('commons.addingbutton', [
                     'template' => 'vatrates.base-edit',
                     'typename' => 'vatrate',
-                    'typename_readable' => __('products.vat_rate'),
+                    'typename_readable' => __('texts.products.vat_rate'),
                     'targeturl' => 'vatrates',
                     'autoread' => true,
                 ])
@@ -68,7 +68,7 @@
                 @include('commons.loadablelist', [
                     'identifier' => 'vatrate-list',
                     'items' => App\VatRate::orderBy('name', 'asc')->get(),
-                    'empty_message' => __('movements.help.empty_list_vat_rates'),
+                    'empty_message' => __('texts.movements.help.empty_list_vat_rates'),
                 ])
             </div>
         </div>
@@ -80,7 +80,7 @@
                 @include('commons.addingbutton', [
                     'template' => 'modifiertype.base-edit',
                     'typename' => 'modtype',
-                    'typename_readable' => __('modifiers.name'),
+                    'typename_readable' => __('texts.modifiers.name'),
                     'targeturl' => 'modtypes',
                     'autoread' => true,
                 ])
@@ -104,14 +104,14 @@
             <div class="col">
                 @if($logs->isEmpty())
                     <x-larastrap::suggestion>
-                        {{ __('generic.empty_list') }}
+                        {{ __('texts.generic.empty_list') }}
                     </x-larastrap::suggestion>
                 @else
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col" width="30%">{{ __('generic.date') }}</th>
-                                <th scope="col" width="70%">{{ __('generic.message') }}</th>
+                                <th scope="col" width="30%">{{ __('texts.generic.date') }}</th>
+                                <th scope="col" width="70%">{{ __('texts.generic.message') }}</th>
                             </tr>
                         </thead>
                         <tbody>

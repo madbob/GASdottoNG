@@ -17,13 +17,13 @@ if (empty($all) == false) {
 		foreach($included_metaplace as $imp) {
 			switch($imp) {
 				case 'no':
-					$options['all_by_name'] = __('generic.all');
+					$options['all_by_name'] = __('texts.generic.all');
 					break;
 				case 'all_by_name':
-					$options['all_by_name'] = __('user.name');
+					$options['all_by_name'] = __('texts.user.name');
 					break;
 				case 'all_by_place':
-					$options['all_by_place'] = __('generic.aggregations_and_groups');
+					$options['all_by_place'] = __('texts.generic.aggregations_and_groups');
 					break;
                 case 'specific':
                     foreach($all as $meta) {
@@ -36,25 +36,25 @@ if (empty($all) == false) {
 			}
 		}
 
-		$actual_groups[__('generic.sort_by')] = (object) [
+		$actual_groups[__('texts.generic.sort_by')] = (object) [
 			'id' => 'master_sorting',
 			'options' => $options,
 			'help' => '',
 		];
 
-		$global_options = ['all_by_name' => __('generic.all')];
+		$global_options = ['all_by_name' => __('texts.generic.all')];
 	}
 	else {
 		foreach($included_metaplace as $imp) {
 			switch($imp) {
 				case 'no':
-					$options['all_by_name'] = __('generic.all');
+					$options['all_by_name'] = __('texts.generic.all');
 					break;
 				case 'all_by_name':
-					$options['all_by_name'] = __('generic.sortings.all_by_user');
+					$options['all_by_name'] = __('texts.generic.sortings.all_by_user');
 					break;
 				case 'all_by_place':
-					$options['all_by_place'] = __('generic.sortings.all_by_group');
+					$options['all_by_place'] = __('texts.generic.sortings.all_by_group');
 					break;
 			}
 		}
@@ -83,7 +83,7 @@ if (empty($all) == false) {
 			$test_no_shipping = count($test_no_shipping);
 
 			if ($test_no_shipping > 0) {
-				$shipping_warning = __('generic.help.unassigned_group_warning', ['count' => $test_no_shipping, 'group' => $meta->group->printableName()]);
+				$shipping_warning = __('texts.generic.help.unassigned_group_warning', ['count' => $test_no_shipping, 'group' => $meta->group->printableName()]);
 			}
 		}
 

@@ -1,5 +1,5 @@
 <p>
-    {{ __('user.notices.new_user', ['gasname' => $user->gas->name]) }}
+    {{ __('texts.user.notices.new_user', ['gasname' => $user->gas->name]) }}
 </p>
 <p>
     {{ $user->printableName() }}<br>
@@ -12,7 +12,7 @@
 
 @if($user->pending)
     <p>
-        {{ __('user.notices.pending_approval') }}<br>
+        {{ __('texts.user.notices.pending_approval') }}<br>
         {{ route('users.index') }}
     </p>
 @endif

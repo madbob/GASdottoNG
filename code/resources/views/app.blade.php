@@ -9,7 +9,7 @@
         <meta name="description" content="Questa è una istanza di GASdotto, il gestionale per l'Economia Solidale" />
 
         <title>{{ currentAbsoluteGas()->name }} | GASdotto</title>
-        <link rel="alternate" type="application/rss+xml" title="{{ __('orders.list_open') }}" href="{{ route('rss') }}"/>
+        <link rel="alternate" type="application/rss+xml" title="{{ __('texts.orders.list_open') }}" href="{{ route('rss') }}"/>
 
         <link rel="stylesheet" type="text/css" href="{{ mix('/css/gasdotto.css') }}">
 
@@ -23,7 +23,7 @@
     </head>
     <body>
         <div id="preloader">
-            <img src="{{ asset('images/loading.svg') }}" alt="{{ __('commons.loading') }}">
+            <img src="{{ asset('images/loading.svg') }}" alt="{{ __('texts.commons.loading') }}">
         </div>
 
         @if(isset($menu))
@@ -51,13 +51,13 @@
         </x-larastrap::modal>
 
         @if(Auth::check())
-            <x-larastrap::modal title="{{ __('commons.feedback') }}" id="feedback-modal">
+            <x-larastrap::modal title="{{ __('texts.commons.feedback') }}" id="feedback-modal">
                 <div>
                     <p>
-                        {{ __('commons.about.opensource') }}
+                        {{ __('texts.commons.about.opensource') }}
                     </p>
                     <p>
-                        {{ __('commons.about.contribute') }}
+                        {{ __('texts.commons.about.contribute') }}
                     </p>
                     <ul>
                         <li>GitHub: <a href="https://github.com/madbob/GASdottoNG/" target="_blank">github.com/madbob/GASdottoNG</a></li>
@@ -65,17 +65,17 @@
                         <li>sulla mailing list degli utenti: <a href="https://groups.google.com/g/gasdotto-dev">groups.google.com/g/gasdotto-dev</a></li>
                     </ul>
                     <p>
-                        {{ __('commons.about.donate') }}
+                        {{ __('texts.commons.about.donate') }}
                     </p>
                     <p>
                         <a href="https://paypal.me/m4db0b" target="_blank"><img src="https://www.gasdotto.net/images/paypal.png" border="0" alt="PayPal"></a>
                     </p>
                 </div>
                 <p>
-                    {!! __('commons.about.link') !!}
+                    {!! __('texts.commons.about.link') !!}
                 </p>
                 <p>
-                    {{ __('commons.about.local_contact') }}
+                    {{ __('texts.commons.about.local_contact') }}
                 </p>
                 <ul>
                     @foreach(everybodyCan('gas.permissions', $currentgas) as $admin)
@@ -84,13 +84,13 @@
                 </ul>
 
                 <p>
-                    {!! __('commons.about.translations') !!}
+                    {!! __('texts.commons.about.translations') !!}
                 </p>
             </x-larastrap::modal>
         @endif
 
         @if(Session::has('prompt_message'))
-            <x-larastrap::modal title="{{ __('commons.warning') }}" id="prompt-message-modal">
+            <x-larastrap::modal title="{{ __('texts.commons.warning') }}" id="prompt-message-modal">
                 <p class="w-100 h-100 d-flex align-items-center justify-content-center">
                     {!! Session::get('prompt_message') !!}
                 </p>

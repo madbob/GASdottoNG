@@ -1,7 +1,7 @@
 @if($aggregate->isRunning() == false)
     @if(empty($aggregate->bookings))
         <x-larastrap::suggestion>
-            {{ __('generic.empty_list') }}
+            {{ __('texts.generic.empty_list') }}
         </x-larastrap::suggestion>
     @else
         <?php
@@ -98,6 +98,6 @@
     @endif
 @else
     <div class="alert alert-danger">
-        {{ __('orders.help.waiting_closing_for_deliveries') }}
+        {{ __('texts.orders.help.waiting_closing_for_deliveries') }}
     </div>
 @endif

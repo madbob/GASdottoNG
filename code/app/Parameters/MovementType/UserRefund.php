@@ -11,7 +11,7 @@ class UserRefund extends MovementType
 
     public function initNew($type)
     {
-        $type->name = __('movements.defaults.refund');
+        $type->name = __('texts.movements.defaults.refund');
         $type->sender_type = 'App\Gas';
         $type->target_type = 'App\User';
 

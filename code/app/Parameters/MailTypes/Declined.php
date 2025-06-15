@@ -11,7 +11,7 @@ class Declined extends MailType
 
     public function description()
     {
-        return __('mail.declined.description');
+        return __('texts.mail.declined.description');
     }
 
     public function params()

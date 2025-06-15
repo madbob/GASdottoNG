@@ -13,13 +13,13 @@ class Product extends IconsMap
                 'test' => function ($obj) {
                     return !$obj->active;
                 },
-                'text' => __('generic.disabled'),
+                'text' => __('texts.generic.disabled'),
             ],
             'hidden-circle' => (object) [
                 'test' => function ($obj) {
                     return $obj->active;
                 },
-                'text' => __('products.bookable'),
+                'text' => __('texts.products.bookable'),
             ],
         ];
     }
@@ -28,7 +28,7 @@ class Product extends IconsMap
     {
         return [
             'th' => (object) [
-                'text' => __('generic.category'),
+                'text' => __('texts.generic.category'),
                 'assign' => function ($obj) {
                     return ['hidden-cat-' . $obj->category_id];
                 },

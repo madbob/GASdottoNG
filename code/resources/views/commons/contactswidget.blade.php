@@ -4,7 +4,7 @@
         'extra_class' => 'contacts-selection',
         'columns' => [
             [
-                'label' => __('generic.id'),
+                'label' => __('texts.generic.id'),
                 'field' => 'id',
                 'type' => 'hidden',
                 'extra' => [
@@ -12,7 +12,7 @@
                 ]
             ],
             [
-                'label' => __('generic.type'),
+                'label' => __('texts.generic.type'),
                 'field' => 'type',
                 'type' => 'select',
                 'extra' => [
@@ -21,7 +21,7 @@
                 ]
             ],
             [
-                'label' => __('generic.value'),
+                'label' => __('texts.generic.value'),
                 'field' => 'value',
                 'type' => 'text',
                 'extra' => [

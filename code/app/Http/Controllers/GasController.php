@@ -153,7 +153,7 @@ class GasController extends Controller
         $gas = Gas::findOrFail($id);
 
         if ($user->can('gas.config', $gas) === false) {
-            return $this->errorResponse(__('generic.unauthorized'));
+            return $this->errorResponse(__('texts.generic.unauthorized'));
         }
 
         $group = $request->input('group');

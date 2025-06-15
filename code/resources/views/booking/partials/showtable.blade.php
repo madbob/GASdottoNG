@@ -5,7 +5,7 @@
 
 @if($o->products->isEmpty())
     <x-larastrap::suggestion>
-        {{ __('orders.help.no_partecipation_notice') }}
+        {{ __('texts.orders.help.no_partecipation_notice') }}
     </x-larastrap::suggestion>
 @else
     @php
@@ -105,7 +105,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class="text-end fw-bold">{{ __('orders.totals.total') }}:<br><span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ defaultCurrency()->symbol }}</td>
+                <td class="text-end fw-bold">{{ __('texts.orders.totals.total') }}:<br><span class="booking-total">{{ printablePrice($o->getValue('effective', false)) }}</span> {{ defaultCurrency()->symbol }}</td>
             </tr>
         </tfoot>
     </table>

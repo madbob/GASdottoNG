@@ -8,7 +8,7 @@ if (!empty($payment_method)) {
 }
 
 foreach (App\Currency::enabled() as $currency) {
-    $data[] = __('movements.current_balance_amount', [
+    $data[] = __('texts.movements.current_balance_amount', [
         'amount' => printablePriceCurrency($supplier->currentBalanceAmount($currency), '.', $currency)
     ]);
 }

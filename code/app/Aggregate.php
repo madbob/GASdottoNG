@@ -230,15 +230,15 @@ class Aggregate extends Model
         }
 
         if ($tot == 0 && $friends_tot == 0) {
-            $message = __('orders.help.no_partecipating');
+            $message = __('texts.orders.help.no_partecipating');
             $extra_class = 'text-more-muted';
         }
         else {
             if ($friends_tot == 0) {
-                $message = __('orders.help.formatted_booked_amount', ['amount' => printablePriceCurrency($tot)]);
+                $message = __('texts.orders.help.formatted_booked_amount', ['amount' => printablePriceCurrency($tot)]);
             }
             else {
-                $message = __('orders.help.formatted_booked_amount_with_friends', ['amount' => printablePriceCurrency($tot), 'friends' => printablePriceCurrency($friends_tot)]);
+                $message = __('texts.orders.help.formatted_booked_amount_with_friends', ['amount' => printablePriceCurrency($tot), 'friends' => printablePriceCurrency($friends_tot)]);
             }
 
             $extra_class = '';

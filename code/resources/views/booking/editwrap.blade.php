@@ -23,7 +23,7 @@ else {
         <div class="col-md-12">
             @if($required_mode == 'edit' && $user->canBook() == false)
                 <div class="alert alert-danger">
-                    {{ __('orders.help.insufficient_credit_notice') }}
+                    {{ __('texts.orders.help.insufficient_credit_notice') }}
                 </div>
                 <br>
             @endif
@@ -47,7 +47,7 @@ else {
                                     'header_function' => function($friend) use ($aggregate) {
                                         return $friend->printableFriendHeader($aggregate);
                                     },
-                                    'empty_message' => $user->id == $currentuser->id ? __('orders.help.friends_bookings_notice') : __('orders.help.no_friends'),
+                                    'empty_message' => $user->id == $currentuser->id ? __('texts.orders.help.friends_bookings_notice') : __('texts.orders.help.no_friends'),
                                     'url' => url('booking/' . $aggregate->id . '/user'),
                                 ])
                             </div>
@@ -59,7 +59,7 @@ else {
                     <x-larastrap::tabpane tlabel="orders.booking.nav.others" classes="fillable-booking-space" icon="bi-people" :id="sprintf('bookings-other-%s-%s', sanitizeId($user->id), sanitizeId($aggregate->id))">
                         <div class="row">
                             <div class="col-md-12">
-                                <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ __('generic.search.users') }}" />
+                                <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" placeholder="{{ __('texts.generic.search.users') }}" />
                             </div>
                             <p>&nbsp;</p>
                         </div>
@@ -74,12 +74,12 @@ else {
                 @if($standalone == false && $has_shipping && $aggregate->orders()->where('status', 'closed')->count() > 0)
                     <x-larastrap::tabpane tlabel="orders.booking.nav.add" classes="fillable-booking-space" icon="bi-person-check" :id="sprintf('bookings-more-%s-%s', sanitizeId($user->id), sanitizeId($aggregate->id))">
                         <div class="alert alert-danger">
-                            {{ __('orders.help.closed_order_alert_new_booking') }}
+                            {{ __('texts.orders.help.closed_order_alert_new_booking') }}
                         </div>
                         <br/>
                         <div class="row">
                             <div class="col-md-12">
-                                <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" data-enforce-booking-mode="edit" placeholder="{{ __('generic.search.users') }}" />
+                                <input data-aggregate="{{ $aggregate->id }}" class="form-control bookingSearch" data-enforce-booking-mode="edit" placeholder="{{ __('texts.generic.search.users') }}" />
                             </div>
                             <p>&nbsp;</p>
                         </div>

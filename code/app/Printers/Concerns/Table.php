@@ -24,7 +24,7 @@ trait Table
             }
         }
 
-        $headers[] = __('orders.totals.total');
+        $headers[] = __('texts.orders.totals.total');
         $prices_rows[] = '';
 
         return [$all_products, $headers, $prices_rows];
@@ -53,7 +53,7 @@ trait Table
     {
         $row = [];
 
-        $row[] = __('orders.totals.total');
+        $row[] = __('texts.orders.totals.total');
         $row = array_merge($row, array_fill(0, count($user_columns) - 1, ''));
 
         foreach ($orders as $order) {

@@ -26,7 +26,7 @@
                 <x-larastrap::check name="enable_satispay" tlabel="movements.enable_satispay" triggers_collapse="enable_satispay" :value="$gas->hasFeature('satispay')" tpophelp="gas.help.enable_satispay" />
                 <x-larastrap::collapse id="enable_satispay">
                     @if($gas->hasFeature('satispay'))
-                        {{ __('gas.help.enabled_satispay') }}
+                        {{ __('texts.gas.help.enabled_satispay') }}
                     @else
                         <x-larastrap::text name="satispay_auth_code" tlabel="gas.satispay.activation_code" tpophelp="gas.help.satispay_activation_code" value="" />
                     @endif

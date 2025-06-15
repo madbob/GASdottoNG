@@ -34,7 +34,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
 
             <div class="row">
                 <div class="col-md-6">
-                    @include('commons.staticobjfield', ['target_obj' => $user, 'label' => __('orders.booked_by')])
+                    @include('commons.staticobjfield', ['target_obj' => $user, 'label' => __('texts.orders.booked_by')])
                 </div>
                 <div class="col-md-6">
                     @foreach($user->contacts as $contact)
@@ -99,11 +99,11 @@ app()->make('AggregationSwitch')->setEnforced(true);
                 @if($o->status == 'shipped')
                     <div class="row">
                         <div class="col-md-6">
-                            @include('commons.staticobjfield', ['obj' => $o, 'name' => 'deliverer', 'label' => __('orders.delivered_by')])
+                            @include('commons.staticobjfield', ['obj' => $o, 'name' => 'deliverer', 'label' => __('texts.orders.delivered_by')])
                             <x-larastrap::datepicker tlabel="orders.dates.shipping" :value="$o->delivery" disabled readonly />
                         </div>
                         <div class="col-md-6">
-                            @include('commons.staticmovementfield', ['obj' => $o->payment, 'label' => __('generic.payment'), 'rand' => $rand])
+                            @include('commons.staticmovementfield', ['obj' => $o->payment, 'label' => __('texts.generic.payment'), 'rand' => $rand])
                         </div>
                     </div>
                 @endif
@@ -127,7 +127,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                         <div class="row">
                             <div class="col">
                                 <x-larastrap::suggestion>
-                                    {{ __('orders.help.prices_changed') }}
+                                    {{ __('texts.orders.help.prices_changed') }}
                                 </x-larastrap::suggestion>
                             </div>
                         </div>
@@ -197,7 +197,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                                         {{ $combo->printableName() }}
                                                     @else
                                                         {{ $product->product->printableName() }}<br>
-                                                        <small>{{ __('orders.help.variant_no_longer_active') }}</small>
+                                                        <small>{{ __('texts.orders.help.variant_no_longer_active') }}</small>
                                                     @endif
 
                                                     <input type="hidden" name="{{ $product->product->id }}" value="1" />
@@ -253,7 +253,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                     <tr class="hidden booking-product fit-add-product">
                                         <td>
                                             <select class="fit-add-product-select form-select">
-                                                <option value="-1">{{ __('generic.select') }}</option>
+                                                <option value="-1">{{ __('texts.generic.select') }}</option>
                                                 @foreach($order->products as $product)
                                                     <option value="{{ $product->id }}">{{ $product->name }}</option>
                                                 @endforeach
@@ -276,7 +276,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                 <tr>
                                     <td>
                                         @if($order->isActive())
-                                            <button class="btn btn-warning add-booking-product">{{ __('generic.add_new') }}</button>
+                                            <button class="btn btn-warning add-booking-product">{{ __('texts.generic.add_new') }}</button>
                                         @endif
                                     </td>
                                     <td></td>
@@ -286,7 +286,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                     @if($currentgas->unmanaged_shipping == '1' && $order->supplier->unmanaged_shipping_enabled)
                                         <td class="text-end fw-bold"><x-larastrap::price tlabel="orders.totals.manual" :name="sprintf('manual_total_%s', $order->id)" classes="booking-total manual-total" :value="$now_delivered" data-manual-change="0" /></td>
                                     @else
-                                        <td class="text-end fw-bold">{{ __('orders.totals.total') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</td>
+                                        <td class="text-end fw-bold">{{ __('texts.orders.totals.total') }}: <span class="booking-total">{{ printablePrice($now_delivered) }}</span> {{ $currency_symbol }}</td>
                                     @endif
                                 </tr>
                             </tfoot>
@@ -301,7 +301,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
                         <tr>
                             <td>
                                 <div class="float-end">
-                                    <strong>{{ __('orders.totals.complete') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> {{ $currency_symbol }}</strong>
+                                    <strong>{{ __('texts.orders.totals.complete') }}: <span class="all-bookings-total">{{ printablePrice($tot_amount) }}</span> {{ $currency_symbol }}</strong>
                                 </div>
                             </td>
                         </tr>
@@ -314,11 +314,11 @@ app()->make('AggregationSwitch')->setEnforced(true);
                     <div class="col">
                         <div class="btn-group float-end main-form-buttons" role="group">
                             @if($existing)
-                                <button class="btn btn-light preload-quantities">{{ __('orders.load_booked_quantities') }}</button>
-                                <button type="submit" class="btn btn-info info-button">{{ __('orders.save_delivery') }}</button>
+                                <button class="btn btn-light preload-quantities">{{ __('texts.orders.load_booked_quantities') }}</button>
+                                <button type="submit" class="btn btn-info info-button">{{ __('texts.orders.save_delivery') }}</button>
                             @endif
 
-                            <button type="submit" class="btn btn-success saving-button">{{ __('orders.do_delivery') }}</button>
+                            <button type="submit" class="btn btn-success saving-button">{{ __('texts.orders.do_delivery') }}</button>
                         </div>
                     </div>
                 </div>
@@ -345,7 +345,7 @@ app()->make('AggregationSwitch')->setEnforced(true);
             'dom_id' => $rand,
             'obj' => null, // qui gestisco sempre un movimento di pagamento come nuovo, eventualmente la pre-callback di 'booking-payment' provvederà a caricare quelli esistenti assegnati alle prenotazioni contemplate
             'default' => \App\Movement::generate('booking-payment', $user, $aggregate, $tot_amount),
-            'amount_label' => __('orders.totals.to_pay'),
+            'amount_label' => __('texts.orders.totals.to_pay'),
             'extra' => [
                 'delivering-status' => json_encode($tot_delivered)
             ],

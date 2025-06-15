@@ -4,10 +4,10 @@
     </p>
 @else
     <p>
-        {{ __('notifications.notices.attached_order', ['gasname' => $currentuser->gas->printableName]) }}
+        {{ __('texts.notifications.notices.attached_order', ['gasname' => $currentuser->gas->printableName]) }}
     </p>
     <p>
-        {{ __('notifications.greetings') }},<br>
+        {{ __('texts.notifications.greetings') }},<br>
         {{ $currentuser->printableName() }}
     </p>
 @endif

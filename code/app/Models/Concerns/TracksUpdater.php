@@ -27,7 +27,7 @@ trait TracksUpdater
     public function getPrintableUpdaterAttribute(): string
     {
         if ($this->updater) {
-            return __('generic.updated_at_formatted', [
+            return __('texts.generic.updated_at_formatted', [
                 'date' => $this->updated_at->format('d/m/Y'),
                 'person' => $this->updater->printableName(),
             ]);

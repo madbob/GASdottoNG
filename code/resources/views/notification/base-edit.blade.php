@@ -33,7 +33,7 @@ if (filled($mailtype)) {
 @endif
 
 @if($select_users)
-    @include('commons.multipleusers', ['obj' => $notification, 'name' => 'users', 'label' => __('generic.recipients')])
+    @include('commons.multipleusers', ['obj' => $notification, 'name' => 'users', 'label' => __('texts.generic.recipients')])
 @else
     @if($notification)
         @foreach($notification->users as $user)
@@ -65,10 +65,10 @@ if ($instant == true) {
 }
 else {
     if ($notification && $notification->mailed) {
-        $mail_help = __('notifications.help.repeat_mail_warning');
+        $mail_help = __('texts.notifications.help.repeat_mail_warning');
     }
     else {
-        $mail_help = __('notifications.help.sending_mail_warning');
+        $mail_help = __('texts.notifications.help.sending_mail_warning');
     }
 }
 

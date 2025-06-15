@@ -25,10 +25,10 @@
                 {{ trim($gas_data['address']) }}<br>
             @endif
             @if(!empty($gas_data['taxcode']))
-                {{ __('user.taxcode') }} {{ trim($gas_data['taxcode']) }}<br>
+                {{ __('texts.user.taxcode') }} {{ trim($gas_data['taxcode']) }}<br>
             @endif
             @if(!empty($gas_data['vat']))
-                {{ __('supplier.vat') }} {{ trim($gas_data['vat']) }}<br>
+                {{ __('texts.supplier.vat') }} {{ trim($gas_data['vat']) }}<br>
             @endif
         </p>
 
@@ -51,10 +51,10 @@
         <table border="1" style="width: 100%">
             <thead>
                 <tr>
-                    <th scope="col" width="55%"><strong>{{ __('products.name') }}</strong></th>
-                    <th scope="col" width="15%"><strong>{{ __('generic.quantity') }}</strong></th>
-                    <th scope="col" width="15%"><strong>{{ __('generic.measure') }}</strong></th>
-                    <th scope="col" width="15%"><strong>{{ __('generic.price') }}</strong></th>
+                    <th scope="col" width="55%"><strong>{{ __('texts.products.name') }}</strong></th>
+                    <th scope="col" width="15%"><strong>{{ __('texts.generic.quantity') }}</strong></th>
+                    <th scope="col" width="15%"><strong>{{ __('texts.generic.measure') }}</strong></th>
+                    <th scope="col" width="15%"><strong>{{ __('texts.generic.price') }}</strong></th>
                 </tr>
             </thead>
             <tbody>
@@ -116,13 +116,13 @@
             <tbody>
                 @foreach($rates as $id => $total)
                     <tr>
-                        <td width="85%">{{ __('generic.vat') }} {{ App\VatRate::findOrFail($id)->percentage) }}%</td>
+                        <td width="85%">{{ __('texts.generic.vat') }} {{ App\VatRate::findOrFail($id)->percentage) }}%</td>
                         <td width="15%">{{ printablePriceCurrency($total) }}</td>
                     </tr>
                 @endforeach
 
                 <tr>
-                    <td width="85%"><strong>{{ __('orders.totals.total') }}</strong></td>
+                    <td width="85%"><strong>{{ __('texts.orders.totals.total') }}</strong></td>
                     <td width="15%"><strong>{{ printablePriceCurrency($grand_total) }}</strong></td>
                 </tr>
             </tbody>

@@ -11,7 +11,7 @@ class DonationToGas extends MovementType
 
     public function initNew($type)
     {
-        $type->name = __('movements.defaults.donation');
+        $type->name = __('texts.movements.defaults.donation');
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Gas';
 

@@ -5,7 +5,7 @@
         <div class="col-md-4">
             @php
 
-            $statuses = ['no' => __('orders.statuses.unchange')];
+            $statuses = ['no' => __('texts.orders.statuses.unchange')];
             foreach(\App\Helpers\Status::orders() as $identifier => $meta) {
                 $statuses[$identifier] = $meta->label;
             }
@@ -48,9 +48,9 @@
 
 				<thead>
 					<tr>
-						<th scope="col">{{ __('orders.name') }}</th>
-						<th scope="col">{{ __('orders.totals.booked') }}</th>
-						<th scope="col">{{ __('orders.totals.shipped') }}</th>
+						<th scope="col">{{ __('texts.orders.name') }}</th>
+						<th scope="col">{{ __('texts.orders.totals.booked') }}</th>
+						<th scope="col">{{ __('texts.orders.totals.shipped') }}</th>
 					</tr>
 				</thead>
 				<tbody>

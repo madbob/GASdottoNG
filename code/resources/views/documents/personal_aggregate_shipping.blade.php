@@ -14,7 +14,7 @@
     </head>
 
     <body>
-        <h3>{{ __('orders.files.order.shipping') }}<br/>
+        <h3>{{ __('texts.orders.files.order.shipping') }}<br/>
             @if($aggregate->orders()->count() <= aggregatesConvenienceLimit())
                 @foreach($aggregate->orders as $order)
                     {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
@@ -56,10 +56,10 @@
                             </tr>
 
                             <tr>
-                                <td width="40%"><strong>{{ __('products.name') }}</strong></td>
-                                <td width="15%"><strong>{{ __('orders.booking.statuses.booked') }}</strong></td>
+                                <td width="40%"><strong>{{ __('texts.products.name') }}</strong></td>
+                                <td width="15%"><strong>{{ __('texts.orders.booking.statuses.booked') }}</strong></td>
                                 <td width="15%">&nbsp;</td>
-                                <td width="15%"><strong>{{ __('orders.booking.statuses.shipped') }}</strong></td>
+                                <td width="15%"><strong>{{ __('texts.orders.booking.statuses.shipped') }}</strong></td>
                                 <td width="15%">&nbsp;</td>
                             </tr>
 
@@ -104,10 +104,10 @@
                     @endforeach
 
                     <tr>
-                        <th scope="row" colspan="5"><strong>{{ __('orders.totals.booked') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
+                        <th scope="row" colspan="5"><strong>{{ __('texts.orders.totals.booked') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
                     </tr>
                     <tr>
-                        <th scope="row" colspan="5"><strong>{{ __('orders.totals.shipped') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
+                        <th scope="row" colspan="5"><strong>{{ __('texts.orders.totals.shipped') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
                     </tr>
                 </tbody>
             </table>
@@ -127,7 +127,7 @@
                     <thead>
                         <tr>
                             <th scope="col" colspan="5">
-                                <strong>{{ __('orders.totals.total') }}</strong>
+                                <strong>{{ __('texts.orders.totals.total') }}</strong>
                             </th>
                         </tr>
                     </thead>
@@ -148,10 +148,10 @@
                                 </tr>
 
                                 <tr>
-                                    <td width="40%"><strong>{{ __('products.name') }}</strong></td>
-                                    <td width="15%"><strong>{{ __('orders.booking.statuses.booked') }}</strong></td>
+                                    <td width="40%"><strong>{{ __('texts.products.name') }}</strong></td>
+                                    <td width="15%"><strong>{{ __('texts.orders.booking.statuses.booked') }}</strong></td>
                                     <td width="15%">&nbsp;</td>
-                                    <td width="15%"><strong>{{ __('orders.booking.statuses.shipped') }}</strong></td>
+                                    <td width="15%"><strong>{{ __('texts.orders.booking.statuses.shipped') }}</strong></td>
                                     <td width="15%">&nbsp;</td>
                                 </tr>
 
@@ -190,10 +190,10 @@
                         @endforeach
 
                         <tr>
-                            <th scope="row" colspan="5"><strong>{{ __('orders.totals.booked') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
+                            <th scope="row" colspan="5"><strong>{{ __('texts.orders.totals.booked') }}: {{ printablePriceCurrency($booked_cell_value, ',') }}</strong></th>
                         </tr>
                         <tr>
-                            <th scope="row" colspan="5"><strong>{{ __('orders.totals.shipped') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
+                            <th scope="row" colspan="5"><strong>{{ __('texts.orders.totals.shipped') }}: {{ printablePriceCurrency($delivered_cell_value, ',') }}</strong></th>
                         </tr>
                     </tbody>
                 </table>

@@ -4,7 +4,7 @@
             'user' => null,
             'template' => 'friend.base-edit',
             'typename' => 'friend',
-            'typename_readable' => __('user.friend'),
+            'typename_readable' => __('texts.user.friend'),
             'targeturl' => 'friends',
             'extra' => [
                 'creator_id' => $user->id,
@@ -20,7 +20,7 @@
         @include('commons.loadablelist', [
             'identifier' => 'friend-list',
             'items' => $user->friends,
-            'empty_message' => __('user.empty.friends'),
+            'empty_message' => __('texts.user.empty.friends'),
             'url' => 'users'
         ])
     </div>

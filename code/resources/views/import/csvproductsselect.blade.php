@@ -24,7 +24,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
 
             <div class="row">
                 <div class="col-md-6">
-                    <x-larastrap::radios name="reset_list" tlabel="imports.existing_products_action" :options="['no' => __('generic.action.ignore'), 'disable' => __('generic.action.disable')]" value="no" />
+                    <x-larastrap::radios name="reset_list" tlabel="imports.existing_products_action" :options="['no' => __('texts.generic.action.ignore'), 'disable' => __('texts.generic.action.disable')]" value="no" />
                 </div>
             </div>
 
@@ -33,15 +33,15 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
             <table class="table fixed-table">
                 <thead>
                     <tr>
-                        <th scope="col" width="5%">{{ __('imports.do') }}</th>
-                        <th scope="col" width="15%">{{ __('generic.name') }}</th>
-                        <th scope="col" width="15%">{{ __('generic.description') }}</th>
-                        <th scope="col" width="10%">{{ __('products.prices.unit') }}</th>
-                        <th scope="col" width="10%">{{ __('generic.category') }}</th>
-                        <th scope="col" width="10%">{{ __('generic.measure') }}</th>
-                        <th scope="col" width="10%">{{ __('products.vat_rate') }}</th>
-                        <th scope="col" width="10%">{{ __('products.code') }}</th>
-                        <th scope="col" width="15%">{{ __('generic.update') }}</th>
+                        <th scope="col" width="5%">{{ __('texts.imports.do') }}</th>
+                        <th scope="col" width="15%">{{ __('texts.generic.name') }}</th>
+                        <th scope="col" width="15%">{{ __('texts.generic.description') }}</th>
+                        <th scope="col" width="10%">{{ __('texts.products.prices.unit') }}</th>
+                        <th scope="col" width="10%">{{ __('texts.generic.category') }}</th>
+                        <th scope="col" width="10%">{{ __('texts.generic.measure') }}</th>
+                        <th scope="col" width="10%">{{ __('texts.products.vat_rate') }}</th>
+                        <th scope="col" width="10%">{{ __('texts.products.code') }}</th>
+                        <th scope="col" width="15%">{{ __('texts.generic.update') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,7 +84,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                     @if(isset($product->temp_vat_rate_name))
                                         <x-larastrap::select-model name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" :extra_options="['new:' . $product->temp_vat_rate_name => $product->temp_vat_rate_name]" />
                                     @else
-                                        <x-larastrap::select-model name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" :extra_options="[0 => __('generic.none')]" />
+                                        <x-larastrap::select-model name="vat_rate_id" squeeze npostfix="[]" :options="$vat_rates" :extra_options="[0 => __('texts.generic.none')]" />
                                     @endif
                                 </td>
                                 <td>
@@ -94,7 +94,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                     @if($supplier->products->isEmpty() == false)
                                         @php
 
-                                        $original_products = [0 => __('generic.none')];
+                                        $original_products = [0 => __('texts.generic.none')];
                                         if ($product->want_replace) {
                                             $original_products[$product->want_replace->id] = $product->want_replace->printableName();
                                         }
@@ -102,7 +102,7 @@ $vat_rates = App\VatRate::orderBy('percentage', 'asc')->get();
                                         @endphp
                                         <x-larastrap::select name="want_replace" squeeze npostfix="[]" :options="$original_products" :value="$product->want_replace->id ?? 0" classes="remote-select" :data-remote-url="route('products.search', ['supplier' => $supplier->id])" />
                                     @else
-                                        {{ __('imports.no_products') }}
+                                        {{ __('texts.imports.no_products') }}
                                         <input type="hidden" name="want_replace[]" value="0">
                                     @endif
                                 </td>

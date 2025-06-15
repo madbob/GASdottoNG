@@ -314,7 +314,7 @@ class Product extends Model
         if ($gas->manual_products_sorting) {
             $ret = [
                 'sorting' => (object) [
-                    'label' => __('products.sorting'),
+                    'label' => __('texts.products.sorting'),
                     'width' => 5,
                 ],
             ];
@@ -322,33 +322,33 @@ class Product extends Model
 
         $ret = $ret + [
             'selection' => (object) [
-                'label' => __('generic.selection'),
+                'label' => __('texts.generic.selection'),
                 'width' => 5,
             ],
             'name' => (object) [
-                'label' => __('generic.name'),
+                'label' => __('texts.generic.name'),
                 'width' => 20,
             ],
             'category' => (object) [
-                'label' => __('generic.category'),
+                'label' => __('texts.generic.category'),
                 'width' => 15,
             ],
             'measure' => (object) [
-                'label' => __('generic.measure'),
+                'label' => __('texts.generic.measure'),
                 'width' => 15,
             ],
             'price' => (object) [
-                'label' => __('products.prices.unit'),
+                'label' => __('texts.products.prices.unit'),
                 'width' => 10,
             ],
             'max_available' => (object) [
-                'label' => __('products.available'),
-                'help' => __('products.help.available_explain'),
+                'label' => __('texts.products.available'),
+                'help' => __('texts.products.help.available_explain'),
                 'width' => 10,
             ],
             'active' => (object) [
-                'label' => __('products.bookable'),
-                'help' => __('products.help.bookable'),
+                'label' => __('texts.products.bookable'),
+                'help' => __('texts.products.help.bookable'),
                 'width' => 5,
             ],
         ];

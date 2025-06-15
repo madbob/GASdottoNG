@@ -12,9 +12,9 @@ if (!isset($end_date)) {
 
 <x-larastrap::field tlabel="generic.interval">
     <div class="input-group">
-        <div class="input-group-text">{{ __('generic.since') }}</div>
+        <div class="input-group-text">{{ __('texts.generic.since') }}</div>
         <input type="text" class="date form-control" name="startdate" value="{{ $start_date ? printableDate($start_date) : '' }}" required autocomplete="off">
-        <div class="input-group-text">{{ __('generic.to') }}</div>
+        <div class="input-group-text">{{ __('texts.generic.to') }}</div>
         <input type="text" class="date form-control" name="enddate" value="{{ $end_date ? printableDate($end_date) : '' }}" required autocomplete="off" data-enforce-after=".date[name=startdate]">
     </div>
 </x-larastrap::field>

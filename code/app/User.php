@@ -64,7 +64,7 @@ class User extends Authenticatable
 
     public static function commonClassName()
     {
-        return __('user.name');
+        return __('texts.user.name');
     }
 
     public function notifications(): BelongsToMany
@@ -105,7 +105,7 @@ class User extends Authenticatable
 
             if (! $ret) {
                 $ret = (object) [
-                    'name' => __('generic.unspecified'),
+                    'name' => __('texts.generic.unspecified'),
                     'valid_config' => function ($target) {
                         return true;
                     },
@@ -121,7 +121,7 @@ class User extends Authenticatable
     public function printableName()
     {
         if ($this->plainStatus() == 'removed') {
-            return __('user.removed_user');
+            return __('texts.user.removed_user');
         }
 
         $ret = $this->lastname . ' ' . $this->firstname;
@@ -165,7 +165,7 @@ class User extends Authenticatable
         }
 
         if ($tot != 0) {
-            $ret .= '<div class="pull-right">' . __('user.booking_friend_header', ['amount' => printablePriceCurrency($tot)]) . '</div>';
+            $ret .= '<div class="pull-right">' . __('texts.user.booking_friend_header', ['amount' => printablePriceCurrency($tot)]) . '</div>';
         }
 
         return $ret;
@@ -234,7 +234,7 @@ class User extends Authenticatable
         })->get();
 
         if ($other_bookings->isEmpty() === false) {
-            $notice = __('user.pending_deliveries');
+            $notice = __('texts.user.pending_deliveries');
             $notice .= '<ul>';
 
             foreach ($other_bookings as $ob) {
@@ -265,7 +265,7 @@ class User extends Authenticatable
         }
 
         $this->forceFill([
-            'firstname' => __('user.removed_user'),
+            'firstname' => __('texts.user.removed_user'),
             'lastname' => '',
             'suspended_at' => now(),
             'birthday' => '1900-01-01',

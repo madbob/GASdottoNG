@@ -15,6 +15,6 @@ class EMail implements Rule
 
     public function message()
     {
-        return __('user.help.existing_email_error');
+        return __('texts.user.help.existing_email_error');
     }
 }

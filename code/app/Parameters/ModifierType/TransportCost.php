@@ -15,7 +15,7 @@ class TransportCost extends ModifierType
 
     public function initNew($type)
     {
-        $type->name = __('modifiers.defaults.delivery');
+        $type->name = __('texts.modifiers.defaults.delivery');
         $type->system = true;
         $type->identifier = 'shipping';
         $type->classes = [Product::class, Supplier::class, Circle::class];

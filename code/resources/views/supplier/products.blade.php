@@ -1,7 +1,7 @@
 @can('supplier.modify', $supplier)
     @if($supplier->remote_lastimport)
         <x-larastrap::suggestion>
-            {{ __('supplier.help.import_products_notice') }}
+            {{ __('texts.supplier.help.import_products_notice') }}
         </x-larastrap::suggestion>
     @endif
 
@@ -11,7 +11,7 @@
                 'template' => 'product.base-edit',
                 'typename' => 'product',
                 'target_update' => 'product-list-' . $supplier->id,
-                'typename_readable' => __('products.name'),
+                'typename_readable' => __('texts.products.name'),
                 'targeturl' => 'products',
                 'extra' => [
                     'supplier_id' => $supplier->id
@@ -29,16 +29,16 @@
             <x-larastrap::mbutton tlabel="supplier.export_products" triggers_modal="#export_products" />
             <x-larastrap::modal id="export_products" classes="close-on-submit">
                 <x-larastrap::form method="GET" :action="route('suppliers.catalogue', ['id' => $supplier->id])" :buttons="[['tlabel' => 'generic.download', 'type' => 'submit']]">
-                    <p>{{ __('export.help_csv_libreoffice') }}</p>
+                    <p>{{ __('texts.export.help_csv_libreoffice') }}</p>
 
                     <hr/>
 
                     <x-larastrap::structchecks name="fields" tlabel="export.data.columns" :options="App\Formatters\Product::formattableColumns()" />
 
                     <x-larastrap::radios name="format" tlabel="export.data.format" :options="[
-                        'pdf' => __('export.data.formats.pdf'),
-                        'csv' => __('export.data.formats.csv'),
-                        'gdxp' => __('export.data.formats.gdxp'),
+                        'pdf' => __('texts.export.data.formats.pdf'),
+                        'csv' => __('texts.export.data.formats.csv'),
+                        'gdxp' => __('texts.export.data.formats.gdxp'),
                     ]" value="pdf" />
                 </x-larastrap::form>
             </x-larastrap::modal>
@@ -48,7 +48,7 @@
     @if($supplier->active_orders->count() != 0)
         <br>
         <div class="alert alert-danger">
-            {{ __('supplier.help.handling_products') }}
+            {{ __('texts.supplier.help.handling_products') }}
         </div>
     @endif
 

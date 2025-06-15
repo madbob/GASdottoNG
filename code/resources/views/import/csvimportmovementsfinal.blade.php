@@ -1,4 +1,4 @@
-<x-larastrap::modal :buttons="[['color' => 'success', 'label' => __('generic.close'), 'classes' => ['reloader'], 'attributes' => ['data-bs-dismiss' => 'modal']]]">
+<x-larastrap::modal :buttons="[['color' => 'success', 'label' => __('texts.generic.close'), 'classes' => ['reloader'], 'attributes' => ['data-bs-dismiss' => 'modal']]]">
     <p>
         {{ $title }}:
     </p>
@@ -6,13 +6,13 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th scope="col">{{ __('movements.type') }}</th>
-				<th scope="col">{{ __('generic.method') }}</th>
-				<th scope="col">{{ __('generic.date') }}</th>
-				<th scope="col">{{ __('generic.value') }}</th>
-				<th scope="col">{{ __('movements.paying') }}</th>
-				<th scope="col">{{ __('movements.payed') }}</th>
-                <th scope="col">{{ __('generic.identifier') }}</th>
+				<th scope="col">{{ __('texts.movements.type') }}</th>
+				<th scope="col">{{ __('texts.generic.method') }}</th>
+				<th scope="col">{{ __('texts.generic.date') }}</th>
+				<th scope="col">{{ __('texts.generic.value') }}</th>
+				<th scope="col">{{ __('texts.movements.paying') }}</th>
+				<th scope="col">{{ __('texts.movements.payed') }}</th>
+                <th scope="col">{{ __('texts.generic.identifier') }}</th>
 			</tr>
 		</thead>
 		<tbody>

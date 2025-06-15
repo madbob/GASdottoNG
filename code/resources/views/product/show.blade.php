@@ -2,8 +2,8 @@
     <div class="row">
         <div class="col-md-6">
             <x-larastrap::price name="price" tlabel="products.prices.unit" readonly disabled />
-            @include('commons.staticobjfield', ['obj' => $product, 'name' => 'category', 'label' => __('generic.category')])
-            @include('commons.staticobjfield', ['obj' => $product, 'name' => 'measure', 'label' => __('generic.measure')])
+            @include('commons.staticobjfield', ['obj' => $product, 'name' => 'category', 'label' => __('texts.generic.category')])
+            @include('commons.staticobjfield', ['obj' => $product, 'name' => 'measure', 'label' => __('texts.generic.measure')])
 
             <x-larastrap::field tlabel="generic.description">
                 <p class="form-control-plaintext">
@@ -20,7 +20,7 @@
         <div class="col-md-6">
             <div class="row">
                 <div class="col-md-12">
-                    @include('commons.staticimagefield', ['obj' => $product, 'label' => __('generic.photo'), 'valuefrom' => 'picture_url'])
+                    @include('commons.staticimagefield', ['obj' => $product, 'label' => __('texts.generic.photo'), 'valuefrom' => 'picture_url'])
                 </div>
             </div>
 

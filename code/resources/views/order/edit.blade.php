@@ -42,18 +42,18 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
             <?php
 
             $keep_open_packages_values = [
-                'no' => __('orders.packages.ignore'),
-                'each' => __('orders.packages.permit'),
+                'no' => __('texts.orders.packages.ignore'),
+                'each' => __('texts.orders.packages.permit'),
             ];
 
             if ($order->aggregate->gas()->count() > 1) {
-                $keep_open_packages_values['all'] = __('orders.packages.permit_all');
+                $keep_open_packages_values['all'] = __('texts.orders.packages.permit_all');
             }
 
             ?>
 
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
-                <x-larastrap::textarea name="comment" tlabel="generic.comment" maxlength="190" rows="2" :pophelp="__('orders.comment', ['limit' => longCommentLimit()])" />
+                <x-larastrap::textarea name="comment" tlabel="generic.comment" maxlength="190" rows="2" :pophelp="__('texts.orders.comment', ['limit' => longCommentLimit()])" />
                 <x-larastrap::datepicker name="start" tlabel="orders.dates.start" required />
                 <x-larastrap::datepicker name="end" tlabel="orders.dates.end" required :attributes="['data-enforce-after' => '.date[name=start]']" tpophelp="orders.help.end" />
                 <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" :attributes="['data-enforce-after' => '.date[name=end]']" />
@@ -120,14 +120,14 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
             @include('commons.modifications', [
                 'obj' => $order,
                 'skip_void' => true,
-                'suggestion' => $show_alert ? __('orders.help.modifiers_notice') : '',
+                'suggestion' => $show_alert ? __('texts.orders.help.modifiers_notice') : '',
             ])
 
             @if(Gate::check('movements.admin', $currentgas) || Gate::check('supplier.movements', $order->supplier))
                 @include('commons.movementfield', [
                     'obj' => $order->payment,
                     'name' => 'payment_id',
-                    'label' => __('generic.payment'),
+                    'label' => __('texts.generic.payment'),
                     'default' => \App\Movement::generate('order-payment', $currentgas, $order, $order->fullSupplierValue($summary, $shipped_modifiers) ?? 0),
                     'to_modal' => [
                         'amount_editable' => true,
@@ -135,12 +135,12 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
                             'reload-loadable' => '#order-list',
                         ],
                     ],
-                    'help_popover' => __('orders.help.payment'),
+                    'help_popover' => __('texts.orders.help.payment'),
                 ])
             @else
                 @include('commons.staticmovementfield', [
                     'obj' => $order->payment,
-                    'label' => __('generic.payment'),
+                    'label' => __('texts.generic.payment'),
                 ])
             @endif
         </div>

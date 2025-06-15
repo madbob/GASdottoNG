@@ -44,11 +44,11 @@ class LoginController extends Controller
             $username = trim($request->input('username'));
 
             if ($username == $password) {
-                Session::flash('prompt_message', __('auth.help.username_same_password', ['link' => route('profile')]));
+                Session::flash('prompt_message', __('texts.auth.help.username_same_password', ['link' => route('profile')]));
             }
             else {
                 if (is_null($user->suspended_at) === false) {
-                    Session::flash('prompt_message', __('auth.help.suspended_account_notice'));
+                    Session::flash('prompt_message', __('texts.auth.help.suspended_account_notice'));
                 }
             }
         }
@@ -71,7 +71,7 @@ class LoginController extends Controller
             })->first();
 
             if (is_null($user)) {
-                Session::flash('message', __('auth.help.invalid_username'));
+                Session::flash('message', __('texts.auth.help.invalid_username'));
                 Session::flash('message_type', 'danger');
                 Log::debug('Username non trovato: ' . $username);
 

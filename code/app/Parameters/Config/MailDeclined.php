@@ -17,8 +17,8 @@ class MailDeclined extends Config
     public function default()
     {
         return (object) [
-            'subject' => __('mail.declined.defaults.subject'),
-            'body' => __('mail.declined.defaults.body'),
+            'subject' => __('texts.mail.declined.defaults.subject'),
+            'body' => __('texts.mail.declined.defaults.body'),
         ];
     }
 }

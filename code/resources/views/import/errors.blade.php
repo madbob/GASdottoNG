@@ -2,7 +2,7 @@
 	<hr/>
 
 	<p>
-		{{ __('generic.errors') }}:
+		{{ __('texts.generic.errors') }}:
 	</p>
 
 	<ul class="list-group">

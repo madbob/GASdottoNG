@@ -11,11 +11,9 @@ return [
         'input_width' => ['xs' => 12, 'sm' => 8],
     ],
 
-    'translations' => [
-        'enabled' => true,
-        'params' => ['label', 'help', 'pophelp'],
-        'function' => '_i',
-    ],
+    'translate' => function($identifier) {
+        return __('texts.' . $identifier);
+    },
 
     'elements' => [
         'navbar' => [

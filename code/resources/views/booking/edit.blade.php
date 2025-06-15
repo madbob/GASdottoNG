@@ -65,7 +65,7 @@ $form_buttons = [
 
             @if(empty($sorted_filter_categories))
                 <div class="alert alert-danger">
-                    {{ __('orders.help.no_categories') }}
+                    {{ __('texts.orders.help.no_categories') }}
                 </div>
             @else
                 <div class="table-icons-legend" data-list-target=".booking-editor">
@@ -115,17 +115,17 @@ $form_buttons = [
 
                 <div class="btn-group table-sorter" data-table-target=".booking-editor">
                     <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
-                        {{ __('generic.sort_by') }} <span class="caret"></span>
+                        {{ __('texts.generic.sort_by') }} <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#" class="dropdown-item" data-sort-by="sorting" data-numeric-sorting="true">{{ __('generic.sortings.manual') }}</a>
+                            <a href="#" class="dropdown-item" data-sort-by="sorting" data-numeric-sorting="true">{{ __('texts.generic.sortings.manual') }}</a>
                         </li>
                         <li>
-                            <a href="#" class="dropdown-item" data-sort-by="name">{{ __('generic.name') }}</a>
+                            <a href="#" class="dropdown-item" data-sort-by="name">{{ __('texts.generic.name') }}</a>
                         </li>
                         <li>
-                            <a href="#" class="dropdown-item" data-sort-by="category_name">{{ __('generic.category') }}</a>
+                            <a href="#" class="dropdown-item" data-sort-by="category_name">{{ __('texts.generic.category') }}</a>
                         </li>
                     </ul>
                 </div>
@@ -175,7 +175,7 @@ $form_buttons = [
                             }
                             else {
                                 $products = $order->pendingPackages();
-                                $notice = __('orders.help.pending_packages_notice');
+                                $notice = __('texts.orders.help.pending_packages_notice');
                             }
                         }
                         else {
@@ -202,7 +202,7 @@ $form_buttons = [
 
                         @if($contacts->isEmpty() === false)
                             <x-larastrap::suggestion>
-                                {{ __('orders.help.contacts_notice') }}
+                                {{ __('texts.orders.help.contacts_notice') }}
                                 <ul>
                                     @foreach($contacts as $contact)
                                         <li>{{ $contact->printableName() }} - {{ join(', ', App\Formatters\User::format($contact, ['email', 'phone', 'mobile'])) }}</li>
@@ -272,7 +272,7 @@ $form_buttons = [
 
                                 @if($user->gas->hasFeature('restrict_booking_to_credit'))
                                     <tr class="do-not-sort">
-                                        <td>{{ __('movements.available_credit') }}</td>
+                                        <td>{{ __('texts.movements.available_credit') }}</td>
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
@@ -286,7 +286,7 @@ $form_buttons = [
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td class="text-end fw-bold">{{ __('orders.totals.total') }}:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</td>
+                                    <td class="text-end fw-bold">{{ __('texts.orders.totals.total') }}:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -307,7 +307,7 @@ $form_buttons = [
                     <thead>
                         <tr>
                             <th class="text-end">
-                                {{ __('orders.totals.complete') }}:<br><span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}
+                                {{ __('texts.orders.totals.complete') }}:<br><span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}
                             </th>
                         </tr>
                     </thead>
@@ -317,10 +317,10 @@ $form_buttons = [
             <div class="fixed-bottom bg-success p-2 booking-bottom-helper">
                 <div class="row justify-content-end align-items-center">
                     <div class="col-auto text-white">
-                        {{ __('orders.totals.total') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}
+                        {{ __('texts.orders.totals.total') }}: <span class="all-bookings-total">{{ printablePrice($grand_total) }}</span> {{ $currency_symbol }}
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-success" type="submit">{{ __('generic.save') }}</button>
+                        <button class="btn btn-success" type="submit">{{ __('texts.generic.save') }}</button>
                     </div>
                 </div>
             </div>

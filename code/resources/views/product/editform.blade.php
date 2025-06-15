@@ -23,7 +23,7 @@ if (!isset($duplicate)) {
         @include('commons.imagefield', [
             'obj' => $product,
             'name' => 'picture',
-            'label' => __('generic.photo'),
+            'label' => __('texts.generic.photo'),
             'valuefrom' => 'picture_url'
         ])
 
@@ -46,7 +46,7 @@ if (!isset($duplicate)) {
     @if($duplicate)
         <div class="col-12">
             <x-larastrap::suggestion>
-                {{ __('products.help.duplicate_notice') }}
+                {{ __('texts.products.help.duplicate_notice') }}
             </x-larastrap::suggestion>
         </div>
     @endif

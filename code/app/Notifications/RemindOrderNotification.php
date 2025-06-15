@@ -32,7 +32,7 @@ class RemindOrderNotification extends ManyMailNotification
         }
 
         if (empty($contacts) === false) {
-            $row .= __('mail.contacts_prefix', [
+            $row .= __('texts.mail.contacts_prefix', [
                 'contacts' => implode(', ', array_filter($contacts)),
             ]) . "\n";
         }

@@ -171,13 +171,13 @@ class AggregateBooking extends Model
             }
             else {
                 $suppliers = array_slice($suppliers, 0, $limit);
-                $suppliers[] = __('orders.and_more');
+                $suppliers[] = __('texts.orders.and_more');
             }
         }
 
         return [
             'suppliers' => implode(', ', $suppliers),
-            'shipping' => $shipping_date_set ? printableDate($shipping_date) : __('generic.undefined'),
+            'shipping' => $shipping_date_set ? printableDate($shipping_date) : __('texts.generic.undefined'),
         ];
     }
 
@@ -234,7 +234,7 @@ class AggregateBooking extends Model
         }
 
         if ($last_updater) {
-            return __('generic.updated_at_formatted', [
+            return __('texts.generic.updated_at_formatted', [
                 'date' => $last_update->format('d/m/Y'),
                 'person' => $last_updater->printableName()
             ]);

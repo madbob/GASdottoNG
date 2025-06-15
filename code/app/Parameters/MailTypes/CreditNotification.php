@@ -24,7 +24,7 @@ class CreditNotification extends MailType
     public function params()
     {
         return [
-            'current_credit' => __('mail.credit.current'),
+            'current_credit' => __('texts.mail.credit.current'),
         ];
     }
 

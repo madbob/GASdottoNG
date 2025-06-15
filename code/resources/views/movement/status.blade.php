@@ -8,26 +8,26 @@
     @endif
 
     @if(get_class($obj) == 'App\Gas')
-        <x-larastrap::iform classes="form-inline iblock" id="recalculate-account" method="POST" :action="url('/movements/recalculate')" :buttons="[['attributes' => ['type' => 'submit'], 'color' => 'danger', 'label' => __('movements.recalculate_balances')]]">
+        <x-larastrap::iform classes="form-inline iblock" id="recalculate-account" method="POST" :action="url('/movements/recalculate')" :buttons="[['attributes' => ['type' => 'submit'], 'color' => 'danger', 'label' => __('texts.movements.recalculate_balances')]]">
             <input type="hidden" name="pre-saved-function" value="passwordProtected">
             <input type="hidden" name="post-saved-function" value="displayRecalculatedBalances">
         </x-larastrap::iform>
 
         <x-larastrap::modal id="display-recalculated-balance-modal">
             <p>
-                {{ __('generic.finished_operation') }}
+                {{ __('texts.generic.finished_operation') }}
             </p>
             <div class="hidden alert alert-danger broken">
                 <p>
-                    {{ __('movements.help.balances_diff') }}
+                    {{ __('texts.movements.help.balances_diff') }}
                 </p>
                 <br>
                 <table class="table" id="broken_balances">
                     <thead>
                         <tr>
-                            <th scope="col">{{ __('generic.subject') }}</th>
-                            <th scope="col">{{ __('generic.before') }}</th>
-                            <th scope="col">{{ __('generic.after') }}</th>
+                            <th scope="col">{{ __('texts.generic.subject') }}</th>
+                            <th scope="col">{{ __('texts.generic.before') }}</th>
+                            <th scope="col">{{ __('texts.generic.after') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,7 +36,7 @@
             </div>
             <div class="hidden alert alert-success fixed">
                 <p>
-                    {{ __('movements.help.balances_same') }}
+                    {{ __('texts.movements.help.balances_same') }}
                 </p>
             </div>
         </x-larastrap::modal>
@@ -47,7 +47,7 @@
             </div>
 
             <x-larastrap::modal id="close-balance-modal">
-                <p>{{ __('movements.help.archiviation_notice') }}</p>
+                <p>{{ __('texts.movements.help.archiviation_notice') }}</p>
 
                 <hr>
 

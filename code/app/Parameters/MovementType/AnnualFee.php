@@ -13,7 +13,7 @@ class AnnualFee extends MovementType
 
     public function initNew($type)
     {
-        $type->name = __('movements.defaults.fee');
+        $type->name = __('texts.movements.defaults.fee');
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Gas';
         $type->visibility = false;

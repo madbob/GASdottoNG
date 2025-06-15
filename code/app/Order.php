@@ -55,7 +55,7 @@ class Order extends Model
 
     public static function commonClassName()
     {
-        return __('orders.name');
+        return __('texts.orders.name');
     }
 
     public function supplier(): BelongsTo
@@ -183,10 +183,10 @@ class Order extends Model
     {
         $start = $this->start;
         $end = $this->end;
-        $string = __('orders.formatted_name', ['start' => printableDate($start), 'end' => printableDate($end)]);
+        $string = __('texts.orders.formatted_name', ['start' => printableDate($start), 'end' => printableDate($end)]);
         if ($this->shipping != null && $this->shipping != '0000-00-00') {
             $shipping = $this->shipping;
-            $string .= __('orders.formatted_delivery_in_name', ['delivery' => printableDate($shipping)]);
+            $string .= __('texts.orders.formatted_delivery_in_name', ['delivery' => printableDate($shipping)]);
         }
 
         return $string;
@@ -631,20 +631,20 @@ class Order extends Model
     {
         $ret = [
             'selection' => (object) [
-                'label' => __('generic.selection'),
-                'help' => __('orders.help.product_selection'),
+                'label' => __('texts.generic.selection'),
+                'help' => __('texts.orders.help.product_selection'),
                 'width' => 3,
             ],
             'name' => (object) [
-                'label' => __('products.name'),
+                'label' => __('texts.products.name'),
                 'width' => 20,
             ],
             'price' => (object) [
-                'label' => __('products.prices.unit'),
+                'label' => __('texts.products.prices.unit'),
                 'width' => 5,
             ],
             'available' => (object) [
-                'label' => __('products.available'),
+                'label' => __('texts.products.available'),
                 'width' => 5,
             ],
         ];
@@ -660,50 +660,50 @@ class Order extends Model
         $products_modifiers = ModifierType::byClass(Product::class);
         foreach ($products_modifiers as $pmod) {
             $ret['modifier-pending-' . $pmod->id] = (object) [
-                'label' => sprintf('%s (%s)', $pmod->name, __('orders.booking.statuses.booked')),
-                'help' => __('orders.help.booked_modifier_column'),
+                'label' => sprintf('%s (%s)', $pmod->name, __('texts.orders.booking.statuses.booked')),
+                'help' => __('texts.orders.help.booked_modifier_column'),
                 'width' => 7,
             ];
 
             $ret['modifier-shipped-' . $pmod->id] = (object) [
-                'label' => sprintf('%s (%s)', $pmod->name, __('orders.booking.statuses.shipped')),
-                'help' => __('orders.help.delivered_modifier_column'),
+                'label' => sprintf('%s (%s)', $pmod->name, __('texts.orders.booking.statuses.shipped')),
+                'help' => __('texts.orders.help.delivered_modifier_column'),
                 'width' => 7,
             ];
         }
 
         $ret = $ret + [
             'unit_measure' => (object) [
-                'label' => __('generic.measure'),
+                'label' => __('texts.generic.measure'),
                 'width' => 9,
             ],
             'quantity' => (object) [
-                'label' => __('orders.quantities.booked'),
+                'label' => __('texts.orders.quantities.booked'),
                 'width' => 8,
             ],
             'weight' => (object) [
-                'label' => __('orders.weights.booked'),
+                'label' => __('texts.orders.weights.booked'),
                 'width' => 8,
             ],
             'total_price' => (object) [
-                'label' => __('orders.totals.total'),
+                'label' => __('texts.orders.totals.total'),
                 'width' => 8,
             ],
             'quantity_delivered' => (object) [
-                'label' => __('orders.quantities.shipped'),
+                'label' => __('texts.orders.quantities.shipped'),
                 'width' => 8,
             ],
             'weight_delivered' => (object) [
-                'label' => __('orders.weights.delivered'),
+                'label' => __('texts.orders.weights.delivered'),
                 'width' => 8,
             ],
             'price_delivered' => (object) [
-                'label' => __('orders.totals.shipped'),
+                'label' => __('texts.orders.totals.shipped'),
                 'width' => 8,
             ],
             'notes' => (object) [
-                'label' => __('generic.notes'),
-                'help' => __('orders.help.fixes_column'),
+                'label' => __('texts.generic.notes'),
+                'help' => __('texts.orders.help.fixes_column'),
                 'width' => 3,
             ],
         ];
@@ -913,7 +913,7 @@ class Order extends Model
     public function balanceFields()
     {
         return [
-            'bank' => __('invoices.balances.supplier'),
+            'bank' => __('texts.invoices.balances.supplier'),
         ];
     }
 

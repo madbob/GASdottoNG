@@ -8,7 +8,7 @@
                     <x-larastrap::form classes="direct-submit" method="POST" :action="route('payment.do')">
                         <input type="hidden" name="type" value="satispay">
 
-                        <p>{{ __('user.help.satispay') }}</p>
+                        <p>{{ __('texts.user.help.satispay') }}</p>
 
                         <x-larastrap::text name="mobile" tlabel="generic.phone" required />
                         <x-larastrap::price name="amount" tlabel="generic.value" required />

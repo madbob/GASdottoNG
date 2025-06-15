@@ -4,7 +4,7 @@
 
 <x-larastrap::field label="">
     <div class="form-text">
-        {{ __('generic.help.multigas_admin_instructions') }}
+        {{ __('texts.generic.help.multigas_admin_instructions') }}
     </div>
 </x-larastrap::field>
 

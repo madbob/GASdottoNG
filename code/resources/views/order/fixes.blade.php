@@ -12,7 +12,7 @@
 
         @if($product->package_size != 0)
             <p>
-                {{ __('products.package_size') }}: {{ $product->package_size }} {{ $product->printableMeasure(true) }}
+                {{ __('texts.products.package_size') }}: {{ $product->package_size }} {{ $product->printableMeasure(true) }}
             </p>
 
             <hr/>
@@ -20,7 +20,7 @@
 
         @if($product->global_min != 0)
             <p>
-                {{ __('products.global_min') }}: {{ $product->global_min }} {{ $product->measure->name }}
+                {{ __('texts.products.global_min') }}: {{ $product->global_min }} {{ $product->measure->name }}
             </p>
 
             <hr/>
@@ -32,7 +32,7 @@
 
         @if($bookings->isEmpty())
             <x-larastrap::suggestion>
-                {{ __('orders.help.manual_fixes_explain') }}
+                {{ __('texts.orders.help.manual_fixes_explain') }}
             </x-larastrap::suggestion>
         @else
             <div class="d-flex flowbox mb-3">
@@ -42,17 +42,17 @@
 
                 <div class="btn-group table-sorter" data-table-target=".fixes-table">
                     <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
-                        {{ __('generic.sort_by') }} <span class="caret"></span>
+                        {{ __('texts.generic.sort_by') }} <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="#" class="dropdown-item" data-sort-by="name">{{ __('generic.notes') }}</a>
+                            <a href="#" class="dropdown-item" data-sort-by="name">{{ __('texts.generic.notes') }}</a>
                         </li>
                         <li>
-                            <a href="#" class="dropdown-item" data-sort-by="date">{{ __('generic.date') }}</a>
+                            <a href="#" class="dropdown-item" data-sort-by="date">{{ __('texts.generic.date') }}</a>
                         </li>
                         <li>
-                            <a href="#" class="dropdown-item" data-sort-by="quantity">{{ __('orders.quantities.booked') }}</a>
+                            <a href="#" class="dropdown-item" data-sort-by="quantity">{{ __('texts.orders.quantities.booked') }}</a>
                         </li>
                     </ul>
                 </div>
@@ -62,9 +62,9 @@
                 <table class="table table-striped fixes-table">
                     <thead>
                         <tr>
-                            <th scope="col" width="35%">{{ __('user.name') }}</th>
-                            <th scope="col" width="35%">{{ __('generic.date') }}</th>
-                            <th scope="col" width="30%">{{ __('orders.quantities.booked') }}</th>
+                            <th scope="col" width="35%">{{ __('texts.user.name') }}</th>
+                            <th scope="col" width="35%">{{ __('texts.generic.date') }}</th>
+                            <th scope="col" width="30%">{{ __('texts.orders.quantities.booked') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -114,9 +114,9 @@
                             <table class="table table-striped fixes-table">
                                 <thead>
                                     <tr>
-                                        <th scope="col" width="35%">{{ __('user.name') }}</th>
-                                        <th scope="col" width="35%">{{ __('generic.date') }}</th>
-                                        <th scope="col" width="30%">{{ __('orders.quantities.booked') }}</th>
+                                        <th scope="col" width="35%">{{ __('texts.user.name') }}</th>
+                                        <th scope="col" width="35%">{{ __('texts.generic.date') }}</th>
+                                        <th scope="col" width="30%">{{ __('texts.orders.quantities.booked') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,7 +165,7 @@
                         @if($other_gas->id != $currentuser->gas->id)
                             <tr>
                                 <td>
-                                    <label>{{ __('generic.named_multigas', ['name' => $other_gas->name]) }}</label>
+                                    <label>{{ __('texts.generic.named_multigas', ['name' => $other_gas->name]) }}</label>
                                 </td>
                                 <td class="text-end">
                                     <label>

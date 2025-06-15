@@ -37,7 +37,7 @@ class User extends Formatter
         $groups = Group::where('context', 'user')->get();
         foreach ($groups as $group) {
             $ret['group_' . $group->id] = (object) [
-                'name' => __('user.formatted_aggregation', ['name' => $group->name]),
+                'name' => __('texts.user.formatted_aggregation', ['name' => $group->name]),
                 'checked' => true,
                 'format' => function ($obj, $context) use ($group) {
                     return implode(' - ', array_map(fn ($c) => $c->printableName(), $obj->circlesByGroup($group)->circles));
@@ -47,15 +47,15 @@ class User extends Formatter
 
         if ($current_gas->hasFeature('rid')) {
             $ret['rid->iban'] = (object) [
-                'name' => __('generic.iban'),
+                'name' => __('texts.generic.iban'),
             ];
 
             $ret['rid->id'] = (object) [
-                'name' => __('user.sepa.mandate'),
+                'name' => __('texts.user.sepa.mandate'),
             ];
 
             $ret['rid->date'] = (object) [
-                'name' => __('user.sepa.date'),
+                'name' => __('texts.user.sepa.date'),
             ];
         }
 
@@ -66,7 +66,7 @@ class User extends Formatter
         */
         if (App::make('GlobalScopeHub')->enabled() === false) {
             $ret['gas'] = (object) [
-                'name' => __('generic.gas'),
+                'name' => __('texts.generic.gas'),
                 'format' => function ($obj, $context) {
                     return $obj->gas->name;
                 },
@@ -80,35 +80,35 @@ class User extends Formatter
     {
         if ($type == 'export' || $type == 'all') {
             $ret['last_login'] = (object) [
-                'name' => __('user.last_login'),
+                'name' => __('texts.user.last_login'),
                 'format' => function ($obj, $context) {
                     return $obj->last_login;
                 },
             ];
 
             $ret['last_booking'] = (object) [
-                'name' => __('user.last_booking'),
+                'name' => __('texts.user.last_booking'),
                 'format' => function ($obj, $context) {
                     return $obj->last_booking;
                 },
             ];
 
             $ret['member_since'] = (object) [
-                'name' => __('user.member_since'),
+                'name' => __('texts.user.member_since'),
                 'format' => function ($obj, $context) {
                     return $obj->member_since;
                 },
             ];
 
             $ret['birthplace'] = (object) [
-                'name' => __('user.birthplace'),
+                'name' => __('texts.user.birthplace'),
                 'format' => function ($obj, $context) {
                     return $obj->birthplace;
                 },
             ];
 
             $ret['birthday'] = (object) [
-                'name' => __('user.birthdate'),
+                'name' => __('texts.user.birthdate'),
                 'format' => function ($obj, $context) {
                     return $obj->birthday;
                 },
@@ -117,14 +117,14 @@ class User extends Formatter
 
         if ($type == 'shipping' || $type == 'all') {
             $ret['credit'] = (object) [
-                'name' => __('movements.current_credit'),
+                'name' => __('texts.movements.current_credit'),
                 'format' => function ($obj, $context) {
                     return printablePriceCurrency($obj->currentBalanceAmount());
                 },
             ];
 
             $ret['other_shippings'] = (object) [
-                'name' => __('user.other_bookings'),
+                'name' => __('texts.user.other_bookings'),
                 'format' => function ($obj, $context) {
                     /*
                         Qui, $context deve essere un Aggregate
@@ -141,36 +141,36 @@ class User extends Formatter
     {
         $ret = [
             'lastname' => (object) [
-                'name' => __('user.lastname'),
+                'name' => __('texts.user.lastname'),
                 'checked' => true,
             ],
             'firstname' => (object) [
-                'name' => __('user.firstname'),
+                'name' => __('texts.user.firstname'),
                 'checked' => true,
             ],
             'fullname' => (object) [
-                'name' => __('user.fullname'),
+                'name' => __('texts.user.fullname'),
                 'format' => function ($obj, $context) {
                     return $obj->printableName();
                 },
             ],
             'username' => (object) [
-                'name' => __('auth.username'),
+                'name' => __('texts.auth.username'),
             ],
             'taxcode' => (object) [
-                'name' => __('user.taxcode'),
+                'name' => __('texts.user.taxcode'),
             ],
             'card_number' => (object) [
-                'name' => __('user.card_number'),
+                'name' => __('texts.user.card_number'),
             ],
             'status' => (object) [
-                'name' => __('generic.status'),
+                'name' => __('texts.generic.status'),
                 'format' => function ($obj, $context) {
                     return $obj->printableStatus();
                 },
             ],
             'payment_method' => (object) [
-                'name' => __('user.payment_method'),
+                'name' => __('texts.user.payment_method'),
                 'format' => function ($obj, $context) {
                     return $obj->payment_method->name;
                 },

@@ -1,20 +1,20 @@
 @if($movements->count() == 0)
     <x-larastrap::suggestion>
-        {{ __('generic.empty_list') }}
+        {{ __('texts.generic.empty_list') }}
     </x-larastrap::suggestion>
 @else
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">{{ __('generic.date') }}</th>
-                <th scope="col">{{ __('generic.type') }}</th>
-                <th scope="col">{{ __('user.payment_method') }}</th>
-                <th scope="col">{{ __('generic.reference') }}</th>
-                <th scope="col">{{ __('movements.credit') }}</th>
-                <th scope="col">{{ __('movements.debit') }}</th>
-                <th scope="col">{{ __('generic.notes') }}</th>
+                <th scope="col">{{ __('texts.generic.date') }}</th>
+                <th scope="col">{{ __('texts.generic.type') }}</th>
+                <th scope="col">{{ __('texts.user.payment_method') }}</th>
+                <th scope="col">{{ __('texts.generic.reference') }}</th>
+                <th scope="col">{{ __('texts.movements.credit') }}</th>
+                <th scope="col">{{ __('texts.movements.debit') }}</th>
+                <th scope="col">{{ __('texts.generic.notes') }}</th>
                 @if(Gate::check('movements.admin', $currentgas))
-                    <th scope="col">{{ __('generic.change') }}</th>
+                    <th scope="col">{{ __('texts.generic.change') }}</th>
                 @endif
             </tr>
         </thead>

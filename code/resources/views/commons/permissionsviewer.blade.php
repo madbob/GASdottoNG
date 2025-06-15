@@ -4,7 +4,7 @@ permessi, cfr. permissions.user-edit
 -->
 <div class="card mt-4" id="permissions-list-{{ sanitizeId($object->id) }}" data-reload-url="{{ route('roles.usertable', $object->id) }}">
     <div class="card-header">
-        {{ __('permissions.name') }}
+        {{ __('texts.permissions.name') }}
     </div>
     <div class="card-body">
         @foreach($object->roles as $role)
@@ -15,7 +15,7 @@ permessi, cfr. permissions.user-edit
                     $final = [];
 
                     if ($role->appliesAll())
-                        $final[] = __('generic.all');
+                        $final[] = __('texts.generic.all');
 
                     foreach($role->applications() as $targets)
                         $final[] = $targets->printableName();

@@ -17,8 +17,8 @@ class MailOrderReminder extends Config
     public function default()
     {
         return (object) [
-            'subject' => __('mail.reminder.defaults.subject'),
-            'body' => __('mail.reminder.defaults.body'),
+            'subject' => __('texts.mail.reminder.defaults.subject'),
+            'body' => __('texts.mail.reminder.defaults.body'),
         ];
     }
 }

@@ -7,7 +7,7 @@ if(isset($filters) == false) {
     $filters = [];
 }
 if(isset($empty_message) == false) {
-    $empty_message = __('generic.empty_list');
+    $empty_message = __('texts.generic.empty_list');
 }
 if(isset($header_function) == false) {
     $header_function = 'printableHeader';
@@ -41,13 +41,13 @@ $no_filters = (empty($sorting_rules) && empty($filters) && is_null($legend));
 <div class="row d-none d-md-flex mb-1">
     <div class="col flowbox">
         <div class="form-group {{ $no_filters ? 'w-100' : 'mainflow' }} d-none d-xl-block">
-            <input type="text" class="form-control list-text-filter" data-list-target="#{{ $identifier }}" placeholder="{{ __('generic.do_filter') }}">
+            <input type="text" class="form-control list-text-filter" data-list-target="#{{ $identifier }}" placeholder="{{ __('texts.generic.do_filter') }}">
         </div>
 
         @if(!empty($sorting_rules))
             <div class="dropdown loadablelist-sorter" data-list-target="#{{ $identifier }}">
                 <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
-                    {{ __('generic.sort_by') }} <span class="caret"></span>
+                    {{ __('texts.generic.sort_by') }} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     @foreach($sorting_rules as $attribute => $info)

@@ -3,7 +3,7 @@
 $selections = [];
 
 foreach(App\Role::orderBy('name', 'asc')->get() as $role) {
-    $selections['special::role::' . $role->id] = __('notifications.global_filter.roles', ['role' => $role->name]);
+    $selections['special::role::' . $role->id] = __('texts.notifications.global_filter.roles', ['role' => $role->name]);
 }
 
 $aggregates = $currentgas->aggregates()->with('orders')->whereHas('orders', function($query) {
@@ -13,7 +13,7 @@ $aggregates = $currentgas->aggregates()->with('orders')->whereHas('orders', func
 foreach ($aggregates as $aggregate) {
     foreach($aggregate->orders as $order) {
         if ($order->status != 'archived') {
-            $selections['special::order::'.$order->id] = __('notifications.global_filter.orders', ['supplier' => $order->supplier->name, 'number' => $order->internal_number]);
+            $selections['special::order::'.$order->id] = __('texts.notifications.global_filter.orders', ['supplier' => $order->supplier->name, 'number' => $order->internal_number]);
         }
     }
 }

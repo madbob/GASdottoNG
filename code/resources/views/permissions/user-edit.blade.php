@@ -3,7 +3,7 @@
 
 	@if($currentuser->managed_roles->isEmpty())
 		<p class="alert alert-danger">
-			{{ __('permissions.help.admin_not_authorized') }}
+			{{ __('texts.permissions.help.admin_not_authorized') }}
 		</p>
 	@else
 	    <div class="role-editor">
@@ -29,7 +29,7 @@
     	                        <div class="col-md-4 alert-danger">
     	                            <div class="checkbox">
     	                                <label>
-                                            <input type="checkbox" class="all-{{ $user->id }}-{{ $role->id }}" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="*" data-target-class="{{ $last_class }}" {{ $urole && $urole->appliesAll($last_class) ? 'checked' : '' }}> {{ __('generic.composable_all', ['label' => $last_class::commonClassName()]) }}
+                                            <input type="checkbox" class="all-{{ $user->id }}-{{ $role->id }}" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="*" data-target-class="{{ $last_class }}" {{ $urole && $urole->appliesAll($last_class) ? 'checked' : '' }}> {{ __('texts.generic.composable_all', ['label' => $last_class::commonClassName()]) }}
     	                                </label>
     	                            </div>
     	                        </div>
@@ -39,7 +39,7 @@
     	                        <div class="checkbox">
     	                            <label>
                                         @if($role->enabledAction('gas.permissions') && $user->id == $currentuser->id && $urole && $urole->appliesOnly($target))
-                                            <input disabled type="checkbox" {{ $urole && $urole->appliesOnly($target) ? 'checked' : '' }}> {{ $target->printableName() }}<br><small>{{ __('permissions.help.blocked_autoremove') }}</small>
+                                            <input disabled type="checkbox" {{ $urole && $urole->appliesOnly($target) ? 'checked' : '' }}> {{ $target->printableName() }}<br><small>{{ __('texts.permissions.help.blocked_autoremove') }}</small>
                                         @else
     	                                   <input type="checkbox" data-role="{{ $role->id }}" data-user="{{ $user->id }}" data-target-id="{{ $target->id }}" data-target-class="{{ get_class($target) }}" {{ $urole && $urole->appliesOnly($target) ? 'checked' : '' }}> {{ $target->printableName() }}
                                        @endif

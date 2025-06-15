@@ -1,0 +1,1495 @@
+<?php
+
+return array (
+  'aggregations' => 
+  array (
+    'all' => 'Aggregations',
+    'limit_access' => 'Limit access',
+    'help' => 
+    array (
+      'limit_access_to_order' => 'Flagging one or more items, the Order will be accessible only to Users assigned to those Groups. If none is flagged, the Order is accessible by everybody.',
+      'permit_selection' => 'Flagging one or more items, Users can select one of them when submitting a new booking.',
+      'context' => '<ul><li>User: Groups in this Aggregation will be assignable to each user, and are applied to each Orders</li><li>Booking: Groups in this Aggregation will be assignable to each Booking by Users; this is useful to handle logistic, when multiple delivery places are available</li></ul>',
+      'limit_access' => 'When selected, it will be possible to choose one or more Groups of this Aggregation within each Order. If so, the Order itself will be accessible only to Users assigned to the same Groups.',
+      'no_user_aggregations' => 'There are still no Aggregations assignable to Users.',
+    ),
+    'permit_selection' => 'Allow selection',
+    'context' => 'Context',
+    'by_booking' => 'Booking',
+    'cardinality' => 'Each User can be assigned to',
+    'cardinality_one' => 'one Group',
+    'cardinality_many' => 'different Groups',
+    'user_selectable' => 'Selectable by User',
+    'group' => 'Group',
+    'empty_list' => 'There are no items to show.<br>Adding new items, it will be possible to organize users in different ways, so to separate bookings, handle delivery logistic, apply special modifiers and much more.',
+    'name' => 'Aggregation',
+  ),
+  'auth' => 
+  array (
+    'failed' => 'These credentials do not match our records.',
+    'password' => 'Password',
+    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'accept_privacy' => 'I have read and agree to the <a href="%s" target="_blank">Privacy Policy</a>.',
+    'username' => 'Username',
+    'help' => 
+    array (
+      'missing_user_or_mail' => 'Username o e-mail address not found',
+      'missing_email' => 'The indicated user does not have a valid e-mail address',
+      'reset_email_notice' => 'An e-mail with your password reset link has been sent to you',
+      'username_same_password' => 'Your password is the same as your username! Change it from <a class="ms-1" href=":link">your profile page</a>!',
+      'suspended_account_notice' => 'Your account has been suspended, and you cannot submit new bookings. Check your payments, your credit or notifications sent from administrators.',
+      'invalid_username' => 'Invalid username',
+      'required_new_password' => 'To proceed, you have to set a new password for your account.',
+      'unconfirmed' => 'Your account has not yet been validated by administrators. When reviewed, you will receive a notification via email.',
+      'username' => 'Username used for authentication. Must be unique. Can be the same of email address',
+      'email_mode' => 'An invitation email will be sent, with the link to access the first time and choose own password.',
+    ),
+    'reset_username' => 'Username or e-mail address',
+    'password_request_link' => 'Recover password',
+    'maintenance_notice' => 'Maintenance mode: access is restricted to administrators',
+    'login' => 'Login',
+    'remember' => 'Remember me',
+    'register' => 'Sign up',
+    'confirm_password' => 'Confirm password',
+    'update_password' => 'Change password',
+    'modes' => 
+    array (
+      'email' => 'Send E-Mail',
+    ),
+  ),
+  'commons' => 
+  array (
+    'accept_conditions' => 'I have read and agree to the <a href="%s" target="_blank">Terms and Conditions</a>.',
+    'warning' => 'Warning',
+    'loading' => 'Loading',
+    'feedback' => 'Feedback',
+    'about' => 
+    array (
+      'opensource' => 'GASdotto is open source!',
+      'contribute' => 'You can contribute sending an issue or a request:',
+      'donate' => 'Or making a donation:',
+      'link' => 'Feel free to visit the <a href="https://gasdotto.net/" target="_blank">GASdotto website</a> for documentation, or stay in the loop by following us on <a href="https://twitter.com/GASdottoNet" target="_blank">Twitter</a> or <a href="https://sociale.network/@gasdottonet" target="_blank">Mastodon</a> for regular updates.',
+      'local_contact' => 'Warning: for issues about contents of the site (suppliers, orders, bookings…) please ask your group\'s administrators.',
+      'translations' => 'To help with translations in your language, visit <a href="https://hosted.weblate.org/projects/gasdottong/translations/">this page</a>.',
+    ),
+  ),
+  'export' => 
+  array (
+    'help' => 
+    array (
+      'mandatory_column_error' => 'Mandatory column not specified',
+      'importing' => 
+      array (
+        'deliveries' => 
+        array (
+          'first_product' => 'Use this item to identify the first product in the list',
+        ),
+        'user' => 
+        array (
+          'aggregation' => 'If specified, have to include the name of one of the Groups in the "Configurations" panel for this Aggregation',
+          'deleted' => 'Choose ‘true’ or ‘false’',
+          'balance' => 'Warning! Use this attribute only for initial import of users, and only for new users, or balances will be incoherent!',
+          'instruction' => 'If the username already exists, the user will be updated wth data from this file. Otherwise, an invitation email will be sent with the link to access the first time and choose own password.',
+        ),
+      ),
+      'csv_instructions' => 'Only CSV files are allowed. It is recommended to format your table in a homogeneous way, with no merged cells, empty cells, headers: each row must contain all information about the subject. Prices and sums must be expressed without the euro sign.',
+      'selection_instructions' => 'Once the file is uploaded, it will be possible to specify which attribute represents each column found in the document.',
+      'img_csv_instructions' => 'CSV formatting instructions',
+    ),
+    'importing' => 
+    array (
+      'deliveries' => 
+      array (
+        'first_product' => 'First product',
+        'instruction' => 'From here, you can re-import a CSV file generated by the "Order Summary Table" function, after manually processing it with the quantities delivered for each user.',
+        'notice' => 'Please note: as in normal deliveries, it is assumed that the delivered quantity of products with pieces is expressed here by weight and not by number of pieces.',
+        'product_error' => 'Unidentified product: :name',
+        'order_error' => 'Unidentified order',
+        'done' => 'Imported deliveries',
+      ),
+    ),
+    'balance_csv_filename' => 'Balance export :date.csv',
+    'products_list_filename' => 'Price list :supplier.:format',
+    'import' => 
+    array (
+      'csv' => 'Import CSV',
+      'gdxp' => 'Import GDXP',
+    ),
+    'help_csv_libreoffice' => 'For viewing and editing CSV (<i> Comma-Separated Values</i>) files, we recommended <a target="_blank" href="http://it.libreoffice.org/">LibreOffice</a> .',
+    'data' => 
+    array (
+      'columns' => 'Columns',
+      'format' => 'Format',
+      'formats' => 
+      array (
+        'pdf' => 'PDF',
+        'csv' => 'CSV',
+        'gdxp' => 'GDXP',
+      ),
+      'status' => 'Reservation Status',
+      'users' => 'Users\' Data',
+      'products' => 'Product Columns',
+      'split_friends' => 'Separate friends',
+    ),
+    'export' => 
+    array (
+      'database' => 'Database export',
+    ),
+    'help_split_friends' => 'By default, bookings from "friend" users are aggregated with those of their respective main users. By selecting "Yes", they are represented in the document as independent bookings.',
+    'help_aggregate_export_summary' => 'From here you can obtain a document with all booked quantities for each product: useful to send directly to the supplier when bookings are closed.',
+    'flags' => 
+    array (
+      'include_unbooked' => 'Include unreserved Products',
+    ),
+    'do_balance' => 'Export Balances',
+    'movements_heading' => 'Movements export on :date',
+    'accepted_columns' => 'Admitted columns for this CSV type are:',
+  ),
+  'gas' => 
+  array (
+    'help' => 
+    array (
+      'csv_separator' => 'The character to be used to separate columns in exported CSV files. This choice depends on the software you want to use to open those files. We suggest the use of <a target="_blank" href="http://www.libreoffice.org/">LibreOffice</a>.',
+      'home_message' => 'A customisation message for the GASdotto authentication page, offering a platform for special communications to GAS members or functioning as a warm welcome message',
+      'currency' => 'The current currency symbol will be used wherever prices are shown',
+      'maintenance_mode' => 'When enabled, users without the permission "Access allowed even in maintenance" will be unable to log in',
+      'enable_public_registration' => 'When this option is enabled, anyone can register for the instance through the dedicated panel (accessible from the login screen). Administrators in charge of user management will receive a notification email for each newly registered user',
+      'empty_list_shared_files' => 'No elements to show.<br/>Files here added are accessible to all users from the dashboard: useful to share public documents.',
+      'enable_deliveries_no_quantities' => 'Enabling this option will allow you to activate, for each supplier, the possibility of making deliveries by directly specifying the total value of the delivery instead of the quantities of each delivered product. Note: employing this function will not yield precise statistics on the delivered items or ensure a fair allocation of modifiers based on the quantities and weights of the delivered products.',
+      'active_columns_summary' => 'Default columns displayed in the summary grid of orders. However, you can always customise the view directly within the grid using the selector located at the top right',
+      'default_columns_shipping_document' => 'Default attributes selected during order Delivery Details export',
+      'custom_emails' => 'From here you can change the texts of e-mails generated by GASdotto. For each type, there may be some placeholders, which will be replaced by convenient values before sending: to add them to the text, use %[placeholder_name]',
+      'global_placeholders' => 'Global placeholders, which can be used in all messages:',
+      'manual_products_sorting' => 'By enabling this option, in the Quick Edit panel of supplier products it will be possible to force an arbitrary sorting.',
+      'social_year' => 'On this date the membership fees will automatically expire and will have to be renewed',
+      'fee' => 'If not configured (value = 0) registration fees will not be managed',
+      'deposit' => 'If not configured (value = 0) deposits from new members will not be managed',
+      'automatic_fees' => 'By enabling this option, at the end of the social year the fees of all active members will be automatically updated, debiting them directly from the user credit.',
+      'enable_sepa' => 'Populating these fields export of SEPA files will be activated, so you it will be possible to automate banking transactions. Files will be generated from Accounting -> Credit Status -> Export RID. After filling this form, you will need to specify some parameters for each user',
+      'enable_satispay' => 'Satispay payments will be activated populating those fields, so users will be able to increase their credit directly from GASdotto. To obtain credentials, visit https://business.satispay.com/',
+      'enabled_satispay' => 'Your Satispay integration is currently set up. To start over with the configuration process, simply disable Satispay and save your settings.',
+      'satispay_activation_code' => 'You can retrieve an activation code from your Satispay dashboard',
+      'enable_integralces' => 'Enabling this option allows you to handle your accounting tasks (balances, payments, transactions...) using a complementary currency, and also gain access to certain integration functions with IntegralCES',
+      'enable_invoicing' => 'Enabled this option and filling the related fields, it will be enabled generation of invoices for users',
+      'invoices_counter' => 'Be careful changing this parameter!',
+      'enable_hub' => 'Enable some (experimental!) features for integration with hub.economiasolidale.net, such as automatic updating of price lists and the aggregation of orders with other GAS.',
+      'import' => 'Here, you have the option to bring in a GDXP file created by another GASdotto instance or any platform that supports this format',
+      'gdxp_explain' => 'GDXP is an interoperable format to exchange price lists and orders between different management systems. You can import those files from here.',
+      'multigas_mode' => 'If enabled, the ability to manage multiple GAS on this GASdotto instance is activated, which can share price lists and orders',
+      'only_bookings_with_credit_limit' => 'Users cannot reserve new products if their credit becomes less than this threshold.',
+      'fast_product_change_columns' => 'Columns displayed by default in the quick edit product grid',
+    ),
+    'attribute_name' => 'Group\'s Name',
+    'logo' => 'Homepage Logo',
+    'home_message' => 'Homepage Message',
+    'language' => 'Language',
+    'maintenance_mode' => 'Maintenance Mode',
+    'enable_public_registration' => 'Enable Public Registration',
+    'manual_approve_users' => 'Manual authorisation of new users',
+    'privacy_policy_link' => 'Privacy Policy Link',
+    'terms_link' => 'Link to Terms and Conditions',
+    'mandatory_fields' => 'Mandatory Fields',
+    'orders_and_deliveries' => 'Orders and delivery',
+    'only_bookings_with_credit' => 'Permit bookings only within available credit',
+    'enable_deliveries_no_quantities' => 'Allow manual deliveries without quantity',
+    'display_contacts' => 'Show contacts in bookings',
+    'active_columns_summary' => 'Order Summary Columns',
+    'default_columns_shipping_document' => 'Active Columns in "Shipping Details"',
+    'suppliers_and_products' => 'Suppliers and Products',
+    'manual_products_sorting' => 'Allows you to manually rearrange your product list',
+    'fast_product_change_columns' => 'Columns in Quick Edit',
+    'social_year' => 'Social Year Beginning',
+    'automatic_fees' => 'Automatically bill a fee at the close of the financial year',
+    'enable_sepa' => 'Enable SEPA',
+    'enable_satispay' => 'Enable Satispay',
+    'satispay' => 
+    array (
+      'activation_code' => 'Activation Code',
+    ),
+    'enable_integralces' => 'Enable IntegralCES',
+    'integralces_identifier' => 'Group\'s account identifier',
+    'enable_invoicing' => 'Enable Invoices Generation',
+    'invoices_counter' => 'Invoices counter',
+    'import_export' => 'Import/Export',
+    'enable_hub' => 'Integration of Hub Economia Solidale',
+    'csv_separator' => 'Delimiter for Exported CSV Files',
+    'import' => 'Import',
+    'multigas_mode' => 'Multi GAS mode',
+    'only_bookings_with_credit_limit' => 'Credit Limit',
+  ),
+  'generic' => 
+  array (
+    'save' => 'Save',
+    'create_format' => 'New :type',
+    'empty_list' => 'There are no items to show.',
+    'add_new' => 'Add new',
+    'type' => 'Type',
+    'none' => 'None',
+    'manual_selection' => 'Manual',
+    'named_all' => 'All :name',
+    'email' => 'E-mail',
+    'phone' => 'Phone',
+    'absolute' => 'Absolute',
+    'percentage' => 'Percentage',
+    'by_weight' => 'At Weight',
+    'quantity' => 'Quantity',
+    'value' => 'Value',
+    'weight' => 'Weight',
+    'remove' => 'Delete',
+    'export' => 'Export',
+    'undefined' => 'undefined',
+    'updated_at_formatted' => 'Last Updated: <br class="d-block d-md-none">:date - :person',
+    'address' => 'Address',
+    'email_no_notifications' => 'E-Mail (no notifications)',
+    'cellphone' => 'Mobile',
+    'fax' => 'Fax',
+    'website' => 'Website',
+    'confirmed' => 'Confirmed',
+    'temporary' => 'Temporary',
+    'measure' => 'Measure unit',
+    'category' => 'Category',
+    'price' => 'Price',
+    'yes' => 'Yes',
+    'no' => 'No',
+    'iban' => 'IBAN',
+    'gas' => 'GAS',
+    'status' => 'Status',
+    'unspecified' => 'Not specified',
+    'never' => 'Never',
+    'help' => 
+    array (
+      'save_reminder' => 'Remember to click "Save" when you are done!',
+      'preferred_date_format' => 'Format YYYY-MM-DD (e.g. :now) is preferred',
+      'contacts' => 'You can specify an arbitrary number of contacts for the subject. Notifications will be sent to all the email addresses provided. It is recommended to specify one contact per line.',
+      'unchange_password' => 'Leave empty to not change the password',
+      'multigas_admin_instructions' => 'Each GAS has its own set of users, and here you can set up credentials for the first user of the new GAS. They will be given the "Multi-GAS Administrator Role" as specified in the permissions configuration panel.',
+      'discrete_measure' => 'Discrete units are not fractionable: on products with this attribute, it will not be possible to enable properties such as ‘variable price’ and ‘unit size’',
+      'categories_instructions' => 'Click and drag the categories in the list to order them hierarchically.',
+      'insert_password_notice' => 'To confirm this operation you have to digit your user password',
+      'unassigned_group_warning' => 'Warning: :count users have not a group assigned for :group',
+    ),
+    'definitive_delete' => 'Delete permanently',
+    'all' => 'All',
+    'unauthorized' => 'Not authorized',
+    'error' => 'Error',
+    'date' => 'Date',
+    'number' => 'Number',
+    'taxable_amount' => 'Taxable',
+    'vat' => 'VAT',
+    'payment' => 'Payment',
+    'identifier' => 'Identifier',
+    'notes' => 'Notes',
+    'id' => 'ID',
+    'closing_date' => 'Closing date',
+    'stats' => 
+    array (
+      'involved_orders' => 'Order value',
+      'involved_users' => 'Involved users',
+      'generic' => 'General stats',
+      'supplier' => 'Stats by supplier',
+    ),
+    'description' => 'Description',
+    'invoice' => 'Invoice',
+    'no_value' => 'No Value',
+    'by_kg' => 'per Kg',
+    'selection' => 'Select',
+    'home' => 'Home',
+    'menu' => 
+    array (
+      'bookings' => 'Reservations',
+      'accounting' => 'Accounting',
+      'stats' => 'Stats',
+      'notifications' => 'Notifications',
+      'configs' => 'Configurations',
+      'multigas' => 'Multi-GAS',
+      'friends' => 'Friends',
+      'receipts' => 'Receipts',
+    ),
+    'image' => 'Image',
+    'limited_access' => 'Limited access',
+    'disabled' => 'Disabled',
+    'kilos' => 'KG',
+    'sortings' => 
+    array (
+      'all_by_user' => 'All (sorted by user)',
+      'manual' => 'Manual Sorting',
+      'all_by_group' => 'All (sorted by group)',
+    ),
+    'minor_than' => 'Minor than',
+    'major_than' => 'Major than',
+    'exports' => 
+    array (
+      'csv' => 'Export CSV',
+      'integralces' => 'Export IntegralCES',
+      'sepa' => 'Export SEPA',
+      'pdf' => 'Export PDF',
+    ),
+    'change' => 'Edit',
+    'details' => 'Details',
+    'photo' => 'Picture',
+    'composable_all' => 'All :label',
+    'attachments' => 
+    array (
+      'replace_file' => 'Replace file',
+      'view' => 'Show or Download',
+      'replace_url' => 'Replace URL',
+    ),
+    'recipients' => 'Recipients',
+    'click_here' => 'Click Here',
+    'attachment' => 'Attachment',
+    'contacts' => 'Contacts',
+    'errors' => 'Errors',
+    'search' => 
+    array (
+      'users' => 'Find a User',
+      'all' => 'Search',
+    ),
+    'comment' => 'Comment',
+    'interval' => 'Interval',
+    'since' => 'From',
+    'to' => 'to',
+    'method' => 'Method',
+    'automatic' => 'Automatic',
+    'related' => 'Related Movements',
+    'more' => 'More',
+    'send_mail' => 'Send e-mail',
+    'optional_message' => 'Message (optional)',
+    'default_notes' => 'Default Notes',
+    'default' => 'Default',
+    'suspend' => 'Suspend',
+    'created_at' => 'Creation Date',
+    'updated_at' => 'Last Edit',
+    'multigas_name' => 'Name of new Group',
+    'how_to_proceed' => 'How to proceed?',
+    'create' => 'Create new',
+    'targets' => 'Subjects',
+    'suppliers_and_orders' => 'Suppliers/Orders',
+    'mailfield' => 
+    array (
+      'subject' => 'Subject',
+      'body' => 'Text',
+    ),
+    'reference' => 'Reference',
+    'measures' => 
+    array (
+      'discrete' => 'Discrete unit',
+    ),
+    'do_filter' => 'Filter',
+    'close' => 'Close',
+    'save_and_proceed' => 'Save and proceed',
+    'behavior' => 'Behavior',
+    'uppercare_gas_heading' => 'ETHICAL PURCHASING GROUP',
+    'confirm' => 'Confirm',
+    'delete_confirmation' => 'Are you sure you want to delete this item?',
+    'current_gas_name' => 'Active GAS: :label',
+    'shared_files' => 'Shared files',
+    'file' => 'File',
+    'logs' => 'Log',
+    'message' => 'Message',
+    'values' => 'Values',
+    'no_image' => 'No image',
+    'finished_operation' => 'Operation done.',
+    'before' => 'Before',
+    'after' => 'After',
+    'sort_by' => 'Order by',
+    'view_all' => 'View All',
+    'update' => 'Update',
+    'fast_modify' => 'Quick Edit',
+    'download' => 'Download',
+    'split' => 'of which',
+    'start' => 'Start',
+    'expiration' => 'Due Date',
+    'do_duplicate' => 'Duplicate',
+    'action' => 
+    array (
+      'ignore' => 'Ignore',
+      'disable' => 'Disable',
+    ),
+    'operation' => 'Operation',
+    'sum' => 'Sum',
+    'sub' => 'Subtraction',
+    'passive' => 'Passive',
+    'apply' => 'Apply',
+    'difference' => 'Difference',
+    'theshold' => 'Theshold',
+    'cost' => 'Cost',
+    'forward' => 'Forward',
+    'do_not_modify' => 'Do not Change',
+    'named_multigas' => 'Multi-GAS: :name',
+    'categories' => 'Categories',
+    'no_data' => 'There is no data to display',
+    'name' => 'Name',
+    'url' => 'URL',
+    'only_selected' => 'Only selected',
+    'subject' => 'Subject',
+    'aggregations_and_groups' => 'Aggregations/Groups',
+    'select' => 'Select',
+    'to_do' => 'Action',
+    'opening' => 'Opening',
+    'closing' => 'Closing',
+    'mandatory' => 'Mandatory',
+    'waiting' => 'Pending',
+  ),
+  'imports' => 
+  array (
+    'help' => 
+    array (
+      'new_remote_products_list' => 'New update available for the product list :supplier (:date). Find it in Suppliers -> Remote Index.',
+      'failed_file' => 'File not uploaded correctly',
+      'failure_notice' => 'Failed import',
+      'invalid_command' => 'Command :type/:step not valid',
+      'currency_id' => 'One of currency used in the system. If not specified, the default will be used (:default). Accepted values: :values',
+      'unique_user_id' => 'Users are identified by their username or e-mail address (which should be unique!).',
+      'no_user_found' => 'User not found: :name',
+      'no_supplier_found' => 'Supplier not found: :name',
+      'no_currency_found' => 'Currency not found: :name',
+      'imported_movements_notice' => 'Imported transactions',
+      'main' => 'Click and drag the attributes from the right column to the central one to assign a meaning to each column in your file.',
+      'remote_index' => 'This function allows you to automatically access and keep updated the price lists shared on :url. Warning: it is an experimental function, use with caution!',
+    ),
+    'ignore_slot' => '[Ignore]',
+    'name_or_vat' => 'Name or VAT Number',
+    'imported_users' => 'Imported users',
+    'do' => 'Import',
+    'update_supplier' => 'Update existing supplier',
+    'select_supplier' => 'Select a supplier',
+    'products_count' => '%s products in the file.',
+    'index_column' => 'Column %s:',
+    'column' => 'Column',
+    'imported_suppliers' => 'Suppliers imported',
+    'updated' => 'Updated',
+    'last_read' => 'Last Read',
+    'error_main' => 'Error uploading or reading file.',
+    'error_retry' => 'Please try again or submit a bug to GASdotto developers: info@madbob.org',
+    'existing_products_action' => 'Existing Products',
+    'no_products' => 'No Updatable Product',
+  ),
+  'invoices' => 
+  array (
+    'waiting' => 'Waiting',
+    'statuses' => 
+    array (
+      'to_verify' => 'To be Verified',
+      'verified' => 'Verified',
+      'payed' => 'Payed',
+    ),
+    'default_note' => 'Invoice payment :name',
+    'documents' => 
+    array (
+      'invoice' => 
+      array (
+        'heading' => 'Invoice :identifier',
+      ),
+      'receipts' => 
+      array (
+        'list_filename' => 'Export GAS receipts :date.csv',
+      ),
+    ),
+    'balances' => 
+    array (
+      'supplier' => 'Supplier Balance',
+    ),
+    'forwarded' => 'Forwarded',
+    'orders' => 'Involved Orders',
+    'help' => 
+    array (
+      'orders' => 'Choose the orders that are associated with this invoice. When the invoice is marked as paid, the reference to the payment accounting transaction will be added to them and they will be automatically archived',
+      'no_orders' => 'There are no orders assignable to this invoice. Orders must: refer to the same supplier as the invoice; not have a payment to the supplier already registered; be in "Delivered" or "Archived" status; have at least one "Delivered" reservation (the total of delivered reservations is used to calculate the actual payment).',
+      'filtered_orders' => 'Here you will see orders that: belong to the supplier to whom the invoice is addressed; are in Delivered or Archived status; have at least one reservation marked as Delivered. Totals are calculated on the quantities actually delivered, not on the reservations.',
+    ),
+    'change_orders' => 'Edit Orders',
+    'verify' => 'Verify Contents',
+    'other_modifiers' => 'Other modifiers not applicable to this invoice:',
+    'payment' => 'Register Payment',
+    'get_or_send' => 'Download or forward',
+    'new' => 'Load new invoice',
+    'send_pending_receipts' => 'Send Pending Receipts',
+    'shipping_of' => 'Delivery: %s',
+  ),
+  'mail' => 
+  array (
+    'help' => 
+    array (
+      'removed_email_log' => 'Removed mail address :address',
+      'send_error' => 'Could not forward e-mail to :email: :message',
+    ),
+    'summary' => 
+    array (
+      'defaults' => 
+      array (
+        'subject' => 'GAS booking summary: :supplier – delivery :delivery',
+      ),
+    ),
+    'closed' => 
+    array (
+      'defaults' => 
+      array (
+        'subject' => 'Order automatically closed',
+      ),
+    ),
+    'notification' => 
+    array (
+      'defaults' => 
+      array (
+        'subject' => 'New notification from :gas',
+      ),
+    ),
+    'new_user_notification' => 
+    array (
+      'defaults' => 
+      array (
+        'subject' => 'New user registered',
+      ),
+    ),
+    'contacts_prefix' => 'For info: :contacts',
+    'approved' => 
+    array (
+      'defaults' => 
+      array (
+        'subject' => 'Welcome!',
+        'body' => 'Welcome to %[gas_name]!
+    From now on, you can access it via the link below with the username ‘%[username]’ and the password of your choice.
+    %[gas_login_link]',
+      ),
+      'description' => 'Message for approved users.',
+      'username' => 'Username assigned to the new user',
+      'link' => 'Login page link',
+    ),
+    'declined' => 
+    array (
+      'defaults' => 
+      array (
+        'subject' => 'You have not been approved!',
+        'body' => 'Sorry, but your account has not been approved by %[gas_name].',
+      ),
+      'description' => 'Message for unapproved users.',
+    ),
+    'order' => 
+    array (
+      'defaults' => 
+      array (
+        'subject' => 'New order opened for %[supplier_name]',
+        'body' => '%[gas_name] just opened a new order for %[supplier_name].
+    You can make your reservation at the following link:
+    %[gas_booking_link]
+    Reservations will be closed on %[closing_date]',
+      ),
+      'description' => 'Notification for newly opened orders (sent to users who explicitely enabled notifications for the supplier).',
+      'comment' => 'Order comment',
+      'link' => 'Link for reservations',
+      'mails' => 'E-mail addresses of the referents for the order',
+    ),
+    'reminder' => 
+    array (
+      'defaults' => 
+      array (
+        'subject' => 'Closing orders for %[gas_name]',
+        'body' => 'Orders opened by %[gas_name] for those suppliers will be closed within a few days:
+
+    %[orders_list]',
+      ),
+      'description' => 'Notification for closing orders (sent to users who explicitely enabled notifications for the supplier).',
+      'list' => 'List of closing orders',
+    ),
+    'password' => 
+    array (
+      'defaults' => 
+      array (
+        'body' => 'The reset of your GASdotto password has been required.
+    Click the link below to update your password, or ignore this e-email if you have not required this operation.
+    %[gas_reset_link]',
+      ),
+      'description' => 'Message for password reset.',
+      'link' => 'Password reset link',
+    ),
+    'receipt' => 
+    array (
+      'defaults' => 
+      array (
+        'subject' => 'New Invoice from %[gas_name]',
+        'body' => 'In attachment, the last invoice from %[gas_name]',
+      ),
+      'description' => 'E-mail for receipts.',
+    ),
+    'supplier' => 
+    array (
+      'defaults' => 
+      array (
+        'subject' => 'Booking order %[gas_name]',
+        'body' => 'Hello.
+    In attachment you find - both in PDF and CSV - the bookings from %[gas_name].
+    For contacts, you can write to the referents here in CC.
+    Thank you.',
+      ),
+      'description' => 'Notification for suppliers when the order is automatically closed.',
+    ),
+    'credit' => 
+    array (
+      'current' => 'Current credit for the user',
+    ),
+    'welcome' => 
+    array (
+      'description' => 'Message for users newly created on the platform.',
+      'link' => 'Link to access the first time',
+      'defaults' => 
+      array (
+        'body' => 'You have been invited to %[gas_name]!
+
+    To access the first time, click the link below.
+    %[gas_access_link]
+
+    Then you will be able to access thorugh this other link, using the username "%[username]" and the password you have choose.
+    %[gas_login_link]
+    ',
+      ),
+    ),
+    'newuser' => 
+    array (
+      'description_manual' => 'Message for users newly subscribed to the platform, waiting for approval.',
+      'description' => 'Message for users newly subscribed to the platform.',
+    ),
+  ),
+  'modifiers' => 
+  array (
+    'defaults' => 
+    array (
+      'discount' => 'Discount',
+      'rounding' => 'Manual Delivery Rounding',
+      'delivery' => 'Shipment Cost',
+    ),
+    'dynamics' => 
+    array (
+      'values' => 
+      array (
+        'quantity' => 'the quantity',
+        'price' => 'the value',
+        'order_price' => 'order\'s value',
+        'weight' => 'the weight',
+      ),
+      'targets' => 
+      array (
+        'product' => 
+        array (
+          'booking' => 'of product in the booking',
+          'order' => 'of product in the order',
+        ),
+        'order' => 
+        array (
+          'booking' => 'of the booking',
+          'order' => 'of the order',
+        ),
+        'aggregate' => 
+        array (
+          'booking' => 'of the aggregate booking',
+          'order' => 'of the aggregate order',
+        ),
+        'circle' => 
+        array (
+          'booking' => 'of the booking assigned to group',
+          'order' => 'of portion of the order assigned to the group',
+        ),
+      ),
+      'scale' => 
+      array (
+        'minor' => 'is minor than',
+        'major' => 'is major than',
+      ),
+      'distribution' => 
+      array (
+        'sum' => 
+        array (
+          'product' => 'sum to the cost of the product',
+          'booking' => 'sum to the cost of the booking',
+          'order' => 'sum to the cost of the order',
+          'product_kg' => 'for each Kg of product, sum',
+          'booking_kg' => 'for each Kg in the booking, add',
+          'order_kg' => 'for each Kg in the order, sum',
+        ),
+        'sub' => 
+        array (
+          'product' => 'subtract from the cost of the product',
+          'booking' => 'subtract to the cost of the booking',
+          'order' => 'subtract to the cost of the order',
+          'product_kg' => 'for each Kg of product, substract',
+          'booking_kg' => 'for each Kg in the booking, substract',
+          'order_kg' => 'for each Kg in the order, substract',
+        ),
+        'passive' => 
+        array (
+          'product' => 'compared to the cost of the product, calculate',
+          'booking' => 'compared to the cost of the booking, calculate',
+          'order' => 'compared to the cost of the order, calculate',
+          'product_kg' => 'for each Kg of product, calculate',
+          'booking_kg' => 'for each Kg in the booking, calculate',
+          'order_kg' => 'for each Kg in the order, calculate',
+        ),
+        'apply' => 
+        array (
+          'product' => 'apply the unit price',
+        ),
+      ),
+      'types' => 
+      array (
+        'quantity' => 'and distribute it according to the quantities booked',
+        'price' => 'and distribute it according to the value of the bookings',
+        'weight' => 'and distribute it according to the weight of the bookings',
+      ),
+      'template' => 'If :value :target :scale',
+    ),
+    'all' => 'Modifiers',
+    'name' => 'Modifier',
+    'help' => 
+    array (
+      'no_modifiers_for_element' => 'There are no modifiers assignable to this element type.',
+    ),
+  ),
+  'movements' => 
+  array (
+    'modifier_no_theshold' => 'No theshold',
+    'order_value' => 'Value of order',
+    'apply_to_booking' => 'Single Booking',
+    'apply_to_order' => 'Total Order',
+    'current_balance_amount' => 'Current balance: :amount',
+    'balance' => 'Balance',
+    'current_credit' => 'Current credit',
+    'bank_account' => 'Bank account',
+    'cash_account' => 'Cash Register',
+    'deposits' => 'Deposits',
+    'documents' => 
+    array (
+      'movements' => 
+      array (
+        'filename' => 'Export GAS movements :date.:format',
+      ),
+      'users' => 
+      array (
+        'filename' => 'Credit on :date.csv',
+        'integralces_filename' => 'IntegralCES Users.csv',
+      ),
+      'sepa' => 
+      array (
+        'filename' => 'SEPA of :date.xml',
+      ),
+      'suppliers' => 
+      array (
+        'filename' => 'Suppliers Status on %s.csv',
+        'integralces_filename' => 'IntegralCES Suppliers.csv',
+      ),
+      'balances' => 
+      array (
+        'filename' => 'Balances History :date.csv',
+      ),
+    ),
+    'registration_date' => 'Registration Date',
+    'execution_date' => 'Date Movement',
+    'paying' => 'Payer',
+    'payed' => 'Payed',
+    'delete_confirmation' => 'Do you really want to delete accounting movement<br>:name?',
+    'formatted_residual_credit' => 'Remaining credit :currency',
+    'formatted_balance' => 'Balance %s',
+    'currency' => 'Currency',
+    'credit' => 'Credit',
+    'defaults' => 
+    array (
+      'fee' => 'Payment of the annual fee by a member',
+      'booking' => 'Booking payment by a member',
+      'booking_adjust' => 'Member booking payment adjustment',
+      'deposit' => 'Shareholder deposit for GAS member',
+      'deposit_return' => 'Return of the GAS shareholder deposit',
+      'donation_from' => 'Donations from GAS',
+      'donation' => 'Donation to the GAS',
+      'expense' => 'GAS purchase / expense',
+      'put' => 'Bank transfer',
+      'invoice' => 'Invoice payment to supplier',
+      'order' => 'Order payment to supplier',
+      'rounding' => 'Supplier rounding/discount',
+      'credit' => 'Credit deposit from user',
+      'decredit' => 'Credit refund for user',
+      'refund' => 'User refund',
+    ),
+    'methods' => 
+    array (
+      'bank' => 'Bank Transfer',
+      'cash' => 'Cash',
+      'credit' => 'User Credit',
+      'sepa' => 'SEPA',
+    ),
+    'formatted_revenues' => 'Income :name',
+    'formatted_expenses' => 'Expenditure :name',
+    'suppliers_status' => 'Suppliers\' Status',
+    'causal' => 'Causal',
+    'generic_causal' => 'Group\'s payment',
+    'help' => 
+    array (
+      'removing_balance_warning' => 'Warning! Past balances can be removed but the operation is not reversible and it will be not possible to recalculate those values!',
+      'missing_method_for_movement' => 'Warning! No payment method is active for this type of transaction (:name)! It is recommended to modify the settings in the Accounting -> Transaction Types panel, otherwise this transaction will not be able to be saved correctly!',
+      'accepts_negative_value' => 'If disabled, prevents the entry of negative amounts for accounting transactions',
+      'fixed_value' => 'A value other than 0 will prevent changes to new movements of this type',
+      'paying' => 'The type of entity making the payment. If selected, it will be possible to choose the entity within the new transaction creation panel',
+      'payed' => 'The type of entity that receives the payment. If selected, it will be possible to choose the entity within the creation panel of a new transaction',
+      'system_type_notice' => 'This accounting transaction is crucial for the system\'s operation; it is irrevocable and can only be modified to a limited extent.',
+      'empty_list_vat_rates' => 'No elements to show.<br/>Vat rates can be assigned to the products and are used to automatically calculate VAT on invoices registered in <strong>Accounting -> Invoices</strong>.',
+      'balances_diff' => 'The following balances are different at the end of recalculation.',
+      'balances_same' => 'All balances are correct.',
+      'archiviation_notice' => 'It is recommended to archive balances periodically, for example, at the end of the fiscal year, after verifying that they are all correct. This way, subsequent recalculation operations will be much faster, as it eliminates the need to process all historical accounting transactions each time, focusing solely on those occurring since the last archiving. The archived transactions will still be accessible at any time. This operation may take several minutes to complete.',
+      'opened_orders_with_modifier' => 'There are orders not yet delivered and archived for this supplier, which have not activated the modifier just modified. Select the orders for which you want to activate this modifier (or click \'Close\' to not activate it on any).',
+      'main_types_warning' => 'Warning! Change the behaviour of those types with caution! Before you change the behaviour of existing types, eventually already assigned to existing movements, it is reccomended to use the ‘Archive balances’ function to avoid recalculation of past movements and alter the current balances.',
+      'modifier_not_applied_in_time_range' => 'The modifier was not applied in this date range.',
+      'current_balance' => 'This is your current GAS balance.',
+      'pending_bookings_to_pay' => 'This is the total of your reservations that have not yet been delivered, and therefore the payment has not yet been recorded.',
+      'always_active_modifiers' => 'If active, the modifier is always included in new orders for this supplier even if it is not valued here. This allows you to always have the modifier available in the context of orders and to be able to update it from time to time.',
+      'missing_movements_for_modifiers' => 'There are movement types associated not present in this list, as those have not all defined behaviors for possible payment methods (:methods). Review the movement types from the proper configuration panel',
+      'type_for_modifier' => 'By selecting a type of accounting movement, a movement with the same value as the calculated modifier will be generated when the delivery is paid. Otherwise, the value of the modifier will be incorporated into the payment of the reservation itself and will alter the overall balance of the supplier. Use this function if you want to keep detailed track of the amounts paid using this modifier.',
+      'missing_method_for_movements_in_modifiers' => 'Attention! There are movement types associated with modifiers for which a behavior has not been defined for all payment methods enabled for deliveries. It is recommended to review them, or they may not be correctly applied to the respective modifiers (with potential loss of information in accounting).',
+      'missing_method_for_movement_in_modifier' => 'Attention! This movement type is associated with at least one modifier, but does not have a defined behavior for all payment methods enabled for the ":name" entry type. It is recommended to review it, or it may not be correctly applied to the respective modifier (with potential loss of information in accounting).',
+    ),
+    'balances_history' => 'Balances History',
+    'current_balance' => 'Current Balance',
+    'registrar' => 'Registered By',
+    'accepts_negative_value' => 'Allow Negative Values',
+    'fixed_value' => 'Fixed Value',
+    'debit' => 'Debit',
+    'type' => 'Movement Type',
+    'credits_status' => 'Credit Status',
+    'vat_rates' => 'VAT Rates',
+    'recalculate_balances' => 'Recalculate balances',
+    'balances_archive' => 'Archive balances',
+    'all' => 'Movements',
+    'name' => 'Movement',
+    'amount' => 'Amount',
+    'types' => 'Movement types',
+    'invoices' => 'Invoices',
+    'reference_for_modifier' => 'Reference on which to apply the modifier',
+    'distribute_on' => 'Distribute according to',
+    'to_pay' => 'To be Payed',
+    'available_credit' => 'Available credit',
+    'always_active_modifiers' => 'Modifier always active',
+    'apply_theshold_to' => 'The measure to which to apply the thresholds',
+    'sepa' => 
+    array (
+      'creditor_identifier' => 'Creditor Identifier',
+      'business_code' => 'Company Unique Code',
+    ),
+  ),
+  'notifications' => 
+  array (
+    'global_filter' => 
+    array (
+      'roles' => 'All users with role :role',
+      'orders' => 'All Participants to the order :supplier :number',
+    ),
+    'help' => 
+    array (
+      'repeat_mail_warning' => 'This notification has already been sent by e-mail. Keep this flag enabled to send a new e-mail.',
+      'sending_mail_warning' => 'If you enable this option, the notification will be immediately sent by e-mail. If you want to edit it before forwarding it, enable this option only after having saved and edited the notification.',
+      'visibility_by_selection' => 'If no users are selected, the element will be accessible to everyone.',
+      'suspend' => 'If an automatic order is suspended, the next openings will be skipped. Use this option to manage periods when GAS is not active, such as holidays.',
+      'arbitrary_dates' => 'Here you can add arbitrary dates into the shippings calendar, even for non-existing orders. This function is suggested to coordinate different referents and schedule long-term activities.',
+    ),
+    'cycle' => 
+    array (
+      'two_weeks' => 'Every two Weeks',
+      'first_of_month' => 'First of Month',
+      'second_of_month' => 'Second of Month',
+      'third_of_month' => 'Third of Month',
+      'fourth_of_month' => 'Fourth of Month',
+      'last_of_month' => 'Last of Month',
+    ),
+    'name' => 'Notification',
+    'notices' => 
+    array (
+      'new_notification_from' => 'New notification from :author',
+      'attached_order' => 'Attached the file for the order :gasname.',
+    ),
+    'recurrence' => 'Recurrence',
+    'greetings' => 'Best regards',
+    'send_to_current_users' => 'Notify filtered users',
+    'next_dates' => 'Next dates in calendar:',
+    'next_auto_orders' => 'Next dates for automation orders:',
+    'list' => 
+    array (
+      'closed_orders' => 'Closed orders',
+      'confirmed_dates' => 'Confirmed dates',
+      'temporary_dates' => 'Temporary dates',
+      'appointments' => 'Appointments',
+    ),
+    'calendar_date' => 'Date on Calendar',
+    'date_reference' => 'Reference date',
+  ),
+  'orders' => 
+  array (
+    'booking' => 
+    array (
+      'void' => 'Cancel Reservation',
+      'statuses' => 
+      array (
+        'open' => 'Reservations Open',
+        'closed' => 'Reservations Closed',
+        'shipped' => 'Delivered',
+        'paying' => 'User Payment',
+        'archived' => 'Archived',
+        'suspended' => 'Pending',
+        'booked' => 'Booked',
+        'to_deliver' => 'To deliver',
+        'saved' => 'Saved',
+      ),
+      'nav' => 
+      array (
+        'mine' => 'My reservation',
+        'friends' => 'Reservation for friends',
+        'others' => 'Reservation for Other Users',
+        'add' => 'Add/Edit reservation',
+      ),
+    ),
+    'help' => 
+    array (
+      'pending_packages_notice' => 'Warning: this order is closed, but it is possible to still reserve some product to complete the packages to deliver.',
+      'send_booking_summaries' => 'This mail will be sent to those who have participated in the order but whose reservation has not yet been delivered.',
+      'send_delivery_summaries' => 'This mail will be sent to those who have participated in the order and whose reservation has actually been delivered.',
+      'no_partecipating' => 'You did not participate in this order',
+      'formatted_booked_amount' => 'You have ordered :amount',
+      'formatted_booked_amount_with_friends' => 'You have ordered :amount + :friends',
+      'product_selection' => 'To enable or disable products from the supplier list into the order',
+      'booked_modifier_column' => 'Product Modifier, on Booked Quantities. Displayed only if the modifier is active for a product within the order',
+      'delivered_modifier_column' => 'Product Modifier, on Shipped Quantities. Displayed only if the modifier is active for a product within the order',
+      'fixes_column' => 'From this panel, you can edit the quantity of a product for any reservation and add notes for the supplier',
+      'number' => 'Progressive number automatically assigned to each order',
+      'unarchived_notice' => 'There are orders that have been closed for over a year but have not been archived. You can search for them using the search function below. It is recommended to archive old orders so that they are no longer displayed in the dashboard and page loading is faster. Archived orders can still be retrieved using the search function.',
+      'extimated_value' => 'The value indicated here is an estimate, it will be aimed at closing the order',
+      'insufficient_credit_notice' => 'Warning: your credit is insufficient to submit new bookings.',
+      'friends_bookings_notice' => 'Here you can create sub-reservations assigned to your friends. Those will be part of your global reservation, but you can continue to keep the information divided. Fill up your list of friends from your profile page.',
+      'no_friends' => 'There are no friends registered for this user.',
+      'closed_order_alert_new_booking' => 'Attention: this order has been closed, before adding or editing a reservation be sure that the totals have not already been communicated to the supplier or they can be modified anyway.',
+      'send_summaries' => 'Send a summary email of their reservation to all users who have participated in the order. It is possible to add a message to be attached to all for any additional comments. The summary message is automatically sent upon order closure, whether automatic or manual, if configured from the Configuration panel.',
+      'automatic_instructions' => 'With this tool, you can manage the automatic opening and closing of orders. Orders that are opened and closed together (i.e., they have the same recurrence, close, and delivery parameters) will be automatically aggregated. When a recurrence is exhausted (all of its occurrences are past dates), it will be removed from this list.',
+      'changed_products' => 'Warning: Some items have been modified after delivery within this order. In case of price adjustments, it is essential to rerun the affected deliveries to consolidate the updated totals and reprocess the corresponding accounting transactions.',
+      'waiting_closing_for_deliveries' => 'This panel will be active once all the bookings have been closed',
+      'modifiers_require_redistribution' => 'Order :name has modifiers whose value must be distributed among reservations. During delivery, this value was assigned proportionally, but the actual quantities delivered do not match the booked quantities and there may be some discrepancies.',
+      'contacts_notice' => 'Per communications about this order it is suggested to contact:',
+      'explain_aggregations' => 'Once merged, orders will be shown as a single one, preserving the attributes of each one. This function is suggested to simplify orders administration, for example for orders delivered in the same date.',
+      'aggregation_instructions' => 'Click and drag orders in the same cell to merge or in an empty cell to separate them.',
+      'status' => 'Current order status. Can take on the following values:<ul><li>open for bookings: all users can view the order and submit their bookings. When the order is in this state, announcement emails are also sent</li><li>closed for bookings: all users can see the order but can\'t add or change bookings. However, authorised users can still make adjustments</li><li>delivered: the order only appears in the list for authorised users, with no option to modify values or bookings</li><li>archived: the order is no longer listed but can be retrieved using the search function</li><li>pending: the order is visible in the list for authorised users and can be modified</li></ul>',
+      'prices_changed' => 'The prices of certain products have been updated since your reservation. You can now decide whether to stick with the originally applied price or opt for the current list price in case of any adjustments to the delivery.',
+      'variant_no_longer_active' => 'Please note: the variant you selected when making your reservation is no longer listed',
+      'pending_saved_bookings' => 'Some booking in this order is saved but are not yet actually delivered or paid.',
+      'mail_order_notification' => 'From this panel, you can enable specific email alerts for orders, to be sent to different people based on each order\'s status.',
+      'target_supplier_notifications' => 'If this option is not enabled, users will only receive email notifications for orders from suppliers they have individually enabled from their personal configuration panel. If enabled, all users will receive an email notification each time an order is opened.',
+      'notify_only_partecipants' => 'Only users who have taken part in the order will receive the notification',
+      'comment' => 'Any informational text to display in the order title. If longer than :limit characters, the text is included in the relevant reservations panel instead.',
+      'end' => 'Order closing date. At the end of the day indicated here, the order will automatically be set to the "Closed" status',
+      'contacts' => 'The contacts of the selected users will be displayed in the booking panel. Hold down Ctrl to select multiple users',
+      'handle_packages' => 'If this option is enabled, when closing the order it will be checked whether there are products whose total quantity ordered is not a multiple of the size of the relative package. If so, the order will remain open and it will be possible for users to book only those specific products until the desired quantity is reached.',
+      'payment' => 'From here you can enter the accounting movement of the order payment to the supplier, which will alter the relative balance.',
+      'no_opened' => 'There are no open reservations.',
+      'no_delivering' => 'There are no orders in delivery.',
+      'include_all_modifiers' => 'Use this function to include or exclude modifiers that are not intended for the supplier. It is recommended to select \'No\' if the document will be forwarded to the supplier, and \'Yes\' if the document is used for deliveries by qualified persons.',
+      'supplier_multi_select' => 'By selecting multiple suppliers, the respective orders will be generated and automatically aggregated. This function is activated if there are at least 3 aggregates in the database with at least :theshold orders each.',
+      'start' => 'By setting a future date here, and the status Pending, this order will automatically be opened on the specified date.',
+      'manual_fixes_explain' => 'Here you can change the reserved quantity for this product for each reservation, but no user has already participated to the order.',
+      'pending_notes' => 'Some users left some note to their bookings.',
+      'no_partecipation_notice' => 'You did not participate in this order.',
+      'modifiers_notice' => 'The value of some modifiers will be recalculated when the order is in "Delivered" status.<br><a target="_blank" href="https://www.gasdotto.net/docs/modificatori#distribuzione">Read more</a>',
+      'no_categories' => 'There are no categories to filter',
+      'supplier_no_orders' => 'There are currently no open orders for this supplier.',
+      'supplier_has_orders' => 'There are open orders for this supplier',
+      'unremovable_warning' => 'The order :name currently has active reservations, and therefore cannot be removed.',
+      'unremovable_instructions' => 'It is recommended to access the <a href=":link">reservations panel for this order</a> and, using the "Reservations for Other Users" tool, invalidate existing reservations.',
+      'unremovable_notice' => 'This mechanism is deliberately non-automatic and intentionally complex, to avoid involuntary data loss.',
+    ),
+    'booking_description' => 
+    array (
+      'shipped' => 'Here is a summary of the delivered products:',
+      'saved' => 'Here is a summary of the reserved products:',
+      'pending' => 'Here is a summary of the ordered products:',
+    ),
+    'send_booking_summaries' => 'Send Reservations Summaries',
+    'send_delivery_summaries' => 'Send Deliveries Summaries',
+    'packages' => 
+    array (
+      'ignore' => 'No, ignore the package sizes',
+      'permit' => 'Yes, permit other bookings',
+      'permit_all' => 'Yes, and care on the quantities booked by all groups',
+    ),
+    'and_more' => 'and other',
+    'boxes' => 'Number of Packs',
+    'supplier' => 'Supplier',
+    'booking_date_time' => 'Date/Time of Booking',
+    'list_open' => 'Open Orders',
+    'dates' => 
+    array (
+      'shipping' => 'Delivery Date',
+      'start' => 'Reservations Opening Date',
+      'end' => 'Reservations Closing date',
+    ),
+    'name' => 'Order',
+    'formatted_name' => 'form :start to :end',
+    'formatted_delivery_in_name' => ', to be delivered :delivery',
+    'quantities' => 
+    array (
+      'booked' => 'Booked Quantity',
+      'shipped' => 'Delivered Quantity',
+    ),
+    'weights' => 
+    array (
+      'booked' => 'Booked Weight',
+      'delivered' => 'Delivered Weight',
+    ),
+    'totals' => 
+    array (
+      'shipped' => 'Total Delivered',
+      'with_modifiers' => 'Total including Modifiers',
+      'total' => 'Total',
+      'taxable' => 'Taxable Total',
+      'vat' => 'VAT Total',
+      'booked' => 'Total Booked',
+      'complete' => 'Grand Total',
+      'invoice' => 'Total invoice',
+      'orders' => 'Total orders',
+      'manual' => 'Manual Total',
+      'to_pay' => 'Amount to be paid',
+      'selected' => 'Selected Total',
+    ),
+    'constraints' => 
+    array (
+      'quantity' => 'Maximum quantity is 9999.99',
+      'discrete' => 'Quantity of this product must be integer',
+      'global_min' => 'Global Minimum: :still (:global total)',
+      'global_max_help' => ':still :measure missing to complete the package for this order',
+      'global_max_short' => ':icon Available: :quantity',
+      'global_max' => 'Available: :still (:global total)',
+      'global_max_generic' => 'Quantity over the availability',
+      'relative_max_formatted' => 'Suggested Max: :quantity',
+      'relative_max' => 'Quantity over the suggested maximum',
+      'relative_min_formatted' => 'Min: :quantity',
+      'relative_min' => 'Quantity below the minimum allowed',
+      'relative_multiple_formatted' => 'Multiple: :quantity',
+      'relative_multiple' => 'Quantity not a multiple of the allowed value',
+    ),
+    'documents' => 
+    array (
+      'shipping' => 
+      array (
+        'filename' => 'Delivery details orders :suppliers.pdf',
+        'heading' => 'Details order :identifier to :supplier on :date',
+        'short_heading' => 'Deliveries Details on :date',
+      ),
+      'summary' => 
+      array (
+        'heading' => 'Products in order %s at %s',
+      ),
+      'table' => 
+      array (
+        'filename' => 'Table Order %s to %s.csv',
+      ),
+    ),
+    'all' => 'Orders',
+    'pending_packages' => 'Packages to be Completed',
+    'booking_aggregation' => 'Booking Aggregation',
+    'statuses' => 
+    array (
+      'unchange' => 'Unchanged',
+      'to_pay' => 'Orders to be Payed',
+      'open' => 'Open',
+      'closing' => 'Closing',
+      'closed' => 'Closed',
+    ),
+    'do_aggregate' => 'Merge Orders',
+    'admin_dates' => 'Dates Management',
+    'admin_automatics' => 'Automatic Orders Management',
+    'notices' => 
+    array (
+      'closed_orders' => 'Following orders have been closed:',
+      'email_attachments' => 'In attachment the booking summaries, both in PDF and CSV.',
+      'calculator' => 'Enter the weight of the individual pieces involved in the delivery here to obtain the total.',
+    ),
+    'files' => 
+    array (
+      'aggregate' => 
+      array (
+        'shipping' => 'Aggregated Deliveries Details',
+        'summary' => 'Aggregated Products Summary',
+        'table' => 'Aggregated Products Table',
+      ),
+      'order' => 
+      array (
+        'summary' => 'Products Summary',
+        'shipping' => 'Shipping Details',
+        'table' => 'Main Products Table',
+        'shipping_and_summary' => 'Shipping Details + Products Summary',
+      ),
+    ),
+    'help_aggregate_status' => 'From here, you can change the status of all orders included in the aggregate',
+    'change_date' => 'Edit dates',
+    'help_change_date' => 'From here, you can change the opening, closing, and delivery dates for all orders included in the aggregate',
+    'last_summaries_date' => 'Latest notifications sent',
+    'aggregate' => 'Merged Orders',
+    'deliveries' => 'Deliveries',
+    'fast_deliveries' => 'Quick Deliveries',
+    'modifiers_redistribution_summary' => ':name - defined value: :defvalue / distributed value: :disvalue',
+    'modifiers_redistribution' => 
+    array (
+      'keep' => 'Do nothing: leave unchanged the values calculated for the modifiers and the corresponding charges to individual users, even if their sum does not match the expected final value.',
+      'recalculate' => 'Recalculate the modifiers and redistribute them based on actual deliveries. Payments made with user credit will be adjusted, and the corresponding balances will be updated. Payments made with other methods (cash, bank transfer, etc.) will remain the same, and any adjustments will be added to the current balance of each user.',
+    ),
+    'importing' => 
+    array (
+      'save' => 'Apply the amounts as saved, but keep the deliveries open',
+      'close' => 'Flag the bookings as completed and generate the financial records for payments',
+    ),
+    'booked_by' => 'Booked By',
+    'delivered_by' => 'Delivered By',
+    'load_booked_quantities' => 'Load Reserved Quantities',
+    'save_delivery' => 'Save informations',
+    'do_delivery' => 'Delivery',
+    'help_order_export_shipping' => 'From here you can obtain a document with all the informations about each reservation. Useful to handle while managing deliveries.',
+    'notify_days_before' => 'How many days before?',
+    'handle_packages' => 'Force pack completion',
+    'list_delivering' => 'Orders in Delivery',
+    'help_aggregate_export_table' => 'Here you can obtain a CSV document with the details of all ordered products in the current order.',
+    'help_aggregate_export_table_for_delivery' => 'If you intend to use this document with the \'Deliveries -> Import CSV\' function, to import the delivered quantities after having processed them manually, we recommend that you also include the Username of the users involved in the export.',
+    'include_all_modifiers' => 'Include all modifiers',
+    'help_aggregate_export_shipping' => 'From here you can obtain a PDF document ready to be printed, with all information about all reservation to all orders included in this aggregate.',
+    'bookings_from_friends' => 'Reservations from you friends',
+    'communications_points' => 'For communications about this order it is suggested to contact:',
+    'booking_total_amount' => 'To pay: :amount',
+    'formatted_delivery_date' => 'Delivery will happen on :date.',
+    'notes_to_supplier' => 'Notes for the Supplier',
+    'summaries_recipients_count' => 'Users who will receive the email: :count',
+    'bookings_to_pay' => 'Bookings to pay',
+    'automatic_labels' => 
+    array (
+      'delivery' => 'delivery',
+      'days_after' => 'days after',
+      'close' => 'close',
+      'days_before' => 'days before',
+      'open' => 'open',
+    ),
+  ),
+  'permissions' => 
+  array (
+    'permissions' => 
+    array (
+      'maintenance_access' => 'Access allowed even in maintenance mode',
+      'alter_permissions' => 'Edit all permission',
+      'alter_configs' => 'Edit the GAS configuration',
+      'create_suppliers' => 'Create new suppliers',
+      'do_booking' => 'Do orders',
+      'view_suppliers' => 'View all suppliers',
+      'view_orders' => 'View all orders',
+      'alter_self' => 'Edit own profile',
+      'delete_account' => 'Delete own account',
+      'admin_users' => 'Admin users',
+      'view_users' => 'View all users',
+      'sub_users' => 'Manage sub-users with limited features',
+      'admin_user_movements' => 'Administer users\' accounting movements',
+      'admin_movements' => 'Administer all the accounting movements',
+      'view_movements' => 'View all accounting movements',
+      'admin_movements_types' => 'Administer accounting movement types',
+      'admin_categories' => 'Managing the categories',
+      'admin_measures' => 'Measure units administration',
+      'view_statistics' => 'Show stats',
+      'admin_notifications' => 'Notification administration',
+      'alter_suppliers' => 'Edit assigned suppliers',
+      'open_orders' => 'Open and edit orders',
+      'do_deliveries' => 'Do deliveries',
+      'admin_invoices' => 'Admin invoices',
+      'admin_supplier_movements' => 'Administer suppliers\' accounting movements',
+      'admin_multigas' => 'Administer groups hosted on this instance',
+    ),
+    'roles' => 
+    array (
+      'admin' => 'Administrator',
+      'secondary_admin' => 'Secondary GAS Administrator',
+    ),
+    'name' => 'Permissions',
+    'supplier' => 
+    array (
+      'change' => 'You could change suppliers',
+      'orders' => 'You could open new orders for the supplier',
+      'deliveries' => 'Handle deliveries for the supplier',
+    ),
+    'role' => 'Role',
+    'help' => 
+    array (
+      'global_permission_notice' => 'This special permission is automatically applied to all the subject (present and future) and allows to act on everyone, although the assignee user will not be explicitly visible to others.',
+      'blocked_autoremove' => 'You cannot self-revoke this administrative role',
+      'unique_role_warning' => 'This is the only role authorised for this special permission: if you revoke it, you risk losing control of the instance.',
+      'unprivileged' => 'This role will be automatically assigned to all new users',
+      'sub_user' => 'This role will be automatically assigned to all friends of existing users. It is suggested to create a dedicated role with permissions limited to reservations only',
+      'multigas_admin' => 'This role will be automatically assigned to the first user of each new Group created from the Multi-GAS panel',
+      'admin_not_authorized' => 'You are not authorized to manage any role.',
+      'parent_role' => 'Users with the higher role assigned will be able to assign this role to other users',
+      'missing_elements_warning' => 'This role is missing an assignment to one or more items for which permissions are granted, and the behavior may not be as desired.',
+    ),
+    'revoke' => 'Revoke role',
+    'change_roles' => 'Edit Roles',
+    'parent_role' => 'Mayor Role',
+    'add_user' => 'Search and Add User',
+    'unprivileged' => 'Non-privileged User Role',
+    'sub_user' => 'Sub-user Role',
+    'multigas_admin' => 'Secondary GAS Administrator Role',
+  ),
+  'products' => 
+  array (
+    'prices' => 
+    array (
+      'unit' => 'Unit price',
+      'unit_no_vat' => 'Unit price (without VAT)',
+      'package' => 'Package price',
+    ),
+    'name' => 'Product',
+    'code' => 'Supplier code',
+    'bookable' => 'Available to order',
+    'vat_rate' => 'VAT rate',
+    'portion_quantity' => 'Pieces',
+    'multiple' => 'Multiple',
+    'min_quantity' => 'Minimum',
+    'max_quantity' => 'Suggested Maximum',
+    'available' => 'Available',
+    'help' => 
+    array (
+      'unit_no_vat' => 'To be used in combination with VAT Rate',
+      'package_price' => 'If specified, the unit price will be calculated as package price / package size',
+      'importing_categories_and_measures' => 'Not found categories and measure units names will be created.',
+      'imported_notice' => 'Imported products',
+      'available_explain' => 'The maximum amount of product that can be collectively booked in one order',
+      'bookable' => 'Specifies if the product is available for ordering within the upcoming supplier orders',
+      'pending_orders_change_price' => 'There are pending orders and archived ones where the product whose price you just modified is listed. Please choose those in which you want the new price to be applied (for the product and/or any price differences in potential variants).',
+      'pending_orders_change_price_second' => 'If you modify the prices and there are reservations in the order that have already been delivered, you will need to manually re-save those deliveries to regenerate the updated accounting transactions.',
+      'discrete_measure_selected_notice' => 'You\'ve chosen a discrete unit of measurement, meaning only whole quantities can be used for this product.',
+      'measure' => 'Assigned measurement unit for the product. Note: it may affect the activation of certain product variables. Please refer to the Discrete Unit parameter in the measurement unit administration panel (accessible only to authorised users)',
+      'portion_quantity' => 'If different from 0, each unit is considered as expressed in this quantity. For example:<ul><li>unit of measurement: kilograms</li><li>quantity per unit: 0.3</li><li>unit price: 10 euros</li><li>reserved quantity: 1 (thus understood as 1 piece weighing 0.3 kilograms)</li><li>cost: 1 x 0.3 x 10 = 3 euros</li></ul>This is helpful for managing products sold by pieces, which users can reserve in specific quantities but need to be ordered and/or paid for in total quantity from the supplier',
+      'package_size' => 'If the product is distributed in packages of N pieces, enter the value of N here. Orders to the supplier must be expressed in the number of packages. The number of pieces ordered must be a multiple of N. If the total number of pieces ordered is not a multiple of N, the product will be marked with a red icon in the order summary panel. You can then adjust the quantities by adding or removing pieces as needed.',
+      'multiple' => 'If different from 0, the product can only be booked in multiples of this value. Useful for pre-packaged products that can be booked individually. Not to be confused with the "Package" attribute',
+      'min_quantity' => 'If different from 0, reservations for the product are accepted only for quantities greater than the specified one',
+      'max_quantity' => 'If different from 0, a warning is displayed when a quantity greater than the one indicated is booked',
+      'available' => 'If different from 0, this is the maximum quantity of the product that can be booked in total in an order. When booking, users will see how much has already been booked in total so far.',
+      'global_min' => 'If different from 0, this is the minimum quantity of product that can be booked in total in an order. When booking, users will see how much has already been booked in total so far.',
+      'variants' => 'Every product can have variants, such as size or color for clothing items. During the booking phase, users will be able to specify different quantities for each variant combination.',
+      'duplicate_notice' => 'The duplicated product will have a copy of the variants from the original product. Those will be editable after saving.',
+      'unit_price' => 'Unit price per unit of measure. VAT included, for more details see the VAT rate field. It can take on a particular meaning when "Pieces" attribute is defined',
+      'vat_rate' => 'Existing rates can be configured in the Configurations panel',
+      'notice_removing_product_in_orders' => 'The product is currently included in orders not yet delivered. What do you want to do?',
+    ),
+    'weight_with_measure' => 'Weight (in KG)',
+    'list' => 'Products',
+    'sorting' => 'Sorting',
+    'variant' => 
+    array (
+      'matrix' => 'Variants\' Modifications Matrix',
+      'help' => 
+      array (
+        'code' => 'If not specified, all variants use the main product\'s Vendor Code.',
+        'price_difference' => 'Price difference, positive or negative, to be applied to the product price when a specific combination of variants is selected.',
+      ),
+      'price_difference' => 'Price Difference',
+      'weight_difference' => 'Weight Difference',
+    ),
+    'package_size' => 'Box',
+    'global_min' => 'Total Minimum',
+    'variants' => 'Variants',
+    'remove_confirm' => 'Do you really want to delete the product :name?',
+    'removing' => 
+    array (
+      'keep' => 'Keep the product',
+      'leave' => 'Remove the product and delete all related bookings',
+    ),
+  ),
+  'supplier' => 
+  array (
+    'referent' => 'Referent',
+    'payment_method' => 'Payment Method',
+    'all' => 'Suppliers',
+    'products_list' => 
+    array (
+      'pdf' => 'PDF price list (autogenerated)',
+      'csv' => 'CSV Price List (autogenerated)',
+    ),
+    'attachments' => 'Files and Images',
+    'remote_index' => 'Remote Index',
+    'vat' => 'VAT Number',
+    'enable_fast_shipping' => 'Enable Quick Deliveries',
+    'help' => 
+    array (
+      'enable_fast_shipping' => 'When this option is enabled, the Fast Deliveries tab (next to Deliveries) is activated in the order panel for this supplier, allowing you to mark multiple bookings as delivered in a single operation.',
+      'enable_no_quantities' => 'When this option is enabled, a field is activated in the delivery panel for this supplier, allowing direct input of the total delivery value instead of quantities for each delivered product. If this field is utilised, all quantities listed in the reservation are assumed to be delivered, and the variance between the theoretical and manually entered real value is tracked.',
+      'modifiers_notice' => 'These values ​​will be used as default for all new orders from this supplier, but you can still change them for each order. Only modifiers that are set to some value, or explicitly marked as "always active", will be accessible from the related orders.',
+      'import_products_notice' => 'The price list from this supplier has been imported from the centralised archive: it is recommended to modify it as little as possible to simplify future updates.',
+      'handling_products' => 'Warning: there are orders not yet shipped nor archived for this supplier.',
+      'name' => 'Supplier\'s common name',
+      'legal_name' => 'Full name of the supplier, to be used for accounting and tax purposes. If not specified, the Name will be used',
+      'description' => 'Short description accessible to all users',
+      'payment_method' => 'Potential note about payment methods for the supplier. Restricted to authorised users with editing rights for supplier details',
+      'orders_mode' => 'Any note on how to submit orders to the supplier. Visible only to users enabled to edit the supplier',
+      'send_notification_on_close' => 'By enabling this option, at the closing of each order for this supplier the platform will automatically forward the chosen document type. Remember: the Delivery Detail contains the reservations divided by user, while the Product Summary contains only the total quantities booked for each product',
+    ),
+    'enable_no_quantities' => 'Enable Shipping with no Quantities',
+    'export_products' => 'Export Products List',
+    'referents' => 'Referents',
+    'products_list_heading' => 'Price list :supplier of :date',
+    'admin_categories' => 'Manage Categories',
+    'admin_measures' => 'Measure Units Administration',
+    'legal_name' => 'Business Name',
+    'orders_mode' => 'Order progress mode',
+    'send_notification_on_close' => 'Send notification when orders close',
+  ),
+  'tour' => 
+  array (
+    'welcome' => 
+    array (
+      'title' => 'Welcome in GASdotto!',
+      'body' => 'Here are a few tips to help you get started with using this new platform...',
+    ),
+    'profile' => 
+    array (
+      'title' => 'Your data',
+      'body' => 'Clicking here grants you access to your personal data dashboard, where you can easily modify your email address, update your login password, and more.',
+    ),
+    'users' => 
+    array (
+      'title' => 'Other users',
+      'body' => 'From here, you can view the list of users, adjust their settings, and even invite new ones (or import them from a CSV file).',
+    ),
+    'suppliers' => 
+    array (
+      'title' => 'Suppliers and price lists',
+      'body' => 'Clicking here grants access to the supplier list, where you can add new entries, make adjustments, and manage their associated price lists.',
+    ),
+    'orders' => 
+    array (
+      'title' => 'The orders',
+      'body' => 'From this page, you can access the list of orders, where you can create and edit them. By clicking on each order, you can also find the \'Deliveries\' tab to keep track of deliveries and generate payment accounting movements.',
+    ),
+    'bookings' => 
+    array (
+      'title' => 'Bookings',
+      'body' => 'Here you\'ll find the list of current orders, where you can place your reservations: simply click on each order and specify the desired quantity for each product.',
+    ),
+    'accounting' => 
+    array (
+      'title' => 'Accounting',
+      'body' => 'This page provides a comprehensive overview of all financial movements and the associated administrative tools.',
+    ),
+    'config' => 
+    array (
+      'title' => 'All configurations',
+      'body' => 'Clicking here will reveal numerous options for tailoring the behaviour of this GASdotto instance to your preferences.',
+    ),
+    'inline' => 
+    array (
+      'title' => 'Inline Help',
+      'body' => 'Familiarising with various GASdotto panels; alongside numerous parameters, you\'ll encounter a blue icon: hovering the mouse cursor over it or tapping it with your finger on a smartphone will reveal a short descriptive text explaining its details.',
+    ),
+    'last' => 
+    array (
+      'title' => 'Questions?',
+      'body' => 'Got any questions about using GASdotto, something to report or a request? Just click here for our contact info.',
+    ),
+    'finished' => 'Finished',
+  ),
+  'user' => 
+  array (
+    'help' => 
+    array (
+      'suspended' => 'Suspended and Ceased users can not access to the platform, but are still registered. It is required to specify a date of ceasing/suspension.',
+      'wrong_control_error' => 'Control code is wrong',
+      'existing_email_error' => 'E-mail address already registered.',
+      'duplicated_name_error' => 'Those first and last name are already present in the database. Please contact the administrator for more information.',
+      'waiting_approval' => 'This user is waiting for approval!',
+      'promote_friend' => 'By clicking "Save", this user will become a regular user. They will be assigned the role of %s, will have their own accounting, and will no longer be managed by %s. Their booking history will be preserved, but all of their previous payments will remain charged to %s.',
+      'promote_friend_enforce_mail' => 'You must specify at least one contact email address of the new user',
+      'reassign_friend' => 'From here, you can assign a friend to another user. All previous payments will remain charged to %s.',
+      'notifications_instructions' => 'Select suppliers for which you want to receive a notification when new orders are opened.',
+      'fee' => 'Data relating to the user\'s membership fee, which expires each year. To disable this option, go to Configurations -> Accounting',
+      'deposit' => 'Data relating to the deposit paid by the user when registering for the GAS. To disable this option, go to Configurations -> Accounting',
+      'satispay' => 'From here you can increase your credit using Satispay. Specify how much you want to pay and any notes for the administrators, you will receive a notification on your smartphone, to be confirmed within 15 minutes.',
+      'remove_profile' => 'Do you really want to delete this account? All personal data will be anonymized, although your booking history will be preserved.',
+      'remove_profile_credit_notice' => 'Before proceeding, it is advisable to contact the GAS representatives to settle the credit accounts.',
+      'importing' => 
+      array (
+        'user' => 
+        array (
+          'balance' => 'Warning! Use this attribute only during the initial user import, and only for new users, or the balances will always be inconsistent!',
+        ),
+      ),
+    ),
+    'firstname' => 'Name',
+    'lastname' => 'Surname',
+    'change_friend' => 'Modify Friend',
+    'formatted_aggregation' => 'Aggregation :name',
+    'sepa' => 
+    array (
+      'mandate' => 'SEPA Mandate',
+      'date' => 'SEPA Mandate Date',
+      'intro' => 'SEPA Configuration',
+      'help' => 'Please specify the parameters for generating RIDs for this user here. RIDs will not be generated for users for whom these fields have not been completed.',
+      'identifier' => 'SEPA Mandate Identification',
+    ),
+    'last_login' => 'Last access',
+    'last_booking' => 'Last reservation',
+    'member_since' => 'Member since',
+    'birthplace' => 'Birth place',
+    'birthdate' => 'Birthday',
+    'other_bookings' => 'Other bookings',
+    'fullname' => 'Full Name',
+    'taxcode' => 'Fiscal code',
+    'card_number' => 'Card number',
+    'payment_method' => 'Payment Method',
+    'all' => 'Users',
+    'payed_fee' => 'Paid fee',
+    'name' => 'User',
+    'address_part' => 
+    array (
+      'street' => 'Address (Street)',
+      'city' => 'Address (City)',
+      'zip' => 'Address (postal code)',
+    ),
+    'statuses' => 
+    array (
+      'active' => 'Active',
+      'suspended' => 'Suspended',
+      'deleted' => 'Removed',
+      'removed' => 'Deleted',
+    ),
+    'friend' => 'Friend',
+    'removed_user' => 'Removed User',
+    'booking_friend_header' => 'Has ordered :amount',
+    'pending_deliveries' => 'Today, this person has other bookings to receive:',
+    'without_aggregation' => 'No Aggregations',
+    'aggregation' => 'User Aggregation',
+    'credit_below_zero' => 'Credit < 0',
+    'fee_not_payed' => 'Unpaid Fee',
+    'personal_data' => 'Personal Informations',
+    'approve' => 'Approve',
+    'do_not_approve' => 'Do not Approve and Remove',
+    'family_members' => 'People in Family',
+    'promote_friend' => 'Promote to regular user',
+    'reassign_friend' => 'Change assignation',
+    'change_friend_assignee' => 'New assignee',
+    'fee' => 'Membership Fee',
+    'deposit' => 'Deposit',
+    'fees_status' => 'Fees\' Status',
+    'all_ceased' => 'Ceased',
+    'notices' => 
+    array (
+      'new_user' => 'New user registered on :gasname:',
+      'pending_approval' => 'There\'s a new user awaiting review: just head to the admin panel to approve or delete.',
+    ),
+    'last_fee' => 'Last Fee',
+    'fees' => 
+    array (
+      'new' => 'New Fee',
+      'change' => 'Edit Fee',
+    ),
+    'empty' => 
+    array (
+      'friends' => 'Add here information about friends for whom you want to create sub-reservations. Each reservation will be autonomous but handled as a single one when delivering. Each friend can have his or her authentication credentials to access GASdotto and add reservations on his/her own.',
+    ),
+    'satispay' => 
+    array (
+      'reload' => 'Charge Credit with Satispay',
+    ),
+    'remove_profile' => 'Delete profile',
+    'assign_aggregations' => 'Assign Aggregations',
+  ),
+);

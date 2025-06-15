@@ -20,12 +20,12 @@
         @endif
 
         @if (!empty(currentAbsoluteGas()->public_registrations['privacy_link']))
-            <?php $privacy_claim = __('auth.accept_privacy', ['link' => currentAbsoluteGas()->public_registrations['privacy_link']]) ?>
+            <?php $privacy_claim = __('texts.auth.accept_privacy', ['link' => currentAbsoluteGas()->public_registrations['privacy_link']]) ?>
             <x-larastrap::check name="privacy" :label="ue('<span>' . $privacy_claim . '</span>')" required />
         @endif
 
         @if (!empty(currentAbsoluteGas()->public_registrations['terms_link']))
-            <?php $terms_claim = __('commons.accept_conditions', ['link' => currentAbsoluteGas()->public_registrations['terms_link']]) ?>
+            <?php $terms_claim = __('texts.commons.accept_conditions', ['link' => currentAbsoluteGas()->public_registrations['terms_link']]) ?>
             <x-larastrap::check name="terms" :label="ue('<span>' . $terms_claim . '</span>')" required />
         @endif
     </x-larastrap::form>
@@ -34,7 +34,7 @@
 <div class="col-12 col-md-6 offset-md-3">
     <hr/>
     <p>
-        <a href="{{ route('login') }}">{{ __('auth.login') }}</a>
+        <a href="{{ route('login') }}">{{ __('texts.auth.login') }}</a>
     </p>
 </div>
 

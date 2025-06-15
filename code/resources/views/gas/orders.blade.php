@@ -14,13 +14,13 @@
                 @php
 
                 $values_for_contacts = [
-                    'none' => __('generic.none'),
-                    'manual' => __('generic.manual_selection'),
+                    'none' => __('texts.generic.none'),
+                    'manual' => __('texts.generic.manual_selection'),
                 ];
 
                 $supplier_roles = rolesByClass('App\Supplier');
                 foreach($supplier_roles as $sr) {
-                    $values_for_contacts[$sr->id] = __('generic.named_all', ['name' => $sr->name]);
+                    $values_for_contacts[$sr->id] = __('texts.generic.named_all', ['name' => $sr->name]);
                 }
 
                 @endphp

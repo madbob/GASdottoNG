@@ -17,8 +17,8 @@ class MailNewOrder extends Config
     public function default()
     {
         return (object) [
-            'subject' => __('mail.order.defaults.subject'),
-            'body' => __('mail.order.defaults.body'),
+            'subject' => __('texts.mail.order.defaults.subject'),
+            'body' => __('texts.mail.order.defaults.body'),
         ];
     }
 }

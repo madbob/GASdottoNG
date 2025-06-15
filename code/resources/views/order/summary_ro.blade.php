@@ -115,7 +115,7 @@ unset($display_columns['notes']);
                             </td>
 
                             <td class="order-cell-weight {{ in_array('weight', $columns) ? '' : 'hidden' }}">
-                                <label class="order-summary-product-weight">{{ $summary->products[$product->id]->weight ?? 0 }} {{ $product->measure->discrete ? __('generic.kilos') : $product->measure->name }}</label>
+                                <label class="order-summary-product-weight">{{ $summary->products[$product->id]->weight ?? 0 }} {{ $product->measure->discrete ? __('texts.generic.kilos') : $product->measure->name }}</label>
                             </td>
 
                             <td class="order-cell-total_price {{ in_array('total_price', $columns) ? '' : 'hidden' }}">
@@ -127,7 +127,7 @@ unset($display_columns['notes']);
                             </td>
 
                             <td class="order-cell-weight_delivered {{ in_array('weight_delivered', $columns) ? '' : 'hidden' }}">
-                                <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]->weight_delivered ?? 0 }} {{ $product->measure->discrete ? __('generic.kilos') : $product->measure->name }}</label>
+                                <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]->weight_delivered ?? 0 }} {{ $product->measure->discrete ? __('texts.generic.kilos') : $product->measure->name }}</label>
                             </td>
 
                             <td class="order-cell-price_delivered {{ in_array('price_delivered', $columns) ? '' : 'hidden' }}">
@@ -160,11 +160,11 @@ unset($display_columns['notes']);
                                     @break
 
                                 @case('weight')
-                                    {{ $summary->weight ?? 0 }} {{ __('generic.kilos') }}
+                                    {{ $summary->weight ?? 0 }} {{ __('texts.generic.kilos') }}
                                     @break
 
                                 @case('weight_delivered')
-                                    {{ $summary->weight_delivered ?? 0 }} {{ __('generic.kilos') }}
+                                    {{ $summary->weight_delivered ?? 0 }} {{ __('texts.generic.kilos') }}
                                     @break
 
                             @endswitch

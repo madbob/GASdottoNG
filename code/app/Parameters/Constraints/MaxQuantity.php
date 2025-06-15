@@ -16,7 +16,7 @@ class MaxQuantity extends Constraint
         $field = $this->identifier();
 
         if ($product->$field != 0) {
-            return __('orders.constraints.relative_max_formatted', [
+            return __('texts.orders.constraints.relative_max_formatted', [
                 'quantity' => sprintf('%.02f', $product->$field),
             ]);
         }
@@ -35,7 +35,7 @@ class MaxQuantity extends Constraint
 
         if ($product->max_quantity != 0) {
             if ($quantity > $product->max_quantity) {
-                throw new AnnotatedQuantityConstraint(__('orders.constraints.relative_max'), 1);
+                throw new AnnotatedQuantityConstraint(__('texts.orders.constraints.relative_max'), 1);
             }
         }
     }

@@ -19,9 +19,9 @@
 
 						@if($targets->count() > 1)
 	                        <li class="list-group-item list-group-item-danger">
-	                            {{ __('generic.composable_all', ['label' => $last_class::commonClassName()]) }}<br/>
+	                            {{ __('texts.generic.composable_all', ['label' => $last_class::commonClassName()]) }}<br/>
 	                            <small>
-	                                {{ __('permissions.help.global_permission_notice') }}
+	                                {{ __('texts.permissions.help.global_permission_notice') }}
 	                            </small>
 	                            <span class="float-end">
 	                                <input type="checkbox" class="all-{{ $user->id }}-{{ $role->id }}" data-user="{{ $user->id }}" data-role="{{ $role->id }}" data-target-id="*" data-target-class="{{ $last_class }}" {{ $r->appliesAll($last_class) ? 'checked' : '' }}>
@@ -49,10 +49,10 @@
         <div class="col">
             @if($role->enabledAction('gas.permissions') && $user->id == $currentuser->id)
                 <x-larastrap::suggestion>
-                    {{ __('permissions.help.blocked_autoremove') }}
+                    {{ __('texts.permissions.help.blocked_autoremove') }}
                 </x-larastrap::suggestion>
             @else
-                <button class="btn btn-danger remove-role" data-role="{{ $role->id }}" data-user="{{ $user->id }}">{{ __('permissions.revoke') }} {{ $role->name }} a {{ $user->printableName() }}</button>
+                <button class="btn btn-danger remove-role" data-role="{{ $role->id }}" data-user="{{ $user->id }}">{{ __('texts.permissions.revoke') }} {{ $role->name }} a {{ $user->printableName() }}</button>
             @endif
         </div>
     </div>

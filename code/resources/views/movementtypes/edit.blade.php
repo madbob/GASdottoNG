@@ -1,7 +1,7 @@
 <?php
 
 $target_classes = [
-    '' => __('generic.none'),
+    '' => __('texts.generic.none'),
 ];
 
 if ($type->system) {
@@ -25,7 +25,7 @@ foreach($classes as $class => $name) {
         <div class="row mb-4">
             <div class="col">
                 <div class="alert alert-danger">
-                    {{ __('movements.help.system_type_notice') }}
+                    {{ __('texts.movements.help.system_type_notice') }}
                 </div>
             </div>
         </div>
@@ -106,7 +106,7 @@ foreach($classes as $class => $name) {
                                     <input type="checkbox" name="{{ $pay_id }}" class="form-check-input" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}>
                                 </div>
                                 <div class="form-check form-switch p-0">
-                                    <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}> {{ __('generic.default') }}
+                                    <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}> {{ __('texts.generic.default') }}
                                 </div>
                             </th>
                         @endforeach
@@ -152,7 +152,7 @@ foreach($classes as $class => $name) {
                             'peer' => 'sender',
                             'classname' => $classname,
                             'fields' => $fields,
-                            'label' => sprintf('%s - %s', __('movements.paying'), $label),
+                            'label' => sprintf('%s - %s', __('texts.movements.paying'), $label),
                             'visible' => $classname == $type->sender_type,
                         ];
 
@@ -160,7 +160,7 @@ foreach($classes as $class => $name) {
                             'peer' => 'target',
                             'classname' => $classname,
                             'fields' => $fields,
-                            'label' => sprintf('%s - %s', __('movements.payed'), $label),
+                            'label' => sprintf('%s - %s', __('texts.movements.payed'), $label),
                             'visible' => $classname == $type->target_type,
                         ];
                     }

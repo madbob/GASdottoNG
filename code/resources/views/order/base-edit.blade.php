@@ -3,13 +3,13 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
 @endphp
 
 @if($currentuser->gas->hasFeature('auto_aggregates'))
-    <x-larastrap::field tlabel="orders.supplier" :pophelp="__('orders.help.supplier_multi_select', ['theshold' => aggregatesConvenienceLimit()])">
+    <x-larastrap::field tlabel="orders.supplier" :pophelp="__('texts.orders.help.supplier_multi_select', ['theshold' => aggregatesConvenienceLimit()])">
         @include('commons.manyrows', [
             'contents' => $order ? collect([$order]) : new Illuminate\Support\Collection(),
-            'new_label' => __('generic.add_new'),
+            'new_label' => __('texts.generic.add_new'),
             'columns' => [
                 [
-                    'label' => __('orders.supplier'),
+                    'label' => __('texts.orders.supplier'),
                     'field' => 'supplier',
                     'type' => 'select-model',
                     'extra' => [
@@ -23,7 +23,7 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
     <x-larastrap::select-model name="supplier" tlabel="orders.supplier" :options="$suppliers" required />
 @endif
 
-<x-larastrap::textarea name="comment" tlabel="generic.comment" maxlength="190" rows="2" :pophelp="__('orders.help.comment', ['limit' => longCommentLimit()])" />
+<x-larastrap::textarea name="comment" tlabel="generic.comment" maxlength="190" rows="2" :pophelp="__('texts.orders.help.comment', ['limit' => longCommentLimit()])" />
 <x-larastrap::datepicker name="start" tlabel="orders.dates.start" defaults_now="true" required tpophelp="orders.help.start" />
 <x-larastrap::datepicker name="end" tlabel="orders.dates.end" defaults_now="true" required data-enforce-after=".date[name=start]" tpophelp="orders.help.end" />
 <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" defaults_now="true" required data-enforce-after=".date[name=end]" />

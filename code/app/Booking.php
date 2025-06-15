@@ -748,13 +748,13 @@ class Booking extends Model
     public function balanceFields()
     {
         return [
-            'bank' => __('movements.balance'),
+            'bank' => __('texts.movements.balance'),
         ];
     }
 
     public static function commonClassName()
     {
-        return __('aggregations.by_booking');
+        return __('texts.aggregations.by_booking');
     }
 
     /************************************************************** InCircles */

@@ -73,8 +73,8 @@ class OrdersController extends BackedController
         $aggregates = getOrdersByStatus(null, 'open');
 
         $feed = new Feed();
-        $feed->setTitle(__('orders.list_open'));
-        $feed->setDescription(__('orders.list_open'));
+        $feed->setTitle(__('texts.orders.list_open'));
+        $feed->setDescription(__('texts.orders.list_open'));
         $feed->setLink($request->url());
 
         if ($aggregates->isEmpty() === false) {
@@ -279,10 +279,10 @@ class OrdersController extends BackedController
                 'class' => Aggregate::class,
             ],
             'sorting_rules' => [
-                'supplier_name' => __('orders.supplier'),
-                'start' => __('orders.dates.start'),
-                'end' => __('orders.dates.end'),
-                'shipping' => __('orders.dates.shipping'),
+                'supplier_name' => __('texts.orders.supplier'),
+                'start' => __('texts.orders.dates.start'),
+                'end' => __('texts.orders.dates.end'),
+                'shipping' => __('texts.orders.dates.shipping'),
             ],
         ]);
     }

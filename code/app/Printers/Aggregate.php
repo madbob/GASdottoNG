@@ -92,7 +92,7 @@ class Aggregate extends Printer
             });
         }
 
-        $title = __('orders.files.order.shipping');
+        $title = __('texts.orders.files.order.shipping');
         $filename = sanitizeFilename($title . '.' . $subtype);
 
         if ($subtype == 'pdf') {
@@ -177,7 +177,7 @@ class Aggregate extends Printer
 
             $document = new Document($subtype);
 
-            $document_title = __('products.list') . '<br>';
+            $document_title = __('texts.products.list') . '<br>';
             if ($obj->orders->count() <= aggregatesConvenienceLimit()) {
                 foreach ($obj->orders as $order) {
                     $document_title .= sprintf('%s %s<br>', $order->supplier->name, $order->internal_number);
@@ -204,7 +204,7 @@ class Aggregate extends Printer
                 }
             }
 
-            $title = __('products.list');
+            $title = __('texts.products.list');
             $filename = sanitizeFilename($title . '.' . $subtype);
 
             return $document->download($filename);
@@ -289,7 +289,7 @@ class Aggregate extends Printer
             Genero documento
         */
 
-        $filename = __('orders.files.order.table');
+        $filename = __('texts.orders.files.order.table');
         $filename = sanitizeFilename($filename . '.csv');
 
         return output_csv($filename, $headers, $data, null);

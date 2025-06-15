@@ -8,7 +8,7 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
 <x-larastrap::modal size="xl">
     @if($groups->isEmpty())
         <div class="alert alert-info">
-            {{ __('aggregations.help.no_user_aggregations') }}
+            {{ __('texts.aggregations.help.no_user_aggregations') }}
         </div>
     @else
         <x-larastrap::iform :action="route('groups.matrix.save')">
@@ -17,7 +17,7 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
             <table class="table">
                 <thead>
                     <tr>
-                        <th>{{ __('generic.name') }}</th>
+                        <th>{{ __('texts.generic.name') }}</th>
                         @foreach($groups as $group)
                             <th>
                                 <x-larastrap::hidden name="groups[]" :value="$group->id" />

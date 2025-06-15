@@ -12,10 +12,10 @@
                             <th scope="col">{{ $value->variant->name }}</th>
                         @endforeach
 
-                        <th scope="col" width="25%">{{ __('products.variant.price_difference') }}</th>
+                        <th scope="col" width="25%">{{ __('texts.products.variant.price_difference') }}</th>
 
                         @if ($product->measure->discrete)
-                            <th scope="col" width="25%">{{ __('products.variant.weight_difference') }}</th>
+                            <th scope="col" width="25%">{{ __('texts.products.variant.weight_difference') }}</th>
                         @endif
                     </tr>
                 </thead>

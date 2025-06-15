@@ -17,7 +17,7 @@ if (!isset($final_value)) {
         @else
             <span class="name">{{ $mod_value ? $mod_value->descriptive_name : '' }}</span>
             <span class="mutable {{ (is_null($mod_value) || $mod_value->is_variable == false || $final_value == true) ? 'hidden' : '' }}">
-                <br><small>{{ __('orders.help.extimated_value') }}</small>
+                <br><small>{{ __('texts.orders.help.extimated_value') }}</small>
             </span>
             <div class="float-end details-button-wrapper">
                 @include('commons.detailsbutton', ['obj' => $mod_value ? $mod_value->modifier : null])

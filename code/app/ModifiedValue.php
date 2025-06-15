@@ -227,7 +227,7 @@ class ModifiedValue extends Model
 
             if (! isset($products_modifiers[$mod_id])) {
                 $products_modifiers[$mod_id] = (object) [
-                    'label' => sprintf('%s (%s)', $pmod->modifier->modifierType->name, ($key == 'pending' ? __('orders.booking.statuses.booked') : __('orders.booking.statuses.shipped'))),
+                    'label' => sprintf('%s (%s)', $pmod->modifier->modifierType->name, ($key == 'pending' ? __('texts.orders.booking.statuses.booked') : __('texts.orders.booking.statuses.shipped'))),
                 ];
             }
 

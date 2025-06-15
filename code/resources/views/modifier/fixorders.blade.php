@@ -3,7 +3,7 @@
         <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
 
         <p>
-            {{ __('movements.help.opened_orders_with_modifier') }}
+            {{ __('texts.movements.help.opened_orders_with_modifier') }}
         </p>
         <p>
             @foreach($modifier->target->active_orders as $order)

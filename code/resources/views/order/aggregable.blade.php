@@ -4,17 +4,17 @@
 
         @if($orders->isEmpty())
             <p>
-                {{ __('generic.empty_list') }}
+                {{ __('texts.generic.empty_list') }}
             </p>
             <p>
-                {{ __('orders.help.explain_aggregations') }}
+                {{ __('texts.orders.help.explain_aggregations') }}
             </p>
         @else
             <p>
-                {{ __('orders.help.aggregation_instructions') }}
+                {{ __('texts.orders.help.aggregation_instructions') }}
             </p>
             <p>
-                {{ __('orders.help.explain_aggregations') }}
+                {{ __('texts.orders.help.explain_aggregations') }}
             </p>
 
             <hr/>

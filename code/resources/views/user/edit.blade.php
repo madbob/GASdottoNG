@@ -21,7 +21,7 @@ $friend_admin_buttons = [];
 if ($user->isFriend() && $admin_editable) {
     $friend_admin_buttons = [
         [
-            'label' => __('user.change_friend'),
+            'label' => __('texts.user.change_friend'),
             'classes' => ['float-start', 'prevent-default', 'me-2'],
             'attributes' => ['data-bs-toggle' => 'modal', 'data-bs-target' => '#change_friend_' . $user->id]
         ]
@@ -31,12 +31,12 @@ if ($user->isFriend() && $admin_editable) {
 ?>
 
 <x-larastrap::tabs>
-    <x-larastrap::tabpane :id="sprintf('profile-%s', sanitizeId($user->id))" label="{{ __('user.personal_data') }}" active="true" classes="mb-2" icon="bi-person">
+    <x-larastrap::tabpane :id="sprintf('profile-%s', sanitizeId($user->id))" label="{{ __('texts.user.personal_data') }}" active="true" classes="mb-2" icon="bi-person">
         @if($admin_editable)
             @if($user->pending)
                 <div class="alert alert-warning float-start w-100 mb-3">
                     <div class="float-start d-inline-block">
-                        {{ __('user.help.waiting_approval') }}
+                        {{ __('texts.user.help.waiting_approval') }}
                     </div>
 
                     <x-larastrap::iform :action="route('users.revisioned', $user->id)" :buttons="[['tlabel' => 'user.approve', 'color' => 'success']]" classes="float-end ms-2">
@@ -60,7 +60,7 @@ if ($user->isFriend() && $admin_editable) {
                             <x-larastrap::username name="username" tlabel="auth.username" required />
                             <x-larastrap::text name="firstname" tlabel="user.firstname" />
                             <x-larastrap::text name="lastname" tlabel="user.lastname" />
-                            @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => __('auth.password')])
+                            @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => __('texts.auth.password')])
                             <x-larastrap::text name="birthplace" tlabel="user.birthplace" />
                             <x-larastrap::datepicker name="birthday" tlabel="user.birthdate" />
                             <x-larastrap::text name="taxcode" tlabel="user.taxcode" />
@@ -72,7 +72,7 @@ if ($user->isFriend() && $admin_editable) {
                             <x-larastrap::text name="lastname" tlabel="user.lastname" readonly disabled />
 
                             @if($personal_details)
-                                @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => __('auth.password')])
+                                @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => __('texts.auth.password')])
                                 <x-larastrap::datepicker name="birthday" tlabel="user.birthdate" readonly disabled />
                                 <x-larastrap::text name="taxcode" tlabel="user.taxcode" readonly disabled />
                             @endif
@@ -84,7 +84,7 @@ if ($user->isFriend() && $admin_editable) {
                             <x-larastrap::username name="username" tlabel="auth.username" />
                             <x-larastrap::text name="firstname" tlabel="user.firstname" />
                             <x-larastrap::text name="lastname" tlabel="user.lastname" />
-                            @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => __('auth.password')])
+                            @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => __('texts.auth.password')])
                             @include('commons.contactswidget', ['obj' => $user])
                         @else
                             <x-larastrap::username name="username" tlabel="auth.username" readonly disabled />
@@ -92,7 +92,7 @@ if ($user->isFriend() && $admin_editable) {
                             <x-larastrap::text name="lastname" tlabel="user.lastname" readonly disabled />
 
                             @if($personal_details)
-                                @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => __('auth.password')])
+                                @include('commons.passwordfield', ['obj' => $user, 'name' => 'password', 'label' => __('texts.auth.password')])
                             @endif
 
                             @include('commons.staticcontactswidget', ['obj' => $user])
@@ -102,9 +102,9 @@ if ($user->isFriend() && $admin_editable) {
                 <div class="col-12 col-md-6">
                     @if($user->isFriend() == false)
                         @if($editable)
-                            @include('commons.imagefield', ['obj' => $user, 'name' => 'picture', 'label' => __('generic.photo'), 'valuefrom' => 'picture_url'])
+                            @include('commons.imagefield', ['obj' => $user, 'name' => 'picture', 'label' => __('texts.generic.photo'), 'valuefrom' => 'picture_url'])
                         @else
-                            @include('commons.staticimagefield', ['obj' => $user, 'label' => __('generic.photo'), 'valuefrom' => 'picture_url'])
+                            @include('commons.staticimagefield', ['obj' => $user, 'label' => __('texts.generic.photo'), 'valuefrom' => 'picture_url'])
                         @endif
 
                         @if($admin_editable)
@@ -165,11 +165,11 @@ if ($user->isFriend() && $admin_editable) {
 
             <x-larastrap::modal :id="$removeModalId">
                 <x-larastrap::iform method="DELETE" :action="route('users.destroy', $user->id)" id="user-destroy-modal" :buttons="[['type' => 'submit', 'color' => 'danger', 'tlabel' => 'user.remove_profile']]">
-                    <p>{{ __('user.help.remove_profile') }}</p>
+                    <p>{{ __('texts.user.help.remove_profile') }}</p>
 
                     @if($user->currentBalanceAmount() != 0)
                         <p>
-                            {{ __('user.help.remove_profile_credit_notice') }}
+                            {{ __('texts.user.help.remove_profile_credit_notice') }}
                         </p>
                     @endif
                     <input type="hidden" name="pre-saved-function" value="passwordProtected">
@@ -187,7 +187,7 @@ if ($user->isFriend() && $admin_editable) {
                                 <x-larastrap::hidden name="reload-portion" :value="sprintf('#friends-tab-%s', $user->parent_id)" />
                                 <x-larastrap::hidden name="append-list" value="user-list" />
 
-                                <p>{{ __('user.help.promote_friend', ['role' => roleByIdentifier('user')->name, 'ex_parent' => $user->parent->printableName()]) }}</p>
+                                <p>{{ __('texts.user.help.promote_friend', ['role' => roleByIdentifier('user')->name, 'ex_parent' => $user->parent->printableName()]) }}</p>
 
                                 @if(blank($user->email))
                                     <hr>
@@ -201,7 +201,7 @@ if ($user->isFriend() && $admin_editable) {
                                 <x-larastrap::hidden name="reload-portion" :value="sprintf('#friends-tab-%s', $user->parent_id)" />
 
                                 <p>
-                                    {{ __('user.help.reassign_friend', ['ex_parent' => $user->parent->printableName()]) }}
+                                    {{ __('texts.user.help.reassign_friend', ['ex_parent' => $user->parent->printableName()]) }}
                                 </p>
 
 								<x-larastrap::select-model tlabel="user.change_friend_assignee" name="parent_id" :options="App\User::where('id', '!=', $user->parent_id)->with(['gas'])->topLevel()->sorted()->get()->filter(fn($u) => $u->can('users.subusers', $u->gas))" />
@@ -243,7 +243,7 @@ if ($user->isFriend() && $admin_editable) {
             <form class="form-horizontal inner-form" method="POST" action="{{ route('users.notifications', $user->id) }}">
                 <div class="row">
                     <div class="col-md-4">
-                        <p>{{ __('user.help.notifications_instructions') }}</p>
+                        <p>{{ __('texts.user.help.notifications_instructions') }}</p>
                         <ul class="list-group">
                             @foreach(App\Supplier::orderBy('name', 'asc')->get() as $supplier)
                                 <li class="list-group-item">
@@ -260,7 +260,7 @@ if ($user->isFriend() && $admin_editable) {
                 <div class="row mt-2">
                     <div class="col">
                         <div class="btn-group float-end main-form-buttons" role="group">
-                            <button type="submit" class="btn btn-success saving-button">{{ __('generic.save') }}</button>
+                            <button type="submit" class="btn btn-success saving-button">{{ __('texts.generic.save') }}</button>
                         </div>
                     </div>
                 </div>

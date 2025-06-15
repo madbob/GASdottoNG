@@ -16,18 +16,18 @@
         @endphp
 
         @if($orders->count() > 0)
-            {{ __('products.help.notice_removing_product_in_orders') }}
+            {{ __('texts.products.help.notice_removing_product_in_orders') }}
 
             <hr>
 
             @foreach($orders as $order)
                 <x-larastrap::radiolist :name="sprintf('order_%s', inlineId($order))" :label="$order->printableName()" :options="[
-                    'keep' => __('products.removing.keep'),
-                    'leave' => __('products.removing.leave')
+                    'keep' => __('texts.products.removing.keep'),
+                    'leave' => __('texts.products.removing.leave')
                 ]" value="keep" />
             @endforeach
         @else
-            {{ __('products.remove_confirm', ['name' => $product->printableName()]) }}
+            {{ __('texts.products.remove_confirm', ['name' => $product->printableName()]) }}
         @endif
     </x-larastrap::iform>
 </x-larastrap::modal>

@@ -13,7 +13,7 @@ foreach($modifiers as $modifier) {
 @endphp
 
 @if($modifier_export_select)
-	<x-larastrap::radios name="extra_modifiers" tlabel="orders.include_all_modifiers" :options="['0' => __('generic.no'), '1' => __('generic.yes')]" value="0" tpophelp="orders.help.include_all_modifiers" />
+	<x-larastrap::radios name="extra_modifiers" tlabel="orders.include_all_modifiers" :options="['0' => __('texts.generic.no'), '1' => __('texts.generic.yes')]" value="0" tpophelp="orders.help.include_all_modifiers" />
 @else
 	<x-larastrap::hidden name="extra_modifiers" value="1" />
 @endif

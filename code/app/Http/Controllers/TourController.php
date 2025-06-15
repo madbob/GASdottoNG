@@ -19,73 +19,73 @@ class TourController extends Controller
         */
 
         $steps[] = (object) [
-            'title' => __('tour.welcome.title'),
-            'content' => __('tour.welcome.body'),
+            'title' => __('texts.tour.welcome.title'),
+            'content' => __('texts.tour.welcome.body'),
         ];
 
         $steps[] = (object) [
-            'title' => __('tour.profile.title'),
-            'content' => __('tour.profile.body'),
+            'title' => __('texts.tour.profile.title'),
+            'content' => __('texts.tour.profile.body'),
             'target' => '#menu_profile',
         ];
 
         if ($user->can('users.admin', $gas)) {
             $steps[] = (object) [
-                'title' => __('tour.users.title'),
-                'content' => __('tour.users.body'),
+                'title' => __('texts.tour.users.title'),
+                'content' => __('texts.tour.users.body'),
                 'target' => '#menu_users',
             ];
         }
 
         if ($user->can('supplier.add', $gas) || $user->can('supplier.modify', null)) {
             $steps[] = (object) [
-                'title' => __('tour.suppliers.title'),
-                'content' => __('tour.suppliers.body'),
+                'title' => __('texts.tour.suppliers.title'),
+                'content' => __('texts.tour.suppliers.body'),
                 'target' => '#menu_suppliers',
             ];
         }
 
         if ($user->can('supplier.orders', null) || $user->can('supplier.shippings', null)) {
             $steps[] = (object) [
-                'title' => __('tour.orders.title'),
-                'content' => __('tour.orders.body'),
+                'title' => __('texts.tour.orders.title'),
+                'content' => __('texts.tour.orders.body'),
                 'target' => '#menu_orders',
             ];
         }
 
         if ($user->can('supplier.book', null)) {
             $steps[] = (object) [
-                'title' => __('tour.bookings.title'),
-                'content' => __('tour.bookings.body'),
+                'title' => __('texts.tour.bookings.title'),
+                'content' => __('texts.tour.bookings.body'),
                 'target' => '#menu_bookings',
             ];
         }
 
         if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas)) {
             $steps[] = (object) [
-                'title' => __('tour.accounting.title'),
-                'content' => __('tour.accounting.body'),
+                'title' => __('texts.tour.accounting.title'),
+                'content' => __('texts.tour.accounting.body'),
                 'target' => '#menu_accouting',
             ];
         }
 
         if ($user->can('gas.config', $gas)) {
             $steps[] = (object) [
-                'title' => __('tour.config.title'),
-                'content' => __('tour.config.body'),
+                'title' => __('texts.tour.config.title'),
+                'content' => __('texts.tour.config.body'),
                 'target' => '#menu_config',
             ];
         }
 
         $steps[] = (object) [
-            'title' => __('tour.inline.title'),
-            'content' => __('tour.inline.body') . '<br><img class="img-fluid p-2 mt-2 bg-dark" src="' .  . '">',
+            'title' => __('texts.tour.inline.title'),
+            'content' => __('texts.tour.inline.body') . '<br><img class="img-fluid p-2 mt-2 bg-dark" src="' .  . '">',
         ];
 
         if ($user->can('users.admin', $gas)) {
             $steps[] = (object) [
-                'title' => __('tour.last.title'),
-                'content' => __('tour.last.body'),
+                'title' => __('texts.tour.last.title'),
+                'content' => __('texts.tour.last.body'),
                 'target' => '#menu_help',
             ];
         }
@@ -94,7 +94,7 @@ class TourController extends Controller
             'dialogZ' => 2000,
             'nextLabel' => '>>',
             'prevLabel' => '<<',
-            'finishLabel' => __('tour.finished'),
+            'finishLabel' => __('texts.tour.finished'),
             'steps' => $steps,
         ]);
     }

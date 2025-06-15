@@ -1,7 +1,7 @@
 <x-larastrap::mform :obj="$receipt" classes="receipt-editor" method="PUT" :action="route('receipts.update', $receipt->id)">
     <div class="row">
         <div class="col-md-4">
-            @include('commons.staticobjfield', ['obj' => $receipt, 'name' => 'user', 'label' => __('user.name')])
+            @include('commons.staticobjfield', ['obj' => $receipt, 'name' => 'user', 'label' => __('texts.user.name')])
             <x-larastrap::text name="number" tlabel="generic.number" readonly disabled />
             <x-larastrap::datepicker name="date" tlabel="generic.date" />
             <x-larastrap::price name="total" tlabel="orders.totals.taxable" readonly disabled />

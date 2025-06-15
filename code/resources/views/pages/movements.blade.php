@@ -11,7 +11,7 @@
                         <div class="col">
                             @include('commons.addingbutton', [
                                 'typename' => 'movement',
-                                'typename_readable' => __('movements.name'),
+                                'typename_readable' => __('texts.movements.name'),
                                 'dynamic_url' => route('movements.create')
                             ])
 
@@ -30,27 +30,27 @@
 
                 <div class="row">
                     <div class="col-12 order-2 order-md-1 col-md-6">
-                        <x-filler :data-action="route('movements.index')" data-fill-target="#movements-in-range" :download-buttons="[['link' => route('movements.index', ['format' => 'csv']), 'label' => __('generic.exports.csv')], ['link' => route('movements.index', ['format' => 'pdf']), 'label' => __('generic.exports.pdf')], ['link' => route('movements.index', ['format' => 'balance']), 'label' => __('export.do_balance')]]">
+                        <x-filler :data-action="route('movements.index')" data-fill-target="#movements-in-range" :download-buttons="[['link' => route('movements.index', ['format' => 'csv']), 'label' => __('texts.generic.exports.csv')], ['link' => route('movements.index', ['format' => 'pdf']), 'label' => __('texts.generic.exports.pdf')], ['link' => route('movements.index', ['format' => 'balance']), 'label' => __('texts.export.do_balance')]]">
                             @include('commons.genericdaterange', ['start_date' => strtotime('-1 weeks')])
                             @include('commons.selectmovementtypefield', ['show_all' => true])
                             <x-larastrap::radios name="method" tlabel="generic.payment" :options="paymentsSimple()" value="none" />
-                            <x-larastrap::select-model name="user_id" tlabel="user.name" :options="$currentgas->users()->topLevel()->get()" :extra_options="[0 => __('generic.none')]" />
-                            <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentuser->targetsByAction('movements.admin,supplier.orders,supplier.movements')" :extra_options="[0 => __('generic.none')]" />
+                            <x-larastrap::select-model name="user_id" tlabel="user.name" :options="$currentgas->users()->topLevel()->get()" :extra_options="[0 => __('texts.generic.none')]" />
+                            <x-larastrap::select-model name="supplier_id" tlabel="orders.supplier" :options="$currentuser->targetsByAction('movements.admin,supplier.orders,supplier.movements')" :extra_options="[0 => __('texts.generic.none')]" />
                             <x-larastrap::text name="identifier" tlabel="generic.identifier" />
                             <x-larastrap::text name="notes" tlabel="generic.notes" />
 
                             <x-larastrap::field tlabel="movements.amount">
                                 <div class="input-group">
-                                    <div class="input-group-text">{{ __('generic.since') }}</div>
+                                    <div class="input-group-text">{{ __('texts.generic.since') }}</div>
                                     <input type="number" class="form-control" name="amountstart" autocomplete="off" step="0.01">
-                                    <div class="input-group-text">{{ __('generic.to') }}</div>
+                                    <div class="input-group-text">{{ __('texts.generic.to') }}</div>
                                     <input type="number" class="form-control" name="amountend" autocomplete="off" step="0.01">
                                 </div>
                             </x-larastrap::field>
 
                             <?php $currencies = App\Currency::enabled() ?>
                             @if($currencies->count() > 1)
-                                <x-larastrap::select-model name="currency_id" tlabel="movements.currency" :options="$currencies" :extra_options="[0 => __('generic.all')]" />
+                                <x-larastrap::select-model name="currency_id" tlabel="movements.currency" :options="$currencies" :extra_options="[0 => __('texts.generic.all')]" />
                             @endif
                         </x-filler>
                     </div>
@@ -75,7 +75,7 @@
                         <div class="col">
                             <div class="alert alert-danger">
                                 <p>
-                                    {{ __('movements.help.main_types_warning') }}
+                                    {{ __('texts.movements.help.main_types_warning') }}
                                 </p>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                             @include('commons.addingbutton', [
                                 'template' => 'movementtypes.base-edit',
                                 'typename' => 'movementtype',
-                                'typename_readable' => __('movements.type'),
+                                'typename_readable' => __('texts.movements.type'),
                                 'targeturl' => 'movtypes'
                             ])
                         </div>

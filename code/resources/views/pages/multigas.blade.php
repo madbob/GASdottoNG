@@ -5,7 +5,7 @@
 @if(count($groups) > 1)
     <div class="row">
         <div class="col">
-            <a class="btn btn-light" disabled>{{ __('generic.current_gas_name', ['label' => $currentgas->name]) }}</a>
+            <a class="btn btn-light" disabled>{{ __('texts.generic.current_gas_name', ['label' => $currentgas->name]) }}</a>
             @foreach($groups as $gas)
                 @if($gas->id != $currentgas->id)
                     <a href="{{ route('multigas.goto', $gas->id) }}" class="btn btn-primary">Passa a {{ $gas->name }}</a>
@@ -24,7 +24,7 @@
                 @include('commons.addingbutton', [
                     'template' => 'multigas.base-edit',
                     'typename' => 'gas',
-                    'typename_readable' => __('generic.gas'),
+                    'typename_readable' => __('texts.generic.gas'),
                     'targeturl' => 'multigas'
                 ])
             </div>

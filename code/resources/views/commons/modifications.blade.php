@@ -41,12 +41,12 @@ foreach($modificationTypes as $mod) {
 @if(empty($modificationTypes) || empty($actual_modifiers) == false)
     <div class="card mb-4">
         <div class="card-header">
-            {{ __('modifiers.all') }}
+            {{ __('texts.modifiers.all') }}
         </div>
         <div class="card-body">
             @if(empty($modificationTypes))
                 <div class="alert alert-info">
-                    {{ __('modifiers.help.no_modifiers_for_element') }}
+                    {{ __('texts.modifiers.help.no_modifiers_for_element') }}
                 </div>
             @else
                 @if(filled($suggestion))

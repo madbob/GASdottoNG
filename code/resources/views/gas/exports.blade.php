@@ -22,7 +22,7 @@
                         <div class="wizard_page">
                             <x-larastrap::form method="POST" :action="url('import/gdxp?step=read')">
                                 <p>
-                                    {{ __('gas.help.gdxp_explain') }}
+                                    {{ __('texts.gas.help.gdxp_explain') }}
                                 </p>
 
                                 <hr/>
@@ -35,7 +35,7 @@
             </x-larastrap::field>
 
             <x-larastrap::field tlabel="export.export.database">
-                <a href="{{ route('gas.dumpdb') }}" class="btn btn-light">{{ __('generic.download') }} <i class="bi-download"></i></a>
+                <a href="{{ route('gas.dumpdb') }}" class="btn btn-light">{{ __('texts.generic.download') }} <i class="bi-download"></i></a>
             </x-larastrap::field>
         </div>
     </div>

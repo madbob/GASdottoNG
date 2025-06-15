@@ -1,7 +1,7 @@
 <div class="alert alert-danger">
 	@if($id == 'booking-payment')
 		<p>
-			{{ __('movements.help.missing_method_for_movements_in_modifiers') }}
+			{{ __('texts.movements.help.missing_method_for_movements_in_modifiers') }}
 		</p>
 		<ul>
 			@foreach(movementTypes() as $type)
@@ -12,7 +12,7 @@
 		</ul>
 	@else
 		<p>
-			{{ __('movements.help.missing_method_for_movement_in_modifier', ['name' => movementTypes('booking-payment')->name]) }}
+			{{ __('texts.movements.help.missing_method_for_movement_in_modifier', ['name' => movementTypes('booking-payment')->name]) }}
 		</p>
 	@endif
 </div>

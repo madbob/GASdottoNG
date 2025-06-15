@@ -13,7 +13,7 @@ class DepositPay extends MovementType
 
     public function initNew($type)
     {
-        $type->name = __('movements.defaults.deposit');
+        $type->name = __('texts.movements.defaults.deposit');
         $type->sender_type = 'App\User';
         $type->target_type = 'App\Gas';
         $type->visibility = false;

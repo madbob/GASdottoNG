@@ -12,7 +12,7 @@ $modal_id = sprintf('calculator-modal-%s', $rand);
 @push('postponed')
     <x-larastrap::modal classes="inline-calculator" :id="$modal_id" size="md">
         <x-larastrap::suggestion>
-            {{ __('orders.notices.calculator') }}
+            {{ __('texts.orders.notices.calculator') }}
         </x-larastrap::suggestion>
 
         <x-larastrap::form>

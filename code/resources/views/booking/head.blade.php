@@ -61,13 +61,13 @@ if ($user->isFriend() == false) {
     <div class="col-12 col-md-4">
         <div class="list-group">
             <a href="{{ url('booking/' . $aggregate->id . '/user/' . $user->id . '/document') }}" class="list-group-item">
-                {{ __('orders.files.order.shipping') }} <i class="bi-download"></i>
+                {{ __('texts.orders.files.order.shipping') }} <i class="bi-download"></i>
             </a>
 
             @if($currentgas->hasFeature('extra_invoicing'))
                 @foreach(App\Receipt::retrieveByAggregateUser($aggregate, $user) as $receipt)
                     <a href="{{ route('receipts.download', $receipt->id) }}" class="list-group-item">
-                        {{ __('generic.invoice') }} <i class="bi-download"></i>
+                        {{ __('texts.generic.invoice') }} <i class="bi-download"></i>
                     </a>
                 @endforeach
             @endif

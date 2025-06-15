@@ -15,7 +15,7 @@
                     <hr>
 
                     <x-larastrap::check name="fast_shipping_enabled" tlabel="supplier.enable_fast_shipping" tpophelp="supplier.help.enable_fast_shipping" />
-                    <x-larastrap::radiolist name="notify_on_close_enabled" tlabel="supplier.send_notification_on_close" tpophelp="supplier.help.send_notification_on_close" :options="['none' => __('generic.no'), 'shipping' => __('orders.files.order.shipping'), 'summary' => __('orders.files.order.summary'), 'shipping_summary' => __('orders.files.order.shipping_and_summary')]" />
+                    <x-larastrap::radiolist name="notify_on_close_enabled" tlabel="supplier.send_notification_on_close" tpophelp="supplier.help.send_notification_on_close" :options="['none' => __('texts.generic.no'), 'shipping' => __('texts.orders.files.order.shipping'), 'summary' => __('texts.orders.files.order.summary'), 'shipping_summary' => __('texts.orders.files.order.shipping_and_summary')]" />
 
                     @if($currentgas->unmanaged_shipping == '1')
                         <x-larastrap::check name="unmanaged_shipping_enabled" tlabel="supplier.enable_no_quantities" tpophelp="supplier.help.enable_no_quantities" />
@@ -23,7 +23,7 @@
 
                     @include('commons.modifications', [
                         'obj' => $supplier,
-                        'suggestion' => __('supplier.help.modifiers_notice')
+                        'suggestion' => __('texts.supplier.help.modifiers_notice')
                     ])
 
                     @include('commons.permissionseditor', ['object' => $supplier, 'master_permission' => 'supplier.modify', 'editable' => true])

@@ -3,7 +3,7 @@
         <div class="col-md-12">
             @if($attachment->internal == false)
                 <x-larastrap::text name="name" tlabel="generic.name" required />
-                <x-larastrap::radios name="type" tlabel="generic.type" :options="['file' => __('generic.file'), 'url' => __('generic.url')]" classes="selective-display" :attributes="['data-target' => '.attachment_type']" />
+                <x-larastrap::radios name="type" tlabel="generic.type" :options="['file' => __('texts.generic.file'), 'url' => __('texts.generic.url')]" classes="selective-display" :attributes="['data-target' => '.attachment_type']" />
 
                 <div class="attachment_type" data-type="file">
                     <x-larastrap::file name="file" tlabel="generic.attachments.replace_file" />
@@ -15,14 +15,14 @@
                 <x-larastrap::text name="name" tlabel="generic.name" disabled readonly />
             @endif
 
-            @include('commons.multipleusers', ['obj' => $attachment, 'name' => 'users', 'label' => __('generic.recipients')])
+            @include('commons.multipleusers', ['obj' => $attachment, 'name' => 'users', 'label' => __('texts.generic.recipients')])
 
             <x-larastrap::field tlabel="generic.attachments.view">
                 @if($attachment->isImage())
                     <img src="{{ $attachment->download_url }}" class="img-fluid mb-2" alt="{{ $attachment->name }}">
                 @endif
 
-                <a class="btn btn-light" href="{{ $attachment->download_url }}">{{ __('generic.click_here') }} <i class="bi-download"></i></a>
+                <a class="btn btn-light" href="{{ $attachment->download_url }}">{{ __('texts.generic.click_here') }} <i class="bi-download"></i></a>
             </x-larastrap::field>
         </div>
     </div>

@@ -1,5 +1,5 @@
 <p>
-    {{ __('orders.notices.closed_orders') }}
+    {{ __('texts.orders.notices.closed_orders') }}
 </p>
 <ul>
     @foreach($orders as $order)
@@ -7,5 +7,5 @@
     @endforeach
 </ul>
 <p>
-    {{ __('orders.notices.email_attachments') }}
+    {{ __('texts.orders.notices.email_attachments') }}
 </p>

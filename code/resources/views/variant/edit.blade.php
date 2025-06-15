@@ -15,12 +15,12 @@
                 'removable_check' => fn($v) => $v->hasBookings(),
                 'columns' => [
                     [
-                        'label' => __('generic.id'),
+                        'label' => __('texts.generic.id'),
                         'field' => 'id',
                         'type' => 'hidden',
                     ],
                     [
-                        'label' => __('generic.value'),
+                        'label' => __('texts.generic.value'),
                         'field' => 'value',
                         'type' => 'text',
                     ],

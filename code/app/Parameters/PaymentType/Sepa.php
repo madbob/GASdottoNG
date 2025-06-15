@@ -17,7 +17,7 @@ class Sepa extends PaymentType
     public function definition()
     {
         return (object) [
-            'name' => __('movements.methods.sepa'),
+            'name' => __('texts.movements.methods.sepa'),
             'identifier' => true,
             'icon' => 'cloud-plus',
             'active_for' => 'App\User',

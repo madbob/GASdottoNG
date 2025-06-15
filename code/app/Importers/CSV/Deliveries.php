@@ -15,20 +15,20 @@ class Deliveries extends CSVImporter
     {
         return [
             'username' => (object) [
-                'label' => __('auth.username'),
+                'label' => __('texts.auth.username'),
                 'mandatory' => true,
             ],
             'first' => (object) [
-                'label' => __('export.importing.deliveries.first_product'),
+                'label' => __('texts.export.importing.deliveries.first_product'),
                 'mandatory' => true,
-                'explain' => __('export.help.importing.deliveries.first_product'),
+                'explain' => __('texts.export.help.importing.deliveries.first_product'),
             ],
         ];
     }
 
     public function extraInformations()
     {
-        return __('export.importing.deliveries.instruction');
+        return __('texts.export.importing.deliveries.instruction');
     }
 
     public function testAccess($request)
@@ -50,7 +50,7 @@ class Deliveries extends CSVImporter
                 'aggregate_id' => $request->input('aggregate_id'),
             ],
             'extra_description' => [
-                __('export.importing.deliveries.notice'),
+                __('texts.export.importing.deliveries.notice'),
             ],
         ]);
     }
@@ -79,7 +79,7 @@ class Deliveries extends CSVImporter
             $name = $header[$i];
 
             foreach ($aggregate->orders as $order) {
-                if ($name == __('orders.totals.total')) {
+                if ($name == __('texts.orders.totals.total')) {
                     continue;
                 }
 
@@ -100,7 +100,7 @@ class Deliveries extends CSVImporter
                     break;
                 }
                 else {
-                    $errors[] = __('export.importing.deliveries.product_error', ['name' => $name]);
+                    $errors[] = __('texts.export.importing.deliveries.product_error', ['name' => $name]);
                 }
             }
         }
@@ -109,7 +109,7 @@ class Deliveries extends CSVImporter
         $data = [];
 
         if (is_null($target_order)) {
-            $errors[] = __('export.importing.deliveries.order_error');
+            $errors[] = __('texts.export.importing.deliveries.order_error');
         }
         else {
             DB::beginTransaction();
@@ -225,7 +225,7 @@ class Deliveries extends CSVImporter
         }
 
         return [
-            'title' => __('export.importing.deliveries.done'),
+            'title' => __('texts.export.importing.deliveries.done'),
             'objects' => $bookings,
             'errors' => $errors,
         ];

@@ -11,13 +11,13 @@ class Attachment extends IconsMap
                 'test' => function ($obj) {
                     return $obj->isImage();
                 },
-                'text' => __('generic.image'),
+                'text' => __('texts.generic.image'),
             ],
             'shield-x' => (object) [
                 'test' => function ($obj) {
                     return $obj->users()->count() != 0;
                 },
-                'text' => __('generic.limited_access'),
+                'text' => __('texts.generic.limited_access'),
             ],
         ];
     }

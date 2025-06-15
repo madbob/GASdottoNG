@@ -3,7 +3,7 @@
         <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
 
         <p>
-            {{ __('orders.help.modifiers_require_redistribution', ['name' => $order->printableName()]) }}
+            {{ __('texts.orders.help.modifiers_require_redistribution', ['name' => $order->printableName()]) }}
         </p>
         <p>
             @php
@@ -14,7 +14,7 @@
             @endphp
 
             @foreach($broken as $b)
-                {{ __('orders.modifiers_redistribution_summary', [
+                {{ __('texts.orders.modifiers_redistribution_summary', [
                     'name' => $b->shipped->name,
                     'defvalue' => printablePriceCurrency($b->pending->amount),
                     'disvalue' => printablePriceCurrency($b->shipped->amount)
@@ -22,20 +22,20 @@
             @endforeach
         </p>
         <p>
-            {{ __('generic.how_to_proceed') }}
+            {{ __('texts.generic.how_to_proceed') }}
         </p>
 
         <p>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="action" value="none" id="action-none" required>
                 <label class="form-check-label" for="action-none">
-                    {{ __('orders.modifiers_redistribution.keep') }}
+                    {{ __('texts.orders.modifiers_redistribution.keep') }}
                 </label>
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="action" value="adjust" id="action-adjust" required>
                 <label class="form-check-label" for="action-adjust">
-                    {{ __('orders.modifiers_redistribution.recalculate') }}
+                    {{ __('texts.orders.modifiers_redistribution.recalculate') }}
                 </label>
             </div>
         </p>

@@ -17,8 +17,8 @@ class MailSupplierSummary extends Config
     public function default()
     {
         return (object) [
-            'subject' => __('mail.supplier.defaults.subject'),
-            'body' => __('mail.supplier.defaults.body'),
+            'subject' => __('texts.mail.supplier.defaults.subject'),
+            'body' => __('texts.mail.supplier.defaults.body'),
         ];
     }
 }

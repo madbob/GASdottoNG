@@ -3,7 +3,7 @@
 $buttons = [
     [
         'color' => 'light',
-        'label' => __('generic.do_duplicate'),
+        'label' => __('texts.generic.do_duplicate'),
         'classes' => ['float-start', 'me-2', 'async-modal'],
         'attributes' => [
             'data-modal-url' => route('products.duplicate', $product->id)
@@ -11,7 +11,7 @@ $buttons = [
     ],
     [
         'color' => 'danger',
-        'label' => __('generic.remove'),
+        'label' => __('texts.generic.remove'),
         'classes' => ['async-modal'],
         'attributes' => [
             'data-modal-url' => route('products.askdelete', $product->id)

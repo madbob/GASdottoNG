@@ -1,7 +1,7 @@
 @php
 
 if (isset($new_label) == false) {
-    $new_label = __('generic.add_new');
+    $new_label = __('texts.generic.add_new');
 }
 
 if (isset($show_columns) == false) {

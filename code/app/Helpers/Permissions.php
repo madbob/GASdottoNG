@@ -4,33 +4,33 @@ function allPermissions()
 {
     $ret = [
         'App\Gas' => [
-            'gas.access' => __('permissions.permissions.maintenance_access'),
-            'gas.permissions' => __('permissions.permissions.alter_permissions'),
-            'gas.config' => __('permissions.permissions.alter_configs'),
-            'supplier.add' => __('permissions.permissions.create_suppliers'),
-            'supplier.book' => __('permissions.permissions.do_booking'),
-            'supplier.view' => __('permissions.permissions.view_suppliers'),
-            'order.view' => __('permissions.permissions.view_orders'),
-            'users.self' => __('permissions.permissions.alter_self'),
-            'users.selfdestroy' => __('permissions.permissions.delete_account'),
-            'users.admin' => __('permissions.permissions.admin_users'),
-            'users.view' => __('permissions.permissions.view_users'),
-            'users.subusers' => __('permissions.permissions.sub_users'),
-            'users.movements' => __('permissions.permissions.admin_user_movements'),
-            'movements.admin' => __('permissions.permissions.admin_movements'),
-            'movements.view' => __('permissions.permissions.view_movements'),
-            'movements.types' => __('permissions.permissions.admin_movements_types'),
-            'categories.admin' => __('permissions.permissions.admin_categories'),
-            'measures.admin' => __('permissions.permissions.admin_measures'),
-            'gas.statistics' => __('permissions.permissions.view_statistics'),
-            'notifications.admin' => __('permissions.permissions.admin_notifications'),
+            'gas.access' => __('texts.permissions.permissions.maintenance_access'),
+            'gas.permissions' => __('texts.permissions.permissions.alter_permissions'),
+            'gas.config' => __('texts.permissions.permissions.alter_configs'),
+            'supplier.add' => __('texts.permissions.permissions.create_suppliers'),
+            'supplier.book' => __('texts.permissions.permissions.do_booking'),
+            'supplier.view' => __('texts.permissions.permissions.view_suppliers'),
+            'order.view' => __('texts.permissions.permissions.view_orders'),
+            'users.self' => __('texts.permissions.permissions.alter_self'),
+            'users.selfdestroy' => __('texts.permissions.permissions.delete_account'),
+            'users.admin' => __('texts.permissions.permissions.admin_users'),
+            'users.view' => __('texts.permissions.permissions.view_users'),
+            'users.subusers' => __('texts.permissions.permissions.sub_users'),
+            'users.movements' => __('texts.permissions.permissions.admin_user_movements'),
+            'movements.admin' => __('texts.permissions.permissions.admin_movements'),
+            'movements.view' => __('texts.permissions.permissions.view_movements'),
+            'movements.types' => __('texts.permissions.permissions.admin_movements_types'),
+            'categories.admin' => __('texts.permissions.permissions.admin_categories'),
+            'measures.admin' => __('texts.permissions.permissions.admin_measures'),
+            'gas.statistics' => __('texts.permissions.permissions.view_statistics'),
+            'notifications.admin' => __('texts.permissions.permissions.admin_notifications'),
         ],
         'App\Supplier' => [
-            'supplier.modify' => __('permissions.permissions.alter_suppliers'),
-            'supplier.orders' => __('permissions.permissions.open_orders'),
-            'supplier.shippings' => __('permissions.permissions.do_deliveries'),
-            'supplier.invoices' => __('permissions.permissions.admin_invoices'),
-            'supplier.movements' => __('permissions.permissions.admin_supplier_movements'),
+            'supplier.modify' => __('texts.permissions.permissions.alter_suppliers'),
+            'supplier.orders' => __('texts.permissions.permissions.open_orders'),
+            'supplier.shippings' => __('texts.permissions.permissions.do_deliveries'),
+            'supplier.invoices' => __('texts.permissions.permissions.admin_invoices'),
+            'supplier.movements' => __('texts.permissions.permissions.admin_supplier_movements'),
         ],
     ];
 
@@ -48,7 +48,7 @@ function allPermissions()
             $gas = $gas->fresh();
 
             if ($gas->multigas) {
-                $ret['App\Gas']['gas.multi'] = __('permissions.permissions.admin_multigas');
+                $ret['App\Gas']['gas.multi'] = __('texts.permissions.permissions.admin_multigas');
             }
         }
     }

@@ -3,7 +3,7 @@
 <x-larastrap::mform :obj="$order" nosave nodelete>
     <div class="row">
         <div class="col-md-4">
-            @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => __('orders.supplier')])
+            @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => __('texts.orders.supplier')])
             <x-larastrap::datepicker name="start" tlabel="orders.dates.start" readonly disabled />
             <x-larastrap::datepicker name="end" tlabel="orders.dates.end" readonly disabled />
             <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" readonly disabled />
@@ -17,7 +17,7 @@
                 @include('commons.movementfield', [
                     'obj' => $order->payment,
                     'name' => 'payment_id',
-                    'label' => __('generic.payment'),
+                    'label' => __('texts.generic.payment'),
                     'default' => \App\Movement::generate('order-payment', $currentgas, $order, $summary->price_delivered),
                     'to_modal' => [
                         'amount_editable' => true

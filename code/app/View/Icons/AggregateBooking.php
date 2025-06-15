@@ -24,7 +24,7 @@ class AggregateBooking extends IconsMap
             $groups = Group::orderBy('name', 'asc')->where('context', 'booking')->get();
             if ($groups->isEmpty() === false) {
                 static::$bookinggroups['truck'] = (object) [
-                    'text' => __('orders.booking_aggregation'),
+                    'text' => __('texts.orders.booking_aggregation'),
                     'assign' => function ($obj) {
                         $ret = [];
 
@@ -42,7 +42,7 @@ class AggregateBooking extends IconsMap
                     'options' => function ($objs) use ($groups) {
                         $ret = [];
 
-                        $ret['hidden-truck-none'] = __('user.without_aggregation');
+                        $ret['hidden-truck-none'] = __('texts.user.without_aggregation');
 
                         foreach ($groups as $group) {
                             foreach ($group->circles()->orderBy('name', 'asc')->get() as $circle) {

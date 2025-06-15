@@ -27,27 +27,27 @@ foreach(App\Currency::enabled() as $curr) {
 
 @if($movements->count() == 0)
     <x-larastrap::suggestion>
-        {{ __('generic.empty_list') }}
+        {{ __('texts.generic.empty_list') }}
     </x-larastrap::suggestion>
 @else
     <div class="table-responsive">
         <table class="table" data-classes="table table-no-bordered">
             <thead>
                 <tr>
-                    <th scope="col">{{ __('movements.registration_date') }}</th>
-                    <th scope="col">{{ __('movements.execution_date') }}</th>
-                    <th scope="col">{{ __('generic.type') }}</th>
-                    <th scope="col">{{ __('generic.payment') }}</th>
+                    <th scope="col">{{ __('texts.movements.registration_date') }}</th>
+                    <th scope="col">{{ __('texts.movements.execution_date') }}</th>
+                    <th scope="col">{{ __('texts.generic.type') }}</th>
+                    <th scope="col">{{ __('texts.generic.payment') }}</th>
                     @if($exclude_sender == false)
-                        <th scope="col">{{ __('movements.paying') }}</th>
+                        <th scope="col">{{ __('texts.movements.paying') }}</th>
                     @endif
                     @if($exclude_target == false)
-                        <th scope="col">{{ __('movements.payed') }}</th>
+                        <th scope="col">{{ __('texts.movements.payed') }}</th>
                     @endif
-                    <th scope="col">{{ __('generic.value') }}</th>
-                    <th scope="col">{{ __('generic.notes') }}</th>
+                    <th scope="col">{{ __('texts.generic.value') }}</th>
+                    <th scope="col">{{ __('texts.generic.notes') }}</th>
                     @if(Gate::check('movements.admin', $currentgas))
-                        <th scope="col">{{ __('generic.change') }}</th>
+                        <th scope="col">{{ __('texts.generic.change') }}</th>
                     @endif
                 </tr>
             </thead>

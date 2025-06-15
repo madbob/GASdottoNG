@@ -57,7 +57,7 @@
 
 						<tr>
 				            <td colspan="6">
-				                <a href="#" class="btn btn-warning add-row">{{ __('generic.add_new') }}</a>
+				                <a href="#" class="btn btn-warning add-row">{{ __('texts.generic.add_new') }}</a>
 				            </td>
 				        </tr>
                     </tbody>

@@ -17,8 +17,8 @@ class MailReceipt extends Config
     public function default()
     {
         return (object) [
-            'subject' => __('mail.receipt.defaults.subject'),
-            'body' => __('mail.receipt.defaults.body'),
+            'subject' => __('texts.mail.receipt.defaults.subject'),
+            'body' => __('texts.mail.receipt.defaults.body'),
         ];
     }
 }

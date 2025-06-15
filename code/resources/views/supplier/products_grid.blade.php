@@ -21,7 +21,7 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
     <div class="row d-none d-md-flex mb-1">
         <div class="col flowbox">
             <div class="form-group mainflow d-none d-xl-block">
-                <input type="text" class="form-control table-text-filter" data-table-target="#{{ $identifier }}"  placeholder="{{ __('generic.do_filter') }}">
+                <input type="text" class="form-control table-text-filter" data-table-target="#{{ $identifier }}"  placeholder="{{ __('texts.generic.do_filter') }}">
             </div>
 
             @include('commons.columns', [
@@ -76,11 +76,11 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                 </th>
 
                                 <th scope="col" class="order-cell-category {{ in_array('category', $columns) ? '' : 'hidden' }}">
-                                    <x-larastrap::select-model classes="skip-on-submit" name="category_id_all" :options="$categories" :extra_options="[0 => __('generic.do_not_modify')]" squeeze />
+                                    <x-larastrap::select-model classes="skip-on-submit" name="category_id_all" :options="$categories" :extra_options="[0 => __('texts.generic.do_not_modify')]" squeeze />
                                 </th>
 
                                 <th scope="col" class="order-cell-measure {{ in_array('measure', $columns) ? '' : 'hidden' }}">
-                                    <x-larastrap::select-model classes="skip-on-submit" name="measure_id_all" :options="$measures" :extra_options="[0 => __('generic.do_not_modify')]" squeeze />
+                                    <x-larastrap::select-model classes="skip-on-submit" name="measure_id_all" :options="$measures" :extra_options="[0 => __('texts.generic.do_not_modify')]" squeeze />
                                 </th>
 
                                 <th scope="col" class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">

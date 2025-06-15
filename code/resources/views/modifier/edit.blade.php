@@ -15,14 +15,14 @@
                 @php
 
                 $types = [
-                    'none' => __('generic.none'),
+                    'none' => __('texts.generic.none'),
                 ];
 
                 $booking_payment_type = movementTypes('booking-payment');
 
                 foreach (movementTypes() as $info) {
                     if ($info->overlapsPaymentMethods($booking_payment_type) == false) {
-                        $movement_type_alert = __('movements.help.missing_movements_for_modifiers', ['methods' => join(', ', paymentsByType('booking-payment'))]);
+                        $movement_type_alert = __('texts.movements.help.missing_movements_for_modifiers', ['methods' => join(', ', paymentsByType('booking-payment'))]);
                     }
                     else if ($info->visibility) {
                         $types[$info->id] = $info->name;
@@ -37,24 +37,24 @@
 
                 if ($modifier->target_type == 'App\Product') {
                     $values = [
-                        'absolute' => __('generic.absolute'),
-                        'percentage' => __('generic.percentage'),
-						'mass' => __('generic.by_weight'),
-                        'price' => (object) ['label' => __('products.prices.unit'), 'disabled' => $modifier->applies_type == 'none'],
+                        'absolute' => __('texts.generic.absolute'),
+                        'percentage' => __('texts.generic.percentage'),
+						'mass' => __('texts.generic.by_weight'),
+                        'price' => (object) ['label' => __('texts.products.prices.unit'), 'disabled' => $modifier->applies_type == 'none'],
                     ];
 
                     $applies_types = [
-                        'none' => __('movements.modifier_no_theshold'),
-                        'quantity' => __('generic.quantity'),
-                        'price' => __('generic.value'),
-                        'order_price' => __('movements.order_value'),
-                        'weight' => __('generic.weight'),
+                        'none' => __('texts.movements.modifier_no_theshold'),
+                        'quantity' => __('texts.generic.quantity'),
+                        'price' => __('texts.generic.value'),
+                        'order_price' => __('texts.movements.order_value'),
+                        'weight' => __('texts.generic.weight'),
                     ];
 
                     $applies_targets = [
-                        'product' => __('products.name'),
-                        'booking' => __('movements.apply_to_booking'),
-                        'order' => __('movements.apply_to_order'),
+                        'product' => __('texts.products.name'),
+                        'booking' => __('texts.movements.apply_to_booking'),
+                        'order' => __('texts.movements.apply_to_order'),
                     ];
 
                     if ($modifier->applies_type == 'none') {
@@ -63,20 +63,20 @@
                 }
                 else {
                     $values = [
-                        'absolute' => __('generic.absolute'),
-                        'percentage' => __('generic.percentage'),
-						'mass' => __('generic.by_weight'),
+                        'absolute' => __('texts.generic.absolute'),
+                        'percentage' => __('texts.generic.percentage'),
+						'mass' => __('texts.generic.by_weight'),
                     ];
 
                     $applies_types = [
-                        'none' => __('movements.modifier_no_theshold'),
-                        'price' => __('generic.value'),
-                        'weight' => __('generic.weight'),
+                        'none' => __('texts.movements.modifier_no_theshold'),
+                        'price' => __('texts.generic.value'),
+                        'weight' => __('texts.generic.weight'),
                     ];
 
                     $applies_targets = [
-                        'booking' => __('movements.apply_to_booking'),
-                        'order' => __('movements.apply_to_order'),
+                        'booking' => __('texts.movements.apply_to_booking'),
+                        'order' => __('texts.movements.apply_to_order'),
                     ];
 
                     if ($modifier->applies_target == 'order' && $modifier->distribution_type == 'none') {
@@ -94,10 +94,10 @@
 
                 <div class="arithmetic_type_selection {{ $modifier->value == 'price' ? 'd-none' : '' }}">
                     <x-larastrap::radios name="arithmetic" tlabel="generic.operation" :options="[
-						'sum' => __('generic.sum'),
-						'sub' => __('generic.sub'),
-						'passive' => __('generic.passive'),
-						'apply' => (object) ['label' => __('generic.apply'), 'hidden' => true
+						'sum' => __('texts.generic.sum'),
+						'sub' => __('texts.generic.sub'),
+						'passive' => __('texts.generic.passive'),
+						'apply' => (object) ['label' => __('texts.generic.apply'), 'hidden' => true
 					]]" />
                 </div>
 
@@ -110,13 +110,13 @@
                         @include('modifier.modtarget')
                     @endif
 
-                    <x-larastrap::radios name="scale" tlabel="generic.difference" :options="['minor' => __('generic.minor_than'), 'major' => __('generic.major_than')]" />
+                    <x-larastrap::radios name="scale" tlabel="generic.difference" :options="['minor' => __('texts.generic.minor_than'), 'major' => __('texts.generic.major_than')]" />
 
                     <hr>
 
                     @include('commons.manyrows', [
                         'contents' => $modifier->definitions,
-                        'new_label' => __('generic.add_new'),
+                        'new_label' => __('texts.generic.add_new'),
                         'columns' => [
                             [
                                 'label' => '',
@@ -129,7 +129,7 @@
                                 ],
                             ],
                             [
-                                'label' => __('generic.theshold'),
+                                'label' => __('texts.generic.theshold'),
                                 'field' => 'threshold',
                                 'type' => 'number',
                                 'extra' => [
@@ -147,7 +147,7 @@
                                 ],
                             ],
                             [
-                                'label' => __('generic.cost'),
+                                'label' => __('texts.generic.cost'),
                                 'field' => 'amount',
                                 'type' => 'number',
                                 'extra' => [

@@ -79,14 +79,14 @@ foreach($data->contents as $d) {
 
     <body>
         @if(isset($order))
-            <h3>{{ __('orders.documents.shipping.heading', [
+            <h3>{{ __('texts.orders.documents.shipping.heading', [
                 'identifier' => $order->internal_number,
                 'supplier' => $order->supplier->printableName(),
                 'date' => $order->shipping ? date('d/m/Y', strtotime($order->shipping)) : date('d/m/Y')
             ]) }}</h3>
         @else
             <h3>
-                {{ __('orders.documents.shipping.short_heading', ['date' => $aggregate->shipping ? date('d/m/Y', strtotime($aggregate->shipping)) : date('d/m/Y')]) }}<br/>
+                {{ __('texts.orders.documents.shipping.short_heading', ['date' => $aggregate->shipping ? date('d/m/Y', strtotime($aggregate->shipping)) : date('d/m/Y')]) }}<br/>
                 @if($aggregate->orders()->count() <= aggregatesConvenienceLimit())
                     @foreach($aggregate->orders as $order)
                         {{ $order->supplier->name }} {{ $order->internal_number }}<br/>
@@ -186,7 +186,7 @@ foreach($data->contents as $d) {
                 <div class="extended"><strong>{{ $bm_key }}: {{ printablePriceCurrency($bm_value, ',') }}</strong></div>
             @endforeach
 
-            <div class="extended"><strong>{{ __('orders.totals.total') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></div>
+            <div class="extended"><strong>{{ __('texts.orders.totals.total') }}: {{ printablePriceCurrency($booking_total, ',') }}</strong></div>
 
             @if($preferred_style == 'breakup')
                         </td>
@@ -201,6 +201,6 @@ foreach($data->contents as $d) {
             <div class="extended"><strong>{{ $fm_key }}: {{ printablePriceCurrency($fm_value, ',') }}</strong></div>
         @endforeach
 
-        <div class="extended"><strong>{{ __('orders.totals.total') }}: {{ printablePriceCurrency($total, ',') }}</strong></div>
+        <div class="extended"><strong>{{ __('texts.orders.totals.total') }}: {{ printablePriceCurrency($total, ',') }}</strong></div>
     </body>
 </html>

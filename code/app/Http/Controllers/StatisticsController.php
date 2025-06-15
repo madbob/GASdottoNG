@@ -280,9 +280,9 @@ class StatisticsController extends Controller
         if ($id == 'summary') {
             [$data, $categories] = $this->getSummary($start, $end, $type, $target);
             $csv_headers = [
-                __('orders.supplier'),
-                __('generic.stats.involved_orders'),
-                __('generic.stats.involved_users'),
+                __('texts.orders.supplier'),
+                __('texts.generic.stats.involved_orders'),
+                __('texts.generic.stats.involved_users'),
             ];
         }
         else {
@@ -290,9 +290,9 @@ class StatisticsController extends Controller
             [$data, $categories] = $this->getSupplier($start, $end, $type, $target, $supplier);
 
             $csv_headers = [
-                __('products.name'),
-                __('generic.stats.involved_orders'),
-                __('generic.stats.involved_users'),
+                __('texts.products.name'),
+                __('texts.generic.stats.involved_orders'),
+                __('texts.generic.stats.involved_users'),
             ];
         }
 
@@ -307,7 +307,7 @@ class StatisticsController extends Controller
         else {
             $data = $this->formatCSV($data);
 
-            $filename = sprintf('%s %s.csv', __('generic.menu.stats'), date('Y-m-d'));
+            $filename = sprintf('%s %s.csv', __('texts.generic.menu.stats'), date('Y-m-d'));
             return output_csv($filename, $csv_headers, $data, null);
         }
     }

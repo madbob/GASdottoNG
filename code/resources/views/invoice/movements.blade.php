@@ -27,7 +27,7 @@
                     'contents' => $movements,
                     'columns' => [
                         [
-                            'label' => __('generic.type'),
+                            'label' => __('texts.generic.type'),
                             'field' => 'type',
                             'type' => 'select',
                             'width' => 3,
@@ -36,7 +36,7 @@
                             ]
                         ],
                         [
-                            'label' => __('generic.method'),
+                            'label' => __('texts.generic.method'),
                             'field' => 'method',
                             'type' => 'select',
                             'width' => 2,
@@ -45,7 +45,7 @@
                             ]
                         ],
                         [
-                            'label' => __('generic.value'),
+                            'label' => __('texts.generic.value'),
                             'field' => 'amount',
                             'type' => 'price',
                             'width' => 2,
@@ -54,7 +54,7 @@
                             ]
                         ],
                         [
-                            'label' => __('generic.notes'),
+                            'label' => __('texts.generic.notes'),
                             'field' => 'notes',
                             'type' => 'text',
                             'width' => 4,

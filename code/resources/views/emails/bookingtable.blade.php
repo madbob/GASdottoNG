@@ -1,8 +1,8 @@
 <table style="width:100%" border="1" cellpadding="5px">
 	<thead>
-		<th scope="col" style="width:50%; text-align: left">{{ __('products.name') }}</th>
-		<th scope="col" style="width:25%; text-align: left">{{ __('generic.quantity') }}</th>
-		<th scope="col" style="width:25%; text-align: left">{{ __('generic.price') }}</th>
+		<th scope="col" style="width:50%; text-align: left">{{ __('texts.products.name') }}</th>
+		<th scope="col" style="width:25%; text-align: left">{{ __('texts.generic.quantity') }}</th>
+		<th scope="col" style="width:25%; text-align: left">{{ __('texts.generic.price') }}</th>
 	</thead>
 
 	<tbody>
@@ -68,7 +68,7 @@
 		@endforeach
 
 		<tr>
-			<td><strong>{{ __('orders.totals.total') }}</strong></td>
+			<td><strong>{{ __('texts.orders.totals.total') }}</strong></td>
 			<td>&nbsp;</td>
 			<td>{{ printablePriceCurrency($tot) }}</td>
 		</tr>

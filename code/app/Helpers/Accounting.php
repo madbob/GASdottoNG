@@ -111,7 +111,7 @@ function paymentsSimple()
     $payments = paymentTypes();
 
     $ret = [
-        'none' => __('generic.unspecified'),
+        'none' => __('texts.generic.unspecified'),
     ];
 
     foreach ($payments as $identifier => $meta) {
