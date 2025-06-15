@@ -45,7 +45,7 @@ class VatRateServiceTest extends TestCase
         $request = LarastrapStack::autoreadRender('commons.addingbutton', [
             'template' => 'vatrates.base-edit',
             'typename' => 'vatrate',
-            'typename_readable' => _i('Aliquota IVA'),
+            'typename_readable' => __('texts.products.vat_rate'),
             'targeturl' => 'vatrates',
             'autoread' => true,
         ]);

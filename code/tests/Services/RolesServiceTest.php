@@ -37,7 +37,7 @@ class RolesServiceTest extends TestCase
         $request = LarastrapStack::autoreadRender('commons.addingbutton', [
             'template' => 'permissions.base-edit',
             'typename' => 'role',
-            'typename_readable' => _i('Ruolo'),
+            'typename_readable' => __('texts.permissions.role'),
             'targeturl' => 'roles',
             'autoread' => true,
         ]);

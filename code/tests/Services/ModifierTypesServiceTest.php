@@ -36,7 +36,7 @@ class ModifierTypesServiceTest extends TestCase
         $request = LarastrapStack::autoreadRender('commons.addingbutton', [
             'template' => 'modifiertype.base-edit',
             'typename' => 'modtype',
-            'typename_readable' => _i('Modificatore'),
+            'typename_readable' => __('texts.modifiers.name'),
             'targeturl' => 'modtypes',
             'autoread' => true,
         ]);
