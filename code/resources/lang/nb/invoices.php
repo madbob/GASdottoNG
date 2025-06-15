@@ -1,10 +1,30 @@
 <?php
 
 return array (
+  'waiting' => '',
+  'statuses' => 
+  array (
+    'to_verify' => '',
+    'verified' => '',
+    'payed' => '',
+  ),
+  'default_note' => '',
+  'documents' => 
+  array (
+    'invoice' => 
+    array (
+      'heading' => '',
+    ),
+    'receipts' => 
+    array (
+      'list_filename' => '',
+    ),
+  ),
   'balances' => 
   array (
     'supplier' => '',
   ),
+  'forwarded' => '',
   'orders' => 'Bestilling',
   'help' => 
   array (

@@ -748,13 +748,13 @@ class Booking extends Model
     public function balanceFields()
     {
         return [
-            'bank' => _i('Saldo'),
+            'bank' => __('movements.balance'),
         ];
     }
 
     public static function commonClassName()
     {
-        return 'Prenotazione';
+        return __('aggregations.by_booking');
     }
 
     /************************************************************** InCircles */

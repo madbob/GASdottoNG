@@ -12,7 +12,7 @@ class DonationFromGas extends GasExpense
     public function initNew($type)
     {
         $type = parent::initNew($type);
-        $type->name = _i('Donazione dal GAS');
+        $type->name = __('movements.defaults.donation_from');
 
         return $type;
     }

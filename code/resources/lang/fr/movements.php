@@ -8,12 +8,70 @@ return array (
   'current_balance_amount' => 'Solde actuel : :amount',
   'balance' => 'Solde',
   'current_credit' => 'Crédit actuel',
+  'bank_account' => 'Compte courant',
+  'cash_account' => 'Liquide',
+  'deposits' => 'Caution',
+  'documents' => 
+  array (
+    'movements' => 
+    array (
+      'filename' => 'Exporter les transactions GAS :date.:format',
+    ),
+    'users' => 
+    array (
+      'filename' => 'Soldes sur :date.csv',
+      'integralces_filename' => '',
+    ),
+    'sepa' => 
+    array (
+      'filename' => 'SEPA de :date.xml',
+    ),
+    'suppliers' => 
+    array (
+      'filename' => 'Soldes des fournisseurs au %s.csv',
+      'integralces_filename' => '',
+    ),
+    'balances' => 
+    array (
+      'filename' => 'Historique du solde :date.csv',
+    ),
+  ),
   'registration_date' => 'Date d\'inscription',
   'execution_date' => 'Date de la transaction',
   'paying' => 'Payant',
   'payed' => 'Payé',
+  'delete_confirmation' => '',
+  'formatted_residual_credit' => 'Crédit restant :currency',
+  'formatted_balance' => 'Solde %s',
   'currency' => 'Monnaie',
   'credit' => 'Crédit',
+  'defaults' => 
+  array (
+    'fee' => 'Paiement de la cotisation annuelle par un membre',
+    'booking' => 'Paiement de la réservation par un membre',
+    'booking_adjust' => 'Ajustement du paiement de la réservation par un membre',
+    'deposit' => 'Dépôt du membre GAS',
+    'deposit_return' => 'Restitution du dépôt du membre de GAS',
+    'donation_from' => 'Donation de GAS',
+    'donation' => 'Donation au GAS',
+    'expense' => 'Achat/dépense de GAS',
+    'put' => 'Transfert vers le compte',
+    'invoice' => 'Paiement de la facture au fournisseur',
+    'order' => 'Paiement de la commande au fournisseur',
+    'rounding' => 'Arrondissement du fournisseur/escompte',
+    'credit' => 'Dépôt de crédit par un associé',
+    'decredit' => 'Retour de crédit pour un membre',
+    'refund' => 'Remboursement des dépenses des membres',
+  ),
+  'methods' => 
+  array (
+    'bank' => 'Virement bancaire',
+    'cash' => 'Liquide',
+    'credit' => 'Crédit de l\'utilisateur',
+    'sepa' => 'SEPA',
+  ),
+  'formatted_revenues' => '',
+  'formatted_expenses' => '',
   'suppliers_status' => 'Solde fournisseur',
   'causal' => 'Motif',
   'generic_causal' => 'Transfert vers le compte',

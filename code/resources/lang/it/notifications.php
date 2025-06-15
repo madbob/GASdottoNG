@@ -14,6 +14,15 @@ return array (
     'suspend' => 'Se un ordine automatico viene sospeso, le prossime aperture verranno ignorate. Usa questa opzione per gestire i periodi di inattività del GAS, ad esempio durante le festività.',
     'arbitrary_dates' => 'Da qui è possibile aggiungere date arbitrarie al calendario delle consegne, anche per ordini non ancora esistenti. Questa funzione è consigliata per facilitare il coordinamento di diversi referenti all\'interno del GAS e pianificare le attività a lungo termine.',
   ),
+  'cycle' => 
+  array (
+    'two_weeks' => 'Ogni due Settimane',
+    'first_of_month' => 'Primo del Mese',
+    'second_of_month' => 'Secondo del Mese',
+    'third_of_month' => 'Terzo del Mese',
+    'fourth_of_month' => 'Quarto del Mese',
+    'last_of_month' => 'Ultimo del Mese',
+  ),
   'name' => 'Notifica',
   'notices' => 
   array (

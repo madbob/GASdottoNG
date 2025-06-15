@@ -16,7 +16,7 @@ trait UserGroups
             $groups = Group::orderBy('name', 'asc')->where('context', 'user')->get();
             if ($groups->isEmpty() === false) {
                 static::$selectiveUserIcons['people'] = (object) [
-                    'text' => _i('Aggregazione Utente'),
+                    'text' => __('user.aggregation'),
                     'assign' => function ($obj) {
                         $ret = [];
 
@@ -34,7 +34,7 @@ trait UserGroups
                     'options' => function ($objs) use ($groups) {
                         $ret = [];
 
-                        $ret['hidden-people-none'] = _i('Senza Aggregazioni');
+                        $ret['hidden-people-none'] = __('user.without_aggregation');
 
                         foreach ($groups as $group) {
                             foreach ($group->circles()->orderBy('name', 'asc')->get() as $circle) {

@@ -47,7 +47,7 @@ class Order extends Formatter
     private static function formatBoxes()
     {
         return (object) [
-            'name' => _i('Numero Confezioni'),
+            'name' => __('orders.boxes'),
             'format_product' => function ($product, $summary, $alternate = false) {
                 if ($product->package_size != 0) {
                     if ($alternate === false) {
@@ -88,7 +88,7 @@ class Order extends Formatter
     private static function formatPrice()
     {
         return (object) [
-            'name' => _i('Prezzo'),
+            'name' => __('generic.price'),
             'checked' => true,
             'format_product' => function ($product, $summary, $alternate = false) {
                 if ($alternate === false) {
@@ -105,7 +105,7 @@ class Order extends Formatter
     {
         $ret = [
             'name' => (object) [
-                'name' => _i('Nome Prodotto'),
+                'name' => __('user.firstname'),
                 'checked' => true,
                 'format_product' => function ($product, $summary) {
                     return $product->printableName();
@@ -148,7 +148,7 @@ class Order extends Formatter
             'price' => self::formatPrice(),
 
             'time' => (object) [
-                'name' => _i('Data/Ora Prenotazione'),
+                'name' => __('orders.booking_date_time'),
                 'checked' => false,
                 'format_product' => function ($product, $summary) {
                     return $summary->booked->created_at->format('d/m/Y H:i');
@@ -161,7 +161,7 @@ class Order extends Formatter
 
         if ($type == 'summary') {
             $ret['notes'] = (object) [
-                'name' => _i('Note Prodotto'),
+                'name' => __('generic.notes'),
                 'format_product' => function ($product, $summary) {
                     return $product->pivot->notes;
                 },

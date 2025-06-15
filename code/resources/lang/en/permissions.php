@@ -30,7 +30,18 @@ return array (
     'admin_supplier_movements' => 'Administer suppliers\' accounting movements',
     'admin_multigas' => 'Administer groups hosted on this instance',
   ),
+  'roles' => 
+  array (
+    'admin' => 'Administrator',
+    'secondary_admin' => 'Secondary GAS Administrator',
+  ),
   'name' => 'Permissions',
+  'supplier' => 
+  array (
+    'change' => 'You could change suppliers',
+    'orders' => 'You could open new orders for the supplier',
+    'deliveries' => 'Handle deliveries for the supplier',
+  ),
   'role' => 'Role',
   'help' => 
   array (

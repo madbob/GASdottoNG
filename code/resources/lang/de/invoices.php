@@ -1,10 +1,30 @@
 <?php
 
 return array (
+  'waiting' => 'In der Warteschleife',
+  'statuses' => 
+  array (
+    'to_verify' => 'Zu verifizieren',
+    'verified' => 'Kontrolle',
+    'payed' => 'Bezahlt',
+  ),
+  'default_note' => 'Zahlung der Rechnung :name',
+  'documents' => 
+  array (
+    'invoice' => 
+    array (
+      'heading' => 'Rechnung :identifier',
+    ),
+    'receipts' => 
+    array (
+      'list_filename' => '',
+    ),
+  ),
   'balances' => 
   array (
     'supplier' => 'Betrag Lieferant',
   ),
+  'forwarded' => 'Eingereicht',
   'orders' => 'beinhaltete Bestellungen',
   'help' => 
   array (

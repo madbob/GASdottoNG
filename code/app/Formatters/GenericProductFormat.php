@@ -13,7 +13,7 @@ trait GenericProductFormat
     protected static function genericColumns()
     {
         $attributes = [
-            'name' => _i('Nome'),
+            'name' => __('user.firstname'),
             'supplier_code' => __('products.code'),
             'measure' => __('generic.measure'),
             'category' => __('generic.category'),

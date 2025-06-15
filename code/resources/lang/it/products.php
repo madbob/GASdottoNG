@@ -4,6 +4,8 @@ return array (
   'prices' => 
   array (
     'unit' => 'Prezzo Unitario',
+    'unit_no_vat' => 'Prezzo Unitario (senza IVA)',
+    'package' => 'Prezzo Confezione',
   ),
   'name' => 'Prodotto',
   'code' => 'Codice Fornitore',
@@ -14,10 +16,12 @@ return array (
   'min_quantity' => 'Minimo',
   'max_quantity' => 'Massimo Consigliato',
   'available' => 'Disponibile',
-  'list' => 'Prodotti',
-  'sorting' => 'Ordinamento',
   'help' => 
   array (
+    'unit_no_vat' => 'Da usare in combinazione con Aliquota IVA',
+    'package_price' => 'Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / Dimensione Confezione',
+    'importing_categories_and_measures' => 'Le categorie e le unità di misura il cui nome non sarà trovato tra quelle esistenti saranno create.',
+    'imported_notice' => 'Prodotti importati',
     'available_explain' => 'Quantità massima di prodotto che complessivamente può essere prenotata in un ordine',
     'bookable' => 'Indica se il prodotto potrà essere ordinato o meno all\'interno dei nuovi ordini per il fornitore',
     'pending_orders_change_price' => 'Ci sono ordini non ancora consegnati e archiviati in cui appare il prodotto di cui ha appena modificato il prezzo. Seleziona quelli in cui vuoi che venga applicato il nuovo prezzo (del prodotto e/o le differenze prezzi delle eventuali varianti).',
@@ -37,6 +41,9 @@ return array (
     'vat_rate' => 'Le aliquote esistenti possono essere configurate nel pannello Configurazioni',
     'notice_removing_product_in_orders' => 'Il prodotto è attualmente incluso in ordini non ancora consegnati. Cosa vuoi fare?',
   ),
+  'weight_with_measure' => 'Peso (in KG)',
+  'list' => 'Prodotti',
+  'sorting' => 'Ordinamento',
   'variant' => 
   array (
     'matrix' => 'Modifica Matrice Varianti',

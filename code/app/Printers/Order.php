@@ -56,7 +56,12 @@ class Order extends Printer
 
         $data = $this->formatShipping($obj, $fields, $status, $isolate_friends, $circles, $extra_modifiers);
 
-        $title = _i('Dettaglio Consegne ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
+        $title = __('orders.documents.shipping.heading', [
+            'identifier' => $obj->internal_number,
+            'supplier' => $obj->supplier->name,
+            'date' => $obj->shipping ? date('d/m/Y', strtotime($obj->shipping)) : date('d/m/Y'),
+        ]);
+
         $filename = sanitizeFilename($title . '.' . $subtype);
         $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
 
@@ -134,7 +139,11 @@ class Order extends Printer
         $subtype = $request['format'] ?? 'pdf';
         $extra_modifiers = $request['extra_modifiers'] ?? 0;
 
-        $title = _i('Prodotti ordine %s presso %s', [$obj->internal_number, $obj->supplier->name]);
+        $title = __('orders.documents.summary.heading', [
+            'identifier' => $obj->internal_number,
+            'supplier' => $obj->supplier->name,
+        ]);
+
         $filename = sanitizeFilename($title . '.' . $subtype);
         $temp_file_path = sprintf('%s/%s', gas_storage_path('temp', true), $filename);
 
@@ -170,10 +179,9 @@ class Order extends Printer
 
             $document = new Document($subtype);
 
-            $document_title = _i('Prodotti ordine %s presso %s del %s', [
-                $obj->internal_number,
-                $obj->supplier->printableName(),
-                $obj->shipping ? $obj->shipping->format('d/m/Y') : date('d/m/Y'),
+            $document_title = __('orders.documents.summary.heading', [
+                'identifier' => $obj->internal_number,
+                'supplier' => $obj->supplier->printableName(),
             ]);
 
             $document->append(new Title($document_title));
@@ -265,7 +273,10 @@ class Order extends Printer
             Genero documento
         */
 
-        $filename = sanitizeFilename(_i('Tabella Ordine %s presso %s.csv', [$obj->internal_number, $obj->supplier->name]));
+        $filename = sanitizeFilename(__('orders.documents.table.filename', [
+            'identifier' => $obj->internal_number,
+            'supplier' => $obj->supplier->name,
+        ]));
 
         if ($action == 'email') {
             $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);

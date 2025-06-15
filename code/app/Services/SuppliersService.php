@@ -151,7 +151,7 @@ class SuppliersService extends BaseService
         */
         $fields = $request['fields'] ?? ['name', 'measure', 'price', 'active'];
         $headers = ProductFormatter::getHeaders($fields);
-        $filename = sanitizeFilename(_i('Listino %s.%s', [$supplier->name, $format]));
+        $filename = sanitizeFilename(__('export.products_list_filename', ['supplier' => $supplier->name, 'format' => $format]));
 
         $products = $supplier->products()->sorted()->get();
         $data = ProductFormatter::formatArray($products, $fields);

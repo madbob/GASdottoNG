@@ -318,17 +318,17 @@ class UsersService extends BaseService
         $this->ensureAuth(['users.admin' => 'gas']);
 
         if ($parent_id == $user_id) {
-            throw new IllegalArgumentException(_i('Un utente non può essere amico di sé stesso'), 1);
+            throw new IllegalArgumentException('Un utente non può essere amico di sé stesso');
         }
 
         $parent = $this->show($parent_id);
         if ($parent->can('users.subusers') === false) {
-            throw new IllegalArgumentException(_i('Il nuovo utente assegnatario non può gestire amici'), 1);
+            throw new IllegalArgumentException('Il nuovo utente assegnatario non può gestire amici');
         }
 
         $user = $this->show($user_id);
         if ($user->isFriend() === false) {
-            throw new IllegalArgumentException(_i('Un utente regolare non può essere retrocesso ad amico'), 1);
+            throw new IllegalArgumentException('Un utente regolare non può essere retrocesso ad amico');
         }
 
         $user->parent_id = $parent->id;

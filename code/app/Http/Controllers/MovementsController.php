@@ -94,7 +94,10 @@ class MovementsController extends BackedController
 
     private function exportMain($format, $movements)
     {
-        $filename = sanitizeFilename(_i('Esportazione movimenti GAS %s.%s', [date('d/m/Y'), $format]));
+        $filename = sanitizeFilename(__('movements.documents.movements.filename', [
+            'date' => date('d/m/Y'),
+            'format' => $format,
+        ]));
 
         if ($format == 'csv') {
             $headers = [
@@ -279,7 +282,7 @@ class MovementsController extends BackedController
         return view('commons.deleteconfirm', [
             'url' => route('movements.destroy', $id),
             'password_protected' => true,
-            'text' => _i('Vuoi davvero eliminare il movimento<br>%s?', [$mov->printableName()]),
+            'text' => __('movements.delete_confirmation', ['name' => $mov->printableName()]),
             'extra' => [
                 /*
                     Se sono nel contesto di un utente/fornitore/GAS ricarica il
@@ -298,7 +301,7 @@ class MovementsController extends BackedController
         $suppliers = $user->gas->suppliers;
 
         if ($subtype == 'csv') {
-            $filename = sanitizeFilename(_i('Saldi Fornitori al %s.csv', date('d/m/Y')));
+            $filename = sanitizeFilename(__('movements.documents.suppliers.filename', ['date' => date('d/m/Y')]));
             $headers = [
                 __('generic.id'),
                 __('generic.name'),
@@ -306,7 +309,7 @@ class MovementsController extends BackedController
 
             $currencies = Currency::enabled();
             foreach ($currencies as $curr) {
-                $headers[] = _i('Saldo %s', $curr->symbol);
+                $headers[] = __('movements.formatted_balance', $curr->symbol);
             }
 
             return output_csv($filename, $headers, $suppliers, function ($supplier) use ($currencies) {
@@ -323,7 +326,7 @@ class MovementsController extends BackedController
         }
         elseif ($subtype == 'integralces') {
             $body = strtoupper($request->input('body'));
-            $filename = sanitizeFilename(_i('IntegralCES Fornitori.csv'));
+            $filename = sanitizeFilename(__('movements.documents.suppliers.integralces_filename'));
 
             return $this->exportIntegralCES($user->gas, $suppliers, $filename, $body);
         }
@@ -352,7 +355,7 @@ class MovementsController extends BackedController
 
                 $has_fee = ($user->gas->getConfig('annual_fee_amount') != 0);
                 $has_shipping_place = $user->gas->hasFeature('shipping_places');
-                $filename = sanitizeFilename(_i('Crediti al %s.csv', date('d/m/Y')));
+                $filename = sanitizeFilename(__('movements.documents.users.filename', ['date' => date('d/m/Y')]));
 
                 $headers = [
                     __('generic.id'),
@@ -362,11 +365,11 @@ class MovementsController extends BackedController
 
                 $currencies = Currency::enabled();
                 foreach ($currencies as $curr) {
-                    $headers[] = _i('Credito Residuo %s', $curr->symbol);
+                    $headers[] = __('movements.formatted_residual_credit', ['currency' => $curr->symbol]);
                 }
 
                 if ($has_fee) {
-                    $headers[] = _i('Quota Pagata');
+                    $headers[] = __('user.payed_fee');
                 }
 
                 $groups = Group::where('context', 'user')->get();
@@ -385,7 +388,7 @@ class MovementsController extends BackedController
                     }
 
                     if ($has_fee) {
-                        $row[] = $user->fee != null ? _i('SI') : _i('NO');
+                        $row[] = $user->fee != null ? __('generic.yes') : __('generic.no');
                     }
 
                     foreach ($groups as $group) {
@@ -398,7 +401,7 @@ class MovementsController extends BackedController
             elseif ($subtype == 'rid') {
                 $date = decodeDate($request->input('date'));
                 $body = strtoupper($request->input('body'));
-                $filename = sanitizeFilename(_i('SEPA del %s.xml', date('d/m/Y', strtotime($date))));
+                $filename = sanitizeFilename(__('movements.documents.sepa.filename', ['date' => date('d/m/Y', strtotime($date))]));
 
                 $headers = [
                     'Content-type' => 'text/xml',
@@ -423,7 +426,7 @@ class MovementsController extends BackedController
             }
             elseif ($subtype == 'integralces') {
                 $body = strtoupper($request->input('body'));
-                $filename = sanitizeFilename(_i('IntegralCES Utenti.csv'));
+                $filename = sanitizeFilename(__('movements.documents.users.integralces_filename'));
 
                 return $this->exportIntegralCES($user->gas, $users, $filename, $body);
             }
@@ -473,7 +476,9 @@ class MovementsController extends BackedController
                 $data[] = array_merge([$name], $row);
             }
 
-            $filename = sanitizeFilename(_i('Storico Saldi al %s.csv', Carbon::now()->format('d/m/Y')));
+            $filename = sanitizeFilename(__('movements.documents.balances.filename', [
+                'date' => Carbon::now()->format('d/m/Y'),
+            ]));
 
             return output_csv($filename, null, $data, null);
         }
@@ -492,7 +497,7 @@ class MovementsController extends BackedController
             $diffs = $this->service->recalculate();
 
             if (is_null($diffs)) {
-                return $this->errorResponse(_i('Errore'));
+                return $this->errorResponse(__('generic.error'));
             }
             else {
                 return $this->successResponse([

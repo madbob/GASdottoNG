@@ -4,6 +4,8 @@ return array (
   'prices' => 
   array (
     'unit' => 'Stykkpris',
+    'unit_no_vat' => '',
+    'package' => '',
   ),
   'name' => '',
   'code' => '',
@@ -14,10 +16,12 @@ return array (
   'min_quantity' => '',
   'max_quantity' => '',
   'available' => '',
-  'list' => 'Produkt',
-  'sorting' => '',
   'help' => 
   array (
+    'unit_no_vat' => '',
+    'package_price' => '',
+    'importing_categories_and_measures' => '',
+    'imported_notice' => '',
     'available_explain' => '',
     'bookable' => '',
     'pending_orders_change_price' => '',
@@ -37,6 +41,9 @@ return array (
     'vat_rate' => '',
     'notice_removing_product_in_orders' => '',
   ),
+  'weight_with_measure' => '',
+  'list' => 'Produkt',
+  'sorting' => '',
   'variant' => 
   array (
     'matrix' => '',

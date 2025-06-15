@@ -65,12 +65,12 @@ function periodicCycling()
 {
     return [
         'all' => __('generic.all'),
-        'biweekly' => _i('Ogni due Settimane'),
-        'month_first' => _i('Primo del Mese'),
-        'month_second' => _i('Secondo del Mese'),
-        'month_third' => _i('Terzo del Mese'),
-        'month_fourth' => _i('Quarto del Mese'),
-        'month_last' => _i('Ultimo del Mese'),
+        'biweekly' => __('notifications.cycle.two_weeks'),
+        'month_first' => __('notifications.cycle.first_of_month'),
+        'month_second' => __('notifications.cycle.second_of_month'),
+        'month_third' => __('notifications.cycle.third_of_month'),
+        'month_fourth' => __('notifications.cycle.fourth_of_month'),
+        'month_last' => __('notifications.cycle.last_of_month'),
     ];
 }
 

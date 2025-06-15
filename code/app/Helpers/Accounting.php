@@ -93,7 +93,7 @@ function paymentTypes()
 
     if (currentAbsoluteGas()->hasFeature('integralces')) {
         $ret['integralces'] = (object) [
-            'name' => _i('IntegralCES'),
+            'name' => 'IntegralCES',
             'identifier' => true,
             'icon' => 'cloud-plus',
             'active_for' => 'App\User',

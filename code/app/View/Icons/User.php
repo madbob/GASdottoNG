@@ -19,7 +19,7 @@ class User extends IconsMap
                 'test' => function ($obj) {
                     return $obj->currentBalanceAmount(defaultCurrency()) < 0;
                 },
-                'text' => _i('Credito < 0'),
+                'text' => __('user.credit_below_zero'),
             ];
 
             /*
@@ -32,7 +32,7 @@ class User extends IconsMap
                     'test' => function ($obj) {
                         return $obj->expiredFee();
                     },
-                    'text' => _i('Quota non Pagata'),
+                    'text' => __('user.fee_not_payed'),
                 ];
             }
         }
@@ -42,7 +42,7 @@ class User extends IconsMap
                 'test' => function ($obj) {
                     return $obj->pending;
                 },
-                'text' => _i('In Attesa'),
+                'text' => __('generic.waiting'),
             ];
         }
 
@@ -54,7 +54,7 @@ class User extends IconsMap
         $ret = [];
 
         $ret['person-circle'] = (object) [
-            'text' => _i('Ruolo'),
+            'text' => __('permissions.role'),
             'assign' => function ($obj) {
                 $ret = [];
                 foreach ($obj->roles as $r) {

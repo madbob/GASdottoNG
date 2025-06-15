@@ -11,7 +11,7 @@ class Receipt extends MailType
 
     public function description()
     {
-        return _i('Mail di accompagnamento per le ricevute.');
+        return __('mail.receipt.description');
     }
 
     public function params()

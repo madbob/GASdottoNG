@@ -41,17 +41,17 @@ class Contact extends Model
     {
         $ret = [
             'address' => __('generic.address'),
-            'referent' => _i('Referente'),
+            'referent' => __('supplier.referent'),
             'email' => __('generic.email'),
-            'skip_email' => _i('E-Mail (no notifiche)'),
+            'skip_email' => __('generic.email_no_notifications'),
             'phone' => __('generic.phone'),
-            'mobile' => _i('Cellulare'),
-            'fax' => _i('Fax'),
-            'website' => _i('Sito Web'),
+            'mobile' => __('generic.cellphone'),
+            'fax' => __('generic.fax'),
+            'website' => __('generic.website'),
         ];
 
         if (currentAbsoluteGas()->hasFeature('integralces')) {
-            $ret['integralces'] = _i('IntegralCES');
+            $ret['integralces'] = 'IntegralCES';
         }
 
         return $ret;

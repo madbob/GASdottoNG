@@ -215,7 +215,7 @@ function appendSaveNotifier($params)
                 <button class="btn btn-success" type="submit">%s</button>
             </div>
         </div>
-    </div>', _i('Ricorda di cliccare il tasto "Salva" quando hai finito!'), _i('Salva'));
+    </div>', __('generic.help.save_reminder'), __('generic.save'));
 
     return $params;
 }
@@ -232,7 +232,7 @@ function mainFormButtons($params)
         $buttons[] = [
             'color' => 'danger',
             'classes' => ['delete-button'],
-            'label' => $obj && $obj->deleted_at != null ? _i('Elimina Definitivamente') : __('generic.remove'),
+            'label' => $obj && $obj->deleted_at != null ? __('generic.definitive_delete') : __('generic.remove'),
         ];
     }
 
@@ -241,7 +241,7 @@ function mainFormButtons($params)
         $buttons[] = [
             'color' => 'success',
             'classes' => ['save-button'],
-            'label' => _i('Salva'),
+            'label' => __('generic.save'),
             'attributes' => ['type' => 'submit'],
         ];
     }

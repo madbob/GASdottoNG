@@ -8,12 +8,70 @@ return array (
   'current_balance_amount' => 'Aktueller Kontostand: :amount',
   'balance' => 'Kontostand',
   'current_credit' => 'Aktueller Kontostand',
+  'bank_account' => 'Girokonto',
+  'cash_account' => 'Kasse',
+  'deposits' => 'Kaution',
+  'documents' => 
+  array (
+    'movements' => 
+    array (
+      'filename' => 'Export Bewegungen der Bestellgruppe :date.:format',
+    ),
+    'users' => 
+    array (
+      'filename' => 'Krediten am :date.csv',
+      'integralces_filename' => '',
+    ),
+    'sepa' => 
+    array (
+      'filename' => 'SEPA am :date.xml',
+    ),
+    'suppliers' => 
+    array (
+      'filename' => 'Saldi Lieferanten am %s.csv',
+      'integralces_filename' => '',
+    ),
+    'balances' => 
+    array (
+      'filename' => '',
+    ),
+  ),
   'registration_date' => 'Eintragsdatum',
   'execution_date' => 'Bewegungsdatum',
   'paying' => 'Bezahlende',
   'payed' => 'Bezahlt',
+  'delete_confirmation' => '',
+  'formatted_residual_credit' => 'Restkredit :currency',
+  'formatted_balance' => 'Kontostand %s',
   'currency' => 'Währung',
   'credit' => 'Kontostand',
+  'defaults' => 
+  array (
+    'fee' => '',
+    'booking' => '',
+    'booking_adjust' => '',
+    'deposit' => '',
+    'deposit_return' => '',
+    'donation_from' => '',
+    'donation' => '',
+    'expense' => '',
+    'put' => '',
+    'invoice' => '',
+    'order' => '',
+    'rounding' => '',
+    'credit' => '',
+    'decredit' => '',
+    'refund' => '',
+  ),
+  'methods' => 
+  array (
+    'bank' => 'Überweisung',
+    'cash' => 'Bargeld',
+    'credit' => 'Kontostand Benutzer',
+    'sepa' => 'SEPA',
+  ),
+  'formatted_revenues' => '',
+  'formatted_expenses' => '',
   'suppliers_status' => 'Betrag Lieferant',
   'causal' => 'Verwendungszweck',
   'generic_causal' => '',

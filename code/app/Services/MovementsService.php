@@ -244,7 +244,7 @@ class MovementsService extends BaseService
             $movement->save();
 
             if (!$movement->saved) {
-                throw new IllegalArgumentException(_i('Salvataggio fallito'));
+                throw new IllegalArgumentException('Salvataggio fallito');
             }
 
             return $movement;
@@ -260,7 +260,7 @@ class MovementsService extends BaseService
             $movement->save();
 
             if (!$movement->saved) {
-                throw new IllegalArgumentException(_i('Salvataggio fallito'));
+                throw new IllegalArgumentException('Salvataggio fallito');
             }
 
             return $movement;

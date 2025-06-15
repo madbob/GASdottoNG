@@ -1,10 +1,30 @@
 <?php
 
 return array (
+  'waiting' => 'Waiting',
+  'statuses' => 
+  array (
+    'to_verify' => 'To be Verified',
+    'verified' => 'Verified',
+    'payed' => 'Payed',
+  ),
+  'default_note' => 'Invoice payment :name',
+  'documents' => 
+  array (
+    'invoice' => 
+    array (
+      'heading' => 'Invoice :identifier',
+    ),
+    'receipts' => 
+    array (
+      'list_filename' => 'Export GAS receipts :date.csv',
+    ),
+  ),
   'balances' => 
   array (
     'supplier' => 'Supplier Balance',
   ),
+  'forwarded' => 'Forwarded',
   'orders' => 'Involved Orders',
   'help' => 
   array (

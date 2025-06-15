@@ -4,6 +4,8 @@ return array (
   'prices' => 
   array (
     'unit' => 'Stückpreis',
+    'unit_no_vat' => 'Einzelpreis (ohne Mwst.)',
+    'package' => 'Preis der Verpackungseinheit',
   ),
   'name' => 'Produkt',
   'code' => 'Artikelnummer Lieferant',
@@ -14,10 +16,12 @@ return array (
   'min_quantity' => 'Minimum',
   'max_quantity' => 'Empfohlenes Maximum',
   'available' => 'Verfügbar',
-  'list' => 'Produkte',
-  'sorting' => '',
   'help' => 
   array (
+    'unit_no_vat' => 'Zu benutzen in Kombination mit dem jeweiligen Mehrwertsteuersatz',
+    'package_price' => 'Wenn genauer angegeben, wird der Einheitspreis als Preis für die Verpackungseinheit / Gebindegröße berechnet',
+    'importing_categories_and_measures' => 'Nicht aufgelistete Kategorien und Maßeinheiten werden erstellt.',
+    'imported_notice' => 'Importierte Produkte',
     'available_explain' => '',
     'bookable' => '',
     'pending_orders_change_price' => '',
@@ -37,6 +41,9 @@ return array (
     'vat_rate' => '',
     'notice_removing_product_in_orders' => '',
   ),
+  'weight_with_measure' => '',
+  'list' => 'Produkte',
+  'sorting' => '',
   'variant' => 
   array (
     'matrix' => 'Variante hinzufügen/verändern',

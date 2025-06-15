@@ -6,8 +6,14 @@ return array (
     'void' => 'Annuler une réservation',
     'statuses' => 
     array (
+      'open' => 'Réservations ouvertes',
+      'closed' => 'Réservations closes',
       'shipped' => 'Livré',
+      'paying' => 'Paiement par l\'utilisateur',
+      'archived' => 'Archivé',
+      'suspended' => 'Suspendu',
       'booked' => 'Réservé',
+      'to_deliver' => 'À livrer',
       'saved' => 'Enregistré',
     ),
     'nav' => 
@@ -23,6 +29,9 @@ return array (
     'pending_packages_notice' => 'Attention : cette commande est fermée, mais vous pouvez encore réserver quelques produits pour compléter les colis à livrer.',
     'send_booking_summaries' => '',
     'send_delivery_summaries' => '',
+    'no_partecipating' => 'Vous n\'avez pas participé à cette commande',
+    'formatted_booked_amount' => 'Vous avez commandé :amount',
+    'formatted_booked_amount_with_friends' => 'Vous avez commandé :amount + :friends',
     'product_selection' => 'Pour activer ou désactiver les produits de la liste des fournisseurs à l\'intérieur de la commande',
     'booked_modifier_column' => 'Modificateur de produit, sur le site Booked. S\'affiche uniquement si le modificateur est actif pour un produit de la commande',
     'delivered_modifier_column' => 'Modificateur de produit, sur le site Booked. S\'affiche uniquement si le modificateur est actif pour un produit de la commande',
@@ -84,7 +93,10 @@ return array (
     'permit' => 'Oui, autoriser toute autre réservation',
     'permit_all' => 'Oui, et il inclut les quantités comptabilisées par tous les GAS',
   ),
+  'and_more' => 'et autres',
+  'boxes' => 'Nombre de colis',
   'supplier' => 'Fournisseur',
+  'booking_date_time' => '',
   'list_open' => 'Commandes ouvertes',
   'dates' => 
   array (
@@ -108,6 +120,7 @@ return array (
   'totals' => 
   array (
     'shipped' => 'Total livré',
+    'with_modifiers' => '',
     'total' => 'Total',
     'taxable' => 'Total imposable',
     'vat' => 'Total TVA',
@@ -119,7 +132,42 @@ return array (
     'to_pay' => 'Montant à payer',
     'selected' => '',
   ),
+  'constraints' => 
+  array (
+    'quantity' => 'La quantité maximale est de 9999,99',
+    'discrete' => '',
+    'global_min' => 'Total minimal : :still (:global total)',
+    'global_max_help' => 'Il manque :still :measure pour compléter le paquet de cette commande',
+    'global_max_short' => ':icon disponible : :quantity',
+    'global_max' => 'Disponible: :still (total :global)',
+    'global_max_generic' => 'Quantité dépassant la disponibilité',
+    'relative_max_formatted' => 'Maximum suggéré: :quantity',
+    'relative_max' => 'Quantité dépassant le maximum recommandé',
+    'relative_min_formatted' => 'Minimum: :quantity',
+    'relative_min' => 'Quantité inférieure au minimum autorisé',
+    'relative_multiple_formatted' => 'Multiplicateur: :quantity',
+    'relative_multiple' => 'Quantité non multiple de la valeur autorisée',
+  ),
+  'documents' => 
+  array (
+    'shipping' => 
+    array (
+      'filename' => 'Détails des livraisons de commande :suppliers.pdf',
+      'heading' => 'Détails des livraisons de commandes :identifier à :supplier du :date',
+      'short_heading' => 'Détails de la livraison',
+    ),
+    'summary' => 
+    array (
+      'heading' => 'Produits de la commande %s à %s',
+    ),
+    'table' => 
+    array (
+      'filename' => 'Tableau des commandes %s à %s.csv',
+    ),
+  ),
   'all' => 'Commandes',
+  'pending_packages' => 'Paquets à compléter',
+  'booking_aggregation' => '',
   'statuses' => 
   array (
     'unchange' => 'Non modifié',
@@ -179,14 +227,6 @@ return array (
   'help_order_export_shipping' => 'Depuis cette page vous pouvez obtenir un document PDF à imprimer avec l\'ensemble des produits réservés. Utile à consulter pendant que vous faites les livraisons.',
   'notify_days_before' => '',
   'handle_packages' => 'Forcer la complétion des emballages',
-  'documents' => 
-  array (
-    'shipping' => 
-    array (
-      'heading' => 'Détails des livraisons de commandes :identifier à :supplier du :date',
-      'short_heading' => 'Détails de la livraison',
-    ),
-  ),
   'list_delivering' => 'Commandes en cours de livraison',
   'help_aggregate_export_table' => 'Depuis cette page vous pouvez obtenir un fichier CSV avec le détail de l\'ensemble des produits commandés.',
   'help_aggregate_export_table_for_delivery' => '',

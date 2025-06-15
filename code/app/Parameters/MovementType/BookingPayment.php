@@ -16,7 +16,7 @@ class BookingPayment extends MovementType
 
     public function initNew($type)
     {
-        $type->name = _i('Pagamento prenotazione da parte di un socio');
+        $type->name = __('movements.defaults.booking');
         $type->sender_type = User::class;
         $type->target_type = Booking::class;
         $type->visibility = false;

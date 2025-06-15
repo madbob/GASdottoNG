@@ -14,6 +14,15 @@ return array (
     'suspend' => '',
     'arbitrary_dates' => '',
   ),
+  'cycle' => 
+  array (
+    'two_weeks' => '',
+    'first_of_month' => '',
+    'second_of_month' => '',
+    'third_of_month' => '',
+    'fourth_of_month' => '',
+    'last_of_month' => '',
+  ),
   'name' => '',
   'notices' => 
   array (

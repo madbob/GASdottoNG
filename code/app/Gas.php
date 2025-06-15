@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-
 use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\Configurable;
 use App\Models\Concerns\PayableTrait;
@@ -142,11 +141,11 @@ class Gas extends Model
     {
         $ret = [
             'suppliers' => (object) [
-                'label' => _i('Fornitori'),
+                'label' => __('supplier.all'),
                 'class' => Supplier::class,
             ],
             'users' => (object) [
-                'label' => _i('Utenti'),
+                'label' => __('user.all'),
                 'class' => User::class,
             ],
         ];
@@ -175,16 +174,16 @@ class Gas extends Model
     public function balanceFields()
     {
         $ret = [
-            'bank' => _i('Conto Corrente'),
-            'cash' => _i('Cassa Contanti'),
-            'gas' => _i('GAS'),
-            'deposits' => _i('Cauzioni'),
+            'bank' => __('movements.bank_account'),
+            'cash' => __('movements.cash_account'),
+            'gas' => __('generic.gas'),
+            'deposits' => __('movements.deposits'),
         ];
 
         $gas = currentAbsoluteGas();
 
         if ($gas->hasFeature('satispay')) {
-            $ret['satispay'] = _i('Satispay');
+            $ret['satispay'] = 'Satispay';
         }
 
         return $ret;

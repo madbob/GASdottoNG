@@ -46,13 +46,13 @@ trait SuspendableTrait
     {
         switch ($this->plainStatus()) {
             case 'active':
-                return _i('Attivo');
+                return __('user.statuses.active');
             case 'suspended':
-                return _i('Sospeso');
+                return __('user.statuses.suspended');
             case 'deleted':
-                return _i('Cessato');
+                return __('user.statuses.deleted');
             case 'removed':
-                return _i('Rimosso');
+                return __('user.statuses.removed');
         }
     }
 

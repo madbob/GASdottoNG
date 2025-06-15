@@ -52,7 +52,7 @@ class MovementsFormatService extends BaseService
 
     public function formatAsBalance($movements)
     {
-        $filename = sanitizeFilename(_i('Esportazione bilancio %s.csv', [date('d/m/Y')]));
+        $filename = sanitizeFilename(__('export.balance_csv_filename', ['date' => date('d/m/Y')]));
 
         $headers = [
             __('movements.registration_date'),
@@ -74,9 +74,9 @@ class MovementsFormatService extends BaseService
         foreach ($fields as $field_id => $field_meta) {
             $classmap[$field_meta->class] = $field_id;
 
-            $headers[] = _i('Entrate %s', [$field_meta->label]);
+            $headers[] = __('movements.formatted_revenues', ['name' => $field_meta->label]);
             $reference_row['increment_' . $field_id] = '';
-            $headers[] = _i('Uscite %s', [$field_meta->label]);
+            $headers[] = __('movements.formatted_expenses', ['name' => $field_meta->label]);
             $reference_row['decrement_' . $field_id] = '';
         }
 

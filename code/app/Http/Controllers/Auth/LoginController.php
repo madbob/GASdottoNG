@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
-use Session;
-use Auth;
-use Log;
-
-use LaravelGettext;
-
+use App\Http\Controllers\Controller;
 use App\User;
 
 class LoginController extends Controller
@@ -46,11 +44,11 @@ class LoginController extends Controller
             $username = trim($request->input('username'));
 
             if ($username == $password) {
-                Session::flash('prompt_message', _i('La password è uguale allo username! Cambiala il prima possibile dal tuo <a class="ms-1" href="%s">pannello utente</a>!', [route('profile')]));
+                Session::flash('prompt_message', __('auth.help.username_same_password', ['link' => route('profile')]));
             }
             else {
                 if (is_null($user->suspended_at) === false) {
-                    Session::flash('prompt_message', _i('Il tuo account è stato sospeso, e non puoi effettuare prenotazioni. Verifica lo stato dei tuoi pagamenti e del tuo credito o eventuali notifiche inviate dagli amministratori.'));
+                    Session::flash('prompt_message', __('auth.help.suspended_account_notice'));
                 }
             }
         }
@@ -73,7 +71,7 @@ class LoginController extends Controller
             })->first();
 
             if (is_null($user)) {
-                Session::flash('message', _i('Username non valido'));
+                Session::flash('message', __('auth.help.invalid_username'));
                 Session::flash('message_type', 'danger');
                 Log::debug('Username non trovato: ' . $username);
 
@@ -84,7 +82,7 @@ class LoginController extends Controller
             }
         }
 
-        LaravelGettext::setLocale($request->input('language'));
+        App::setLocale($request->input('language'));
 
         $ret = $this->realLogin($request);
         $this->postLogin($request, $user);

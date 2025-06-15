@@ -30,7 +30,18 @@ return array (
     'admin_supplier_movements' => '',
     'admin_multigas' => '',
   ),
+  'roles' => 
+  array (
+    'admin' => '',
+    'secondary_admin' => '',
+  ),
   'name' => 'Berechtigungen',
+  'supplier' => 
+  array (
+    'change' => 'Änderungen des Lieferanten sind jetzt möglich',
+    'orders' => 'Sie dürfen neue Bestellungen eröffnen für den Lieferant',
+    'deliveries' => 'Lieferungen für den Lieferanten verwalten',
+  ),
   'role' => 'Rolle',
   'help' => 
   array (

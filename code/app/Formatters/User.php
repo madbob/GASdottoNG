@@ -37,7 +37,7 @@ class User extends Formatter
         $groups = Group::where('context', 'user')->get();
         foreach ($groups as $group) {
             $ret['group_' . $group->id] = (object) [
-                'name' => _i('Aggregazione %s', [$group->name]),
+                'name' => __('user.formatted_aggregation', ['name' => $group->name]),
                 'checked' => true,
                 'format' => function ($obj, $context) use ($group) {
                     return implode(' - ', array_map(fn ($c) => $c->printableName(), $obj->circlesByGroup($group)->circles));
@@ -51,7 +51,7 @@ class User extends Formatter
             ];
 
             $ret['rid->id'] = (object) [
-                'name' => _i('Mandato SEPA'),
+                'name' => __('user.sepa.mandate'),
             ];
 
             $ret['rid->date'] = (object) [
@@ -66,7 +66,7 @@ class User extends Formatter
         */
         if (App::make('GlobalScopeHub')->enabled() === false) {
             $ret['gas'] = (object) [
-                'name' => _i('GAS'),
+                'name' => __('generic.gas'),
                 'format' => function ($obj, $context) {
                     return $obj->gas->name;
                 },
@@ -80,21 +80,21 @@ class User extends Formatter
     {
         if ($type == 'export' || $type == 'all') {
             $ret['last_login'] = (object) [
-                'name' => _i('Ultimo Accesso'),
+                'name' => __('user.last_login'),
                 'format' => function ($obj, $context) {
                     return $obj->last_login;
                 },
             ];
 
             $ret['last_booking'] = (object) [
-                'name' => _i('Ultima Prenotazione'),
+                'name' => __('user.last_booking'),
                 'format' => function ($obj, $context) {
                     return $obj->last_booking;
                 },
             ];
 
             $ret['member_since'] = (object) [
-                'name' => _i('Membro da'),
+                'name' => __('user.member_since'),
                 'format' => function ($obj, $context) {
                     return $obj->member_since;
                 },
@@ -124,7 +124,7 @@ class User extends Formatter
             ];
 
             $ret['other_shippings'] = (object) [
-                'name' => _i('Altre Prenotazioni'),
+                'name' => __('user.other_bookings'),
                 'format' => function ($obj, $context) {
                     /*
                         Qui, $context deve essere un Aggregate
@@ -149,7 +149,7 @@ class User extends Formatter
                 'checked' => true,
             ],
             'fullname' => (object) [
-                'name' => _i('Nome Completo'),
+                'name' => __('user.fullname'),
                 'format' => function ($obj, $context) {
                     return $obj->printableName();
                 },
@@ -158,10 +158,10 @@ class User extends Formatter
                 'name' => __('auth.username'),
             ],
             'taxcode' => (object) [
-                'name' => _i('Codice Fiscale'),
+                'name' => __('user.taxcode'),
             ],
             'card_number' => (object) [
-                'name' => _i('Numero Tessera'),
+                'name' => __('user.card_number'),
             ],
             'status' => (object) [
                 'name' => __('generic.status'),

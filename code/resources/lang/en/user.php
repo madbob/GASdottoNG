@@ -4,6 +4,9 @@ return array (
   'help' => 
   array (
     'suspended' => 'Suspended and Ceased users can not access to the platform, but are still registered. It is required to specify a date of ceasing/suspension.',
+    'wrong_control_error' => 'Control code is wrong',
+    'existing_email_error' => 'E-mail address already registered.',
+    'duplicated_name_error' => 'Those first and last name are already present in the database. Please contact the administrator for more information.',
     'waiting_approval' => 'This user is waiting for approval!',
     'promote_friend' => 'By clicking "Save", this user will become a regular user. They will be assigned the role of %s, will have their own accounting, and will no longer be managed by %s. Their booking history will be preserved, but all of their previous payments will remain charged to %s.',
     'promote_friend_enforce_mail' => 'You must specify at least one contact email address of the new user',
@@ -18,8 +21,10 @@ return array (
   'firstname' => 'Name',
   'lastname' => 'Surname',
   'change_friend' => 'Modify Friend',
+  'formatted_aggregation' => 'Aggregation :name',
   'sepa' => 
   array (
+    'mandate' => 'SEPA Mandate',
     'date' => 'SEPA Mandate Date',
     'intro' => 'SEPA Configuration',
     'help' => 'Please specify the parameters for generating RIDs for this user here. RIDs will not be generated for users for whom these fields have not been completed.',
@@ -30,21 +35,35 @@ return array (
   'member_since' => 'Member since',
   'birthplace' => 'Birth place',
   'birthdate' => 'Birthday',
+  'other_bookings' => 'Other bookings',
+  'fullname' => 'Full Name',
   'taxcode' => 'Fiscal code',
   'card_number' => 'Card number',
   'payment_method' => 'Payment Method',
   'all' => 'Users',
+  'payed_fee' => 'Paid fee',
   'name' => 'User',
+  'address_part' => 
+  array (
+    'street' => 'Address (Street)',
+    'city' => 'Address (City)',
+    'zip' => 'Address (postal code)',
+  ),
   'statuses' => 
   array (
     'active' => 'Active',
     'suspended' => 'Suspended',
     'deleted' => 'Removed',
+    'removed' => '',
   ),
   'friend' => 'Friend',
   'removed_user' => 'Removed User',
   'booking_friend_header' => 'Has ordered :amount',
   'pending_deliveries' => 'Today, this person has other bookings to receive:',
+  'without_aggregation' => 'No Aggregations',
+  'aggregation' => 'User Aggregation',
+  'credit_below_zero' => 'Credit < 0',
+  'fee_not_payed' => 'Unpaid Fee',
   'personal_data' => 'Personal Informations',
   'approve' => 'Approve',
   'do_not_approve' => 'Do not Approve and Remove',

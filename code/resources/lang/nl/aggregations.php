@@ -20,4 +20,5 @@ return array (
   'user_selectable' => '',
   'group' => '',
   'empty_list' => '',
+  'name' => '',
 );

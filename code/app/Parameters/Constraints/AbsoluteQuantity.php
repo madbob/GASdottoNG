@@ -28,7 +28,7 @@ class AbsoluteQuantity extends Constraint
     public function test($booked, $quantity)
     {
         if ($quantity > 9999.99) {
-            throw new InvalidQuantityConstraint(_i('La quantità massima è 9999.99'), 5);
+            throw new InvalidQuantityConstraint(__('orders.constraints.quantity'), 5);
         }
     }
 }

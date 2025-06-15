@@ -4,6 +4,9 @@ return array (
   'help' => 
   array (
     'suspended' => '',
+    'wrong_control_error' => '',
+    'existing_email_error' => '',
+    'duplicated_name_error' => '',
     'waiting_approval' => '¡Usuario en espera de aprobación!',
     'promote_friend' => '',
     'promote_friend_enforce_mail' => '',
@@ -18,8 +21,10 @@ return array (
   'firstname' => 'Nombre',
   'lastname' => 'Apellido',
   'change_friend' => 'Modificar Amigo',
+  'formatted_aggregation' => '',
   'sepa' => 
   array (
+    'mandate' => '',
     'date' => '',
     'intro' => 'Configuración SEPA',
     'help' => '',
@@ -30,21 +35,35 @@ return array (
   'member_since' => 'Miembro desde',
   'birthplace' => '',
   'birthdate' => 'Fecha de Nacimiento',
+  'other_bookings' => '',
+  'fullname' => '',
   'taxcode' => '',
   'card_number' => '',
   'payment_method' => 'Método de Pago',
   'all' => '',
+  'payed_fee' => '',
   'name' => '',
+  'address_part' => 
+  array (
+    'street' => '',
+    'city' => '',
+    'zip' => '',
+  ),
   'statuses' => 
   array (
     'active' => '',
     'suspended' => '',
     'deleted' => '',
+    'removed' => '',
   ),
   'friend' => '',
   'removed_user' => '',
   'booking_friend_header' => '',
   'pending_deliveries' => '',
+  'without_aggregation' => '',
+  'aggregation' => '',
+  'credit_below_zero' => '',
+  'fee_not_payed' => '',
   'personal_data' => '',
   'approve' => 'Aprobar',
   'do_not_approve' => '',

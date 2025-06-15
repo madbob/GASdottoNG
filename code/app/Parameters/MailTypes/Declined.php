@@ -11,7 +11,7 @@ class Declined extends MailType
 
     public function description()
     {
-        return _i('Messaggio inviato agli iscritti non approvati.');
+        return __('mail.declined.description');
     }
 
     public function params()

@@ -49,7 +49,7 @@ class MovementObserver
         }
 
         if ($movement->archived == true) {
-            Log::error(_i('Movimento: tentata modifica di movimento già storicizzato in bilancio passato'));
+            Log::error('Movimento: tentata modifica di movimento già storicizzato in bilancio passato');
 
             return false;
         }
@@ -63,13 +63,17 @@ class MovementObserver
         $operations = json_decode($metadata->function);
         $valid = count(array_filter($operations, fn ($op) => $movement->method == $op->method)) > 0;
         if ($valid === false) {
-            Log::error(_i('Movimento %d: metodo "%s" non permesso su tipo "%s"', [$movement->id, $movement->printablePayment(), $movement->printableType()]));
+            Log::error(sprintf('Movimento %d: metodo "%s" non permesso su tipo "%s"', [
+                $movement->id,
+                $movement->printablePayment(),
+                $movement->printableType(),
+            ]));
 
             return false;
         }
 
         if (!$metadata->allow_negative && $movement->amount < 0) {
-            Log::error(_i('Movimento: ammontare negativo non permesso'));
+            Log::error('Movimento: ammontare negativo non permesso');
 
             return false;
         }
@@ -108,7 +112,7 @@ class MovementObserver
         if (isset($metadata->callbacks['pre'])) {
             $pre = $metadata->callbacks['pre']($movement);
             if ($pre == 0) {
-                Log::error(_i('Movimento: salvataggio negato da pre-callback'));
+                Log::error('Movimento: salvataggio negato da pre-callback');
 
                 return false;
             }

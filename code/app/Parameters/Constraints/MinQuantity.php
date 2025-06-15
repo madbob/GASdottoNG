@@ -16,7 +16,9 @@ class MinQuantity extends Constraint
         $field = $this->identifier();
 
         if ($product->$field > 1) {
-            return _i('Minimo: %.02f', $product->$field);
+            return __('orders.constraints.relative_min_formatted', [
+                'quantity' => sprintf('%.02f', $product->$field),
+            ]);
         }
 
         return null;
@@ -28,7 +30,7 @@ class MinQuantity extends Constraint
 
         if ($product->min_quantity != 0) {
             if ($quantity < $product->min_quantity) {
-                throw new InvalidQuantityConstraint(_('Quantità inferiore al minimo consentito'), 1);
+                throw new InvalidQuantityConstraint(__('orders.constraints.relative_min'), 1);
             }
         }
     }

@@ -8,12 +8,70 @@ return array (
   'current_balance_amount' => 'Current balance: :amount',
   'balance' => 'Balance',
   'current_credit' => 'Current credit',
+  'bank_account' => 'Bank account',
+  'cash_account' => 'Cash Register',
+  'deposits' => 'Deposits',
+  'documents' => 
+  array (
+    'movements' => 
+    array (
+      'filename' => 'Export GAS movements :date.:format',
+    ),
+    'users' => 
+    array (
+      'filename' => 'Credit on :date.csv',
+      'integralces_filename' => 'IntegralCES Users.csv',
+    ),
+    'sepa' => 
+    array (
+      'filename' => 'SEPA of :date.xml',
+    ),
+    'suppliers' => 
+    array (
+      'filename' => 'Suppliers Status on %s.csv',
+      'integralces_filename' => 'IntegralCES Suppliers.csv',
+    ),
+    'balances' => 
+    array (
+      'filename' => 'Balances History :date.csv',
+    ),
+  ),
   'registration_date' => 'Registration Date',
   'execution_date' => 'Date Movement',
   'paying' => 'Payer',
   'payed' => 'Payed',
+  'delete_confirmation' => 'Do you really want to delete accounting movement<br>:name?',
+  'formatted_residual_credit' => 'Remaining credit :currency',
+  'formatted_balance' => 'Balance %s',
   'currency' => 'Currency',
   'credit' => 'Credit',
+  'defaults' => 
+  array (
+    'fee' => 'Payment of the annual fee by a member',
+    'booking' => 'Booking payment by a member',
+    'booking_adjust' => 'Member booking payment adjustment',
+    'deposit' => 'Shareholder deposit for GAS member',
+    'deposit_return' => 'Return of the GAS shareholder deposit',
+    'donation_from' => 'Donations from GAS',
+    'donation' => 'Donation to the GAS',
+    'expense' => 'GAS purchase / expense',
+    'put' => 'Bank transfer',
+    'invoice' => 'Invoice payment to supplier',
+    'order' => 'Order payment to supplier',
+    'rounding' => 'Supplier rounding/discount',
+    'credit' => 'Credit deposit from user',
+    'decredit' => 'Credit refund for user',
+    'refund' => 'User refund',
+  ),
+  'methods' => 
+  array (
+    'bank' => 'Bank Transfer',
+    'cash' => 'Cash',
+    'credit' => 'User Credit',
+    'sepa' => 'SEPA',
+  ),
+  'formatted_revenues' => 'Income :name',
+  'formatted_expenses' => 'Expenditure :name',
   'suppliers_status' => 'Suppliers\' Status',
   'causal' => 'Causal',
   'generic_causal' => 'Group\'s payment',

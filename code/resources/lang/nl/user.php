@@ -4,6 +4,9 @@ return array (
   'help' => 
   array (
     'suspended' => '',
+    'wrong_control_error' => '',
+    'existing_email_error' => '',
+    'duplicated_name_error' => '',
     'waiting_approval' => '',
     'promote_friend' => '',
     'promote_friend_enforce_mail' => '',
@@ -18,8 +21,10 @@ return array (
   'firstname' => 'Naam',
   'lastname' => 'Achternaam',
   'change_friend' => '',
+  'formatted_aggregation' => '',
   'sepa' => 
   array (
+    'mandate' => '',
     'date' => 'Datum SEPA-opdracht',
     'intro' => 'Configuratie SEPA',
     'help' => '',
@@ -30,21 +35,35 @@ return array (
   'member_since' => 'Lid sinds',
   'birthplace' => '',
   'birthdate' => 'Geboortedatum',
+  'other_bookings' => '',
+  'fullname' => '',
   'taxcode' => 'Fiscaal nummer',
   'card_number' => 'Kaartnummer',
   'payment_method' => 'Betaalwijze',
   'all' => 'Gebruikers',
+  'payed_fee' => 'Betaalde aandeel',
   'name' => 'Gebruiker',
+  'address_part' => 
+  array (
+    'street' => 'Adres (Straat)',
+    'city' => 'Adres (Stad)',
+    'zip' => 'Adres (postcode)',
+  ),
   'statuses' => 
   array (
     'active' => 'Actief',
     'suspended' => 'Opgeschort',
     'deleted' => '',
+    'removed' => '',
   ),
   'friend' => 'Vriend',
   'removed_user' => '',
   'booking_friend_header' => 'Heeft besteld :amount',
   'pending_deliveries' => '',
+  'without_aggregation' => '',
+  'aggregation' => '',
+  'credit_below_zero' => 'Krediet < 0',
+  'fee_not_payed' => 'Aandeel niet betaald',
   'personal_data' => 'Persoonsgegevens',
   'approve' => '',
   'do_not_approve' => '',

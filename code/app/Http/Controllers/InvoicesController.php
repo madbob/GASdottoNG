@@ -84,7 +84,7 @@ class InvoicesController extends BackedController
 
         $invoice_grand_total = $invoice->total + $invoice->total_vat;
         $main = Movement::generate('invoice-payment', $user->gas, $invoice, $invoice_grand_total);
-        $main->notes = _i('Pagamento fattura %s', $invoice->printableName());
+        $main->notes = __('invoices.default_note', $invoice->printableName());
         $movements = new Collection();
         $movements->push($main);
 
@@ -120,13 +120,13 @@ class InvoicesController extends BackedController
 
     private function outputCSV($elements)
     {
-        $filename = _i('Esportazione fatture GAS %s.csv', date('d/m/Y'));
+        $filename = sprintf('%s %s.csv', __('movements.invoices'), date('d/m/Y'));
         $headers = [
             __('orders.supplier'),
             __('generic.date'),
             __('generic.number'),
-            _i('Imponibile'),
-            _i('IVA')
+            __('generic.taxable_amount'),
+            __('generic.vat')
         ];
 
         return output_csv($filename, $headers, $elements, function ($invoice) {

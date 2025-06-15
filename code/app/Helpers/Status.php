@@ -22,21 +22,21 @@ class Status
             $statuses = [];
 
             $statuses['open'] = (object) [
-                'label' => _i('Prenotazioni Aperte'),
+                'label' => __('orders.booking.statuses.open'),
                 'icon' => 'play',
                 'default_display' => true,
                 'aggregate_priority' => 1,
             ];
 
             $statuses['closed'] = (object) [
-                'label' => _i('Prenotazioni Chiuse'),
+                'label' => __('orders.booking.statuses.closed'),
                 'icon' => 'stop-fill',
                 'default_display' => true,
                 'aggregate_priority' => 2,
             ];
 
             $statuses['shipped'] = (object) [
-                'label' => _i('Consegnato'),
+                'label' => __('orders.booking.statuses.shipped'),
                 'icon' => 'skip-forward',
                 'default_display' => true,
                 'aggregate_priority' => 4,
@@ -44,7 +44,7 @@ class Status
 
             if (currentAbsoluteGas()->hasFeature('integralces')) {
                 $statuses['user_payment'] = (object) [
-                    'label' => _i('Pagamento Utenti'),
+                    'label' => __('orders.booking.statuses.paying'),
                     'icon' => 'cash',
                     'default_display' => true,
                     'aggregate_priority' => 3,
@@ -52,14 +52,14 @@ class Status
             }
 
             $statuses['archived'] = (object) [
-                'label' => _i('Archiviato'),
+                'label' => __('orders.booking.statuses.archived'),
                 'icon' => 'eject',
                 'default_display' => false,
                 'aggregate_priority' => 5,
             ];
 
             $statuses['suspended'] = (object) [
-                'label' => _i('In Sospeso'),
+                'label' => __('orders.booking.statuses.suspended'),
                 'icon' => 'pause',
                 'default_display' => true,
                 'aggregate_priority' => 0,
@@ -75,19 +75,19 @@ class Status
     {
         return [
             'pending' => (object) [
-                'label' => _i('In Attesa'),
+                'label' => __('generic.waiting'),
                 'icon' => 'clock',
             ],
             'to_verify' => (object) [
-                'label' => _i('Da Verificare'),
+                'label' => __('invoices.statuses.to_verify'),
                 'icon' => 'pin-angle',
             ],
             'verified' => (object) [
-                'label' => _i('Verificata'),
+                'label' => __('invoices.statuses.verified'),
                 'icon' => 'search',
             ],
             'payed' => (object) [
-                'label' => _i('Pagata'),
+                'label' => __('invoices.statuses.payed'),
                 'icon' => 'check',
             ],
         ];

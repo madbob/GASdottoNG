@@ -14,6 +14,15 @@ return array (
     'suspend' => '',
     'arbitrary_dates' => 'Depuis cette page, vous pouvez ajouter des dates arbitraires dans le calendrier de livraison, même pour des commandes non existantes. Cette fonction est utile pour coordonner différents intervenants et planifier les activités de long terme du GAS.',
   ),
+  'cycle' => 
+  array (
+    'two_weeks' => 'Toutes les deux semaines',
+    'first_of_month' => 'Le premier du mois',
+    'second_of_month' => 'Le 2 du mois',
+    'third_of_month' => 'Le 3 du mois',
+    'fourth_of_month' => 'Le 4 du mois',
+    'last_of_month' => 'Le dernier jour du mois',
+  ),
   'name' => 'Notification',
   'notices' => 
   array (

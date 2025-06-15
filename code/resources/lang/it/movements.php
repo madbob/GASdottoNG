@@ -8,12 +8,70 @@ return array (
   'current_balance_amount' => 'Saldo Attuale: :amount',
   'balance' => 'Saldo',
   'current_credit' => 'Credito Attuale',
+  'bank_account' => 'Conto Corrente',
+  'cash_account' => 'Cassa Contanti',
+  'deposits' => 'Cauzioni',
+  'documents' => 
+  array (
+    'movements' => 
+    array (
+      'filename' => 'Esportazione movimenti GAS :date.:format',
+    ),
+    'users' => 
+    array (
+      'filename' => 'Crediti al :date.csv',
+      'integralces_filename' => 'IntegralCES Utenti.csv',
+    ),
+    'sepa' => 
+    array (
+      'filename' => 'SEPA del :date.xml',
+    ),
+    'suppliers' => 
+    array (
+      'filename' => 'Saldi Fornitori al %s.csv',
+      'integralces_filename' => 'IntegralCES Fornitori.csv',
+    ),
+    'balances' => 
+    array (
+      'filename' => 'Storico Saldi al :date.csv',
+    ),
+  ),
   'registration_date' => 'Data Registrazione',
   'execution_date' => 'Data Movimento',
   'paying' => 'Pagante',
   'payed' => 'Pagato',
+  'delete_confirmation' => 'Vuoi davvero eliminare il movimento<br>:name?',
+  'formatted_residual_credit' => 'Credito Residuo :currency',
+  'formatted_balance' => 'Saldo %s',
   'currency' => 'Valuta',
   'credit' => 'Credito',
+  'defaults' => 
+  array (
+    'fee' => 'Versamento della quota annuale da parte di un socio',
+    'booking' => 'Pagamento prenotazione da parte di un socio',
+    'booking_adjust' => 'Aggiustamento pagamento prenotazione da parte di un socio',
+    'deposit' => 'Deposito cauzione socio del GAS',
+    'deposit_return' => 'Restituzione cauzione socio del GAS',
+    'donation_from' => 'Donazione dal GAS',
+    'donation' => 'Donazione al GAS',
+    'expense' => 'Acquisto/spesa GAS',
+    'put' => 'Versamento sul conto',
+    'invoice' => 'Pagamento fattura a fornitore',
+    'order' => 'Pagamento ordine a fornitore',
+    'rounding' => 'Arrotondamento/sconto fornitore',
+    'credit' => 'Deposito di credito da parte di un socio',
+    'decredit' => 'Reso credito per un socio',
+    'refund' => 'Rimborso spesa socio',
+  ),
+  'methods' => 
+  array (
+    'bank' => 'Bonifico',
+    'cash' => 'Contanti',
+    'credit' => 'Credito Utente',
+    'sepa' => 'SEPA',
+  ),
+  'formatted_revenues' => 'Entrate :name',
+  'formatted_expenses' => 'Uscite :name',
   'suppliers_status' => 'Stato Fornitori',
   'causal' => 'Causale',
   'generic_causal' => 'Versamento GAS',

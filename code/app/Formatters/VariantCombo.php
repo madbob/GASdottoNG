@@ -28,7 +28,7 @@ class VariantCombo extends Formatter
 
     public static function formatActive($obj, $context)
     {
-        return ($obj->product->active && $obj->active) ? _i('Sì') : _i('No');
+        return ($obj->product->active && $obj->active) ? __('generic.yes') : __('generic.no');
     }
 
     public static function formatPrice($obj, $context)
@@ -42,7 +42,7 @@ class VariantCombo extends Formatter
             return $obj->product->vat_rate->percentage;
         }
         else {
-            return _i('Nessuna');
+            return __('generic.none');
         }
     }
 

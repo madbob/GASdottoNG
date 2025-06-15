@@ -1,6 +1,12 @@
 <?php
 
 return array (
+  'defaults' => 
+  array (
+    'discount' => 'Sconto',
+    'rounding' => 'Arrotondamento Consegna Manuale',
+    'delivery' => 'Spese Trasporto',
+  ),
   'dynamics' => 
   array (
     'values' => 

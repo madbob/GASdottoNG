@@ -30,7 +30,18 @@ return array (
     'admin_supplier_movements' => 'Amministrare i movimenti contabili del fornitore',
     'admin_multigas' => 'Amministrare la modalità Multi-GAS su questa istanza',
   ),
+  'roles' => 
+  array (
+    'admin' => 'Amministratore',
+    'secondary_admin' => 'Amministratore GAS Secondario',
+  ),
   'name' => 'Permessi',
+  'supplier' => 
+  array (
+    'change' => 'Puoi modificare il fornitore',
+    'orders' => 'Puoi aprire nuovi ordini per il fornitore',
+    'deliveries' => 'Gestisci le consegne per il fornitore',
+  ),
   'role' => 'Ruolo',
   'help' => 
   array (

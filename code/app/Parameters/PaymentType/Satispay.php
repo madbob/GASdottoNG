@@ -17,7 +17,7 @@ class Satispay extends PaymentType
     public function definition()
     {
         return (object) [
-            'name' => _i('Satispay'),
+            'name' => 'Satispay',
             'identifier' => true,
             'icon' => 'cloud-plus',
             'active_for' => 'App\User',

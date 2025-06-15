@@ -14,6 +14,15 @@ return array (
     'suspend' => '',
     'arbitrary_dates' => 'Von hier aus ist es möglich, beliebige Termine in den Lieferkalender einzutragen, auch für noch nicht vorhandene, zukünftige Bestellungen. Diese Funktion wird empfohlen, um die Koordination zwischen den verschiedenen Verantwortlichen innerhalb der Bestellgemeinschaft zu erleichtern und die Aktivitäten langfristig zu planen.',
   ),
+  'cycle' => 
+  array (
+    'two_weeks' => 'Alle zwei Wochen',
+    'first_of_month' => 'Erster des Monats',
+    'second_of_month' => 'Zweiter des Monats',
+    'third_of_month' => 'Dritter des Monats',
+    'fourth_of_month' => 'Vierter des Monats',
+    'last_of_month' => 'Letzter Tag des Monats',
+  ),
   'name' => 'Benachrichtigung',
   'notices' => 
   array (

@@ -11,15 +11,15 @@ class ManualWelcome extends MailType
 
     public function description()
     {
-        return _i('Messaggio inviato ai nuovi utenti creati sulla piattaforma.');
+        return __('mail.welcome.description');
     }
 
     public function params()
     {
         return [
-            'username' => _i('Username assegnato al nuovo utente'),
-            'gas_access_link' => _i('Link per accedere la prima volta'),
-            'gas_login_link' => _i('Link della pagina di login'),
+            'username' => __('mail.approved.username'),
+            'gas_access_link' => __('mail.welcome.link'),
+            'gas_login_link' => __('mail.approved.link'),
         ];
     }
 

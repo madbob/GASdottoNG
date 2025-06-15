@@ -15,6 +15,6 @@ class Captcha implements Rule
 
     public function message()
     {
-        return _i('Il codice di controllo è sbagliato');
+        return __('user.help.wrong_control_error');
     }
 }

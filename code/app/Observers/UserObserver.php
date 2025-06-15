@@ -17,7 +17,7 @@ class UserObserver
         */
         $test = User::withTrashed()->withoutGlobalScopes()->where('id', '!=', $user->id)->where('username', $user->username)->first();
         if ($test != null) {
-            throw new IllegalArgumentException(_i('Username già assegnato'), 'username');
+            throw new IllegalArgumentException('Username già assegnato', 'username');
         }
     }
 
@@ -26,7 +26,7 @@ class UserObserver
         if (filled($user->firstname) && filled($user->lastname)) {
             $test = User::where('id', '!=', $user->id)->where('firstname', $user->firstname)->where('lastname', $user->lastname)->first();
             if ($test != null) {
-                throw new IllegalArgumentException(_i('Nome e cognome già presenti'), 'lastname');
+                throw new IllegalArgumentException('Nome e cognome già presenti', 'lastname');
             }
         }
     }
@@ -105,7 +105,7 @@ class UserObserver
         if (filled($user->card_number)) {
             $test = User::where('id', '!=', $user->id)->where('gas_id', $user->gas_id)->where('card_number', $user->card_number)->count();
             if ($test != 0) {
-                throw new IllegalArgumentException(_i('Numero tessera già assegnato'), 'card_number');
+                throw new IllegalArgumentException('Numero tessera già assegnato', 'card_number');
             }
         }
     }

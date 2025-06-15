@@ -11,7 +11,7 @@ class UserDecredit extends MovementType
 
     public function initNew($type)
     {
-        $type->name = _i('Reso credito per un socio');
+        $type->name = __('movements.defaults.decredit');
         $type->sender_type = 'App\User';
         $type->target_type = null;
 

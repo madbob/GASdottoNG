@@ -14,19 +14,34 @@ function currentLang()
         */
         $gas = currentAbsoluteGas();
         if (is_null($gas)) {
-            return 'it_IT';
+            return 'it';
         }
         else {
             $lang = $gas->getConfig('language');
         }
     }
 
-    return $lang;
+    return explode('_', $lang)[0];
+}
+
+function currentLangExtended()
+{
+    $extended = [
+        'it' => 'it_IT',
+        'en' => 'en_EN',
+        'de' => 'de_DE',
+        'fr' => 'fr_FR',
+        'nl' => 'nl_NL',
+        'nb' => 'nb_NO',
+    ];
+
+    $lang = currentLang();
+    return $extended[$lang] ?? 'it_IT';
 }
 
 function htmlLang()
 {
-    return str_replace('_', '-', currentLang());
+    return str_replace('_', '-', currentLangExtended());
 }
 
 function translateNumberFormat($value)
@@ -65,19 +80,15 @@ function guessDecimal($value)
     return $ret;
 }
 
-/*
-    Se vengono aggiunte nuove traduzioni, correggere anche il file
-    code/config/laravel-gettext.php
-*/
 function getLanguages()
 {
     return [
-        'it_IT' => 'Italiano',
-        'en_EN' => 'English',
-        'de_DE' => 'Deutsch',
-        'fr_FR' => 'Français',
-        'nl_NL' => 'Nederlands',
-        'nb_NO' => 'Norwegian Bokmål',
+        'it' => 'Italiano',
+        'en' => 'English',
+        'de' => 'Deutsch',
+        'fr' => 'Français',
+        'nl' => 'Nederlands',
+        'nb' => 'Norwegian Bokmål',
     ];
 }
 

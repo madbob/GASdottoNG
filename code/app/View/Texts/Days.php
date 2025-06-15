@@ -87,27 +87,27 @@ class Days
         $ret = null;
 
         switch ($locale) {
-            case 'it_IT':
+            case 'it':
                 $ret = self::it();
                 break;
 
-            case 'en_EN':
+            case 'en':
                 $ret = self::en();
                 break;
 
-            case 'de_DE':
+            case 'de':
                 $ret = self::de();
                 break;
 
-            case 'fr_FR':
+            case 'fr':
                 $ret = self::fr();
                 break;
 
-            case 'nb_NO':
+            case 'nb':
                 $ret = self::nb();
                 break;
 
-            case 'nl_NL':
+            case 'nl':
                 $ret = self::nl();
                 break;
         }

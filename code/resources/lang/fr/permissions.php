@@ -30,7 +30,18 @@ return array (
     'admin_supplier_movements' => 'Gestion des mouvements comptables des fournisseurs',
     'admin_multigas' => '',
   ),
+  'roles' => 
+  array (
+    'admin' => '',
+    'secondary_admin' => '',
+  ),
   'name' => 'Permissions',
+  'supplier' => 
+  array (
+    'change' => 'Les fournisseurs peuvent être modifiés',
+    'orders' => 'Vous pouvez ouvrir de nouvelles commandes pour le fournisseur',
+    'deliveries' => 'Gérer les livraisons du fournisseur',
+  ),
   'role' => 'Rôle',
   'help' => 
   array (

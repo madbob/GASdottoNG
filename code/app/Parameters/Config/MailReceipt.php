@@ -17,8 +17,8 @@ class MailReceipt extends Config
     public function default()
     {
         return (object) [
-            'subject' => _i('Nuova fattura da %[gas_name]'),
-            'body' => _i("In allegato l'ultima fattura da %[gas_name]"),
+            'subject' => __('mail.receipt.defaults.subject'),
+            'body' => __('mail.receipt.defaults.body'),
         ];
     }
 }

@@ -46,15 +46,15 @@ class Users extends CSVImporter
             */
             if ($identifier == 'address') {
                 $ret['address_0'] = (object) [
-                    'label' => _i('Indirizzo (Via)'),
+                    'label' => __('user.address_part.street'),
                 ];
 
                 $ret['address_1'] = (object) [
-                    'label' => _i('Indirizzo (Città)'),
+                    'label' => __('user.address_part.city'),
                 ];
 
                 $ret['address_2'] = (object) [
-                    'label' => _i('Indirizzo (CAP)'),
+                    'label' => __('user.address_part.zip'),
                 ];
             }
             else {
@@ -73,51 +73,43 @@ class Users extends CSVImporter
 
         $ret['birthday'] = (object) [
             'label' => __('user.birthdate'),
-            'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')]),
+            'explain' => __('generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
         ];
 
         $ret['taxcode'] = (object) [
-            'label' => _i('Codice Fiscale'),
+            'label' => __('user.taxcode'),
         ];
 
         $ret['member_since'] = (object) [
-            'label' => _i('Membro da'),
-            'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')]),
+            'label' => __('user.member_since'),
+            'explain' => __('generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
         ];
 
         $ret['card_number'] = (object) [
-            'label' => _i('Numero Tessera'),
+            'label' => __('user.card_number'),
         ];
 
         $ret['last_login'] = (object) [
-            'label' => _i('Ultimo Accesso'),
-            'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')]),
+            'label' => __('user.last_login'),
+            'explain' => __('generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
         ];
 
         $groups = Group::where('context', 'user')->orderBy('name', 'asc')->get();
         foreach ($groups as $group) {
             $ret['group_' . $group->id] = (object) [
-                'label' => _i('Aggregazione %s', [$group->name]),
-                'explain' => _i('Se specificato, deve contenere il nome di uno dei Gruppi impostati nel pannello "Configurazioni" per questa Aggregazione'),
+                'label' => __('user.formatted_aggregation', ['name' => $group->name]),
+                'explain' => __('export.help.importing.user.aggregation'),
             ];
         }
 
         $ret['ceased'] = (object) [
-            'label' => _i('Cessato'),
-            'explain' => _i('Indicare "true" o "false"'),
+            'label' => __('user.statuses.deleted'),
+            'explain' => __('export.help.importing.user.deleted'),
         ];
-
-        $gas = currentAbsoluteGas();
-        if ($gas->hasFeature('shipping_places')) {
-            $ret['preferred_delivery_id'] = (object) [
-                'label' => _i('Luogo di Consegna'),
-                'explain' => _i('Se specificato, deve contenere il nome di uno dei Luoghi di Consegna impostati nel pannello "Configurazioni"'),
-            ];
-        }
 
         $ret['credit'] = (object) [
             'label' => __('movements.current_credit'),
-            'explain' => _i('Attenzione! Usare questo attributo solo in fase di importazione iniziale degli utenti, e solo per i nuovi utenti, o i saldi risulteranno sempre incoerenti!'),
+            'explain' => __('user.help.importing.user.balance'),
         ];
     }
 
@@ -143,8 +135,7 @@ class Users extends CSVImporter
         return $this->storeUploadedFile($request, [
             'type' => 'users',
             'extra_description' => [
-                _i('Se il login è già esistente il relativo utente sarà aggiornato coi dati letti dal file.'),
-                _i('Altrimenti verrà inviata una email di invito con il link da visitare per accedere la prima volta e definire la propria password.'),
+                __('export.help.importing.user.instruction'),
             ],
             'sorting_fields' => $this->fields(),
         ]);

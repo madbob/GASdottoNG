@@ -20,7 +20,7 @@
 
                 $supplier_roles = rolesByClass('App\Supplier');
                 foreach($supplier_roles as $sr) {
-                    $values_for_contacts[$sr->id] = __('generic.named_all', $sr->name);
+                    $values_for_contacts[$sr->id] = __('generic.named_all', ['name' => $sr->name]);
                 }
 
                 @endphp

@@ -6,8 +6,14 @@ return array (
     'void' => 'Cancel Reservation',
     'statuses' => 
     array (
+      'open' => 'Reservations Open',
+      'closed' => 'Reservations Closed',
       'shipped' => 'Delivered',
+      'paying' => 'User Payment',
+      'archived' => 'Archived',
+      'suspended' => 'Pending',
       'booked' => 'Booked',
+      'to_deliver' => 'To deliver',
       'saved' => 'Saved',
     ),
     'nav' => 
@@ -23,6 +29,9 @@ return array (
     'pending_packages_notice' => 'Warning: this order is closed, but it is possible to still reserve some product to complete the packages to deliver.',
     'send_booking_summaries' => 'This mail will be sent to those who have participated in the order but whose reservation has not yet been delivered.',
     'send_delivery_summaries' => 'This mail will be sent to those who have participated in the order and whose reservation has actually been delivered.',
+    'no_partecipating' => 'You did not participate in this order',
+    'formatted_booked_amount' => 'You have ordered :amount',
+    'formatted_booked_amount_with_friends' => 'You have ordered :amount + :friends',
     'product_selection' => 'To enable or disable products from the supplier list into the order',
     'booked_modifier_column' => 'Product Modifier, on Booked Quantities. Displayed only if the modifier is active for a product within the order',
     'delivered_modifier_column' => 'Product Modifier, on Shipped Quantities. Displayed only if the modifier is active for a product within the order',
@@ -84,7 +93,10 @@ return array (
     'permit' => 'Yes, permit other bookings',
     'permit_all' => 'Yes, and care on the quantities booked by all groups',
   ),
+  'and_more' => 'and other',
+  'boxes' => 'Number of Packs',
   'supplier' => 'Supplier',
+  'booking_date_time' => 'Date/Time of Booking',
   'list_open' => 'Open Orders',
   'dates' => 
   array (
@@ -108,6 +120,7 @@ return array (
   'totals' => 
   array (
     'shipped' => 'Total Delivered',
+    'with_modifiers' => 'Total including Modifiers',
     'total' => 'Total',
     'taxable' => 'Taxable Total',
     'vat' => 'VAT Total',
@@ -119,7 +132,42 @@ return array (
     'to_pay' => 'Amount to be paid',
     'selected' => '',
   ),
+  'constraints' => 
+  array (
+    'quantity' => 'Maximum quantity is 9999.99',
+    'discrete' => 'Quantity of this product must be integer',
+    'global_min' => 'Global Minimum: :still (:global total)',
+    'global_max_help' => ':still :measure missing to complete the package for this order',
+    'global_max_short' => ':icon Available: :quantity',
+    'global_max' => 'Available: :still (:global total)',
+    'global_max_generic' => 'Quantity over the availability',
+    'relative_max_formatted' => 'Suggested Max: :quantity',
+    'relative_max' => 'Quantity over the suggested maximum',
+    'relative_min_formatted' => 'Min: :quantity',
+    'relative_min' => 'Quantity below the minimum allowed',
+    'relative_multiple_formatted' => 'Multiple: :quantity',
+    'relative_multiple' => 'Quantity not a multiple of the allowed value',
+  ),
+  'documents' => 
+  array (
+    'shipping' => 
+    array (
+      'filename' => 'Delivery details orders :suppliers.pdf',
+      'heading' => 'Details order :identifier to :supplier on :date',
+      'short_heading' => 'Deliveries Details on :date',
+    ),
+    'summary' => 
+    array (
+      'heading' => 'Products in order %s at %s',
+    ),
+    'table' => 
+    array (
+      'filename' => 'Table Order %s to %s.csv',
+    ),
+  ),
   'all' => 'Orders',
+  'pending_packages' => 'Packages to be Completed',
+  'booking_aggregation' => 'Booking Aggregation',
   'statuses' => 
   array (
     'unchange' => 'Unchanged',
@@ -179,14 +227,6 @@ return array (
   'help_order_export_shipping' => 'From here you can obtain a document with all the informations about each reservation. Useful to handle while managing deliveries.',
   'notify_days_before' => 'How many days before?',
   'handle_packages' => 'Force pack completion',
-  'documents' => 
-  array (
-    'shipping' => 
-    array (
-      'heading' => 'Details order :identifier to :supplier on :date',
-      'short_heading' => 'Deliveries Details on :date',
-    ),
-  ),
   'list_delivering' => 'Orders in Delivery',
   'help_aggregate_export_table' => 'Here you can obtain a CSV document with the details of all ordered products in the current order.',
   'help_aggregate_export_table_for_delivery' => '',

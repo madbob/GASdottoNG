@@ -44,13 +44,16 @@ class MaxAvailable extends Constraint
             // viene valorizzato staticamente da Order::pendingPackages() ai
             // prodotti per i quali si devono completare le confezioni
             if ($product->is_pending_package ?? false) {
-                return _i('%s Disponibile: %.02f', [
-                    sprintf('<span class="badge rounded-pill bg-primary" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="%s" data-bs-original-title="" title="">?</span>', _i('Mancano %s %s per completare la confezione per questo ordine', [$still_available, $product->printableMeasure(true)])),
-                    $still_available,
+                return __('orders.constraints.global_max_short', [
+                    'icon' => sprintf('<span class="badge rounded-pill bg-primary" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="%s" data-bs-original-title="" title="">?</span>', __('orders.constraints.global_max_help', ['still' => $still_available, 'measure' => $product->printableMeasure(true)])),
+                    'quantity' => sprintf('%.02f', $still_available),
                 ]);
             }
             else {
-                return _i('Disponibile: %.02f (%.02f totale)', [$still_available, $product->max_available]);
+                return __('orders.constraints.global_max', [
+                    'still' => $still_available,
+                    'global' => $product->max_available,
+                ]);
             }
         }
 
@@ -64,7 +67,7 @@ class MaxAvailable extends Constraint
 
         if ($product->max_available != 0) {
             if ($quantity > ($this->stillAvailable($product, $order) + $booked->quantity)) {
-                throw new InvalidQuantityConstraint(_('Quantità superiore alla disponibilità'), 3);
+                throw new InvalidQuantityConstraint(__('orders.constraints.global_max_generic'), 3);
             }
         }
     }

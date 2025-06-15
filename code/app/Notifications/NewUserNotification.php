@@ -21,7 +21,7 @@ class NewUserNotification extends ManyMailNotification implements ShouldQueue
     public function toMail($notifiable)
     {
         $message = $this->initMailMessage($notifiable);
-        $message->subject(_i('Nuovo utente registrato'))->view('emails.newuser', ['user' => $this->user]);
+        $message->subject(__('mail.new_user_notification.defaults.subject'))->view('emails.newuser', ['user' => $this->user]);
 
         return $message;
     }

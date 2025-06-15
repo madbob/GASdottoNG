@@ -39,7 +39,7 @@ class ForgotPasswordController extends Controller
         if (is_null($user)) {
             Log::info('Utente non trovato per reset password: ' . $identifier);
             Session::flash('message_type', 'danger');
-            Session::flash('message', _i('Username o indirizzo e-mail non trovato'));
+            Session::flash('message', __('auth.help.missing_user_or_mail'));
 
             return redirect(url('password/reset'));
         }
@@ -49,7 +49,7 @@ class ForgotPasswordController extends Controller
         if (empty($email)) {
             Log::info('Utente senza email per reset password: ' . $identifier);
             Session::flash('message_type', 'danger');
-            Session::flash('message', _i("L'utente indicato non ha un indirizzo mail valido"));
+            Session::flash('message', __('auth.help.missing_email'));
 
             return redirect(url('password/reset'));
         }
@@ -57,7 +57,7 @@ class ForgotPasswordController extends Controller
         $request->merge(['email' => $email]);
         $this->realSendResetLinkEmail($request);
 
-        Session::flash('message', _i("Ti è stata inviata una mail col link per procedere all'aggiornamento della password"));
+        Session::flash('message', __('auth.help.reset_email_notice'));
 
         return redirect(url('password/reset'));
     }

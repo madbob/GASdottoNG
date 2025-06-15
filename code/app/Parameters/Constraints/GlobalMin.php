@@ -39,7 +39,10 @@ class GlobalMin extends Constraint
         if ($product->$field != 0) {
             $still_available = $this->stillAvailable($product, $order);
             if ($still_available > 0) {
-                return _i('Minimo Complessivo: %.02f (%.02f totale)', [$still_available, $product->global_min]);
+                return __('orders.constraints.global_min', [
+                    'still' => sprintf('%.02f', $still_available),
+                    'global' => sprintf('%.02f', $product->global_min),
+                ]);
             }
         }
 

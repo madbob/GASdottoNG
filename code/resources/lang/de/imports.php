@@ -1,17 +1,28 @@
 <?php
 
 return array (
+  'help' => 
+  array (
+    'new_remote_products_list' => 'Neues Update für die Produktliste :supplier (:date) verfügbar. Abrufbar über Lieferanten > Remote Index.',
+    'failed_file' => 'Die Datei wurde nicht korrekt hochgeladen',
+    'failure_notice' => 'Import fehlgeschlagen',
+    'invalid_command' => 'Ungültiger Befehl :type/:step',
+    'currency_id' => '',
+    'unique_user_id' => 'Die Benutzer werden über den Nutzernamen oder die E-Mail-Adresse identifiziert (letztere muss eindeutig sein!).',
+    'no_user_found' => 'Benutzer nicht gefunden: :name',
+    'no_supplier_found' => 'Lieferant nicht gefunden: :name',
+    'no_currency_found' => '',
+    'imported_movements_notice' => 'Importierte Bewegungen',
+    'main' => 'Klicke und ziehe die Attribute aus der rechten Spalte in die mittlere, um jeder Spalte deiner Datei eine Bedeutung bzw. Überschrift zuzuweisen.',
+    'remote_index' => '',
+  ),
   'ignore_slot' => '[Ignorieren]',
+  'name_or_vat' => 'Name oder MwSt.-Nummer',
   'imported_users' => 'Importierte Nutzer',
   'do' => 'Importieren',
   'update_supplier' => 'Vorhandenen Lieferant ändern',
   'select_supplier' => 'Einen Lieferant auswählen',
   'products_count' => 'Die Datei enthält %s Produkte.',
-  'help' => 
-  array (
-    'main' => 'Klicke und ziehe die Attribute aus der rechten Spalte in die mittlere, um jeder Spalte deiner Datei eine Bedeutung bzw. Überschrift zuzuweisen.',
-    'remote_index' => '',
-  ),
   'index_column' => 'Spalte',
   'column' => 'Spalte',
   'imported_suppliers' => 'Importierte Lieferanten',

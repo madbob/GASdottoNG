@@ -40,8 +40,8 @@ class Date extends Model implements Datable
     public static function types()
     {
         return [
-            'confirmed' => _i('Confermato'),
-            'temp' => _i('Provvisorio'),
+            'confirmed' => __('generic.confirmed'),
+            'temp' => __('generic.temporary'),
         ];
     }
 

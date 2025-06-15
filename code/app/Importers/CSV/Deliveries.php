@@ -15,20 +15,20 @@ class Deliveries extends CSVImporter
     {
         return [
             'username' => (object) [
-                'label' => _i('Username'),
+                'label' => __('auth.username'),
                 'mandatory' => true,
             ],
             'first' => (object) [
-                'label' => _i('Primo prodotto'),
+                'label' => __('export.importing.deliveries.first_product'),
                 'mandatory' => true,
-                'explain' => _i("Usa questo elemento per identificare il primo prodotto che appare nell'elenco"),
+                'explain' => __('export.help.importing.deliveries.first_product'),
             ],
         ];
     }
 
     public function extraInformations()
     {
-        return _i('Da qui puoi reimportare un CSV generato dalla funzione "Tabella Complessiva Prodotti" dell\'ordine, dopo averlo manualmente elaborato con le quantità consegnate per ogni utente.');
+        return __('export.importing.deliveries.instruction');
     }
 
     public function testAccess($request)
@@ -50,7 +50,7 @@ class Deliveries extends CSVImporter
                 'aggregate_id' => $request->input('aggregate_id'),
             ],
             'extra_description' => [
-                _i('Nota bene: come nelle normali consegne, si assume che la quantità consegnata dei prodotti con pezzatura sia qui espressa a peso e non in numero di pezzi.'),
+                __('export.importing.deliveries.notice'),
             ],
         ]);
     }
@@ -79,7 +79,7 @@ class Deliveries extends CSVImporter
             $name = $header[$i];
 
             foreach ($aggregate->orders as $order) {
-                if ($name == _i('Totale Prezzo')) {
+                if ($name == __('orders.totals.total')) {
                     continue;
                 }
 
@@ -87,7 +87,7 @@ class Deliveries extends CSVImporter
 
                 if ($p) {
                     if ($target_order && $target_order->id != $order->id) {
-                        throw new \InvalidArgumentException(_i('Operazione fallita: nel documento importato sono presenti prodotti di diversi ordini'));
+                        throw new \InvalidArgumentException('Operazione fallita: nel documento importato sono presenti prodotti di diversi ordini');
                     }
 
                     $target_order = $order;
@@ -100,7 +100,7 @@ class Deliveries extends CSVImporter
                     break;
                 }
                 else {
-                    $errors[] = _i('Prodotto non identificato: %s', [$name]);
+                    $errors[] = __('export.importing.deliveries.product_error', ['name' => $name]);
                 }
             }
         }
@@ -109,7 +109,7 @@ class Deliveries extends CSVImporter
         $data = [];
 
         if (is_null($target_order)) {
-            $errors[] = _i('Ordine non identificato');
+            $errors[] = __('export.importing.deliveries.order_error');
         }
         else {
             DB::beginTransaction();
@@ -225,7 +225,7 @@ class Deliveries extends CSVImporter
         }
 
         return [
-            'title' => _i('Consegne importate'),
+            'title' => __('export.importing.deliveries.done'),
             'objects' => $bookings,
             'errors' => $errors,
         ];

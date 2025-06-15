@@ -4,6 +4,8 @@ return array (
   'prices' => 
   array (
     'unit' => 'Unit price',
+    'unit_no_vat' => 'Unit price (without VAT)',
+    'package' => 'Package price',
   ),
   'name' => 'Product',
   'code' => 'Supplier code',
@@ -14,10 +16,12 @@ return array (
   'min_quantity' => 'Minimum',
   'max_quantity' => 'Suggested Maximum',
   'available' => 'Available',
-  'list' => 'Products',
-  'sorting' => 'Sorting',
   'help' => 
   array (
+    'unit_no_vat' => 'To be used in combination with VAT Rate',
+    'package_price' => 'If specified, the unit price will be calculated as package price / package size',
+    'importing_categories_and_measures' => 'Not found categories and measure units names will be created.',
+    'imported_notice' => 'Imported products',
     'available_explain' => 'The maximum amount of product that can be collectively booked in one order',
     'bookable' => 'Specifies if the product is available for ordering within the upcoming supplier orders',
     'pending_orders_change_price' => 'There are pending orders and archived ones where the product whose price you just modified is listed. Please choose those in which you want the new price to be applied (for the product and/or any price differences in potential variants).',
@@ -37,6 +41,9 @@ return array (
     'vat_rate' => '',
     'notice_removing_product_in_orders' => '',
   ),
+  'weight_with_measure' => 'Weight (in KG)',
+  'list' => 'Products',
+  'sorting' => 'Sorting',
   'variant' => 
   array (
     'matrix' => 'Variants\' Modifications Matrix',

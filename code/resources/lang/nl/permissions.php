@@ -30,7 +30,18 @@ return array (
     'admin_supplier_movements' => '',
     'admin_multigas' => '',
   ),
+  'roles' => 
+  array (
+    'admin' => '',
+    'secondary_admin' => '',
+  ),
   'name' => 'Toegestaan',
+  'supplier' => 
+  array (
+    'change' => 'U kunt de leverancier wijzigen',
+    'orders' => 'U kunt nieuwe bestellingen voor de leverancier plaatsen',
+    'deliveries' => 'Beheer de leveringen voor de leverancier',
+  ),
   'role' => 'Rol',
   'help' => 
   array (

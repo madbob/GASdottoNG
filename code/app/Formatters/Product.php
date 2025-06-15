@@ -23,7 +23,7 @@ class Product extends Formatter
 
     public static function formatActive($obj, $context)
     {
-        return $obj->active ? _i('Sì') : _i('No');
+        return $obj->active ? __('generic.yes') : __('generic.no');
     }
 
     public static function formatVat($obj, $context)
@@ -32,7 +32,7 @@ class Product extends Formatter
             return $obj->vat_rate->percentage;
         }
         else {
-            return _i('Nessuna');
+            return __('generic.none');
         }
     }
 

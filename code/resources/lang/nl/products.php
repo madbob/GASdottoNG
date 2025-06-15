@@ -4,6 +4,8 @@ return array (
   'prices' => 
   array (
     'unit' => 'Eenheidsprijs',
+    'unit_no_vat' => '',
+    'package' => '',
   ),
   'name' => 'Product',
   'code' => 'Leverancierscode',
@@ -14,10 +16,12 @@ return array (
   'min_quantity' => 'Minimum',
   'max_quantity' => 'Aanbevolen maximum',
   'available' => 'beschikbaar',
-  'list' => 'Producten',
-  'sorting' => '',
   'help' => 
   array (
+    'unit_no_vat' => '',
+    'package_price' => '',
+    'importing_categories_and_measures' => 'Er worden categorieën en meeteenheden aangemaakt waarvan de naam niet onder de bestaande categorieën en meeteenheden worden gevonden.',
+    'imported_notice' => 'Geïmporteerde producten',
     'available_explain' => '',
     'bookable' => '',
     'pending_orders_change_price' => '',
@@ -37,6 +41,9 @@ return array (
     'vat_rate' => '',
     'notice_removing_product_in_orders' => '',
   ),
+  'weight_with_measure' => '',
+  'list' => 'Producten',
+  'sorting' => '',
   'variant' => 
   array (
     'matrix' => 'Variant aanmaken/wijzigen',

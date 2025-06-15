@@ -429,7 +429,7 @@ class BookingsService extends BaseService
 
             if ($current_active_balance < $user->gas->restrict_booking_to_credit['limit']) {
                 DB::rollback();
-                throw new IllegalArgumentException(_i('Credito non sufficiente'), 1);
+                throw new IllegalArgumentException('Credito non sufficiente');
             }
         }
     }

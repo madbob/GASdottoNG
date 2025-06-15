@@ -1,10 +1,30 @@
 <?php
 
 return array (
+  'waiting' => 'In de wacht',
+  'statuses' => 
+  array (
+    'to_verify' => 'Te controleren',
+    'verified' => 'Gecontroleerd',
+    'payed' => 'Betaald',
+  ),
+  'default_note' => 'Betaling factuur :name',
+  'documents' => 
+  array (
+    'invoice' => 
+    array (
+      'heading' => 'Factuur :identifier',
+    ),
+    'receipts' => 
+    array (
+      'list_filename' => '',
+    ),
+  ),
   'balances' => 
   array (
     'supplier' => 'Saldo leverancier',
   ),
+  'forwarded' => 'Doorgezonden',
   'orders' => 'Betrokken bestellingen',
   'help' => 
   array (

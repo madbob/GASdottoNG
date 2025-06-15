@@ -28,12 +28,12 @@ class AttachmentsController extends Controller
         $target = $target_type::findOrFail($request->input('target_id'));
 
         if ($target->attachmentPermissionGranted() === false) {
-            return $this->errorResponse(_i('Non autorizzato'));
+            return $this->errorResponse(__('generic.unauthorized'));
         }
 
         $a = $target->attachByRequest($request->all());
         if ($a === false) {
-            return $this->errorResponse(_i('File non caricato correttamente'));
+            return $this->errorResponse(__('imports.help.failed_file'));
         }
 
         return $this->successResponse([
@@ -50,12 +50,12 @@ class AttachmentsController extends Controller
 
         $a = Attachment::findOrFail($id);
         if ($a->attached->attachmentPermissionGranted() === false) {
-            return $this->errorResponse(_i('Non autorizzato'));
+            return $this->errorResponse(__('generic.unauthorized'));
         }
 
         $a = $a->attached->attachByRequest($request->all(), $a->id);
         if ($a === false) {
-            return $this->errorResponse(_i('File non caricato correttamente'));
+            return $this->errorResponse(__('imports.help.failed_file'));
         }
 
         return $this->successResponse([
@@ -107,7 +107,7 @@ class AttachmentsController extends Controller
             I files autogenerati non possono essere eliminati. Mai
         */
         if ($a->internal || $a->attached->attachmentPermissionGranted() === false) {
-            return $this->errorResponse(_i('Non autorizzato'));
+            return $this->errorResponse(__('generic.unauthorized'));
         }
 
         $a->delete();

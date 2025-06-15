@@ -1,17 +1,28 @@
 <?php
 
 return array (
+  'help' => 
+  array (
+    'new_remote_products_list' => 'New update available for the product list :supplier (:date). Find it in Suppliers -> Remote Index.',
+    'failed_file' => 'File not uploaded correctly',
+    'failure_notice' => 'Failed import',
+    'invalid_command' => 'Command :type/:step not valid',
+    'currency_id' => 'One of currency used in the system. If not specified, the default will be used (:default). Accepted values: :values',
+    'unique_user_id' => 'Users are identified by their username or e-mail address (which should be unique!).',
+    'no_user_found' => 'User not found: :name',
+    'no_supplier_found' => 'Supplier not found: :name',
+    'no_currency_found' => 'Currency not found: :name',
+    'imported_movements_notice' => 'Imported transactions',
+    'main' => 'Click and drag the attributes from the right column to the central one to assign a meaning to each column in your file.',
+    'remote_index' => 'This function allows you to automatically access and keep updated the price lists shared on :url. Warning: it is an experimental function, use with caution!',
+  ),
   'ignore_slot' => '[Ignore]',
+  'name_or_vat' => 'Name or VAT Number',
   'imported_users' => 'Imported users',
   'do' => 'Import',
   'update_supplier' => 'Update existing supplier',
   'select_supplier' => 'Select a supplier',
   'products_count' => '%s products in the file.',
-  'help' => 
-  array (
-    'main' => 'Click and drag the attributes from the right column to the central one to assign a meaning to each column in your file.',
-    'remote_index' => 'This function allows you to automatically access and keep updated the price lists shared on :url. Warning: it is an experimental function, use with caution!',
-  ),
   'index_column' => 'Column %s:',
   'column' => 'Column',
   'imported_suppliers' => 'Suppliers imported',

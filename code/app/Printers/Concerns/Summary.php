@@ -38,7 +38,7 @@ trait Summary
 
         if (empty($rows) === false) {
             $last_row = array_fill(0, count($fields), '');
-            $last_row[0] = _i('Totale con Modificatori');
+            $last_row[0] = __('orders.totals.with_modifiers');
             $last_row[$price_offset] = printablePrice($total);
             $rows[] = $last_row;
         }

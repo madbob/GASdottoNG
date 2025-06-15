@@ -25,7 +25,7 @@ class BookingController extends Controller
     {
         $user = $request->user();
         if ($user->can('supplier.book', null) === false) {
-            return $this->errorResponse(_i('Non autorizzato'));
+            return $this->errorResponse(__('generic.unauthorized'));
         }
 
         /*

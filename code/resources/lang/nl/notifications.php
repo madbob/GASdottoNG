@@ -14,6 +14,15 @@ return array (
     'suspend' => '',
     'arbitrary_dates' => 'Vanaf hier kun je willekeurige data toevoegen aan je leveringskalender, zelfs voor bestellingen die nog niet bestaan. Deze functie wordt aanbevolen om de coördinatie van de verschillende contacten binnen de GAS te vergemakkelijken en om activiteiten op lange termijn te plannen.',
   ),
+  'cycle' => 
+  array (
+    'two_weeks' => '',
+    'first_of_month' => '',
+    'second_of_month' => '',
+    'third_of_month' => '',
+    'fourth_of_month' => '',
+    'last_of_month' => '',
+  ),
   'name' => 'Melding',
   'notices' => 
   array (

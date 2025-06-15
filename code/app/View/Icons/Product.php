@@ -13,7 +13,7 @@ class Product extends IconsMap
                 'test' => function ($obj) {
                     return !$obj->active;
                 },
-                'text' => _i('Disabilitato'),
+                'text' => __('generic.disabled'),
             ],
             'hidden-circle' => (object) [
                 'test' => function ($obj) {

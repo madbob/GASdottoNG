@@ -6,8 +6,14 @@ return array (
     'void' => 'Reservering annuleren',
     'statuses' => 
     array (
+      'open' => 'Open reserveringen',
+      'closed' => 'Gesloten reserveringen',
       'shipped' => 'Geleverd',
+      'paying' => '',
+      'archived' => 'Gearchiveerd',
+      'suspended' => 'Opgeschort',
       'booked' => '',
+      'to_deliver' => 'Te leveren',
       'saved' => 'Opgeslagen',
     ),
     'nav' => 
@@ -23,6 +29,9 @@ return array (
     'pending_packages_notice' => '',
     'send_booking_summaries' => '',
     'send_delivery_summaries' => '',
+    'no_partecipating' => 'Je hebt niet aan deze bestelling deelgenomen',
+    'formatted_booked_amount' => 'Je hebt besteld :amount',
+    'formatted_booked_amount_with_friends' => 'je hebt besteld :amount + :friends',
     'product_selection' => 'Om producten van de prijslijst van de leverancier binnen de bestelling in of uit te schakelen',
     'booked_modifier_column' => '',
     'delivered_modifier_column' => '',
@@ -84,7 +93,10 @@ return array (
     'permit' => '',
     'permit_all' => '',
   ),
+  'and_more' => '',
+  'boxes' => 'Aantal verpakkingen',
   'supplier' => 'Leverancier',
+  'booking_date_time' => '',
   'list_open' => 'Open bestellingen',
   'dates' => 
   array (
@@ -108,6 +120,7 @@ return array (
   'totals' => 
   array (
     'shipped' => 'Totaal geleverd',
+    'with_modifiers' => '',
     'total' => 'Totaal',
     'taxable' => 'Totaal bedrag',
     'vat' => 'Totaal BTW',
@@ -119,7 +132,42 @@ return array (
     'to_pay' => 'Te betalen bedrag',
     'selected' => '',
   ),
+  'constraints' => 
+  array (
+    'quantity' => '',
+    'discrete' => '',
+    'global_min' => '',
+    'global_max_help' => '',
+    'global_max_short' => '',
+    'global_max' => 'Beschikbaar: :still (:global totaal)',
+    'global_max_generic' => '',
+    'relative_max_formatted' => 'Aanbevolen maximum: :quantity',
+    'relative_max' => '',
+    'relative_min_formatted' => 'Minimum: :quantity',
+    'relative_min' => '',
+    'relative_multiple_formatted' => 'Meervoud: :quantity',
+    'relative_multiple' => '',
+  ),
+  'documents' => 
+  array (
+    'shipping' => 
+    array (
+      'filename' => 'Detail leveringen bestellingen :suppliers.pdf',
+      'heading' => 'Detail leveringen bestelling :identifier bij :supplier van :date',
+      'short_heading' => 'Leveringsdetails',
+    ),
+    'summary' => 
+    array (
+      'heading' => '',
+    ),
+    'table' => 
+    array (
+      'filename' => 'Tabel Bestelling %s bij %s.csv',
+    ),
+  ),
   'all' => 'Bestellingen',
+  'pending_packages' => '',
+  'booking_aggregation' => '',
   'statuses' => 
   array (
     'unchange' => '',
@@ -179,14 +227,6 @@ return array (
   'help_order_export_shipping' => 'Vanaf hier kunt u een PDF-document verkrijgen dat u kunt afdrukken en waarin u informatie over individuele reserveringen kunt vinden.',
   'notify_days_before' => '',
   'handle_packages' => '',
-  'documents' => 
-  array (
-    'shipping' => 
-    array (
-      'heading' => 'Detail leveringen bestelling :identifier bij :supplier van :date',
-      'short_heading' => 'Leveringsdetails',
-    ),
-  ),
   'list_delivering' => 'Bestellingen in leveringsfase',
   'help_aggregate_export_table' => 'Vanaf hier kunt u een CSV-document verkrijgen met de details van alle producten die in deze bestelling zijn gereserveerd.',
   'help_aggregate_export_table_for_delivery' => '',

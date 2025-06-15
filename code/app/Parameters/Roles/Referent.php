@@ -11,7 +11,7 @@ class Referent extends Role
 
     public function initNew($type)
     {
-        $type->name = _i('Referente');
+        $type->name = __('supplier.referent');
         $type->system = true;
         $type->actions = 'supplier.modify,supplier.orders,supplier.shippings,supplier.movements,supplier.invoices';
         $type->parent_id = $this->getID('admin');

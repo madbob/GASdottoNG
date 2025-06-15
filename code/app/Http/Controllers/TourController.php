@@ -19,73 +19,73 @@ class TourController extends Controller
         */
 
         $steps[] = (object) [
-            'title' => _i('Benvenuto in GASdotto!'),
-            'content' => _i('Qui ti diamo qualche suggerimento per iniziare ad utilizzare questa nuova piattaforma...'),
+            'title' => __('tour.welcome.title'),
+            'content' => __('tour.welcome.body'),
         ];
 
         $steps[] = (object) [
-            'title' => _i('I tuoi dati'),
-            'content' => _i('Cliccando qui accedi al pannello dei tuoi dati personali, da cui poi cambiare il tuo indirizzo email, la tua password di accesso e molto altro.'),
+            'title' => __('tour.profile.title'),
+            'content' => __('tour.profile.body'),
             'target' => '#menu_profile',
         ];
 
         if ($user->can('users.admin', $gas)) {
             $steps[] = (object) [
-                'title' => _i('Gli altri utenti'),
-                'content' => _i("Da qui consulti l'elenco degli utenti, ne modifichi i parametri, e ne puoi invitare di nuovi (o li puoi importare da un file CSV)."),
+                'title' => __('tour.users.title'),
+                'content' => __('tour.users.body'),
                 'target' => '#menu_users',
             ];
         }
 
         if ($user->can('supplier.add', $gas) || $user->can('supplier.modify', null)) {
             $steps[] = (object) [
-                'title' => _i('I fornitori e i listini'),
-                'content' => _i("Cliccando qui puoi consultare l'elenco dei fornitori, crearne di nuovi, modificarli, e per ciascuno caricare o modificare il relativo listino."),
+                'title' => __('tour.suppliers.title'),
+                'content' => __('tour.suppliers.body'),
                 'target' => '#menu_suppliers',
             ];
         }
 
         if ($user->can('supplier.orders', null) || $user->can('supplier.shippings', null)) {
             $steps[] = (object) [
-                'title' => _i('Gli ordini'),
-                'content' => _i("Da questa pagina accedi all'elenco degli ordini, da cui crearli e modificarli. Cliccando su ciascun ordine puoi trovare anche la tab 'Consegne' per tenere traccia delle consegne e generare i movimenti contabili di pagamento."),
+                'title' => __('tour.orders.title'),
+                'content' => __('tour.orders.body'),
                 'target' => '#menu_orders',
             ];
         }
 
         if ($user->can('supplier.book', null)) {
             $steps[] = (object) [
-                'title' => _i('Le prenotazioni'),
-                'content' => _i("Qui trovi l'elenco degli ordini attualmente in corso, e puoi sottoporre le tue prenotazioni: clicca su ciascun ordine, e specifica la quantità desiderata per ogni prodotto."),
+                'title' => __('tour.bookings.title'),
+                'content' => __('tour.bookings.body'),
                 'target' => '#menu_bookings',
             ];
         }
 
         if ($user->can('movements.view', $gas) || $user->can('movements.admin', $gas)) {
             $steps[] = (object) [
-                'title' => _i('La contabilità'),
-                'content' => _i('In questa pagina trovi tutti i movimenti contabili ed i relativi strumenti di amministrazione.'),
+                'title' => __('tour.accounting.title'),
+                'content' => __('tour.accounting.body'),
                 'target' => '#menu_accouting',
             ];
         }
 
         if ($user->can('gas.config', $gas)) {
             $steps[] = (object) [
-                'title' => _i('Tutte le configurazioni'),
-                'content' => _i('Cliccando qui trovi una moltitudine di parametri per personalizare il comportamento di questa istanza GASdotto.'),
+                'title' => __('tour.config.title'),
+                'content' => __('tour.config.body'),
                 'target' => '#menu_config',
             ];
         }
 
         $steps[] = (object) [
-            'title' => _i('Help in linea'),
-            'content' => _i('Aprendo i diversi pannelli di GASdotto, accanto a molti parametri trovi una icona blu: passandoci sopra il cursore del mouse, o pigiandoci sopra con il dito usando lo smartphone, ti viene mostrato un breve testo descrittivo che te ne illustra i dettagli.') . '<br><img class="img-fluid p-2 mt-2 bg-dark" src="' . asset('images/inline_help.gif') . '">',
+            'title' => __('tour.inline.title'),
+            'content' => __('tour.inline.body') . '<br><img class="img-fluid p-2 mt-2 bg-dark" src="' .  . '">',
         ];
 
         if ($user->can('users.admin', $gas)) {
             $steps[] = (object) [
-                'title' => _i('Dubbi?'),
-                'content' => _i("Se hai un dubbio sull'utilizzo di GASdotto, o una segnalazione, o una richiesta, cliccando qui trovi i nostri contatti."),
+                'title' => __('tour.last.title'),
+                'content' => __('tour.last.body'),
                 'target' => '#menu_help',
             ];
         }
@@ -94,7 +94,7 @@ class TourController extends Controller
             'dialogZ' => 2000,
             'nextLabel' => '>>',
             'prevLabel' => '<<',
-            'finishLabel' => _i('Finito'),
+            'finishLabel' => __('tour.finished'),
             'steps' => $steps,
         ]);
     }

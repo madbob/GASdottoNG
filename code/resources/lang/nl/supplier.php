@@ -1,6 +1,7 @@
 <?php
 
 return array (
+  'referent' => 'Contactpersoon',
   'payment_method' => 'Betaalwijze',
   'all' => 'Leveranciers',
   'products_list' => 

@@ -10,21 +10,21 @@ trait BookingStatus
             'test' => function ($obj) {
                 return $obj->status != 'shipped';
             },
-            'text' => _i('Da consegnare'),
+            'text' => __('orders.booking.statuses.to_deliver'),
         ];
 
         $ret['check'] = (object) [
             'test' => function ($obj) {
                 return $obj->status == 'shipped';
             },
-            'text' => _i('Consegnato'),
+            'text' => __('orders.booking.statuses.shipped'),
         ];
 
         $ret['save'] = (object) [
             'test' => function ($obj) {
                 return $obj->status == 'saved';
             },
-            'text' => _i('Salvato'),
+            'text' => __('orders.booking.statuses.saved'),
         ];
 
         return $ret;

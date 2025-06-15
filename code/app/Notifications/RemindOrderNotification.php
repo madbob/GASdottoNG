@@ -32,7 +32,9 @@ class RemindOrderNotification extends ManyMailNotification
         }
 
         if (empty($contacts) === false) {
-            $row .= _i('Per informazioni: %s', [implode(', ', array_filter($contacts))]) . "\n";
+            $row .= __('mail.contacts_prefix', [
+                'contacts' => implode(', ', array_filter($contacts)),
+            ]) . "\n";
         }
 
         $row .= $order->getBookingURL() . "\n";

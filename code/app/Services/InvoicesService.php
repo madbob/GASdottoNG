@@ -86,7 +86,7 @@ class InvoicesService extends BaseService
             $user = $this->ensureAuth(['supplier.invoices' => $supplier]);
         }
         else {
-            throw new IllegalArgumentException(_i('Fornitore non specificato'), 1);
+            throw new IllegalArgumentException('Fornitore non specificato');
         }
 
         $invoice = new Invoice();

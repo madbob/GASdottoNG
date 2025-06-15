@@ -17,8 +17,8 @@ class MailPasswordReset extends Config
     public function default()
     {
         return (object) [
-            'subject' => _i('Recupero Password'),
-            'body' => _i("È stato chiesto l'aggiornamento della tua password su GASdotto.\nClicca il link qui sotto per aggiornare la tua password, o ignora la mail se non hai chiesto tu questa operazione.\n%[gas_reset_link]"),
+            'subject' => __('auth.password_request_link'),
+            'body' => __('mail.password.defaults.body'),
         ];
     }
 }

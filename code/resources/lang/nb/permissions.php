@@ -30,7 +30,18 @@ return array (
     'admin_supplier_movements' => '',
     'admin_multigas' => '',
   ),
+  'roles' => 
+  array (
+    'admin' => '',
+    'secondary_admin' => '',
+  ),
   'name' => '',
+  'supplier' => 
+  array (
+    'change' => '',
+    'orders' => '',
+    'deliveries' => '',
+  ),
   'role' => '',
   'help' => 
   array (

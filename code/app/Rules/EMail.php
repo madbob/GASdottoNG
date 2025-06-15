@@ -15,6 +15,6 @@ class EMail implements Rule
 
     public function message()
     {
-        return _i("L'indirizzo e-mail è già registrato.");
+        return __('user.help.existing_email_error');
     }
 }

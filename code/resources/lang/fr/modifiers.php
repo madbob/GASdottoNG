@@ -1,6 +1,12 @@
 <?php
 
 return array (
+  'defaults' => 
+  array (
+    'discount' => 'Réduction',
+    'rounding' => 'Arrondi manuel des livraisons',
+    'delivery' => 'Frais de port',
+  ),
   'dynamics' => 
   array (
     'values' => 

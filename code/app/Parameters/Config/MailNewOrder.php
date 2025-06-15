@@ -17,8 +17,8 @@ class MailNewOrder extends Config
     public function default()
     {
         return (object) [
-            'subject' => _i('Nuovo Ordine Aperto per %[supplier_name]'),
-            'body' => _i("È stato aperto da %[gas_name] un nuovo ordine per il fornitore %[supplier_name].\nPer partecipare, accedi al seguente indirizzo:\n%[gas_booking_link]\nLe prenotazioni verranno chiuse %[closing_date]"),
+            'subject' => __('mail.order.defaults.subject'),
+            'body' => __('mail.order.defaults.body'),
         ];
     }
 }

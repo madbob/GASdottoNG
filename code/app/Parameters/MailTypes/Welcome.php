@@ -15,18 +15,18 @@ class Welcome extends MailType
         $manual = $gas->hasFeature('public_registrations') && $gas->public_registrations['manual'] == true;
 
         if ($manual) {
-            return _i('Messaggio inviato ai nuovi iscritti registrati sulla piattaforma, in attesa di approvazione.');
+            return __('mail.newuser.description_manual');
         }
         else {
-            return _i('Messaggio inviato ai nuovi iscritti registrati sulla piattaforma.');
+            return __('mail.newuser.description');
         }
     }
 
     public function params()
     {
         return [
-            'username' => _i('Username assegnato al nuovo utente'),
-            'gas_login_link' => _i('Link della pagina di login'),
+            'username' => __('auth.username'),
+            'gas_login_link' => __('mail.approved.link'),
         ];
     }
 

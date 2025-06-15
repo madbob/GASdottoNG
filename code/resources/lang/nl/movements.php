@@ -8,12 +8,70 @@ return array (
   'current_balance_amount' => '',
   'balance' => 'Saldo',
   'current_credit' => 'Huidige tegoed',
+  'bank_account' => 'Rekening-courant',
+  'cash_account' => 'Kas contanten',
+  'deposits' => 'Borgsommen',
+  'documents' => 
+  array (
+    'movements' => 
+    array (
+      'filename' => 'Export transacties GAS :date.:format',
+    ),
+    'users' => 
+    array (
+      'filename' => 'Tegoeden tot :date.csv',
+      'integralces_filename' => '',
+    ),
+    'sepa' => 
+    array (
+      'filename' => 'SEPA van :date.xml',
+    ),
+    'suppliers' => 
+    array (
+      'filename' => '',
+      'integralces_filename' => '',
+    ),
+    'balances' => 
+    array (
+      'filename' => '',
+    ),
+  ),
   'registration_date' => 'Registratiedatum',
   'execution_date' => 'Transactiedatum',
   'paying' => 'Betaler',
   'payed' => 'Betaald',
+  'delete_confirmation' => '',
+  'formatted_residual_credit' => 'Resterend tegoed :currency',
+  'formatted_balance' => 'Saldo %s',
   'currency' => 'Beoordelen',
   'credit' => 'Krediet',
+  'defaults' => 
+  array (
+    'fee' => '',
+    'booking' => '',
+    'booking_adjust' => '',
+    'deposit' => '',
+    'deposit_return' => '',
+    'donation_from' => '',
+    'donation' => '',
+    'expense' => '',
+    'put' => '',
+    'invoice' => '',
+    'order' => '',
+    'rounding' => '',
+    'credit' => '',
+    'decredit' => '',
+    'refund' => '',
+  ),
+  'methods' => 
+  array (
+    'bank' => 'Overboeking',
+    'cash' => 'Contanten',
+    'credit' => 'Gebruikerskrediet',
+    'sepa' => '',
+  ),
+  'formatted_revenues' => '',
+  'formatted_expenses' => '',
   'suppliers_status' => 'Saldo leverancier',
   'causal' => 'Betalingskenmerk',
   'generic_causal' => '',

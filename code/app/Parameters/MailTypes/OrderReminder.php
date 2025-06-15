@@ -11,13 +11,13 @@ class OrderReminder extends MailType
 
     public function description()
     {
-        return _i('Notifica di promemoria per gli ordini in chiusura (inviato agli utenti che hanno esplicitamente abilitato le notifiche per il fornitore).');
+        return __('mail.reminder.description');
     }
 
     public function params()
     {
         return [
-            'orders_list' => _i('Elenco degli ordini in chiusura'),
+            'orders_list' => __('mail.reminder.list'),
         ];
     }
 

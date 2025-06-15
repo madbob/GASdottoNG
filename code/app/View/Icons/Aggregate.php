@@ -16,7 +16,7 @@ class Aggregate extends IconsMap
                 'test' => function ($obj) {
                     return $obj->status == 'closed' && $obj->hasPendingPackages();
                 },
-                'text' => _i('Confezioni Da Completare'),
+                'text' => __('orders.pending_packages'),
             ],
         ];
 
@@ -39,7 +39,7 @@ class Aggregate extends IconsMap
                 'test' => function ($obj) {
                     return $obj->gas()->count() > 1;
                 },
-                'text' => _i('Multi-GAS'),
+                'text' => __('generic.menu.multigas'),
             ];
         }
 

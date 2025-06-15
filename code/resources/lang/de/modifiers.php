@@ -1,6 +1,12 @@
 <?php
 
 return array (
+  'defaults' => 
+  array (
+    'discount' => 'Skonto',
+    'rounding' => '',
+    'delivery' => 'Frachtkosten',
+  ),
   'dynamics' => 
   array (
     'values' => 

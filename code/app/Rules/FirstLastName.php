@@ -20,6 +20,6 @@ class FirstLastName implements Rule
 
     public function message()
     {
-        return _i("Questi nome e cognome sono già presenti sul DB. Si raccomanda di contattare l'amministratore dell'istanza per maggiori informazioni.");
+        return __('user.help.duplicated_name_error');
     }
 }

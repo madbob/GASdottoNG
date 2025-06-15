@@ -14,7 +14,7 @@ class InvoicePayment extends OrderPayment
     public function initNew($type)
     {
         $type = parent::initNew($type);
-        $type->name = _i('Pagamento fattura a fornitore');
+        $type->name = __('movements.defaults.invoice');
         $type->target_type = 'App\Invoice';
 
         return $type;

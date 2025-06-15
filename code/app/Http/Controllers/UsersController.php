@@ -102,7 +102,8 @@ class UsersController extends BackedController
             $users = $users->filter(fn ($u) => in_array($u->id, $selected));
         }
 
-        return output_csv(_i('utenti.csv'), $headers, $users, function ($user) use ($fields) {
+        $filename = sprintf('%s.csv', __('user.all'));
+        return output_csv($filename, $headers, $users, function ($user) use ($fields) {
             return UserFormatter::format($user, $fields);
         });
     }

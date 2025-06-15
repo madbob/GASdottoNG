@@ -8,12 +8,70 @@ return array (
   'current_balance_amount' => '',
   'balance' => '',
   'current_credit' => '',
+  'bank_account' => '',
+  'cash_account' => '',
+  'deposits' => '',
+  'documents' => 
+  array (
+    'movements' => 
+    array (
+      'filename' => '',
+    ),
+    'users' => 
+    array (
+      'filename' => '',
+      'integralces_filename' => '',
+    ),
+    'sepa' => 
+    array (
+      'filename' => '',
+    ),
+    'suppliers' => 
+    array (
+      'filename' => '',
+      'integralces_filename' => '',
+    ),
+    'balances' => 
+    array (
+      'filename' => '',
+    ),
+  ),
   'registration_date' => '',
   'execution_date' => '',
   'paying' => '',
   'payed' => '',
+  'delete_confirmation' => '',
+  'formatted_residual_credit' => '',
+  'formatted_balance' => '',
   'currency' => '',
   'credit' => '',
+  'defaults' => 
+  array (
+    'fee' => '',
+    'booking' => '',
+    'booking_adjust' => '',
+    'deposit' => '',
+    'deposit_return' => '',
+    'donation_from' => '',
+    'donation' => '',
+    'expense' => '',
+    'put' => '',
+    'invoice' => '',
+    'order' => '',
+    'rounding' => '',
+    'credit' => '',
+    'decredit' => '',
+    'refund' => '',
+  ),
+  'methods' => 
+  array (
+    'bank' => '',
+    'cash' => '',
+    'credit' => '',
+    'sepa' => '',
+  ),
+  'formatted_revenues' => '',
+  'formatted_expenses' => '',
   'suppliers_status' => '',
   'causal' => '',
   'generic_causal' => '',

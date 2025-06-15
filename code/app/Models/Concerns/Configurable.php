@@ -28,7 +28,7 @@ trait Configurable
 
         $defined = $this->availableConfigs();
         if (! isset($defined[$name])) {
-            \Log::error(_i('Configurazione GAS non prevista'));
+            \Log::error('Configurazione GAS non prevista');
 
             return '';
         }

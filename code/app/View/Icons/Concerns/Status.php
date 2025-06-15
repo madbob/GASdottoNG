@@ -10,14 +10,14 @@ trait Status
             'test' => function ($obj) {
                 return ! is_null($obj->suspended_at);
             },
-            'text' => _i('Sospeso'),
+            'text' => __('user.statuses.suspended'),
         ];
 
         $ret['slash-circle'] = (object) [
             'test' => function ($obj) {
                 return ! is_null($obj->deleted_at);
             },
-            'text' => _i('Cessato'),
+            'text' => __('user.statuses.deleted'),
         ];
 
         return $ret;

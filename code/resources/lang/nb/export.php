@@ -1,16 +1,45 @@
 <?php
 
 return array (
+  'help' => 
+  array (
+    'mandatory_column_error' => '',
+    'importing' => 
+    array (
+      'deliveries' => 
+      array (
+        'first_product' => '',
+      ),
+      'user' => 
+      array (
+        'aggregation' => '',
+        'deleted' => '',
+        'balance' => '',
+        'instruction' => '',
+      ),
+    ),
+    'csv_instructions' => '',
+    'selection_instructions' => '',
+    'img_csv_instructions' => '',
+  ),
+  'importing' => 
+  array (
+    'deliveries' => 
+    array (
+      'first_product' => '',
+      'instruction' => '',
+      'notice' => '',
+      'product_error' => '',
+      'order_error' => '',
+      'done' => '',
+    ),
+  ),
+  'balance_csv_filename' => '',
+  'products_list_filename' => '',
   'import' => 
   array (
     'csv' => 'Importer CSV',
     'gdxp' => 'Importer',
-  ),
-  'help' => 
-  array (
-    'csv_instructions' => '',
-    'selection_instructions' => '',
-    'img_csv_instructions' => '',
   ),
   'help_csv_libreoffice' => '',
   'data' => 

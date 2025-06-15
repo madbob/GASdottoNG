@@ -4,6 +4,8 @@ return array (
   'prices' => 
   array (
     'unit' => 'Prix unitaire',
+    'unit_no_vat' => 'Prix unitaire (sans TVA)',
+    'package' => 'Prix de l\'emballage',
   ),
   'name' => 'Produit',
   'code' => 'Code fournisseur',
@@ -14,10 +16,12 @@ return array (
   'min_quantity' => 'Minimum',
   'max_quantity' => 'Maximum conseillé',
   'available' => 'Disponible',
-  'list' => 'Produits',
-  'sorting' => '',
   'help' => 
   array (
+    'unit_no_vat' => 'À utiliser en combinaison avec le taux de TVA',
+    'package_price' => 'Si spécifié, le prix unitaire est calculé comme Prix de l\'emballage / Dimensions de l\'emballage',
+    'importing_categories_and_measures' => 'Les catégories et les unités de mesures non existantes seront créées.',
+    'imported_notice' => 'Produits importés',
     'available_explain' => '',
     'bookable' => '',
     'pending_orders_change_price' => '',
@@ -37,6 +41,9 @@ return array (
     'vat_rate' => '',
     'notice_removing_product_in_orders' => '',
   ),
+  'weight_with_measure' => 'Poids (en kg)',
+  'list' => 'Produits',
+  'sorting' => '',
   'variant' => 
   array (
     'matrix' => 'Créer/éditer une variante',

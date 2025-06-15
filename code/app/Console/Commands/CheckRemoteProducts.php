@@ -19,7 +19,11 @@ class CheckRemoteProducts extends Command
 
     private function notify($supplier, $e)
     {
-        $body = _i('Nuovo aggiornamento disponibile per il listino %s (%s). Consultalo dal pannello Fornitori -> Indice Remoto.', [$supplier->printableName(), printableDate($e->lastchange)]);
+        $body = __('imports.help.new_remote_products_list', [
+            'supplier' => $supplier->printableName(),
+            'date' => printableDate($e->lastchange),
+        ]);
+
         if (Notification::where('content', $body)->first() == null) {
             $gas = Gas::all();
             $hub = App::make('GlobalScopeHub');

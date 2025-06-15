@@ -27,7 +27,10 @@ trait TracksUpdater
     public function getPrintableUpdaterAttribute(): string
     {
         if ($this->updater) {
-            return _i('Ultima Modifica: <br class="d-block d-md-none">%s - %s', [$this->updated_at->format('d/m/Y'), $this->updater->printableName()]);
+            return __('generic.updated_at_formatted', [
+                'date' => $this->updated_at->format('d/m/Y'),
+                'person' => $this->updater->printableName(),
+            ]);
         }
         else {
             return '';

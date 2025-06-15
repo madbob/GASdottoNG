@@ -1,6 +1,7 @@
 <?php
 
 return array (
+  'referent' => '',
   'payment_method' => '',
   'all' => '',
   'products_list' => 

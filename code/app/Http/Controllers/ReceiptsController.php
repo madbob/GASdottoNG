@@ -79,7 +79,7 @@ class ReceiptsController extends BackedController
     private function initPdf($receipt)
     {
         $pdf = PDF::loadView('documents.receipt', ['receipt' => $receipt]);
-        $title = _i('Fattura %s', [$receipt->number]);
+        $title = __('invoices.documents.invoice.heading', ['identifier' => $receipt->number]);
         $filename = sanitizeFilename($title . '.pdf');
 
         return [$pdf, $filename];
@@ -115,13 +115,13 @@ class ReceiptsController extends BackedController
 
     private function outputCSV($elements)
     {
-        $filename = _i('Esportazione ricevute GAS %s.csv', date('d/m/Y'));
+        $filename = __('invoices.documents.receipts.list_filename', ['date' => date('d/m/Y')]);
         $headers = [
             __('user.name'),
             __('generic.date'),
             __('generic.number'),
-            _i('Imponibile'),
-            _i('IVA')
+            __('orders.totals.taxable'),
+            __('generic.vat')
         ];
 
         return output_csv($filename, $headers, $elements, function ($receipt) {

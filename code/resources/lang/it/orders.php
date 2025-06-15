@@ -6,8 +6,14 @@ return array (
     'void' => 'Annulla Prenotazione',
     'statuses' => 
     array (
+      'open' => 'Prenotazioni Aperte',
+      'closed' => 'Prenotazioni Chiuse',
       'shipped' => 'Consegnato',
+      'paying' => 'Pagamento Utenti',
+      'archived' => 'Archiviato',
+      'suspended' => 'In Sospeso',
       'booked' => 'Prenotato',
+      'to_deliver' => 'Da consegnare',
       'saved' => 'Salvato',
     ),
     'nav' => 
@@ -23,6 +29,9 @@ return array (
     'pending_packages_notice' => 'Attenzione: quest\'ordine è chiuso, ma è possibile prenotare ancora alcuni prodotti per completare le confezioni da consegnare.',
     'send_booking_summaries' => 'Questa mail verrà inviata a coloro che hanno partecipato all\'ordine ma la cui prenotazione non è ancora stata consegnata.',
     'send_delivery_summaries' => 'Questa mail verrà inviata a coloro che hanno partecipato all\'ordine e la cui prenotazione è stata effettivamente consegnata.',
+    'no_partecipating' => 'Non hai partecipato a quest\'ordine',
+    'formatted_booked_amount' => 'Hai ordinato :amount',
+    'formatted_booked_amount_with_friends' => 'Hai ordinato :amount + :friends',
     'product_selection' => 'Per abilitare o disabilitare prodotti del listino fornitore all\'interno dell\'ordine',
     'booked_modifier_column' => 'Modificatore Prodotto, sul Prenotato. Mostrato solo se il modificatore è attivo per un qualche prodotto nell\'ordine',
     'delivered_modifier_column' => 'Modificatore Prodotto, sul Consegnato. Mostrato solo se il modificatore è attivo per un qualche prodotto nell\'ordine',
@@ -84,7 +93,10 @@ return array (
     'permit' => 'Si, permetti eventuali altre prenotazioni',
     'permit_all' => 'Si, e contempla le quantità prenotate da parte di tutti i GAS',
   ),
+  'and_more' => 'e altri',
+  'boxes' => 'Numero Confezioni',
   'supplier' => 'Fornitore',
+  'booking_date_time' => 'Data/Ora Prenotazione',
   'list_open' => 'Ordini Aperti',
   'dates' => 
   array (
@@ -108,6 +120,7 @@ return array (
   'totals' => 
   array (
     'shipped' => 'Totale Consegnato',
+    'with_modifiers' => 'Totale con Modificatori',
     'total' => 'Totale',
     'taxable' => 'Totale Imponibile',
     'vat' => 'Totale IVA',
@@ -119,7 +132,42 @@ return array (
     'to_pay' => 'Importo da Pagare',
     'selected' => 'Totale Selezionato',
   ),
+  'constraints' => 
+  array (
+    'quantity' => 'La quantità massima è 9999.99',
+    'discrete' => 'La quantità di questo prodotto deve essere intera',
+    'global_min' => 'Minimo Complessivo: :still (:global totale)',
+    'global_max_help' => 'Mancano :still :measure per completare la confezione per questo ordine',
+    'global_max_short' => ':icon Disponibile: :quantity',
+    'global_max' => 'Disponibile: :still (:global totale)',
+    'global_max_generic' => 'Quantità superiore alla disponibilità',
+    'relative_max_formatted' => 'Massimo Consigliato: :quantity',
+    'relative_max' => 'Quantità superiore al massimo consigliato',
+    'relative_min_formatted' => 'Minimo: :quantity',
+    'relative_min' => 'Quantità inferiore al minimo consentito',
+    'relative_multiple_formatted' => 'Multiplo: :quantity',
+    'relative_multiple' => 'Quantità non multipla del valore consentito',
+  ),
+  'documents' => 
+  array (
+    'shipping' => 
+    array (
+      'filename' => 'Dettaglio Consegne ordini :suppliers.pdf',
+      'heading' => 'Dettaglio Consegne Ordine :identifier a :supplier del :date',
+      'short_heading' => 'Dettaglio Consegne del :date',
+    ),
+    'summary' => 
+    array (
+      'heading' => 'Prodotti ordine %s presso %s',
+    ),
+    'table' => 
+    array (
+      'filename' => 'Tabella Ordine %s presso %s.csv',
+    ),
+  ),
   'all' => 'Ordini',
+  'pending_packages' => 'Confezioni Da Completare',
+  'booking_aggregation' => 'Aggregazione Prenotazione',
   'statuses' => 
   array (
     'unchange' => 'Invariato',
@@ -179,14 +227,6 @@ return array (
   'help_order_export_shipping' => 'Da qui puoi ottenere un documento in cui si trovano le informazioni relative alle singole prenotazioni. Utile da consultare mentre si effettuano le consegne.',
   'notify_days_before' => 'Quanti giorni prima?',
   'handle_packages' => 'Forza completamento confezioni',
-  'documents' => 
-  array (
-    'shipping' => 
-    array (
-      'heading' => 'Dettaglio Consegne Ordine :identifier a :supplier del :date',
-      'short_heading' => 'Dettaglio Consegne del :date',
-    ),
-  ),
   'list_delivering' => 'Ordini in Consegna',
   'help_aggregate_export_table' => 'Da qui puoi ottenere un documento CSV coi dettagli di tutti i prodotti prenotati in quest\'ordine.',
   'help_aggregate_export_table_for_delivery' => 'Se intendi utilizzare questo documento con la funzione \'Consegne -> Importa CSV\', per importare le quantità consegnate dopo averle elaborate manualmente, ti raccomandiamo di includere nell\'esportazione anche lo Username degli utenti coinvolti.',

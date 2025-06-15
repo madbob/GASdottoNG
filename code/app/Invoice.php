@@ -36,7 +36,7 @@ class Invoice extends Model implements Datable
 
     public static function commonClassName()
     {
-        return _i('Fattura');
+        return __('generic.invoice');
     }
 
     public function supplier(): BelongsTo

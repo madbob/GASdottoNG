@@ -6,8 +6,14 @@ return array (
     'void' => 'Zrušit rezervaci',
     'statuses' => 
     array (
+      'open' => '',
+      'closed' => '',
       'shipped' => '',
+      'paying' => '',
+      'archived' => '',
+      'suspended' => '',
       'booked' => '',
+      'to_deliver' => '',
       'saved' => '',
     ),
     'nav' => 
@@ -23,6 +29,9 @@ return array (
     'pending_packages_notice' => '',
     'send_booking_summaries' => '',
     'send_delivery_summaries' => '',
+    'no_partecipating' => '',
+    'formatted_booked_amount' => '',
+    'formatted_booked_amount_with_friends' => '',
     'product_selection' => '',
     'booked_modifier_column' => '',
     'delivered_modifier_column' => '',
@@ -84,7 +93,10 @@ return array (
     'permit' => '',
     'permit_all' => '',
   ),
+  'and_more' => '',
+  'boxes' => '',
   'supplier' => '',
+  'booking_date_time' => '',
   'list_open' => '',
   'dates' => 
   array (
@@ -108,6 +120,7 @@ return array (
   'totals' => 
   array (
     'shipped' => '',
+    'with_modifiers' => '',
     'total' => '',
     'taxable' => '',
     'vat' => '',
@@ -119,7 +132,42 @@ return array (
     'to_pay' => '',
     'selected' => '',
   ),
+  'constraints' => 
+  array (
+    'quantity' => '',
+    'discrete' => '',
+    'global_min' => '',
+    'global_max_help' => '',
+    'global_max_short' => '',
+    'global_max' => '',
+    'global_max_generic' => '',
+    'relative_max_formatted' => '',
+    'relative_max' => '',
+    'relative_min_formatted' => '',
+    'relative_min' => '',
+    'relative_multiple_formatted' => '',
+    'relative_multiple' => '',
+  ),
+  'documents' => 
+  array (
+    'shipping' => 
+    array (
+      'filename' => '',
+      'heading' => '',
+      'short_heading' => '',
+    ),
+    'summary' => 
+    array (
+      'heading' => '',
+    ),
+    'table' => 
+    array (
+      'filename' => '',
+    ),
+  ),
   'all' => '',
+  'pending_packages' => '',
+  'booking_aggregation' => '',
   'statuses' => 
   array (
     'unchange' => 'Nezměněný',
@@ -179,14 +227,6 @@ return array (
   'help_order_export_shipping' => '',
   'notify_days_before' => '',
   'handle_packages' => '',
-  'documents' => 
-  array (
-    'shipping' => 
-    array (
-      'heading' => '',
-      'short_heading' => '',
-    ),
-  ),
   'list_delivering' => '',
   'help_aggregate_export_table' => '',
   'help_aggregate_export_table_for_delivery' => '',

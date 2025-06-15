@@ -25,8 +25,8 @@ class Products extends CSVImporter
                 'label' => __('products.prices.unit'),
             ],
             'price_without_vat' => (object) [
-                'label' => _i('Prezzo Unitario (senza IVA)'),
-                'explain' => _i('Da usare in combinazione con Aliquota IVA'),
+                'label' => __('products.prices.unit_no_vat'),
+                'explain' => __('products.help.unit_no_vat'),
             ],
             'vat' => (object) [
                 'label' => __('products.vat_rate'),
@@ -44,11 +44,11 @@ class Products extends CSVImporter
                 'label' => __('products.package_size'),
             ],
             'package_price' => (object) [
-                'label' => _i('Prezzo Confezione'),
-                'explain' => _i('Se specificato, il prezzo unitario viene calcolato come Prezzo Confezione / Dimensione Confezione'),
+                'label' => __('products.prices.package'),
+                'explain' => __('products.help.package_price'),
             ],
             'weight' => (object) [
-                'label' => _i('Peso (in KG)'),
+                'label' => __('products.weight_with_measure'),
             ],
             'min_quantity' => (object) [
                 'label' => __('products.min_quantity'),
@@ -82,7 +82,7 @@ class Products extends CSVImporter
             'type' => 'products',
             'next_step' => 'select',
             'extra_fields' => ['supplier_id' => $s->id],
-            'extra_description' => [_i('Le categorie e le unità di misura il cui nome non sarà trovato tra quelle esistenti saranno create.')],
+            'extra_description' => [__('products.help.importing_categories_and_measures')],
             'sorting_fields' => $this->fields(),
             'sorted_fields' => json_decode($s->import_template),
         ]);
@@ -300,7 +300,7 @@ class Products extends CSVImporter
         DB::commit();
 
         return [
-            'title' => _i('Prodotti importati'),
+            'title' => __('products.help.imported_notice'),
             'objects' => $products,
             'errors' => $errors,
             'extra_closing_attributes' => ['data-reload-target' => '#supplier-list'],

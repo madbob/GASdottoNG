@@ -1,17 +1,28 @@
 <?php
 
 return array (
+  'help' => 
+  array (
+    'new_remote_products_list' => '',
+    'failed_file' => 'Bestand niet juist geladen',
+    'failure_notice' => '',
+    'invalid_command' => 'Ongeldige :type/:step opdracht',
+    'currency_id' => '',
+    'unique_user_id' => 'Gebruikers worden geïdentificeerd door middel van een gebruikersnaam of e-mailadres (dat uniek moet zijn!).',
+    'no_user_found' => 'Gebruiker niet gevonden: :name',
+    'no_supplier_found' => '',
+    'no_currency_found' => '',
+    'imported_movements_notice' => 'Geïmporteerde verrichtingen',
+    'main' => 'Klik en sleep de attributen van de rechterkolom naar de middelste kolom, om aan elke kolom van uw bestand een betekenis toe te kennen.',
+    'remote_index' => '',
+  ),
   'ignore_slot' => '[Negeren]',
+  'name_or_vat' => '',
   'imported_users' => 'Geïmporteerde gebruikers',
   'do' => 'Importeren',
   'update_supplier' => 'Bestaande leverancier bijwerken',
   'select_supplier' => 'Een leverancier selecteren',
   'products_count' => 'In het bestand zijn er %s producten.',
-  'help' => 
-  array (
-    'main' => 'Klik en sleep de attributen van de rechterkolom naar de middelste kolom, om aan elke kolom van uw bestand een betekenis toe te kennen.',
-    'remote_index' => '',
-  ),
   'index_column' => 'Kolom',
   'column' => 'Kolom',
   'imported_suppliers' => 'Geïmporteerde leveranciers',

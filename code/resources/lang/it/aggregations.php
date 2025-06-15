@@ -20,4 +20,5 @@ return array (
   'user_selectable' => 'Selezionabile dall\'Utente',
   'group' => 'Gruppo',
   'empty_list' => 'Non ci sono elementi da visualizzare.<br/>Aggiungendo elementi sarà possibile dividere logicamente gli utenti in molteplici aggregazioni, in modo da separare le prenotazioni, organizzare la logistica delle consegne, applicare modificatori speciali e molto altro.',
+  'name' => 'Aggregazione',
 );

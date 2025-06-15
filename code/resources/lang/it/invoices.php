@@ -1,10 +1,30 @@
 <?php
 
 return array (
+  'waiting' => 'In Attesa',
+  'statuses' => 
+  array (
+    'to_verify' => 'Da Verificare',
+    'verified' => 'Verificata',
+    'payed' => 'Pagata',
+  ),
+  'default_note' => 'Pagamento fattura :name',
+  'documents' => 
+  array (
+    'invoice' => 
+    array (
+      'heading' => 'Fattura :identifier',
+    ),
+    'receipts' => 
+    array (
+      'list_filename' => 'Esportazione ricevute GAS :date.csv',
+    ),
+  ),
   'balances' => 
   array (
     'supplier' => 'Saldo Fornitore',
   ),
+  'forwarded' => 'Inoltrata',
   'orders' => 'Ordini Coinvolti',
   'help' => 
   array (

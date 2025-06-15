@@ -14,6 +14,15 @@ return array (
     'suspend' => 'If an automatic order is suspended, the next openings will be skipped. Use this option to manage periods when GAS is not active, such as holidays.',
     'arbitrary_dates' => 'Here you can add arbitrary dates into the shippings calendar, even for non-existing orders. This function is suggested to coordinate different referents and schedule long-term activities.',
   ),
+  'cycle' => 
+  array (
+    'two_weeks' => 'Every two Weeks',
+    'first_of_month' => 'First of Month',
+    'second_of_month' => 'Second of Month',
+    'third_of_month' => 'Third of Month',
+    'fourth_of_month' => 'Fourth of Month',
+    'last_of_month' => 'Last of Month',
+  ),
   'name' => 'Notification',
   'notices' => 
   array (

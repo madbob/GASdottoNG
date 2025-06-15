@@ -1,6 +1,7 @@
 <?php
 
 return array (
+  'referent' => 'Referente',
   'payment_method' => 'Modalità Pagamento',
   'all' => 'Fornitori',
   'products_list' => 

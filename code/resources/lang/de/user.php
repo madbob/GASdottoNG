@@ -4,6 +4,9 @@ return array (
   'help' => 
   array (
     'suspended' => 'Suspendierte oder gesperrte Benutzer können nicht auf das Bestellsystem zugreifen, auch wenn sie registriert bleiben.',
+    'wrong_control_error' => 'Die Prüfziffern sind falsch',
+    'existing_email_error' => 'Die E-Mail-Adresse ist bereits registriert.',
+    'duplicated_name_error' => '',
     'waiting_approval' => '',
     'promote_friend' => '',
     'promote_friend_enforce_mail' => '',
@@ -18,8 +21,10 @@ return array (
   'firstname' => 'Vorname',
   'lastname' => 'Nachname',
   'change_friend' => '',
+  'formatted_aggregation' => '',
   'sepa' => 
   array (
+    'mandate' => '',
     'date' => 'SEPA-Bewegung Datum',
     'intro' => 'SEPA Einstellung',
     'help' => 'Geben Sie hier die Parameter für die Generierung von RIDs für diesen Benutzer an. Für Benutzer, für die diese Felder nicht ausgefüllt wurden, ist es nicht möglich, RIDs zu generieren',
@@ -30,21 +35,35 @@ return array (
   'member_since' => 'Mitglied seit',
   'birthplace' => '',
   'birthdate' => 'Geburtsdatum',
+  'other_bookings' => '',
+  'fullname' => 'Vollständiger Name',
   'taxcode' => 'Steuernummer',
   'card_number' => 'Mitgliedsnummer',
   'payment_method' => 'Bezahlmodus',
   'all' => 'Benutzer',
+  'payed_fee' => 'Bezahlter Betrag',
   'name' => 'Benutzer',
+  'address_part' => 
+  array (
+    'street' => 'Adresse (Straße)',
+    'city' => 'Adresse (Stadt)',
+    'zip' => 'Adresse (PLZ)',
+  ),
   'statuses' => 
   array (
     'active' => 'Aktiviert',
     'suspended' => 'Gesperrt',
     'deleted' => '',
+    'removed' => '',
   ),
   'friend' => 'Freund',
   'removed_user' => '',
   'booking_friend_header' => 'Hat bestellt :amount',
   'pending_deliveries' => '',
+  'without_aggregation' => '',
+  'aggregation' => '',
+  'credit_below_zero' => 'Kredit < 0',
+  'fee_not_payed' => 'Beitrag nicht bezahlt',
   'personal_data' => 'Profil',
   'approve' => '',
   'do_not_approve' => '',

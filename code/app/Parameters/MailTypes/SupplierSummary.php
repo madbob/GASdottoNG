@@ -11,14 +11,14 @@ class SupplierSummary extends MailType
 
     public function description()
     {
-        return _i("Notifica destinata ai fornitori alla chiusura automatica dell'ordine.");
+        return __('mail.supplier.description');
     }
 
     public function params()
     {
         return [
-            'supplier_name' => _i('Il nome del fornitore'),
-            'order_number' => _i('Numero progressivo automaticamente assegnato ad ogni ordine'),
+            'supplier_name' => __('orders.supplier'),
+            'order_number' => __('orders.help.number'),
         ];
     }
 

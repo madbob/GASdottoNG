@@ -1,17 +1,28 @@
 <?php
 
 return array (
+  'help' => 
+  array (
+    'new_remote_products_list' => '',
+    'failed_file' => '',
+    'failure_notice' => '',
+    'invalid_command' => 'Ugyldig kommando :type/:step',
+    'currency_id' => '',
+    'unique_user_id' => '',
+    'no_user_found' => '',
+    'no_supplier_found' => '',
+    'no_currency_found' => '',
+    'imported_movements_notice' => '',
+    'main' => '',
+    'remote_index' => '',
+  ),
   'ignore_slot' => '[Ignorer]',
+  'name_or_vat' => '',
   'imported_users' => '',
   'do' => 'Importer',
   'update_supplier' => '',
   'select_supplier' => '',
   'products_count' => '',
-  'help' => 
-  array (
-    'main' => '',
-    'remote_index' => '',
-  ),
   'index_column' => '',
   'column' => '',
   'imported_suppliers' => '',

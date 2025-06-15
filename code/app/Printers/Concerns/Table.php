@@ -24,7 +24,7 @@ trait Table
             }
         }
 
-        $headers[] = _i('Totale Prezzo');
+        $headers[] = __('orders.totals.total');
         $prices_rows[] = '';
 
         return [$all_products, $headers, $prices_rows];

@@ -12,7 +12,7 @@ class Cash extends PaymentType
     public function definition()
     {
         return (object) [
-            'name' => _i('Contanti'),
+            'name' => __('movements.methods.cash'),
             'identifier' => false,
             'icon' => 'cash',
             'active_for' => null,

@@ -11,14 +11,14 @@ class Approved extends MailType
 
     public function description()
     {
-        return _i('Messaggio inviato agli iscritti approvati.');
+        return __('mail.approved.description');
     }
 
     public function params()
     {
         return [
-            'username' => _i('Username assegnato al nuovo utente'),
-            'gas_login_link' => _i('Link della pagina di login'),
+            'username' => __('mail.approved.username'),
+            'gas_login_link' => __('mail.approved.link'),
         ];
     }
 

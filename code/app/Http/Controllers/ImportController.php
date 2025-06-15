@@ -30,7 +30,7 @@ class ImportController extends Controller
         $importer = CSVImporter::getImporter($type);
 
         if ($importer->testAccess($request) === false) {
-            return $this->errorResponse(_i('Non autorizzato'));
+            return $this->errorResponse(__('generic.unauthorized'));
         }
 
         try {
@@ -48,7 +48,7 @@ class ImportController extends Controller
                     }
                     catch (MissingFieldException $e) {
                         return view('import.csvimportfinal', [
-                            'title' => _i('Importazione fallita'),
+                            'title' => __('imports.help.failure_notice'),
                             'objects' => [],
                             'errors' => [$e->getMessage()],
                         ]);
@@ -68,7 +68,10 @@ class ImportController extends Controller
             return $this->errorResponse($e->getMessage());
         }
 
-        return $this->errorResponse(_i('Comando %s/%s non valido', [$type, $step]));
+        return $this->errorResponse(__('imports.help.invalid_command', [
+            'type' => $type,
+            'step' => $step,
+        ]));
     }
 
     public function getGdxp(Request $request)
@@ -150,7 +153,6 @@ class ImportController extends Controller
 
     public function postGdxp(Request $request)
     {
-        // try {
         $archivepath = '';
         $working_dir = sys_get_temp_dir();
         $step = $request->input('step', 'read');
@@ -189,12 +191,5 @@ class ImportController extends Controller
 
             return view('import.gdxpfinal', ['data' => $data]);
         }
-        /*
-        }
-        catch(\Exception $e) {
-            Log::error(_i('Errore importando file GDXP: %s', $e->getMessage()));
-            return view('import.gdxperror');
-        }
-        */
     }
 }

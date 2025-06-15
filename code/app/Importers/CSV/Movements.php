@@ -18,7 +18,7 @@ class Movements extends CSVImporter
         $ret = [
             'date' => (object) [
                 'label' => __('generic.date'),
-                'explain' => _i('Preferibilmente in formato YYYY-MM-DD (e.g. %s)', [date('Y-m-d')]),
+                'explain' => __('generic.help.preferred_date_format', ['now' => date('Y-m-d')]),
             ],
             'amount' => (object) [
                 'label' => __('generic.value'),
@@ -31,19 +31,22 @@ class Movements extends CSVImporter
             ],
             'user' => (object) [
                 'label' => __('user.name'),
-                'explain' => _i('Username o indirizzo e-mail'),
+                'explain' => __('auth.reset_username'),
             ],
             'supplier' => (object) [
                 'label' => __('orders.supplier'),
-                'explain' => _i('Nome o partita IVA'),
+                'explain' => __('imports.name_or_vat'),
             ],
         ];
 
         $currencies = Currency::enabled();
         if ($currencies->count() > 1) {
             $ret['currency'] = (object) [
-                'label' => _i('Valuta'),
-                'explain' => _i('Una delle valute gestite dal sistema. Se non specificato, verrà selezionata quella di default(%s). Valori ammessi: %s', [defaultCurrency()->symbol, $currencies->pluck('symbol')->join(' / ')]),
+                'label' => __('movements.currency'),
+                'explain' => __('imports.help.currency_id', [
+                    'default' => defaultCurrency()->symbol,
+                    'values' => $currencies->pluck('symbol')->join(' / '),
+                ]),
             ];
         }
 
@@ -63,7 +66,7 @@ class Movements extends CSVImporter
             'type' => 'movements',
             'next_step' => 'select',
             'extra_description' => [
-                _i('Gli utenti sono identificati per username o indirizzo mail (che deve essere univoco!).'),
+                __('imports.help.unique_user_id'),
             ],
             'sorting_fields' => $this->fields(),
         ]);
@@ -115,7 +118,7 @@ class Movements extends CSVImporter
 
                                 if (is_null($user)) {
                                     $save_me = false;
-                                    $errors[] = implode($target_separator, $line) . '<br/>' . _i('Utente non trovato: %s', $name);
+                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('imports.help.no_user_found', $name);
 
                                     continue;
                                 }
@@ -139,7 +142,7 @@ class Movements extends CSVImporter
 
                                 if (is_null($supplier)) {
                                     $save_me = false;
-                                    $errors[] = implode($target_separator, $line) . '<br/>' . _i('Fornitore non trovato: %s', $name);
+                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('imports.help.no_supplier_found', $name);
 
                                     continue;
                                 }
@@ -164,7 +167,7 @@ class Movements extends CSVImporter
                         }
                         else {
                             $save_me = false;
-                            $errors[] = implode($target_separator, $line) . '<br/>' . _i('Valuta non trovata: %s', $value);
+                            $errors[] = implode($target_separator, $line) . '<br/>' . __('imports.help.no_currency_found', $value);
 
                             continue;
                         }
@@ -248,9 +251,10 @@ class Movements extends CSVImporter
         $movements = [];
 
         DB::beginTransaction();
+        $harvester = App::make('LogHarvester');
 
         foreach ($imports as $index) {
-            App::make('LogHarvester')->reset();
+            $harvester->reset();
 
             try {
                 $m = new Movement();
@@ -274,7 +278,7 @@ class Movements extends CSVImporter
                     $movements[] = $m;
                 }
                 else {
-                    $errors[] = $index . '<br/>' . App::make('LogHarvester')->last();
+                    $errors[] = $index . '<br/>' . $harvester->last();
                 }
             }
             catch (\Exception $e) {
@@ -285,7 +289,7 @@ class Movements extends CSVImporter
         DB::commit();
 
         return [
-            'title' => _i('Movimenti importati'),
+            'title' => __('imports.help.imported_movements_notice'),
             'objects' => $movements,
             'errors' => $errors,
         ];

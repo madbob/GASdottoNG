@@ -92,7 +92,7 @@ class Aggregate extends Printer
             });
         }
 
-        $title = _i('Dettaglio Consegne Ordini');
+        $title = __('orders.files.order.shipping');
         $filename = sanitizeFilename($title . '.' . $subtype);
 
         if ($subtype == 'pdf') {
@@ -289,7 +289,8 @@ class Aggregate extends Printer
             Genero documento
         */
 
-        $filename = sanitizeFilename(_i('Tabella.csv'));
+        $filename = __('orders.files.order.table');
+        $filename = sanitizeFilename($filename . '.csv');
 
         return output_csv($filename, $headers, $data, null);
     }

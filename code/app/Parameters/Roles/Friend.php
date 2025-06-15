@@ -11,7 +11,7 @@ class Friend extends Role
 
     public function initNew($type)
     {
-        $type->name = _i('Amico');
+        $type->name = __('user.friend');
         $type->system = true;
         $type->actions = 'users.self,supplier.view,supplier.book';
         $type->parent_id = $this->getID('user');

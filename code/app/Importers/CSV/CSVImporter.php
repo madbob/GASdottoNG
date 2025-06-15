@@ -48,7 +48,7 @@ abstract class CSVImporter
 
         $target_separator = $separators[array_search(max($lenghts), $lenghts)] ?? null;
         if (is_null($target_separator)) {
-            throw new \InvalidArgumentException(_i('Impossibile interpretare il file'));
+            throw new \InvalidArgumentException('Impossibile interpretare il file');
         }
 
         return $target_separator;
@@ -78,7 +78,7 @@ abstract class CSVImporter
                 }
                 else {
                     $selected[] = (object) [
-                        'label' => _i('[Ignora]'),
+                        'label' => __('imports.ignore_slot'),
                         'name' => 'none',
                     ];
                 }
@@ -87,7 +87,7 @@ abstract class CSVImporter
         else {
             foreach ($parameters['columns'] as $c) {
                 $selected[] = (object) [
-                    'label' => _i('[Ignora]'),
+                    'label' => __('imports.ignore_slot'),
                     'name' => 'none',
                 ];
             }
@@ -101,7 +101,7 @@ abstract class CSVImporter
         try {
             $f = $request->file('file', null);
             if (is_null($f) || $f->isValid() === false) {
-                throw new \InvalidArgumentException(_i('File non caricato correttamente, possibili problemi con la dimensione'));
+                throw new \InvalidArgumentException('File non caricato correttamente, possibili problemi con la dimensione');
             }
 
             $filepath = sys_get_temp_dir();
@@ -129,7 +129,7 @@ abstract class CSVImporter
         }
         catch (\Exception $e) {
             Log::error('Unable to load file to import: ' . $e->getMessage());
-            throw new \RuntimeException(_i('Errore nel salvataggio del file'));
+            throw new \RuntimeException('Errore nel salvataggio del file');
         }
     }
 

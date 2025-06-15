@@ -6,8 +6,14 @@ return array (
     'void' => 'Vorbestellung stornieren',
     'statuses' => 
     array (
+      'open' => 'Aktuell laufende Bestellungen',
+      'closed' => 'Abgeschlossene Bestellungen',
       'shipped' => 'Geliefert',
+      'paying' => '',
+      'archived' => 'Archiviert',
+      'suspended' => 'In der Schwebe',
       'booked' => 'Bestellt',
+      'to_deliver' => 'Zu liefern',
       'saved' => 'Gespeichert',
     ),
     'nav' => 
@@ -23,6 +29,9 @@ return array (
     'pending_packages_notice' => 'Achtung: diese Bestellung ist geschlossen, aber es ist möglich, einige Produkte noch vorzubestellen, um die bereits bestellten Packeinheiten zu vervollständigen.',
     'send_booking_summaries' => '',
     'send_delivery_summaries' => '',
+    'no_partecipating' => 'Du hast an dieser Bestellung nicht teilgenommen',
+    'formatted_booked_amount' => 'Du hast bestellt :amount',
+    'formatted_booked_amount_with_friends' => 'Du hast bestellt :amount + :friends',
     'product_selection' => 'Um Produkte aus der Liste des Lieferanten innerhalb der Bestellung zu aktivieren oder deaktivieren',
     'booked_modifier_column' => '',
     'delivered_modifier_column' => '',
@@ -84,7 +93,10 @@ return array (
     'permit' => 'Ja, andere Vorbestellungen zulassen',
     'permit_all' => 'Ja, und es umfasst die von allen GAS gebuchten Mengen',
   ),
+  'and_more' => 'und andere',
+  'boxes' => 'Verpackungsanzahl',
   'supplier' => 'Lieferant',
+  'booking_date_time' => '',
   'list_open' => 'Offene Bestellungen',
   'dates' => 
   array (
@@ -108,6 +120,7 @@ return array (
   'totals' => 
   array (
     'shipped' => 'Gesamtbetrag Lieferung',
+    'with_modifiers' => '',
     'total' => 'Gesamtbetrag',
     'taxable' => 'gesamt Besteuerbar',
     'vat' => 'Gesamt MWSt',
@@ -119,7 +132,42 @@ return array (
     'to_pay' => 'Offener Betrag',
     'selected' => '',
   ),
+  'constraints' => 
+  array (
+    'quantity' => '',
+    'discrete' => '',
+    'global_min' => '',
+    'global_max_help' => 'Es fehlen :still :measure um das Gebinde für diese Bestellung zu vervollsändigen',
+    'global_max_short' => ':icon Verfügbar: :quantity',
+    'global_max' => 'Verfügbar: :still (:global Gesamtbetrag)',
+    'global_max_generic' => '',
+    'relative_max_formatted' => 'Empfohlenes Maximum: :quantity',
+    'relative_max' => '',
+    'relative_min_formatted' => 'Mindest: :quantity',
+    'relative_min' => '',
+    'relative_multiple_formatted' => 'Multiplikator: :quantity',
+    'relative_multiple' => '',
+  ),
+  'documents' => 
+  array (
+    'shipping' => 
+    array (
+      'filename' => 'Bestell-und Lieferuebersicht :suppliers.pdf',
+      'heading' => 'Bestellübersichtl :identifier beim Lieferant :supplier am :date',
+      'short_heading' => 'Bestellübersicht (pdf)',
+    ),
+    'summary' => 
+    array (
+      'heading' => 'Produkte der Bestellung %s bei %s',
+    ),
+    'table' => 
+    array (
+      'filename' => 'Gesamttabelle Bestellung %s bei %s.csv',
+    ),
+  ),
   'all' => 'Bestellungen',
+  'pending_packages' => 'Zu komplettierende Gebinde',
+  'booking_aggregation' => '',
   'statuses' => 
   array (
     'unchange' => 'Unverändert',
@@ -179,14 +227,6 @@ return array (
   'help_order_export_shipping' => 'Hier kannst du eine PDF-Datei zum Ausdrucken erstellen, in der Informationen zu den einzelnen Bestellungen aufgelistet sind. Nützlich für die Überprüfung bei der Anlieferung.',
   'notify_days_before' => '',
   'handle_packages' => 'Vervollständige Gebinde',
-  'documents' => 
-  array (
-    'shipping' => 
-    array (
-      'heading' => 'Bestellübersichtl :identifier beim Lieferant :supplier am :date',
-      'short_heading' => 'Bestellübersicht (pdf)',
-    ),
-  ),
   'list_delivering' => 'Abgeschlossene Bestellungen - Lieferung ausstehend',
   'help_aggregate_export_table' => 'Hier kannst du eine CSV-Datei erhalten, in der Details zu allen vorbestellten Produkten vorhanden sind.',
   'help_aggregate_export_table_for_delivery' => '',

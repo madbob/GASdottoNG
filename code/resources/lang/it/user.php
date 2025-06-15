@@ -4,6 +4,9 @@ return array (
   'help' => 
   array (
     'suspended' => 'Gli utenti Sospesi e Cessati non possono accedere alla piattaforma, pur restando registrati. È necessario specificare una data di cessazione/sospensione.',
+    'wrong_control_error' => 'Il codice di controllo è sbagliato',
+    'existing_email_error' => 'L\'indirizzo e-mail è già registrato.',
+    'duplicated_name_error' => 'Questi nome e cognome sono già presenti sul DB. Si raccomanda di contattare l\'amministratore dell\'istanza per maggiori informazioni.',
     'waiting_approval' => 'Questo utente è in attesa di approvazione!',
     'promote_friend' => 'Cliccando "Salva", questo utente diventerà un utente regolare. Gli sarà assegnato il ruolo :role, avrà una propria contabilità, e non potrà più essere amministrato da :ex_parent. Sarà preservato lo storico delle sue prenotazioni, ma tutti i suoi pagamenti pregressi resteranno addebitati a :ex_parent.',
     'promote_friend_enforce_mail' => 'È necessario specificare almeno un indirizzo email di contatto del nuovo utente',
@@ -18,8 +21,10 @@ return array (
   'firstname' => 'Nome',
   'lastname' => 'Cognome',
   'change_friend' => 'Modifica Amico',
+  'formatted_aggregation' => 'Aggregazione :name',
   'sepa' => 
   array (
+    'mandate' => 'Mandato SEPA',
     'date' => 'Data Mandato SEPA',
     'intro' => 'Configurazione SEPA',
     'help' => 'Specifica qui i parametri per la generazione dei RID per questo utente. Per gli utenti per i quali questi campi non sono stati compilati non sarà possibile generare alcun RID.',
@@ -30,21 +35,35 @@ return array (
   'member_since' => 'Membro da',
   'birthplace' => 'Luogo di Nascita',
   'birthdate' => 'Data di Nascita',
+  'other_bookings' => 'Altre Prenotazioni',
+  'fullname' => 'Nome Completo',
   'taxcode' => 'Codice Fiscale',
   'card_number' => 'Numero Tessera',
   'payment_method' => 'Modalità Pagamento',
   'all' => 'Utenti',
+  'payed_fee' => 'Quota Pagata',
   'name' => 'Utente',
+  'address_part' => 
+  array (
+    'street' => 'Indirizzo (Via)',
+    'city' => 'Indirizzo (Città)',
+    'zip' => 'Indirizzo (CAP)',
+  ),
   'statuses' => 
   array (
     'active' => 'Attivo',
     'suspended' => 'Sospeso',
     'deleted' => 'Cessato',
+    'removed' => 'Rimosso',
   ),
   'friend' => 'Amico',
   'removed_user' => 'Utente Rimosso',
   'booking_friend_header' => 'Ha ordinato :amount',
   'pending_deliveries' => 'Questa persona oggi deve ritirare anche altre prenotazioni:',
+  'without_aggregation' => 'Senza Aggregazioni',
+  'aggregation' => 'Aggregazione Utente',
+  'credit_below_zero' => 'Credito < 0',
+  'fee_not_payed' => 'Quota non Pagata',
   'personal_data' => 'Anagrafica',
   'approve' => 'Approva',
   'do_not_approve' => 'Non Approvare ed Elimina',

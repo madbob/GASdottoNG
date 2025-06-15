@@ -4,6 +4,9 @@ return array (
   'help' => 
   array (
     'suspended' => '',
+    'wrong_control_error' => '',
+    'existing_email_error' => '',
+    'duplicated_name_error' => '',
     'waiting_approval' => '',
     'promote_friend' => '',
     'promote_friend_enforce_mail' => '',
@@ -18,8 +21,10 @@ return array (
   'firstname' => 'Navn',
   'lastname' => '',
   'change_friend' => '',
+  'formatted_aggregation' => '',
   'sepa' => 
   array (
+    'mandate' => '',
     'date' => '',
     'intro' => 'Innstillinger',
     'help' => '',
@@ -30,21 +35,35 @@ return array (
   'member_since' => 'Medlem siden',
   'birthplace' => '',
   'birthdate' => 'Geburtsdag',
+  'other_bookings' => '',
+  'fullname' => '',
   'taxcode' => '',
   'card_number' => 'Medlemsnummer',
   'payment_method' => '',
   'all' => 'Bruker',
+  'payed_fee' => '',
   'name' => 'Bruker',
+  'address_part' => 
+  array (
+    'street' => '',
+    'city' => '',
+    'zip' => '',
+  ),
   'statuses' => 
   array (
     'active' => 'Aktivert',
     'suspended' => '',
     'deleted' => '',
+    'removed' => '',
   ),
   'friend' => '',
   'removed_user' => '',
   'booking_friend_header' => '',
   'pending_deliveries' => '',
+  'without_aggregation' => '',
+  'aggregation' => '',
+  'credit_below_zero' => '',
+  'fee_not_payed' => '',
   'personal_data' => '',
   'approve' => '',
   'do_not_approve' => '',

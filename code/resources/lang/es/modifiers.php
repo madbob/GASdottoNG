@@ -1,6 +1,12 @@
 <?php
 
 return array (
+  'defaults' => 
+  array (
+    'discount' => 'Descuento',
+    'rounding' => '',
+    'delivery' => '',
+  ),
   'dynamics' => 
   array (
     'values' => 
