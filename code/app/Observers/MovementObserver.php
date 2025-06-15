@@ -63,11 +63,11 @@ class MovementObserver
         $operations = json_decode($metadata->function);
         $valid = count(array_filter($operations, fn ($op) => $movement->method == $op->method)) > 0;
         if ($valid === false) {
-            Log::error(sprintf('Movimento %d: metodo "%s" non permesso su tipo "%s"', [
+            Log::error(sprintf('Movimento %d: metodo "%s" non permesso su tipo "%s"',
                 $movement->id,
                 $movement->printablePayment(),
                 $movement->printableType(),
-            ]));
+            ));
 
             return false;
         }
