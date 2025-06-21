@@ -68,7 +68,7 @@ return array (
       'donate' => '',
       'link' => '',
       'local_contact' => 'Attention : les problèmes relatifs au contenu du site (fournisseurs, commandes, réservations...) sont à adresser à l\'administrateur de votre groupe. Les informations transmises par ce formulaire sont publiques. Ne transmettez pas d\'informations personnelles !',
-      'translations' => 'Pour contribuer à la traduction dans votre langue, visitez <a href="https://hosted.weblate.org/projects/gasdottong/translations/">cette page</a>.',
+      'translations' => 'Pour contribuer à la traduction dans votre langue, visitez <a href="https://hosted.weblate.org/projects/gasdottong/native/">cette page</a>.',
     ),
   ),
   'export' => 

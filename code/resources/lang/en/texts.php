@@ -62,7 +62,7 @@ return array(
             'donate' => 'Or making a donation:',
             'link' => 'Feel free to visit the <a href="https://gasdotto.net/" target="_blank">GASdotto website</a> for documentation, or stay in the loop by following us on <a href="https://twitter.com/GASdottoNet" target="_blank">Twitter</a> or <a href="https://sociale.network/@gasdottonet" target="_blank">Mastodon</a> for regular updates.',
             'local_contact' => 'Warning: for issues about contents of the site (suppliers, orders, bookings…) please ask your group\'s administrators.',
-            'translations' => 'To help with translations in your language, visit <a href="https://hosted.weblate.org/projects/gasdottong/translations/">this page</a>.',
+            'translations' => 'To help with translations in your language, visit <a href="https://hosted.weblate.org/projects/gasdottong/native/">this page</a>.',
         ),
     ),
     'export' => array(
