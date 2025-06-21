@@ -79,7 +79,7 @@ class TourController extends Controller
 
         $steps[] = (object) [
             'title' => __('texts.tour.inline.title'),
-            'content' => __('texts.tour.inline.body') . '<br><img class="img-fluid p-2 mt-2 bg-dark" src="' .  . '">',
+            'content' => __('texts.tour.inline.body') . '<br><img class="img-fluid p-2 mt-2 bg-dark" src="' . asset('images/inline_help.gif') . '">',
         ];
 
         if ($user->can('users.admin', $gas)) {
