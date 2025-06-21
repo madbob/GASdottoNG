@@ -1,11 +1,11 @@
 <?php
 
 return array (
-  'aggregations' => 
+  'aggregations' =>
   array (
     'all' => '',
     'limit_access' => '',
-    'help' => 
+    'help' =>
     array (
       'limit_access_to_order' => '',
       'permit_selection' => '',
@@ -24,11 +24,11 @@ return array (
     'empty_list' => '',
     'name' => '',
   ),
-  'auth' => 
+  'auth' =>
   array (
     'accept_privacy' => '',
     'username' => 'Brukernavn',
-    'help' => 
+    'help' =>
     array (
       'missing_user_or_mail' => '',
       'missing_email' => '',
@@ -50,18 +50,18 @@ return array (
     'register' => '',
     'confirm_password' => 'Passord',
     'update_password' => 'Passord',
-    'modes' => 
+    'modes' =>
     array (
       'email' => 'E-post',
     ),
   ),
-  'commons' => 
+  'commons' =>
   array (
     'accept_conditions' => '',
     'warning' => '',
     'loading' => '',
     'feedback' => '',
-    'about' => 
+    'about' =>
     array (
       'opensource' => '',
       'contribute' => '',
@@ -71,18 +71,18 @@ return array (
       'translations' => '',
     ),
   ),
-  'export' => 
+  'export' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'mandatory_column_error' => '',
-      'importing' => 
+      'importing' =>
       array (
-        'deliveries' => 
+        'deliveries' =>
         array (
           'first_product' => '',
         ),
-        'user' => 
+        'user' =>
         array (
           'aggregation' => '',
           'deleted' => '',
@@ -94,9 +94,9 @@ return array (
       'selection_instructions' => '',
       'img_csv_instructions' => '',
     ),
-    'importing' => 
+    'importing' =>
     array (
-      'deliveries' => 
+      'deliveries' =>
       array (
         'first_product' => '',
         'instruction' => '',
@@ -108,17 +108,17 @@ return array (
     ),
     'balance_csv_filename' => '',
     'products_list_filename' => '',
-    'import' => 
+    'import' =>
     array (
       'csv' => 'Importer CSV',
       'gdxp' => 'Importer',
     ),
     'help_csv_libreoffice' => '',
-    'data' => 
+    'data' =>
     array (
       'columns' => '',
       'format' => 'Format',
-      'formats' => 
+      'formats' =>
       array (
         'pdf' => '',
         'csv' => '',
@@ -129,13 +129,13 @@ return array (
       'products' => 'Produkt',
       'split_friends' => '',
     ),
-    'export' => 
+    'export' =>
     array (
       'database' => 'Eksporter',
     ),
     'help_split_friends' => '',
     'help_aggregate_export_summary' => '',
-    'flags' => 
+    'flags' =>
     array (
       'include_unbooked' => '',
     ),
@@ -143,9 +143,9 @@ return array (
     'movements_heading' => '',
     'accepted_columns' => '',
   ),
-  'gas' => 
+  'gas' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'csv_separator' => '',
       'home_message' => '',
@@ -200,7 +200,7 @@ return array (
     'automatic_fees' => '',
     'enable_sepa' => '',
     'enable_satispay' => '',
-    'satispay' => 
+    'satispay' =>
     array (
       'activation_code' => '',
     ),
@@ -215,7 +215,7 @@ return array (
     'multigas_mode' => '',
     'only_bookings_with_credit_limit' => '',
   ),
-  'generic' => 
+  'generic' =>
   array (
     'save' => '',
     'create_format' => '',
@@ -254,7 +254,7 @@ return array (
     'status' => 'Tilstand',
     'unspecified' => '',
     'never' => '',
-    'help' => 
+    'help' =>
     array (
       'save_reminder' => '',
       'preferred_date_format' => '',
@@ -279,7 +279,7 @@ return array (
     'notes' => 'Merknad',
     'id' => '',
     'closing_date' => 'Lukkingsdato',
-    'stats' => 
+    'stats' =>
     array (
       'involved_orders' => '',
       'involved_users' => '',
@@ -292,7 +292,7 @@ return array (
     'by_kg' => '',
     'selection' => '',
     'home' => 'Hjem',
-    'menu' => 
+    'menu' =>
     array (
       'bookings' => 'Forhåndsbestilling',
       'accounting' => '',
@@ -307,7 +307,7 @@ return array (
     'limited_access' => '',
     'disabled' => 'Deaktivert',
     'kilos' => '',
-    'sortings' => 
+    'sortings' =>
     array (
       'all_by_user' => '',
       'manual' => '',
@@ -315,7 +315,7 @@ return array (
     ),
     'minor_than' => '',
     'major_than' => '',
-    'exports' => 
+    'exports' =>
     array (
       'csv' => 'Importer CSV',
       'integralces' => 'Importer CSV',
@@ -326,7 +326,7 @@ return array (
     'details' => '',
     'photo' => 'Bilde',
     'composable_all' => 'Alle',
-    'attachments' => 
+    'attachments' =>
     array (
       'replace_file' => '',
       'view' => '',
@@ -337,7 +337,7 @@ return array (
     'attachment' => '',
     'contacts' => '',
     'errors' => 'Feil',
-    'search' => 
+    'search' =>
     array (
       'users' => 'Bruker',
       'all' => 'Søk',
@@ -362,13 +362,13 @@ return array (
     'create' => 'Ny',
     'targets' => '',
     'suppliers_and_orders' => '',
-    'mailfield' => 
+    'mailfield' =>
     array (
       'subject' => '',
       'body' => '',
     ),
     'reference' => '',
-    'measures' => 
+    'measures' =>
     array (
       'discrete' => 'Måleenhet',
     ),
@@ -398,7 +398,7 @@ return array (
     'start' => '',
     'expiration' => '',
     'do_duplicate' => '',
-    'action' => 
+    'action' =>
     array (
       'ignore' => '[Ignorer]',
       'disable' => 'Deaktivert',
@@ -427,9 +427,9 @@ return array (
     'closing' => '',
     'mandatory' => '',
   ),
-  'imports' => 
+  'imports' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'new_remote_products_list' => '',
       'failed_file' => '',
@@ -461,34 +461,34 @@ return array (
     'existing_products_action' => 'Produkt',
     'no_products' => '',
   ),
-  'invoices' => 
+  'invoices' =>
   array (
     'waiting' => '',
-    'statuses' => 
+    'statuses' =>
     array (
       'to_verify' => '',
       'verified' => '',
       'payed' => '',
     ),
     'default_note' => '',
-    'documents' => 
+    'documents' =>
     array (
-      'invoice' => 
+      'invoice' =>
       array (
         'heading' => '',
       ),
-      'receipts' => 
+      'receipts' =>
       array (
         'list_filename' => '',
       ),
     ),
-    'balances' => 
+    'balances' =>
     array (
       'supplier' => '',
     ),
     'forwarded' => '',
     'orders' => 'Bestilling',
-    'help' => 
+    'help' =>
     array (
       'orders' => '',
       'no_orders' => '',
@@ -503,45 +503,45 @@ return array (
     'send_pending_receipts' => '',
     'shipping_of' => 'Lukkingsdato',
   ),
-  'mail' => 
+  'mail' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'removed_email_log' => '',
       'send_error' => '',
     ),
-    'summary' => 
+    'summary' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
       ),
     ),
-    'closed' => 
+    'closed' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
       ),
     ),
-    'notification' => 
+    'notification' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
       ),
     ),
-    'new_user_notification' => 
+    'new_user_notification' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
       ),
     ),
     'contacts_prefix' => '',
-    'approved' => 
+    'approved' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
@@ -550,18 +550,18 @@ return array (
       'username' => '',
       'link' => '',
     ),
-    'declined' => 
+    'declined' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
       ),
       'description' => '',
     ),
-    'order' => 
+    'order' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
@@ -571,9 +571,9 @@ return array (
       'link' => '',
       'mails' => '',
     ),
-    'reminder' => 
+    'reminder' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
@@ -581,100 +581,100 @@ return array (
       'description' => '',
       'list' => '',
     ),
-    'password' => 
+    'password' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'body' => '',
       ),
       'description' => '',
       'link' => '',
     ),
-    'receipt' => 
+    'receipt' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
       ),
       'description' => '',
     ),
-    'supplier' => 
+    'supplier' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
       ),
       'description' => '',
     ),
-    'credit' => 
+    'credit' =>
     array (
       'current' => '',
     ),
-    'welcome' => 
+    'welcome' =>
     array (
       'description' => '',
       'link' => '',
-      'defaults' => 
+      'defaults' =>
       array (
         'body' => '',
       ),
     ),
-    'newuser' => 
+    'newuser' =>
     array (
       'description_manual' => '',
       'description' => '',
     ),
   ),
-  'modifiers' => 
+  'modifiers' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'discount' => 'Rabatt',
       'rounding' => '',
       'delivery' => 'Fraktkostnad',
     ),
-    'dynamics' => 
+    'dynamics' =>
     array (
-      'values' => 
+      'values' =>
       array (
         'quantity' => '',
         'price' => '',
         'order_price' => '',
         'weight' => '',
       ),
-      'targets' => 
+      'targets' =>
       array (
-        'product' => 
+        'product' =>
         array (
           'booking' => '',
           'order' => '',
         ),
-        'order' => 
+        'order' =>
         array (
           'booking' => '',
           'order' => '',
         ),
-        'aggregate' => 
+        'aggregate' =>
         array (
           'booking' => '',
           'order' => '',
         ),
-        'circle' => 
+        'circle' =>
         array (
           'booking' => '',
           'order' => '',
         ),
       ),
-      'scale' => 
+      'scale' =>
       array (
         'minor' => '',
         'major' => '',
       ),
-      'distribution' => 
+      'distribution' =>
       array (
-        'sum' => 
+        'sum' =>
         array (
           'product' => '',
           'booking' => '',
@@ -683,7 +683,7 @@ return array (
           'booking_kg' => '',
           'order_kg' => '',
         ),
-        'sub' => 
+        'sub' =>
         array (
           'product' => '',
           'booking' => '',
@@ -692,7 +692,7 @@ return array (
           'booking_kg' => '',
           'order_kg' => '',
         ),
-        'passive' => 
+        'passive' =>
         array (
           'product' => '',
           'booking' => '',
@@ -701,12 +701,12 @@ return array (
           'booking_kg' => '',
           'order_kg' => '',
         ),
-        'apply' => 
+        'apply' =>
         array (
           'product' => '',
         ),
       ),
-      'types' => 
+      'types' =>
       array (
         'quantity' => '',
         'price' => '',
@@ -716,12 +716,12 @@ return array (
     ),
     'all' => 'ID',
     'name' => 'ID',
-    'help' => 
+    'help' =>
     array (
       'no_modifiers_for_element' => '',
     ),
   ),
-  'movements' => 
+  'movements' =>
   array (
     'modifier_no_theshold' => '',
     'order_value' => '',
@@ -733,27 +733,27 @@ return array (
     'bank_account' => '',
     'cash_account' => '',
     'deposits' => '',
-    'documents' => 
+    'documents' =>
     array (
-      'movements' => 
+      'movements' =>
       array (
         'filename' => '',
       ),
-      'users' => 
-      array (
-        'filename' => '',
-        'integralces_filename' => '',
-      ),
-      'sepa' => 
-      array (
-        'filename' => '',
-      ),
-      'suppliers' => 
+      'users' =>
       array (
         'filename' => '',
         'integralces_filename' => '',
       ),
-      'balances' => 
+      'sepa' =>
+      array (
+        'filename' => '',
+      ),
+      'suppliers' =>
+      array (
+        'filename' => '',
+        'integralces_filename' => '',
+      ),
+      'balances' =>
       array (
         'filename' => '',
       ),
@@ -767,7 +767,7 @@ return array (
     'formatted_balance' => '',
     'currency' => 'Valuta',
     'credit' => 'Kreditt',
-    'defaults' => 
+    'defaults' =>
     array (
       'fee' => '',
       'booking' => '',
@@ -785,7 +785,7 @@ return array (
       'decredit' => '',
       'refund' => '',
     ),
-    'methods' => 
+    'methods' =>
     array (
       'bank' => '',
       'cash' => '',
@@ -797,7 +797,7 @@ return array (
     'suppliers_status' => 'Statistikk',
     'causal' => '',
     'generic_causal' => '',
-    'help' => 
+    'help' =>
     array (
       'removing_balance_warning' => '',
       'missing_method_for_movement' => '',
@@ -843,20 +843,20 @@ return array (
     'available_credit' => '',
     'always_active_modifiers' => '',
     'apply_theshold_to' => '',
-    'sepa' => 
+    'sepa' =>
     array (
       'creditor_identifier' => 'ID',
       'business_code' => '',
     ),
   ),
-  'notifications' => 
+  'notifications' =>
   array (
-    'global_filter' => 
+    'global_filter' =>
     array (
       'roles' => '',
       'orders' => '',
     ),
-    'help' => 
+    'help' =>
     array (
       'repeat_mail_warning' => '',
       'sending_mail_warning' => '',
@@ -864,7 +864,7 @@ return array (
       'suspend' => '',
       'arbitrary_dates' => '',
     ),
-    'cycle' => 
+    'cycle' =>
     array (
       'two_weeks' => '',
       'first_of_month' => '',
@@ -874,7 +874,7 @@ return array (
       'last_of_month' => '',
     ),
     'name' => '',
-    'notices' => 
+    'notices' =>
     array (
       'new_notification_from' => '',
       'attached_order' => '',
@@ -884,7 +884,7 @@ return array (
     'send_to_current_users' => '',
     'next_dates' => '',
     'next_auto_orders' => '',
-    'list' => 
+    'list' =>
     array (
       'closed_orders' => 'Bestilling',
       'confirmed_dates' => '',
@@ -894,12 +894,12 @@ return array (
     'calendar_date' => '',
     'date_reference' => '',
   ),
-  'orders' => 
+  'orders' =>
   array (
-    'booking' => 
+    'booking' =>
     array (
       'void' => '',
-      'statuses' => 
+      'statuses' =>
       array (
         'open' => '',
         'closed' => '',
@@ -911,7 +911,7 @@ return array (
         'to_deliver' => '',
         'saved' => '',
       ),
-      'nav' => 
+      'nav' =>
       array (
         'mine' => 'Forhåndsbestilling',
         'friends' => 'Forhåndsbestilling',
@@ -919,7 +919,7 @@ return array (
         'add' => '',
       ),
     ),
-    'help' => 
+    'help' =>
     array (
       'pending_packages_notice' => '',
       'send_booking_summaries' => '',
@@ -974,7 +974,7 @@ return array (
       'unremovable_instructions' => '',
       'unremovable_notice' => '',
     ),
-    'booking_description' => 
+    'booking_description' =>
     array (
       'shipped' => '',
       'saved' => '',
@@ -982,7 +982,7 @@ return array (
     ),
     'send_booking_summaries' => '',
     'send_delivery_summaries' => '',
-    'packages' => 
+    'packages' =>
     array (
       'ignore' => '',
       'permit' => '',
@@ -993,7 +993,7 @@ return array (
     'supplier' => '',
     'booking_date_time' => '',
     'list_open' => '',
-    'dates' => 
+    'dates' =>
     array (
       'shipping' => '',
       'start' => 'Åpningsdato',
@@ -1002,17 +1002,17 @@ return array (
     'name' => '',
     'formatted_name' => '',
     'formatted_delivery_in_name' => '',
-    'quantities' => 
+    'quantities' =>
     array (
       'booked' => '',
       'shipped' => '',
     ),
-    'weights' => 
+    'weights' =>
     array (
       'booked' => '',
       'delivered' => '',
     ),
-    'totals' => 
+    'totals' =>
     array (
       'shipped' => '',
       'with_modifiers' => '',
@@ -1027,7 +1027,7 @@ return array (
       'to_pay' => '',
       'selected' => '',
     ),
-    'constraints' => 
+    'constraints' =>
     array (
       'quantity' => '',
       'discrete' => '',
@@ -1043,19 +1043,19 @@ return array (
       'relative_multiple_formatted' => '',
       'relative_multiple' => '',
     ),
-    'documents' => 
+    'documents' =>
     array (
-      'shipping' => 
+      'shipping' =>
       array (
         'filename' => '',
         'heading' => '',
         'short_heading' => '',
       ),
-      'summary' => 
+      'summary' =>
       array (
         'heading' => '',
       ),
-      'table' => 
+      'table' =>
       array (
         'filename' => '',
       ),
@@ -1063,7 +1063,7 @@ return array (
     'all' => 'Bestilling',
     'pending_packages' => '',
     'booking_aggregation' => '',
-    'statuses' => 
+    'statuses' =>
     array (
       'unchange' => '',
       'to_pay' => '',
@@ -1074,21 +1074,21 @@ return array (
     'do_aggregate' => 'Bestilling',
     'admin_dates' => '',
     'admin_automatics' => '',
-    'notices' => 
+    'notices' =>
     array (
       'closed_orders' => '',
       'email_attachments' => '',
       'calculator' => '',
     ),
-    'files' => 
+    'files' =>
     array (
-      'aggregate' => 
+      'aggregate' =>
       array (
         'shipping' => '',
         'summary' => '',
         'table' => '',
       ),
-      'order' => 
+      'order' =>
       array (
         'summary' => 'Produkt',
         'shipping' => '',
@@ -1104,12 +1104,12 @@ return array (
     'deliveries' => 'Lukkingsdato',
     'fast_deliveries' => '',
     'modifiers_redistribution_summary' => '',
-    'modifiers_redistribution' => 
+    'modifiers_redistribution' =>
     array (
       'keep' => '',
       'recalculate' => '',
     ),
-    'importing' => 
+    'importing' =>
     array (
       'save' => '',
       'close' => '',
@@ -1134,7 +1134,7 @@ return array (
     'notes_to_supplier' => 'Statistikk',
     'summaries_recipients_count' => '',
     'bookings_to_pay' => '',
-    'automatic_labels' => 
+    'automatic_labels' =>
     array (
       'delivery' => '',
       'days_after' => '',
@@ -1143,9 +1143,9 @@ return array (
       'open' => '',
     ),
   ),
-  'permissions' => 
+  'permissions' =>
   array (
-    'permissions' => 
+    'permissions' =>
     array (
       'maintenance_access' => '',
       'alter_permissions' => '',
@@ -1174,20 +1174,20 @@ return array (
       'admin_supplier_movements' => '',
       'admin_multigas' => '',
     ),
-    'roles' => 
+    'roles' =>
     array (
       'admin' => '',
       'secondary_admin' => '',
     ),
     'name' => '',
-    'supplier' => 
+    'supplier' =>
     array (
       'change' => '',
       'orders' => '',
       'deliveries' => '',
     ),
     'role' => '',
-    'help' => 
+    'help' =>
     array (
       'global_permission_notice' => '',
       'blocked_autoremove' => '',
@@ -1207,9 +1207,9 @@ return array (
     'sub_user' => '',
     'multigas_admin' => '',
   ),
-  'products' => 
+  'products' =>
   array (
-    'prices' => 
+    'prices' =>
     array (
       'unit' => 'Stykkpris',
       'unit_no_vat' => '',
@@ -1224,7 +1224,7 @@ return array (
     'min_quantity' => '',
     'max_quantity' => '',
     'available' => '',
-    'help' => 
+    'help' =>
     array (
       'unit_no_vat' => '',
       'package_price' => '',
@@ -1252,10 +1252,10 @@ return array (
     'weight_with_measure' => '',
     'list' => 'Produkt',
     'sorting' => '',
-    'variant' => 
+    'variant' =>
     array (
       'matrix' => '',
-      'help' => 
+      'help' =>
       array (
         'code' => '',
         'price_difference' => '',
@@ -1267,18 +1267,18 @@ return array (
     'global_min' => '',
     'variants' => '',
     'remove_confirm' => '',
-    'removing' => 
+    'removing' =>
     array (
       'keep' => '',
       'leave' => '',
     ),
   ),
-  'supplier' => 
+  'supplier' =>
   array (
     'referent' => '',
     'payment_method' => '',
     'all' => '',
-    'products_list' => 
+    'products_list' =>
     array (
       'pdf' => '',
       'csv' => '',
@@ -1287,7 +1287,7 @@ return array (
     'remote_index' => '',
     'vat' => '',
     'enable_fast_shipping' => '',
-    'help' => 
+    'help' =>
     array (
       'enable_fast_shipping' => '',
       'enable_no_quantities' => '',
@@ -1311,63 +1311,63 @@ return array (
     'orders_mode' => '',
     'send_notification_on_close' => '',
   ),
-  'tour' => 
+  'tour' =>
   array (
-    'welcome' => 
+    'welcome' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'profile' => 
+    'profile' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'users' => 
+    'users' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'suppliers' => 
+    'suppliers' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'orders' => 
+    'orders' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'bookings' => 
+    'bookings' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'accounting' => 
+    'accounting' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'config' => 
+    'config' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'inline' => 
+    'inline' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'last' => 
+    'last' =>
     array (
       'title' => '',
       'body' => '',
     ),
     'finished' => '',
   ),
-  'user' => 
+  'user' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'suspended' => '',
       'wrong_control_error' => '',
@@ -1388,7 +1388,7 @@ return array (
     'lastname' => '',
     'change_friend' => '',
     'formatted_aggregation' => '',
-    'sepa' => 
+    'sepa' =>
     array (
       'mandate' => '',
       'date' => '',
@@ -1409,13 +1409,13 @@ return array (
     'all' => 'Bruker',
     'payed_fee' => '',
     'name' => 'Bruker',
-    'address_part' => 
+    'address_part' =>
     array (
       'street' => '',
       'city' => '',
       'zip' => '',
     ),
-    'statuses' => 
+    'statuses' =>
     array (
       'active' => 'Aktivert',
       'suspended' => '',
@@ -1441,22 +1441,22 @@ return array (
     'deposit' => '',
     'fees_status' => 'Tilstand',
     'all_ceased' => '',
-    'notices' => 
+    'notices' =>
     array (
       'new_user' => '',
       'pending_approval' => '',
     ),
     'last_fee' => '',
-    'fees' => 
+    'fees' =>
     array (
       'new' => '',
       'change' => '',
     ),
-    'empty' => 
+    'empty' =>
     array (
       'friends' => '',
     ),
-    'satispay' => 
+    'satispay' =>
     array (
       'reload' => '',
     ),

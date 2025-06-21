@@ -6,9 +6,9 @@
             });
 
             $(this).on('click', '.explode-aggregate', function() {
-                var container = $(this).closest('.card');
+                let container = $(this).closest('.card');
                 container.find('li').each(function() {
-                    var cell = prependCell(container);
+                    let cell = prependCell(container);
                     cell.find('ul').append($(this).clone());
                 });
                 container.remove();
@@ -16,13 +16,13 @@
 
             $(this).submit(function(e) {
                 e.preventDefault();
-                var form = $(this);
+                let form = $(this);
                 form.find('button[type=submit]').prop('disabled', false);
 
-                var data = [];
+                let data = [];
 
                 form.find('.card').each(function() {
-                    var a = {
+                    let a = {
                         id: $(this).attr('data-aggregate-id'),
                         orders: []
                     };
@@ -50,7 +50,7 @@
         });
 
         function prependCell(node) {
-            var cell = node.clone();
+            let cell = node.clone();
             cell.attr('data-aggregate-id', 'new').find('ul').empty();
             node.before(cell);
             initAggregatorList(cell);
@@ -58,7 +58,7 @@
         }
 
         function initAggregatorList(node) {
-            var items = node.find('li').length;
+            let items = node.find('li').length;
             if (items < 2) {
                 node.find('.explode-aggregate').hide();
             }
@@ -67,7 +67,7 @@
                 connectWith: '#orderAggregator div.card ul',
                 accept: 'li',
                 drop: function(event, ui) {
-                    var items = $(this).find('li').length;
+                    let items = $(this).find('li').length;
                     if (items == 0) {
                         prependCell($(this));
                     }
@@ -75,8 +75,8 @@
                         $(this).find('.explode-aggregate').show();
                     }
 
-                    var source = ui.draggable.closest('.card');
-                    var ex_items = source.find('li').length;
+                    let source = ui.draggable.closest('.card');
+                    let ex_items = source.find('li').length;
                     if (ex_items == 2) {
                         source.find('.explode-aggregate').hide();
                     }

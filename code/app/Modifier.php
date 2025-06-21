@@ -130,12 +130,7 @@ class Modifier extends Model
                 return 'order';
             }
             else {
-                if ($this->applies_target == 'order') {
-                    return 'global_product';
-                }
-                else {
-                    return 'product';
-                }
+                return ($this->applies_target == 'order') ? 'global_product' : 'product';
             }
         }
         else {

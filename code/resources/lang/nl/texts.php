@@ -1,11 +1,11 @@
 <?php
 
 return array (
-  'aggregations' => 
+  'aggregations' =>
   array (
     'all' => '',
     'limit_access' => '',
-    'help' => 
+    'help' =>
     array (
       'limit_access_to_order' => '',
       'permit_selection' => '',
@@ -24,11 +24,11 @@ return array (
     'empty_list' => '',
     'name' => '',
   ),
-  'auth' => 
+  'auth' =>
   array (
     'accept_privacy' => 'Ik heb de <a href="%s" target="_blank">Privacyverklaring</a> gelezen en geaccepteerd.',
     'username' => 'Username',
-    'help' => 
+    'help' =>
     array (
       'missing_user_or_mail' => 'Gebruikersnaam of e-mailadres niet gevonden',
       'missing_email' => 'De aangegeven gebruiker heeft geen geldig e-mailadres',
@@ -50,18 +50,18 @@ return array (
     'register' => 'Registreer je',
     'confirm_password' => 'Wachtwoord bevestigen',
     'update_password' => 'Wachtwoord bevestigen',
-    'modes' => 
+    'modes' =>
     array (
       'email' => 'Stuur e-mail',
     ),
   ),
-  'commons' => 
+  'commons' =>
   array (
     'accept_conditions' => '',
     'warning' => 'Selectie',
     'loading' => '',
     'feedback' => '',
-    'about' => 
+    'about' =>
     array (
       'opensource' => '',
       'contribute' => '',
@@ -71,18 +71,18 @@ return array (
       'translations' => 'Als je wilt bijdragen aan de vertaling in jouw taal, bezoek dan <a href="https://hosted.weblate.org/projects/gasdottong/native/">deze pagina</a>.',
     ),
   ),
-  'export' => 
+  'export' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'mandatory_column_error' => 'Verplichte kolom niet opgegeven',
-      'importing' => 
+      'importing' =>
       array (
-        'deliveries' => 
+        'deliveries' =>
         array (
           'first_product' => '',
         ),
-        'user' => 
+        'user' =>
         array (
           'aggregation' => '',
           'deleted' => '',
@@ -94,9 +94,9 @@ return array (
       'selection_instructions' => 'Zodra het bestand is geladen, kunt u aangeven welk attribuut elke kolom in het document vertegenwoordigt.',
       'img_csv_instructions' => '',
     ),
-    'importing' => 
+    'importing' =>
     array (
-      'deliveries' => 
+      'deliveries' =>
       array (
         'first_product' => '',
         'instruction' => '',
@@ -108,17 +108,17 @@ return array (
     ),
     'balance_csv_filename' => '',
     'products_list_filename' => 'Prijslijst :supplier.:format',
-    'import' => 
+    'import' =>
     array (
       'csv' => 'CSV importeren',
       'gdxp' => 'GDXP importeren',
     ),
     'help_csv_libreoffice' => 'Voor het raadplegen en uitwerken van bestanden in CSV-formaat (<i>Comma-Separated Values</i>) wordt het gebruik aanbevolen van <a target="_blank" href="http://it.libreoffice.org/">LibreOffice</a>.',
-    'data' => 
+    'data' =>
     array (
       'columns' => 'Kolommen',
       'format' => 'Formaat',
-      'formats' => 
+      'formats' =>
       array (
         'pdf' => '',
         'csv' => '',
@@ -129,13 +129,13 @@ return array (
       'products' => 'Naam product',
       'split_friends' => '',
     ),
-    'export' => 
+    'export' =>
     array (
       'database' => 'Exporteren',
     ),
     'help_split_friends' => '',
     'help_aggregate_export_summary' => '',
-    'flags' => 
+    'flags' =>
     array (
       'include_unbooked' => '',
     ),
@@ -143,9 +143,9 @@ return array (
     'movements_heading' => '',
     'accepted_columns' => '',
   ),
-  'gas' => 
+  'gas' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'csv_separator' => '',
       'home_message' => '',
@@ -200,7 +200,7 @@ return array (
     'automatic_fees' => '',
     'enable_sepa' => 'SEPA activeren',
     'enable_satispay' => 'Satispay activeren',
-    'satispay' => 
+    'satispay' =>
     array (
       'activation_code' => 'Unieke bedrijfscode',
     ),
@@ -215,7 +215,7 @@ return array (
     'multigas_mode' => '',
     'only_bookings_with_credit_limit' => '',
   ),
-  'generic' => 
+  'generic' =>
   array (
     'save' => 'Opslaan',
     'create_format' => 'Nieuwe :type',
@@ -254,7 +254,7 @@ return array (
     'status' => 'Status',
     'unspecified' => 'Niet opgegeven',
     'never' => 'Nooit',
-    'help' => 
+    'help' =>
     array (
       'save_reminder' => '',
       'preferred_date_format' => 'Bij voorkeur in JJJJ-MM-DD formaat (bijv. :now)',
@@ -279,7 +279,7 @@ return array (
     'notes' => 'Opmerkingen',
     'id' => 'ID',
     'closing_date' => 'Sluitingsdatum',
-    'stats' => 
+    'stats' =>
     array (
       'involved_orders' => 'Waarde bestellingen',
       'involved_users' => 'Betrokken gebruikers',
@@ -292,7 +292,7 @@ return array (
     'by_kg' => '',
     'selection' => 'Selectie',
     'home' => 'Home',
-    'menu' => 
+    'menu' =>
     array (
       'bookings' => 'Reserveringen',
       'accounting' => 'Boekhouding',
@@ -307,7 +307,7 @@ return array (
     'limited_access' => '',
     'disabled' => 'Gedeactiveerd',
     'kilos' => '',
-    'sortings' => 
+    'sortings' =>
     array (
       'all_by_user' => 'Alle (gesorteerd op gebruiker)',
       'manual' => '',
@@ -315,7 +315,7 @@ return array (
     ),
     'minor_than' => '',
     'major_than' => 'Bericht Homepage',
-    'exports' => 
+    'exports' =>
     array (
       'csv' => 'Exporteren CSV',
       'integralces' => 'IntegralCES',
@@ -326,7 +326,7 @@ return array (
     'details' => 'Details',
     'photo' => 'Foto',
     'composable_all' => 'Alle',
-    'attachments' => 
+    'attachments' =>
     array (
       'replace_file' => 'Bestand vervangen',
       'view' => 'De statistieken weergeven',
@@ -337,7 +337,7 @@ return array (
     'attachment' => 'Samengevoegd',
     'contacts' => 'Contactgegevens',
     'errors' => 'Fouten',
-    'search' => 
+    'search' =>
     array (
       'users' => 'Gebruiker aanmaken',
       'all' => 'Zoeken',
@@ -362,13 +362,13 @@ return array (
     'create' => 'Nieuwe aanmaken',
     'targets' => 'Onderwerp',
     'suppliers_and_orders' => 'Leveranciers',
-    'mailfield' => 
+    'mailfield' =>
     array (
       'subject' => 'Onderwerp',
       'body' => 'Tekst van de e-mail',
     ),
     'reference' => 'Referentie',
-    'measures' => 
+    'measures' =>
     array (
       'discrete' => 'Discrete eenheid',
     ),
@@ -398,7 +398,7 @@ return array (
     'start' => 'Begin',
     'expiration' => 'Termijn',
     'do_duplicate' => 'Dupliceren',
-    'action' => 
+    'action' =>
     array (
       'ignore' => '[Negeren]',
       'disable' => 'Gedeactiveerd',
@@ -427,9 +427,9 @@ return array (
     'closing' => '',
     'mandatory' => '',
   ),
-  'imports' => 
+  'imports' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'new_remote_products_list' => '',
       'failed_file' => 'Bestand niet juist geladen',
@@ -461,34 +461,34 @@ return array (
     'existing_products_action' => 'Geïmporteerde producten',
     'no_products' => '',
   ),
-  'invoices' => 
+  'invoices' =>
   array (
     'waiting' => 'In de wacht',
-    'statuses' => 
+    'statuses' =>
     array (
       'to_verify' => 'Te controleren',
       'verified' => 'Gecontroleerd',
       'payed' => 'Betaald',
     ),
     'default_note' => 'Betaling factuur :name',
-    'documents' => 
+    'documents' =>
     array (
-      'invoice' => 
+      'invoice' =>
       array (
         'heading' => 'Factuur :identifier',
       ),
-      'receipts' => 
+      'receipts' =>
       array (
         'list_filename' => '',
       ),
     ),
-    'balances' => 
+    'balances' =>
     array (
       'supplier' => 'Saldo leverancier',
     ),
     'forwarded' => 'Doorgezonden',
     'orders' => 'Betrokken bestellingen',
-    'help' => 
+    'help' =>
     array (
       'orders' => '',
       'no_orders' => '',
@@ -503,45 +503,45 @@ return array (
     'send_pending_receipts' => '',
     'shipping_of' => 'Levering: %s',
   ),
-  'mail' => 
+  'mail' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'removed_email_log' => '',
       'send_error' => '',
     ),
-    'summary' => 
+    'summary' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
       ),
     ),
-    'closed' => 
+    'closed' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
       ),
     ),
-    'notification' => 
+    'notification' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
       ),
     ),
-    'new_user_notification' => 
+    'new_user_notification' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => 'Nieuwe gebruiker geregistreerd',
       ),
     ),
     'contacts_prefix' => '',
-    'approved' => 
+    'approved' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => 'Welkom!',
         'body' => '',
@@ -550,18 +550,18 @@ return array (
       'username' => '',
       'link' => '',
     ),
-    'declined' => 
+    'declined' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
       ),
       'description' => '',
     ),
-    'order' => 
+    'order' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
@@ -571,9 +571,9 @@ return array (
       'link' => '',
       'mails' => '',
     ),
-    'reminder' => 
+    'reminder' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
@@ -581,100 +581,100 @@ return array (
       'description' => '',
       'list' => '',
     ),
-    'password' => 
+    'password' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'body' => '',
       ),
       'description' => '',
       'link' => '',
     ),
-    'receipt' => 
+    'receipt' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
       ),
       'description' => 'Begeleidende e-mail voor ontvangstbewijzen.',
     ),
-    'supplier' => 
+    'supplier' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
       ),
       'description' => '',
     ),
-    'credit' => 
+    'credit' =>
     array (
       'current' => '',
     ),
-    'welcome' => 
+    'welcome' =>
     array (
       'description' => '',
       'link' => '',
-      'defaults' => 
+      'defaults' =>
       array (
         'body' => '',
       ),
     ),
-    'newuser' => 
+    'newuser' =>
     array (
       'description_manual' => '',
       'description' => '',
     ),
   ),
-  'modifiers' => 
+  'modifiers' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'discount' => 'Korting',
       'rounding' => '',
       'delivery' => 'Transportkosten',
     ),
-    'dynamics' => 
+    'dynamics' =>
     array (
-      'values' => 
+      'values' =>
       array (
         'quantity' => '',
         'price' => '',
         'order_price' => '',
         'weight' => '',
       ),
-      'targets' => 
+      'targets' =>
       array (
-        'product' => 
+        'product' =>
         array (
           'booking' => '',
           'order' => '',
         ),
-        'order' => 
+        'order' =>
         array (
           'booking' => '',
           'order' => '',
         ),
-        'aggregate' => 
+        'aggregate' =>
         array (
           'booking' => '',
           'order' => '',
         ),
-        'circle' => 
+        'circle' =>
         array (
           'booking' => '',
           'order' => '',
         ),
       ),
-      'scale' => 
+      'scale' =>
       array (
         'minor' => '',
         'major' => '',
       ),
-      'distribution' => 
+      'distribution' =>
       array (
-        'sum' => 
+        'sum' =>
         array (
           'product' => '',
           'booking' => '',
@@ -683,7 +683,7 @@ return array (
           'booking_kg' => '',
           'order_kg' => '',
         ),
-        'sub' => 
+        'sub' =>
         array (
           'product' => '',
           'booking' => '',
@@ -692,7 +692,7 @@ return array (
           'booking_kg' => '',
           'order_kg' => '',
         ),
-        'passive' => 
+        'passive' =>
         array (
           'product' => '',
           'booking' => '',
@@ -701,12 +701,12 @@ return array (
           'booking_kg' => '',
           'order_kg' => '',
         ),
-        'apply' => 
+        'apply' =>
         array (
           'product' => '',
         ),
       ),
-      'types' => 
+      'types' =>
       array (
         'quantity' => '',
         'price' => '',
@@ -716,12 +716,12 @@ return array (
     ),
     'all' => 'Wijzigen',
     'name' => 'Wijzigen',
-    'help' => 
+    'help' =>
     array (
       'no_modifiers_for_element' => '',
     ),
   ),
-  'movements' => 
+  'movements' =>
   array (
     'modifier_no_theshold' => '',
     'order_value' => '',
@@ -733,27 +733,27 @@ return array (
     'bank_account' => 'Rekening-courant',
     'cash_account' => 'Kas contanten',
     'deposits' => 'Borgsommen',
-    'documents' => 
+    'documents' =>
     array (
-      'movements' => 
+      'movements' =>
       array (
         'filename' => 'Export transacties GAS :date.:format',
       ),
-      'users' => 
+      'users' =>
       array (
         'filename' => 'Tegoeden tot :date.csv',
         'integralces_filename' => '',
       ),
-      'sepa' => 
+      'sepa' =>
       array (
         'filename' => 'SEPA van :date.xml',
       ),
-      'suppliers' => 
+      'suppliers' =>
       array (
         'filename' => '',
         'integralces_filename' => '',
       ),
-      'balances' => 
+      'balances' =>
       array (
         'filename' => '',
       ),
@@ -767,7 +767,7 @@ return array (
     'formatted_balance' => 'Saldo %s',
     'currency' => 'Beoordelen',
     'credit' => 'Krediet',
-    'defaults' => 
+    'defaults' =>
     array (
       'fee' => '',
       'booking' => '',
@@ -785,7 +785,7 @@ return array (
       'decredit' => '',
       'refund' => '',
     ),
-    'methods' => 
+    'methods' =>
     array (
       'bank' => 'Overboeking',
       'cash' => 'Contanten',
@@ -797,7 +797,7 @@ return array (
     'suppliers_status' => 'Saldo leverancier',
     'causal' => 'Betalingskenmerk',
     'generic_causal' => '',
-    'help' => 
+    'help' =>
     array (
       'removing_balance_warning' => '',
       'missing_method_for_movement' => '',
@@ -843,20 +843,20 @@ return array (
     'available_credit' => 'beschikbaar',
     'always_active_modifiers' => '',
     'apply_theshold_to' => '',
-    'sepa' => 
+    'sepa' =>
     array (
       'creditor_identifier' => 'Identificatie krediteur',
       'business_code' => 'Unieke bedrijfscode',
     ),
   ),
-  'notifications' => 
+  'notifications' =>
   array (
-    'global_filter' => 
+    'global_filter' =>
     array (
       'roles' => 'Alle gebruikers met rol :role',
       'orders' => 'Alle deelnemers aan de bestelling :supplier :number',
     ),
-    'help' => 
+    'help' =>
     array (
       'repeat_mail_warning' => 'Deze melding is al per e-mail verzonden. Het opslaan van deze melding terwijl deze flag actief blijft, zorgt voor verzending van een nieuwe e-mail.',
       'sending_mail_warning' => '',
@@ -864,7 +864,7 @@ return array (
       'suspend' => '',
       'arbitrary_dates' => 'Vanaf hier kun je willekeurige data toevoegen aan je leveringskalender, zelfs voor bestellingen die nog niet bestaan. Deze functie wordt aanbevolen om de coördinatie van de verschillende contacten binnen de GAS te vergemakkelijken en om activiteiten op lange termijn te plannen.',
     ),
-    'cycle' => 
+    'cycle' =>
     array (
       'two_weeks' => '',
       'first_of_month' => '',
@@ -874,7 +874,7 @@ return array (
       'last_of_month' => '',
     ),
     'name' => 'Melding',
-    'notices' => 
+    'notices' =>
     array (
       'new_notification_from' => 'Nieuwe mededeling door :author',
       'attached_order' => 'Bijgevoegd is het bestand voor de bestelling van :gasname.',
@@ -884,7 +884,7 @@ return array (
     'send_to_current_users' => 'Melding gebruiker weergegeven',
     'next_dates' => 'Komende data op kalender:',
     'next_auto_orders' => 'Komende data op kalender:',
-    'list' => 
+    'list' =>
     array (
       'closed_orders' => 'Gesloten bestellingen',
       'confirmed_dates' => 'Bevestigde data',
@@ -894,12 +894,12 @@ return array (
     'calendar_date' => 'Datum op kalender',
     'date_reference' => '',
   ),
-  'orders' => 
+  'orders' =>
   array (
-    'booking' => 
+    'booking' =>
     array (
       'void' => 'Reservering annuleren',
-      'statuses' => 
+      'statuses' =>
       array (
         'open' => 'Open reserveringen',
         'closed' => 'Gesloten reserveringen',
@@ -911,7 +911,7 @@ return array (
         'to_deliver' => 'Te leveren',
         'saved' => 'Opgeslagen',
       ),
-      'nav' => 
+      'nav' =>
       array (
         'mine' => 'Reservering annuleren',
         'friends' => 'Reserveringen voor vrienden',
@@ -919,7 +919,7 @@ return array (
         'add' => 'Reservering toevoegen/wijzigen',
       ),
     ),
-    'help' => 
+    'help' =>
     array (
       'pending_packages_notice' => '',
       'send_booking_summaries' => '',
@@ -974,7 +974,7 @@ return array (
       'unremovable_instructions' => '',
       'unremovable_notice' => '',
     ),
-    'booking_description' => 
+    'booking_description' =>
     array (
       'shipped' => '',
       'saved' => '',
@@ -982,7 +982,7 @@ return array (
     ),
     'send_booking_summaries' => 'Samenvattingen reserveringen verzenden',
     'send_delivery_summaries' => '',
-    'packages' => 
+    'packages' =>
     array (
       'ignore' => '',
       'permit' => '',
@@ -993,7 +993,7 @@ return array (
     'supplier' => 'Leverancier',
     'booking_date_time' => '',
     'list_open' => 'Open bestellingen',
-    'dates' => 
+    'dates' =>
     array (
       'shipping' => 'Afleverdatum',
       'start' => 'Openingsdatum reserveringen',
@@ -1002,17 +1002,17 @@ return array (
     'name' => 'Bestelling',
     'formatted_name' => 'van :start tot :end',
     'formatted_delivery_in_name' => ', te leveren :delivery',
-    'quantities' => 
+    'quantities' =>
     array (
       'booked' => 'Gereserveerde hoeveelheid',
       'shipped' => 'Geleverde hoeveelheid',
     ),
-    'weights' => 
+    'weights' =>
     array (
       'booked' => '',
       'delivered' => '',
     ),
-    'totals' => 
+    'totals' =>
     array (
       'shipped' => 'Totaal geleverd',
       'with_modifiers' => '',
@@ -1027,7 +1027,7 @@ return array (
       'to_pay' => 'Te betalen bedrag',
       'selected' => '',
     ),
-    'constraints' => 
+    'constraints' =>
     array (
       'quantity' => '',
       'discrete' => '',
@@ -1043,19 +1043,19 @@ return array (
       'relative_multiple_formatted' => 'Meervoud: :quantity',
       'relative_multiple' => '',
     ),
-    'documents' => 
+    'documents' =>
     array (
-      'shipping' => 
+      'shipping' =>
       array (
         'filename' => 'Detail leveringen bestellingen :suppliers.pdf',
         'heading' => 'Detail leveringen bestelling :identifier bij :supplier van :date',
         'short_heading' => 'Leveringsdetails',
       ),
-      'summary' => 
+      'summary' =>
       array (
         'heading' => '',
       ),
-      'table' => 
+      'table' =>
       array (
         'filename' => 'Tabel Bestelling %s bij %s.csv',
       ),
@@ -1063,7 +1063,7 @@ return array (
     'all' => 'Bestellingen',
     'pending_packages' => '',
     'booking_aggregation' => '',
-    'statuses' => 
+    'statuses' =>
     array (
       'unchange' => '',
       'to_pay' => 'Te betalen bestellingen',
@@ -1074,21 +1074,21 @@ return array (
     'do_aggregate' => 'Bestellingen samenvoegen',
     'admin_dates' => 'Beheer data',
     'admin_automatics' => 'Komende data op kalender:',
-    'notices' => 
+    'notices' =>
     array (
       'closed_orders' => '',
       'email_attachments' => '',
       'calculator' => '',
     ),
-    'files' => 
+    'files' =>
     array (
-      'aggregate' => 
+      'aggregate' =>
       array (
         'shipping' => 'Detail gegroepeerde leveringen',
         'summary' => '',
         'table' => 'Overzichtstabel producten',
       ),
-      'order' => 
+      'order' =>
       array (
         'summary' => 'Er zijn geen producten',
         'shipping' => 'Leveringsdetails',
@@ -1104,12 +1104,12 @@ return array (
     'deliveries' => 'Leveringen',
     'fast_deliveries' => 'Snelle leveringen',
     'modifiers_redistribution_summary' => '',
-    'modifiers_redistribution' => 
+    'modifiers_redistribution' =>
     array (
       'keep' => '',
       'recalculate' => '',
     ),
-    'importing' => 
+    'importing' =>
     array (
       'save' => '',
       'close' => '',
@@ -1134,7 +1134,7 @@ return array (
     'notes_to_supplier' => 'Opmerkingen voor de leverancier',
     'summaries_recipients_count' => '',
     'bookings_to_pay' => '',
-    'automatic_labels' => 
+    'automatic_labels' =>
     array (
       'delivery' => '',
       'days_after' => '',
@@ -1143,9 +1143,9 @@ return array (
       'open' => '',
     ),
   ),
-  'permissions' => 
+  'permissions' =>
   array (
-    'permissions' => 
+    'permissions' =>
     array (
       'maintenance_access' => 'Toegang ook bij onderhoud toegestaan',
       'alter_permissions' => 'Alle toestemmingen wijzigen',
@@ -1174,20 +1174,20 @@ return array (
       'admin_supplier_movements' => '',
       'admin_multigas' => '',
     ),
-    'roles' => 
+    'roles' =>
     array (
       'admin' => '',
       'secondary_admin' => '',
     ),
     'name' => 'Toegestaan',
-    'supplier' => 
+    'supplier' =>
     array (
       'change' => 'U kunt de leverancier wijzigen',
       'orders' => 'U kunt nieuwe bestellingen voor de leverancier plaatsen',
       'deliveries' => 'Beheer de leveringen voor de leverancier',
     ),
     'role' => 'Rol',
-    'help' => 
+    'help' =>
     array (
       'global_permission_notice' => 'Deze speciale toestemming geldt automatisch voor alle onderwerpen (huidig en toekomstig) en stelt in staat om op alles in te werken, hoewel de aangewezen gebruiker niet expliciet zichtbaar voor anderen zal zijn.',
       'blocked_autoremove' => '',
@@ -1207,9 +1207,9 @@ return array (
     'sub_user' => 'Rol van subgebruiker',
     'multigas_admin' => 'De categoprieën beheren',
   ),
-  'products' => 
+  'products' =>
   array (
-    'prices' => 
+    'prices' =>
     array (
       'unit' => 'Eenheidsprijs',
       'unit_no_vat' => '',
@@ -1224,7 +1224,7 @@ return array (
     'min_quantity' => 'Minimum',
     'max_quantity' => 'Aanbevolen maximum',
     'available' => 'beschikbaar',
-    'help' => 
+    'help' =>
     array (
       'unit_no_vat' => '',
       'package_price' => '',
@@ -1252,10 +1252,10 @@ return array (
     'weight_with_measure' => '',
     'list' => 'Producten',
     'sorting' => '',
-    'variant' => 
+    'variant' =>
     array (
       'matrix' => 'Variant aanmaken/wijzigen',
-      'help' => 
+      'help' =>
       array (
         'code' => '',
         'price_difference' => '',
@@ -1267,18 +1267,18 @@ return array (
     'global_min' => 'Overzichtstabel producten',
     'variants' => 'Variabele',
     'remove_confirm' => '',
-    'removing' => 
+    'removing' =>
     array (
       'keep' => '',
       'leave' => '',
     ),
   ),
-  'supplier' => 
+  'supplier' =>
   array (
     'referent' => 'Contactpersoon',
     'payment_method' => 'Betaalwijze',
     'all' => 'Leveranciers',
-    'products_list' => 
+    'products_list' =>
     array (
       'pdf' => 'PDF-lijst (automatisch gegenereerd)',
       'csv' => 'CSV-lijst (automatisch gegenereerd)',
@@ -1287,7 +1287,7 @@ return array (
     'remote_index' => '',
     'vat' => 'BTW-tarief',
     'enable_fast_shipping' => 'Snelle leveringen',
-    'help' => 
+    'help' =>
     array (
       'enable_fast_shipping' => '',
       'enable_no_quantities' => '',
@@ -1311,63 +1311,63 @@ return array (
     'orders_mode' => 'Afwikkelingsmodus bestellingen',
     'send_notification_on_close' => '',
   ),
-  'tour' => 
+  'tour' =>
   array (
-    'welcome' => 
+    'welcome' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'profile' => 
+    'profile' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'users' => 
+    'users' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'suppliers' => 
+    'suppliers' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'orders' => 
+    'orders' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'bookings' => 
+    'bookings' =>
     array (
       'title' => 'Reserveringen',
       'body' => '',
     ),
-    'accounting' => 
+    'accounting' =>
     array (
       'title' => 'Boekhouding',
       'body' => '',
     ),
-    'config' => 
+    'config' =>
     array (
       'title' => 'Configuraties',
       'body' => '',
     ),
-    'inline' => 
+    'inline' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'last' => 
+    'last' =>
     array (
       'title' => '',
       'body' => '',
     ),
     'finished' => '',
   ),
-  'user' => 
+  'user' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'suspended' => '',
       'wrong_control_error' => '',
@@ -1388,7 +1388,7 @@ return array (
     'lastname' => 'Achternaam',
     'change_friend' => '',
     'formatted_aggregation' => '',
-    'sepa' => 
+    'sepa' =>
     array (
       'mandate' => '',
       'date' => 'Datum SEPA-opdracht',
@@ -1409,13 +1409,13 @@ return array (
     'all' => 'Gebruikers',
     'payed_fee' => 'Betaalde aandeel',
     'name' => 'Gebruiker',
-    'address_part' => 
+    'address_part' =>
     array (
       'street' => 'Adres (Straat)',
       'city' => 'Adres (Stad)',
       'zip' => 'Adres (postcode)',
     ),
-    'statuses' => 
+    'statuses' =>
     array (
       'active' => 'Actief',
       'suspended' => 'Opgeschort',
@@ -1441,22 +1441,22 @@ return array (
     'deposit' => 'Deposito',
     'fees_status' => 'Status',
     'all_ceased' => 'Gestopt',
-    'notices' => 
+    'notices' =>
     array (
       'new_user' => 'Nieuwe gebruiker geregistreerd op :gasname:',
       'pending_approval' => '',
     ),
     'last_fee' => '',
-    'fees' => 
+    'fees' =>
     array (
       'new' => '',
       'change' => 'Wijzigen',
     ),
-    'empty' => 
+    'empty' =>
     array (
       'friends' => 'Voeg informatie toe over vrienden voor wie u subreserveringen wilt maken. Elke reservering is zelfstandig, maar wordt op het moment van levering als een enkele reservering behandeld. Elke vriend kan ook zijn eigen inloggegevens hebben, om in GASdotto te komen en zelf zijn reserveringen in te voeren.',
     ),
-    'satispay' => 
+    'satispay' =>
     array (
       'reload' => 'Tegoed opladen met Satispay',
     ),

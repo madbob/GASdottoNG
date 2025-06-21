@@ -46,18 +46,7 @@ trait SuspendableTrait
 
     public function printableStatus()
     {
-        switch ($this->plainStatus()) {
-            case 'active':
-                return __('texts.user.statuses.active');
-            case 'suspended':
-                return __('texts.user.statuses.suspended');
-            case 'deleted':
-                return __('texts.user.statuses.deleted');
-            case 'removed':
-                return __('texts.user.statuses.removed');
-            default:
-                throw new \InvalidArgumentException("Stato non valido: " . $status);
-        }
+        return __('texts.user.statuses.' . $this->plainStatus());
     }
 
     public function scopeFullEnabled($query)

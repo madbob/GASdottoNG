@@ -131,21 +131,11 @@ class MovementType extends Model
 
         if ($o) {
             foreach ($o->$peer->operations as $op) {
-                if ($op->operation == 'increment') {
-                    return 'credit';
-                }
-                else {
-                    return 'debit';
-                }
+                return ($op->operation == 'increment') ? 'credit' : 'debit';
             }
         }
 
-        if ($peer == 'sender') {
-            return 'debit';
-        }
-        else {
-            return 'credit';
-        }
+        return ($peer == 'sender') ? 'debit' : 'credit';
     }
 
     public function hasBrokenModifier()

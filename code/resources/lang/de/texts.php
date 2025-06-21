@@ -1,11 +1,11 @@
 <?php
 
 return array (
-  'aggregations' => 
+  'aggregations' =>
   array (
     'all' => '',
     'limit_access' => '',
-    'help' => 
+    'help' =>
     array (
       'limit_access_to_order' => '',
       'permit_selection' => '',
@@ -24,11 +24,11 @@ return array (
     'empty_list' => '',
     'name' => '',
   ),
-  'auth' => 
+  'auth' =>
   array (
     'accept_privacy' => 'Ich habe die <a href="%s" target="_blank">Datenschutzhinweise</a> gelesen und akzeptiere sie.',
     'username' => 'Benutzername',
-    'help' => 
+    'help' =>
     array (
       'missing_user_or_mail' => 'Benutzername oder E-Mail-Adresse nicht gefunden',
       'missing_email' => 'Der angegebene Nutzer hat keine gültige E-Mail-Adresse',
@@ -50,18 +50,18 @@ return array (
     'register' => 'Registrieren',
     'confirm_password' => 'Passwort bestätigen',
     'update_password' => 'Passwort bestätigen',
-    'modes' => 
+    'modes' =>
     array (
       'email' => 'E-Mail senden',
     ),
   ),
-  'commons' => 
+  'commons' =>
   array (
     'accept_conditions' => 'Ich habe die <a href="%s" target="_blank">Nutzungsbedingungen</a> gelesen und akzeptiere sie.',
     'warning' => 'Achtung',
     'loading' => 'Ladevorgang',
     'feedback' => 'Rückmeldung',
-    'about' => 
+    'about' =>
     array (
       'opensource' => '',
       'contribute' => '',
@@ -71,18 +71,18 @@ return array (
       'translations' => 'Wenn du zu der Übersetzung in deine Sprache beitragen willst, dann besuche <a href="https://hosted.weblate.org/projects/gasdottong/native/">diese Seite</a>.',
     ),
   ),
-  'export' => 
+  'export' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'mandatory_column_error' => 'Unbestimmte Pflichtspalte',
-      'importing' => 
+      'importing' =>
       array (
-        'deliveries' => 
+        'deliveries' =>
         array (
           'first_product' => '',
         ),
-        'user' => 
+        'user' =>
         array (
           'aggregation' => '',
           'deleted' => 'Anzeigen "true" oder "false"',
@@ -94,9 +94,9 @@ return array (
       'selection_instructions' => 'Sobald die Datei hochgeladen ist, wird es möglich sein die Attribute für jede Spalte im Dokument zu spezifizieren.',
       'img_csv_instructions' => '',
     ),
-    'importing' => 
+    'importing' =>
     array (
-      'deliveries' => 
+      'deliveries' =>
       array (
         'first_product' => '',
         'instruction' => '',
@@ -108,17 +108,17 @@ return array (
     ),
     'balance_csv_filename' => '',
     'products_list_filename' => 'Liste :supplier.:format',
-    'import' => 
+    'import' =>
     array (
       'csv' => 'CSV Import',
       'gdxp' => 'GDXP importieren',
     ),
     'help_csv_libreoffice' => 'Um CSV-Dateien (<i>Comma-Separated Values</i>) zu öffnen und zu bearbeiten wird <a target="_blank" href="https://de.libreoffice.org/">LibreOffice</a> empfohlen.',
-    'data' => 
+    'data' =>
     array (
       'columns' => 'Spalten',
       'format' => 'Format',
-      'formats' => 
+      'formats' =>
       array (
         'pdf' => '',
         'csv' => '',
@@ -129,13 +129,13 @@ return array (
       'products' => 'Produktname',
       'split_friends' => '',
     ),
-    'export' => 
+    'export' =>
     array (
       'database' => 'Exportieren',
     ),
     'help_split_friends' => '',
     'help_aggregate_export_summary' => '',
-    'flags' => 
+    'flags' =>
     array (
       'include_unbooked' => '',
     ),
@@ -143,9 +143,9 @@ return array (
     'movements_heading' => '',
     'accepted_columns' => '',
   ),
-  'gas' => 
+  'gas' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'csv_separator' => '',
       'home_message' => 'Möglichkeit eine Nachricht zu hinterlegen, die auf der Authentifizierungsseite angezeigt wird. Nützlich für spezielle Mitteilungen an die Mitglieder der Bestellgemeinschaft oder als Willkommensnachricht',
@@ -200,7 +200,7 @@ return array (
     'automatic_fees' => '',
     'enable_sepa' => 'Zugelassene SEPA',
     'enable_satispay' => 'Satispay zugelassen',
-    'satispay' => 
+    'satispay' =>
     array (
       'activation_code' => 'Buchungsschlüssel Betrieb',
     ),
@@ -215,7 +215,7 @@ return array (
     'multigas_mode' => '',
     'only_bookings_with_credit_limit' => '',
   ),
-  'generic' => 
+  'generic' =>
   array (
     'save' => 'Speichern',
     'create_format' => 'Erstellen :type',
@@ -254,7 +254,7 @@ return array (
     'status' => 'Status',
     'unspecified' => 'Nicht spezifiziert',
     'never' => 'Nie',
-    'help' => 
+    'help' =>
     array (
       'save_reminder' => '',
       'preferred_date_format' => 'Bevorzugt im Format JJJJ-MM-TT (z.B. :now)',
@@ -279,7 +279,7 @@ return array (
     'notes' => 'Bemerkungen',
     'id' => 'ID',
     'closing_date' => 'Ende',
-    'stats' => 
+    'stats' =>
     array (
       'involved_orders' => 'Bestellwert',
       'involved_users' => 'Involvierte Nutzer',
@@ -292,7 +292,7 @@ return array (
     'by_kg' => '',
     'selection' => 'Auswahl',
     'home' => 'Startseite',
-    'menu' => 
+    'menu' =>
     array (
       'bookings' => 'Bestellen',
       'accounting' => 'Buchhaltung',
@@ -307,7 +307,7 @@ return array (
     'limited_access' => 'Begrenzter Zugriff',
     'disabled' => 'Deaktiviert',
     'kilos' => 'kg',
-    'sortings' => 
+    'sortings' =>
     array (
       'all_by_user' => 'Alle (nach Nutzer*innen)',
       'manual' => '',
@@ -315,7 +315,7 @@ return array (
     ),
     'minor_than' => 'kleiner ist als',
     'major_than' => 'größer ist als',
-    'exports' => 
+    'exports' =>
     array (
       'csv' => 'CSV exportieren',
       'integralces' => 'IntegralCES',
@@ -326,7 +326,7 @@ return array (
     'details' => 'Details',
     'photo' => 'Bild',
     'composable_all' => 'Alle :label',
-    'attachments' => 
+    'attachments' =>
     array (
       'replace_file' => 'Datei ersetzen',
       'view' => 'Statistiken ansehen',
@@ -337,7 +337,7 @@ return array (
     'attachment' => 'Hinzugefügt',
     'contacts' => 'Kontakte',
     'errors' => 'Fehler',
-    'search' => 
+    'search' =>
     array (
       'users' => 'Benutzer suchen',
       'all' => 'Suche',
@@ -362,13 +362,13 @@ return array (
     'create' => 'Neu',
     'targets' => 'Subject',
     'suppliers_and_orders' => 'Lieferanten',
-    'mailfield' => 
+    'mailfield' =>
     array (
       'subject' => 'Subject',
       'body' => 'Text',
     ),
     'reference' => 'Referenz Bestellung',
-    'measures' => 
+    'measures' =>
     array (
       'discrete' => 'Diskrete Einheit',
     ),
@@ -398,7 +398,7 @@ return array (
     'start' => 'Beginn',
     'expiration' => 'Ablauf',
     'do_duplicate' => 'duplizieren',
-    'action' => 
+    'action' =>
     array (
       'ignore' => '[Ignorieren]',
       'disable' => 'Deaktiviert',
@@ -427,9 +427,9 @@ return array (
     'closing' => '',
     'mandatory' => '',
   ),
-  'imports' => 
+  'imports' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'new_remote_products_list' => 'Neues Update für die Produktliste :supplier (:date) verfügbar. Abrufbar über Lieferanten > Remote Index.',
       'failed_file' => 'Die Datei wurde nicht korrekt hochgeladen',
@@ -461,34 +461,34 @@ return array (
     'existing_products_action' => 'bestellte Produkte',
     'no_products' => 'Kein Produkt aktualisierbar',
   ),
-  'invoices' => 
+  'invoices' =>
   array (
     'waiting' => 'In der Warteschleife',
-    'statuses' => 
+    'statuses' =>
     array (
       'to_verify' => 'Zu verifizieren',
       'verified' => 'Kontrolle',
       'payed' => 'Bezahlt',
     ),
     'default_note' => 'Zahlung der Rechnung :name',
-    'documents' => 
+    'documents' =>
     array (
-      'invoice' => 
+      'invoice' =>
       array (
         'heading' => 'Rechnung :identifier',
       ),
-      'receipts' => 
+      'receipts' =>
       array (
         'list_filename' => '',
       ),
     ),
-    'balances' => 
+    'balances' =>
     array (
       'supplier' => 'Betrag Lieferant',
     ),
     'forwarded' => 'Eingereicht',
     'orders' => 'beinhaltete Bestellungen',
-    'help' => 
+    'help' =>
     array (
       'orders' => 'Hier können die Bestellungen ausgewählt werden, die an dieser Rechnung beteiligt sind. Wenn die Rechnung als "bezahlt" markiert ist, wird der Verweis auf die Zahlungsbewegung hinzugefügt und automatisch archiviert',
       'no_orders' => '',
@@ -503,45 +503,45 @@ return array (
     'send_pending_receipts' => '',
     'shipping_of' => 'Lieferung: %s',
   ),
-  'mail' => 
+  'mail' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'removed_email_log' => '',
       'send_error' => 'Es war nicht möglich, die E-Mail an :email: :message weiterzuleiten',
     ),
-    'summary' => 
+    'summary' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => 'GAS-Buchungsübersicht: :supplier – Lieferung :delivery',
       ),
     ),
-    'closed' => 
+    'closed' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => 'Automatisch geschlossene Bestellung',
       ),
     ),
-    'notification' => 
+    'notification' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => 'Neue Benachrichtigung von :gas',
       ),
     ),
-    'new_user_notification' => 
+    'new_user_notification' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => 'Neuer Benutzer registriert',
       ),
     ),
     'contacts_prefix' => '',
-    'approved' => 
+    'approved' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => 'Willkommen!',
         'body' => 'Willkommen im Bestellsystem von %[gas_name]!
@@ -553,18 +553,18 @@ return array (
       'username' => 'Benutzername des neuen Nutzers',
       'link' => 'Link zur Anmeldungseite',
     ),
-    'declined' => 
+    'declined' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
       ),
       'description' => '',
     ),
-    'order' => 
+    'order' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => 'Neue Bestellung eröffnet für %[supplier_name]',
         'body' => 'Eine neue Bestellung wurde eröffnet von der %[gas_name] für den Lieferanten %[supplier_name].
@@ -577,9 +577,9 @@ return array (
       'link' => 'Link zu den Bestellungen',
       'mails' => 'E-Mail-Adressen der Ansprechpartner für die Bestellung',
     ),
-    'reminder' => 
+    'reminder' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => '',
         'body' => '',
@@ -587,9 +587,9 @@ return array (
       'description' => '',
       'list' => '',
     ),
-    'password' => 
+    'password' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'body' => 'Es wurde eine Anfrage zur Aktualisierung deines GASdotto-Passwortes gestellt.
     Klicke unten auf den Link, um das Passwort zu aktualisieren. Falls du das Neusetzen des Passwortes nicht angefragt hast, ignoriere diese E-Mail.
@@ -598,18 +598,18 @@ return array (
       'description' => 'Benachrichtigung zum Neusetzen des Passwortes.',
       'link' => 'Link zur Zurücksetzung des Passwortes',
     ),
-    'receipt' => 
+    'receipt' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => 'Neue Rechnung von %[gas_name]',
         'body' => 'Im Anhang die letzte Rechnung von %[gas_name]',
       ),
       'description' => 'Begleit-E-Mail für Quittungen.',
     ),
-    'supplier' => 
+    'supplier' =>
     array (
-      'defaults' => 
+      'defaults' =>
       array (
         'subject' => 'Bestellung',
         'body' => 'Guten Tag.
@@ -619,15 +619,15 @@ return array (
       ),
       'description' => 'Benachrichtigung der Lieferanten über den automatischen Auftragsabschluss.',
     ),
-    'credit' => 
+    'credit' =>
     array (
       'current' => 'Aktueller Kredit',
     ),
-    'welcome' => 
+    'welcome' =>
     array (
       'description' => 'Benachrichtigung an neue Nutzer, deren Account über das Backend des Bestellsystems hinzugefügt wurde.',
       'link' => 'Link für den erstmaligen Zugang',
-      'defaults' => 
+      'defaults' =>
       array (
         'body' => 'Sie sind zu %[gas_name] eingeladen worden!
 
@@ -639,60 +639,60 @@ return array (
     ',
       ),
     ),
-    'newuser' => 
+    'newuser' =>
     array (
       'description_manual' => '',
       'description' => 'Benachrichtigung an Nutzer, die sich neu im Bestellsystem angemeldet haben.',
     ),
   ),
-  'modifiers' => 
+  'modifiers' =>
   array (
-    'defaults' => 
+    'defaults' =>
     array (
       'discount' => 'Skonto',
       'rounding' => '',
       'delivery' => 'Frachtkosten',
     ),
-    'dynamics' => 
+    'dynamics' =>
     array (
-      'values' => 
+      'values' =>
       array (
         'quantity' => 'die Anzahl',
         'price' => 'der Wert',
         'order_price' => '',
         'weight' => 'das Gewicht',
       ),
-      'targets' => 
+      'targets' =>
       array (
-        'product' => 
+        'product' =>
         array (
           'booking' => 'des Produkts in der Vorbestellung',
           'order' => 'des Produkts in der Bestellung',
         ),
-        'order' => 
+        'order' =>
         array (
           'booking' => 'der Vorbestellung',
           'order' => 'der Bestellung',
         ),
-        'aggregate' => 
+        'aggregate' =>
         array (
           'booking' => '',
           'order' => '',
         ),
-        'circle' => 
+        'circle' =>
         array (
           'booking' => '',
           'order' => '',
         ),
       ),
-      'scale' => 
+      'scale' =>
       array (
         'minor' => 'kleiner ist als',
         'major' => 'größer ist als',
       ),
-      'distribution' => 
+      'distribution' =>
       array (
-        'sum' => 
+        'sum' =>
         array (
           'product' => 'addiere zu den Kosten des Produkts hinzu',
           'booking' => 'addiere zum Gesamtbetrag der einzelnen Vorbestellung hinzu',
@@ -701,7 +701,7 @@ return array (
           'booking_kg' => '',
           'order_kg' => '',
         ),
-        'sub' => 
+        'sub' =>
         array (
           'product' => 'ziehe von den Kosten des Produkts ab',
           'booking' => 'ziehe vom Gesamtbetrag der einzelnen Vorbestellung ab',
@@ -710,7 +710,7 @@ return array (
           'booking_kg' => '',
           'order_kg' => '',
         ),
-        'passive' => 
+        'passive' =>
         array (
           'product' => 'verglichen mit den Kosten des Produkts, berechne',
           'booking' => 'verglichen mit dem Gesamtbetrag der Vorbestellung, berechne',
@@ -719,12 +719,12 @@ return array (
           'booking_kg' => '',
           'order_kg' => '',
         ),
-        'apply' => 
+        'apply' =>
         array (
           'product' => 'wende den Stück-/Gebindepreis an',
         ),
       ),
-      'types' => 
+      'types' =>
       array (
         'quantity' => 'und verteile dies entsprechend den vorbestellten Mengen',
         'price' => 'und verteile dies entsprechend dem Wert der Vorbestellungen',
@@ -734,12 +734,12 @@ return array (
     ),
     'all' => 'Ändern',
     'name' => 'Ändern',
-    'help' => 
+    'help' =>
     array (
       'no_modifiers_for_element' => '',
     ),
   ),
-  'movements' => 
+  'movements' =>
   array (
     'modifier_no_theshold' => 'Kein Schwellenwert',
     'order_value' => '',
@@ -751,27 +751,27 @@ return array (
     'bank_account' => 'Girokonto',
     'cash_account' => 'Kasse',
     'deposits' => 'Kaution',
-    'documents' => 
+    'documents' =>
     array (
-      'movements' => 
+      'movements' =>
       array (
         'filename' => 'Export Bewegungen der Bestellgruppe :date.:format',
       ),
-      'users' => 
+      'users' =>
       array (
         'filename' => 'Krediten am :date.csv',
         'integralces_filename' => '',
       ),
-      'sepa' => 
+      'sepa' =>
       array (
         'filename' => 'SEPA am :date.xml',
       ),
-      'suppliers' => 
+      'suppliers' =>
       array (
         'filename' => 'Saldi Lieferanten am %s.csv',
         'integralces_filename' => '',
       ),
-      'balances' => 
+      'balances' =>
       array (
         'filename' => '',
       ),
@@ -785,7 +785,7 @@ return array (
     'formatted_balance' => 'Kontostand %s',
     'currency' => 'Währung',
     'credit' => 'Kontostand',
-    'defaults' => 
+    'defaults' =>
     array (
       'fee' => '',
       'booking' => '',
@@ -803,7 +803,7 @@ return array (
       'decredit' => '',
       'refund' => '',
     ),
-    'methods' => 
+    'methods' =>
     array (
       'bank' => 'Überweisung',
       'cash' => 'Bargeld',
@@ -815,7 +815,7 @@ return array (
     'suppliers_status' => 'Betrag Lieferant',
     'causal' => 'Verwendungszweck',
     'generic_causal' => '',
-    'help' => 
+    'help' =>
     array (
       'removing_balance_warning' => 'Warnung! Vergangene Salden können entfernt werden, aber Vorsicht, der Vorgang ist nicht umkehrbar und es ist nicht mehr möglich, diese Werte in irgendeiner Weise neu zu berechnen!',
       'missing_method_for_movement' => '',
@@ -861,20 +861,20 @@ return array (
     'available_credit' => 'Verfügbares Guthaben',
     'always_active_modifiers' => '',
     'apply_theshold_to' => '',
-    'sepa' => 
+    'sepa' =>
     array (
       'creditor_identifier' => 'Identifizierung Gläubiger',
       'business_code' => 'Buchungsschlüssel Betrieb',
     ),
   ),
-  'notifications' => 
+  'notifications' =>
   array (
-    'global_filter' => 
+    'global_filter' =>
     array (
       'roles' => 'Alle Nutzer mit der Rolle :role',
       'orders' => 'Alle Teilnehmer an der Bestellung :supplier :number',
     ),
-    'help' => 
+    'help' =>
     array (
       'repeat_mail_warning' => 'Diese Nachricht wurde schon per E-Mail verschickt. Wenn du speichert und die Markierung bleibt aktiv, dann wird eine neue E-Mail verschickt.',
       'sending_mail_warning' => 'Wenn du diese Option aktivierst, wird die Nachricht sofort per E-Mail weitergeleitet. Wenn du beabsichtigst, sie vor der Weiterleitung zu ändern, nutze diese Option nur nach der Speicherung und Änderung der Nachricht.',
@@ -882,7 +882,7 @@ return array (
       'suspend' => '',
       'arbitrary_dates' => 'Von hier aus ist es möglich, beliebige Termine in den Lieferkalender einzutragen, auch für noch nicht vorhandene, zukünftige Bestellungen. Diese Funktion wird empfohlen, um die Koordination zwischen den verschiedenen Verantwortlichen innerhalb der Bestellgemeinschaft zu erleichtern und die Aktivitäten langfristig zu planen.',
     ),
-    'cycle' => 
+    'cycle' =>
     array (
       'two_weeks' => 'Alle zwei Wochen',
       'first_of_month' => 'Erster des Monats',
@@ -892,7 +892,7 @@ return array (
       'last_of_month' => 'Letzter Tag des Monats',
     ),
     'name' => 'Benachrichtigung',
-    'notices' => 
+    'notices' =>
     array (
       'new_notification_from' => 'Neue Benachrichtigung von :author',
       'attached_order' => 'Im Anhang die Datei für die Bestellung :gasname.',
@@ -902,7 +902,7 @@ return array (
     'send_to_current_users' => 'Benachrichtige angezeigte Benutzer',
     'next_dates' => 'Nächste Daten im Kalender:',
     'next_auto_orders' => 'Nächste Daten im Kalender:',
-    'list' => 
+    'list' =>
     array (
       'closed_orders' => 'Abgeschlossene Bestellungen',
       'confirmed_dates' => 'Bestätigte Termine',
@@ -912,12 +912,12 @@ return array (
     'calendar_date' => 'Kalenderdatum',
     'date_reference' => '',
   ),
-  'orders' => 
+  'orders' =>
   array (
-    'booking' => 
+    'booking' =>
     array (
       'void' => 'Vorbestellung stornieren',
-      'statuses' => 
+      'statuses' =>
       array (
         'open' => 'Aktuell laufende Bestellungen',
         'closed' => 'Abgeschlossene Bestellungen',
@@ -929,7 +929,7 @@ return array (
         'to_deliver' => 'Zu liefern',
         'saved' => 'Gespeichert',
       ),
-      'nav' => 
+      'nav' =>
       array (
         'mine' => 'Meine Vorbestellung',
         'friends' => 'Vorbestellungen für Freunde',
@@ -937,7 +937,7 @@ return array (
         'add' => 'Vorbestellung hinzufügen/ändern',
       ),
     ),
-    'help' => 
+    'help' =>
     array (
       'pending_packages_notice' => 'Achtung: diese Bestellung ist geschlossen, aber es ist möglich, einige Produkte noch vorzubestellen, um die bereits bestellten Packeinheiten zu vervollständigen.',
       'send_booking_summaries' => '',
@@ -992,7 +992,7 @@ return array (
       'unremovable_instructions' => '',
       'unremovable_notice' => '',
     ),
-    'booking_description' => 
+    'booking_description' =>
     array (
       'shipped' => 'Im Folgenden die Zusammenfassung der Produkte, die dir geliefert wurden:',
       'saved' => 'Im Folgenden die Zusammenfassung der Produkte, die dir geliefert werden:',
@@ -1000,7 +1000,7 @@ return array (
     ),
     'send_booking_summaries' => 'Zusammenfassungen der Vorbestellungen verschicken',
     'send_delivery_summaries' => 'Verschicke Zusammenfassungen der Lieferungen',
-    'packages' => 
+    'packages' =>
     array (
       'ignore' => 'Nein, Packmaß ignorieren',
       'permit' => 'Ja, andere Vorbestellungen zulassen',
@@ -1011,7 +1011,7 @@ return array (
     'supplier' => 'Lieferant',
     'booking_date_time' => '',
     'list_open' => 'Offene Bestellungen',
-    'dates' => 
+    'dates' =>
     array (
       'shipping' => 'Lieferdatum',
       'start' => 'Beginn Vorbestellungen',
@@ -1020,17 +1020,17 @@ return array (
     'name' => 'Bestellung',
     'formatted_name' => 'von :start bis :end',
     'formatted_delivery_in_name' => ', für die Auslieferung am :delivery',
-    'quantities' => 
+    'quantities' =>
     array (
       'booked' => 'Menge Vorbestellung',
       'shipped' => 'Gelieferte Menge',
     ),
-    'weights' => 
+    'weights' =>
     array (
       'booked' => 'Gewicht Vorbestellung',
       'delivered' => 'Geliefertes Gewicht',
     ),
-    'totals' => 
+    'totals' =>
     array (
       'shipped' => 'Gesamtbetrag Lieferung',
       'with_modifiers' => '',
@@ -1045,7 +1045,7 @@ return array (
       'to_pay' => 'Offener Betrag',
       'selected' => '',
     ),
-    'constraints' => 
+    'constraints' =>
     array (
       'quantity' => '',
       'discrete' => '',
@@ -1061,19 +1061,19 @@ return array (
       'relative_multiple_formatted' => 'Multiplikator: :quantity',
       'relative_multiple' => '',
     ),
-    'documents' => 
+    'documents' =>
     array (
-      'shipping' => 
+      'shipping' =>
       array (
         'filename' => 'Bestell-und Lieferuebersicht :suppliers.pdf',
         'heading' => 'Bestellübersichtl :identifier beim Lieferant :supplier am :date',
         'short_heading' => 'Bestellübersicht (pdf)',
       ),
-      'summary' => 
+      'summary' =>
       array (
         'heading' => 'Produkte der Bestellung %s bei %s',
       ),
-      'table' => 
+      'table' =>
       array (
         'filename' => 'Gesamttabelle Bestellung %s bei %s.csv',
       ),
@@ -1081,7 +1081,7 @@ return array (
     'all' => 'Bestellungen',
     'pending_packages' => 'Zu komplettierende Gebinde',
     'booking_aggregation' => '',
-    'statuses' => 
+    'statuses' =>
     array (
       'unchange' => 'Unverändert',
       'to_pay' => 'Zu bezahlende Bestellungen',
@@ -1092,21 +1092,21 @@ return array (
     'do_aggregate' => 'Bestellungen angliedern',
     'admin_dates' => 'Kalender verwalten',
     'admin_automatics' => 'Nächste Daten im Kalender:',
-    'notices' => 
+    'notices' =>
     array (
       'closed_orders' => '',
       'email_attachments' => '',
       'calculator' => '',
     ),
-    'files' => 
+    'files' =>
     array (
-      'aggregate' => 
+      'aggregate' =>
       array (
         'shipping' => 'Bestellübersicht der zusammengelegten Lieferungen',
         'summary' => 'Zusammenfassung der bestellten Produkte',
         'table' => 'Gesamttabelle der Produkte',
       ),
-      'order' => 
+      'order' =>
       array (
         'summary' => 'Zusammenfassung der bestellten Produkte',
         'shipping' => 'Bestellübersicht (pdf)',
@@ -1122,12 +1122,12 @@ return array (
     'deliveries' => 'Lieferungen',
     'fast_deliveries' => 'Schnelle Lieferungen',
     'modifiers_redistribution_summary' => '',
-    'modifiers_redistribution' => 
+    'modifiers_redistribution' =>
     array (
       'keep' => '',
       'recalculate' => '',
     ),
-    'importing' => 
+    'importing' =>
     array (
       'save' => '',
       'close' => '',
@@ -1152,7 +1152,7 @@ return array (
     'notes_to_supplier' => 'Bemerkungen für den Lieferant',
     'summaries_recipients_count' => '',
     'bookings_to_pay' => '',
-    'automatic_labels' => 
+    'automatic_labels' =>
     array (
       'delivery' => '',
       'days_after' => '',
@@ -1161,9 +1161,9 @@ return array (
       'open' => '',
     ),
   ),
-  'permissions' => 
+  'permissions' =>
   array (
-    'permissions' => 
+    'permissions' =>
     array (
       'maintenance_access' => 'Zugänglich auch während der Wartung',
       'alter_permissions' => 'Alle Erlaubnisse ändern',
@@ -1192,20 +1192,20 @@ return array (
       'admin_supplier_movements' => '',
       'admin_multigas' => '',
     ),
-    'roles' => 
+    'roles' =>
     array (
       'admin' => '',
       'secondary_admin' => '',
     ),
     'name' => 'Berechtigungen',
-    'supplier' => 
+    'supplier' =>
     array (
       'change' => 'Änderungen des Lieferanten sind jetzt möglich',
       'orders' => 'Sie dürfen neue Bestellungen eröffnen für den Lieferant',
       'deliveries' => 'Lieferungen für den Lieferanten verwalten',
     ),
     'role' => 'Rolle',
-    'help' => 
+    'help' =>
     array (
       'global_permission_notice' => 'Diese spezielle Erlaubnis ist automatisch an alle (aktuellen und zukünftigen) Benutzern zugewiesen und sie erlaubt auf allem zu wirken, obwohl der zugewiesene Benutzer ist nicht für alle Andere sichtbar.',
       'blocked_autoremove' => 'Du kannst den Status als Administrator nicht eigenständig aufheben',
@@ -1225,9 +1225,9 @@ return array (
     'sub_user' => 'Rolle Mitbenutzer (Freunde)',
     'multigas_admin' => 'Kategorien verwalten',
   ),
-  'products' => 
+  'products' =>
   array (
-    'prices' => 
+    'prices' =>
     array (
       'unit' => 'Stückpreis',
       'unit_no_vat' => 'Einzelpreis (ohne Mwst.)',
@@ -1242,7 +1242,7 @@ return array (
     'min_quantity' => 'Minimum',
     'max_quantity' => 'Empfohlenes Maximum',
     'available' => 'Verfügbar',
-    'help' => 
+    'help' =>
     array (
       'unit_no_vat' => 'Zu benutzen in Kombination mit dem jeweiligen Mehrwertsteuersatz',
       'package_price' => 'Wenn genauer angegeben, wird der Einheitspreis als Preis für die Verpackungseinheit / Gebindegröße berechnet',
@@ -1270,10 +1270,10 @@ return array (
     'weight_with_measure' => '',
     'list' => 'Produkte',
     'sorting' => '',
-    'variant' => 
+    'variant' =>
     array (
       'matrix' => 'Variante hinzufügen/verändern',
-      'help' => 
+      'help' =>
       array (
         'code' => '',
         'price_difference' => '',
@@ -1285,18 +1285,18 @@ return array (
     'global_min' => 'Gesamtbestellung',
     'variants' => 'Veränderbar',
     'remove_confirm' => '',
-    'removing' => 
+    'removing' =>
     array (
       'keep' => '',
       'leave' => '',
     ),
   ),
-  'supplier' => 
+  'supplier' =>
   array (
     'referent' => 'Ansprechperson',
     'payment_method' => 'Bezahlmodus',
     'all' => 'Lieferanten',
-    'products_list' => 
+    'products_list' =>
     array (
       'pdf' => 'Preisliste PDF (automatisch erstellt)',
       'csv' => 'Preisliste CSV (automatisch erstellt)',
@@ -1305,7 +1305,7 @@ return array (
     'remote_index' => '',
     'vat' => 'USt.-IDNr',
     'enable_fast_shipping' => 'Schnelle Lieferungen',
-    'help' => 
+    'help' =>
     array (
       'enable_fast_shipping' => 'Wenn diese Option aktiviert ist, wird in der Übersicht zur Verwaltung der jeweiligen Bestellungen der Tab \'Schnelle Lieferung\' aktiviert (neben dem Tab \'Lieferungen\'). Dieser erlaubt es, mehrere Vorbestellungen auf einmal als \'geliefert\' zu kennzeichnen',
       'enable_no_quantities' => '',
@@ -1329,63 +1329,63 @@ return array (
     'orders_mode' => 'Fortschritt der Bestellungen',
     'send_notification_on_close' => '',
   ),
-  'tour' => 
+  'tour' =>
   array (
-    'welcome' => 
+    'welcome' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'profile' => 
+    'profile' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'users' => 
+    'users' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'suppliers' => 
+    'suppliers' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'orders' => 
+    'orders' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'bookings' => 
+    'bookings' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'accounting' => 
+    'accounting' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'config' => 
+    'config' =>
     array (
       'title' => 'Einstellungen',
       'body' => '',
     ),
-    'inline' => 
+    'inline' =>
     array (
       'title' => '',
       'body' => '',
     ),
-    'last' => 
+    'last' =>
     array (
       'title' => '',
       'body' => '',
     ),
     'finished' => '',
   ),
-  'user' => 
+  'user' =>
   array (
-    'help' => 
+    'help' =>
     array (
       'suspended' => 'Suspendierte oder gesperrte Benutzer können nicht auf das Bestellsystem zugreifen, auch wenn sie registriert bleiben.',
       'wrong_control_error' => 'Die Prüfziffern sind falsch',
@@ -1406,7 +1406,7 @@ return array (
     'lastname' => 'Nachname',
     'change_friend' => '',
     'formatted_aggregation' => '',
-    'sepa' => 
+    'sepa' =>
     array (
       'mandate' => '',
       'date' => 'SEPA-Bewegung Datum',
@@ -1427,13 +1427,13 @@ return array (
     'all' => 'Benutzer',
     'payed_fee' => 'Bezahlter Betrag',
     'name' => 'Benutzer',
-    'address_part' => 
+    'address_part' =>
     array (
       'street' => 'Adresse (Straße)',
       'city' => 'Adresse (Stadt)',
       'zip' => 'Adresse (PLZ)',
     ),
-    'statuses' => 
+    'statuses' =>
     array (
       'active' => 'Aktiviert',
       'suspended' => 'Gesperrt',
@@ -1459,22 +1459,22 @@ return array (
     'deposit' => 'Depot',
     'fees_status' => 'Status',
     'all_ceased' => 'Beendet',
-    'notices' => 
+    'notices' =>
     array (
       'new_user' => 'Neuer Benutzer registriert :gasname:',
       'pending_approval' => '',
     ),
     'last_fee' => '',
-    'fees' => 
+    'fees' =>
     array (
       'new' => 'Anzahl ändern',
       'change' => 'Anzahl ändern',
     ),
-    'empty' => 
+    'empty' =>
     array (
       'friends' => 'Füge die Informationen bezüglich deiner Freunde hinzu, für die du eine Unter-Bestellung anlegen willst. Jede einzelne Bestellung ist dann autonom, wird aber behandelt als eine in der Phase der Lieferung. Jeder Freund kann auch eigene Zugangsdaten haben um sich bei GASdotto anzumelden und seine eigenen Bestellungen zu verwalten.',
     ),
-    'satispay' => 
+    'satispay' =>
     array (
       'reload' => 'Kreditaufladung mit Satispay',
     ),

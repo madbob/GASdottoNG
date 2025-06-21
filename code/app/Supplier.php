@@ -187,6 +187,9 @@ class Supplier extends Model
             case 'target':
                 $this->innerQuery($query, 'target', $supplier, false);
                 break;
+
+            default:
+                throw new \InvalidArgumentException("Tipo di filtro non riconosciuto per ricerca movimenti contabili: " . $type);
         }
 
         return $query;
