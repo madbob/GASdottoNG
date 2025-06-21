@@ -131,7 +131,7 @@ class Aggregate extends Model
         if ($orders->count() > aggregatesConvenienceLimit()) {
             $start_date = Carbon::today()->addYears(100);
             $end_date = Carbon::today()->subYears(100);
-            $shipping_date = Carbon::today()->subYears(100);
+            $shipping_date = Carbon::today()->addYears(100);
             $shipping_date_set = false;
 
             foreach ($orders as $order) {
