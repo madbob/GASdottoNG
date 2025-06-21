@@ -8,6 +8,9 @@ class ContactObserver
 {
     public function saving(Contact $contact)
     {
+        /*
+            Qui vengono normalizzati i valori per alcuni tipi di contatto
+        */
         switch ($contact->type) {
             case 'address':
                 $items = $contact->asAddress();
@@ -22,6 +25,10 @@ class ContactObserver
 
             case 'website':
                 $contact->value = normalizeUrl($contact->value);
+                break;
+
+            default:
+                // dummy
                 break;
         }
 

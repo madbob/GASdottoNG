@@ -187,7 +187,6 @@ class Users extends CSVImporter
         $errors = [];
 
         $contact_types = array_keys(Contact::types());
-        $groups = Group::where('context', 'user')->orderBy('name', 'asc')->get();
 
         /*
             TODO: aggiornare questo per adattarlo a UsersService

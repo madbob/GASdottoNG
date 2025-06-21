@@ -42,7 +42,7 @@ class CirclesFilter
                             $this->circles[] = $circle;
                         }
                     }
-                    else if ($selected != 'all_by_name') {
+                    elseif ($selected != 'all_by_name') {
                         $circle = Circle::find($selected);
                         if ($circle) {
                             $this->circles[] = $circle;

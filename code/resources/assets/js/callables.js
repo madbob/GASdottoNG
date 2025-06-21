@@ -29,14 +29,14 @@ class Callables {
     }
 
     static supplierAttachUser(list, user_id) {
-        var supplier_id = list.attr('data-supplier-id');
-        var role_id = list.attr('data-role-id');
+        let supplier_id = list.attr('data-supplier-id');
+        let role_id = list.attr('data-role-id');
         Callables.attachUserRole(role_id, user_id, supplier_id, 'App\\Supplier');
     }
 
     static supplierDetachUser(list, user_id) {
-        var supplier_id = list.attr('data-supplier-id');
-        var role_id = list.attr('data-role-id');
+        let supplier_id = list.attr('data-supplier-id');
+        let role_id = list.attr('data-role-id');
         Callables.detachUserRole(role_id, user_id, supplier_id, 'App\\Supplier');
     }
 
@@ -91,7 +91,7 @@ class Callables {
                 return;
             }
 
-            var i = $(this).find('.booking-product-quantity input:text.number');
+            let i = $(this).find('.booking-product-quantity input:text.number');
             if (i.length == 0) {
                 return;
             }
@@ -108,10 +108,10 @@ class Callables {
 
     static evaluateEmptyBooking(form) {
         if (form.find('input:hidden[name=action]').val() == 'shipped') {
-            var test = false;
+            let test = false;
 
             form.find('.booking-total').each(function() {
-                var total = utils.parseFloatC($(this).textVal());
+                let total = utils.parseFloatC($(this).textVal());
                 test = (test || (total != 0));
             });
 
@@ -137,13 +137,13 @@ class Callables {
 
         if (table.is('table')) {
             $('tbody tr:visible', table).each(function() {
-                var user_id = $(this).find('input[name^=user_id]').val();
+                let user_id = $(this).find('input[name^=user_id]').val();
                 users.push(user_id);
             });
         }
         else {
             $('.accordion-item:visible', table).each(function() {
-                var user_id = $(this).attr('data-element-id');
+                let user_id = $(this).attr('data-element-id');
                 users.push(user_id);
             });
         }
@@ -162,8 +162,8 @@ class Callables {
     static passwordProtected(form)
     {
         if (form.attr('data-password-protected-verified') != '1') {
-            var id = form.attr('id');
-            var modal = $('#password-protection-dialog');
+            let id = form.attr('id');
+            let modal = $('#password-protection-dialog');
             modal.find('input:password').val('');
             modal.attr('data-form-target', '#' + id).modal('show');
             throw 'Check password!';
@@ -215,19 +215,19 @@ class Callables {
     		informazioni. In tal caso, non occorre visualizzare il modale di
     		pagamento.
     	*/
-    	var action = form.find('input:hidden[name=action]').val();
+        let action = form.find('input:hidden[name=action]').val();
     	if (action == 'shipped') {
-    		var payment_modal = form.attr('data-reference-modal');
+            let payment_modal = form.attr('data-reference-modal');
     		$('#' + payment_modal).appendTo('body').modal('show');
     	}
     }
 
     static displayRecalculatedBalances(form, data) {
-        var modal = $('#display-recalculated-balance-modal');
+        let modal = $('#display-recalculated-balance-modal');
 
         if (data.diffs.length != 0) {
-            var table = modal.find('.broken.hidden').removeClass('hidden').find('tbody');
-            for (var name in data.diffs) {
+            let table = modal.find('.broken.hidden').removeClass('hidden').find('tbody');
+            for (let name in data.diffs) {
                 if (data.diffs.hasOwnProperty(name)) {
                     table.append('<tr><td>' + name + '</td><td>' + data.diffs[name][0] + '</td><td>' + data.diffs[name][1] + '</td></tr>');
                 }
@@ -241,7 +241,7 @@ class Callables {
     }
 
     static refreshFilter(form) {
-        var target = form.find('input:hidden[name=data-refresh-target]').val();
+        let target = form.find('input:hidden[name=data-refresh-target]').val();
         if (target) {
             $('.form-filler').filter(target).find('button[type=submit]').click();
         }
@@ -280,7 +280,7 @@ class Callables {
     }
 
     static afterBookingSaved(form, data) {
-        var modal = form.closest('.modal');
+        let modal = form.closest('.modal');
 
         /*
             In questo caso, ho aggiunto una prenotazione dal modale di "Aggiungi
@@ -293,7 +293,7 @@ class Callables {
                 da aggiungere all'elenco
             */
             if (data.hasOwnProperty('id')) {
-                var list = $("button[data-target='#" + modal.attr('id') + "']").parent().find('.loadable-list');
+                let list = $("button[data-target='#" + modal.attr('id') + "']").parent().find('.loadable-list');
                 if (list.find('> a[data-element-id=' + data.id + ']').length == 0) {
                     data.url = data.url.replace('booking/', 'delivery/');
                     lists.appendToLoadableList(list, data, false);
@@ -327,8 +327,8 @@ class Callables {
         lists.closeParent(form);
 
         if (data.action != 'approve') {
-            var upper = lists.closeParent(form);
-            var list = upper.closest('.loadable-list');
+            let upper = lists.closeParent(form);
+            let list = upper.closest('.loadable-list');
             upper.remove();
             lists.testListsEmptiness(list);
         }
@@ -342,12 +342,12 @@ class Callables {
     */
     static reloadLoadableHeaders(form)
     {
-        var n_sender = $('.accordion-item[data-element-id="' + form.find('input[name=sender_id]').val() + '"]').filter(':visible');
+        let n_sender = $('.accordion-item[data-element-id="' + form.find('input[name=sender_id]').val() + '"]').filter(':visible');
         if (n_sender.length != 0) {
             lists.reloadLoadableHead(n_sender);
         }
 
-        var n_target = $('.accordion-item[data-element-id="' + form.find('input[name=target_id]').val() + '"]').filter(':visible');
+        let n_target = $('.accordion-item[data-element-id="' + form.find('input[name=target_id]').val() + '"]').filter(':visible');
         if (n_target.length != 0) {
             lists.reloadLoadableHead(n_target);
         }

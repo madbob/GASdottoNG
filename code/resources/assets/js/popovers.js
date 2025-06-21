@@ -10,7 +10,7 @@ $(document).ready(function() {
             ed il focus sugli input field viene prevenuto dagli eventi interni
             di Bootstrap sui modali
         */
-        var container = input.closest('.modal');
+        let container = input.closest('.modal');
         if (container.length == 0) {
             container = false;
         }
@@ -26,7 +26,7 @@ $(document).ready(function() {
 
     $('body').on('focus', 'input.address', function() {
         complexPopover($(this), 'address', function(input) {
-            var ret = $(`<div>
+            let ret = $(`<div>
                 <div class="row mb-2">
                     <label for="street" class="col-4 col-form-label">${_('Indirizzo')}</label>
                     <div class="col-8"><input type="text" class="form-control" name="street" value="" autocomplete="off"></div>
@@ -44,10 +44,10 @@ $(document).ready(function() {
                 </div>
             </div>`);
 
-            var value = input.val();
+            let value = input.val();
             if (value != '') {
-                var values = value.split(',');
-                for(var i = values.length; i < 3; i++) {
+                let values = value.split(',');
+                for(let i = values.length; i < 3; i++) {
                     values[i] = '';
                 }
 
@@ -59,9 +59,9 @@ $(document).ready(function() {
             ret.find('button.btn-success').click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                var street = ret.find('input[name=street]').val().trim().replace(',', '');
-                var city = ret.find('input[name=city]').val().trim().replace(',', '');
-                var cap = ret.find('input[name=cap]').val().trim().replace(',', '');
+                let street = ret.find('input[name=street]').val().trim().replace(',', '');
+                let city = ret.find('input[name=city]').val().trim().replace(',', '');
+                let cap = ret.find('input[name=cap]').val().trim().replace(',', '');
 
                 if (street == '' && city == '' && cap == '') {
                     input.val('');
@@ -90,7 +90,7 @@ $(document).ready(function() {
 
     $('body').on('focus', 'input.periodic', function() {
         complexPopover($(this), 'periodic', function(input) {
-            var ret = $(`<div>
+            let ret = $(`<div>
                 <div class="row mb-2">
                     <label for="day" class="col-4 col-form-label">${_('Giorno')}</label>
                     <div class="col-8">
@@ -139,10 +139,10 @@ $(document).ready(function() {
                 clearBtn: true,
             });
 
-            var value = input.val();
+            let value = input.val();
             if (value != '') {
-                var values = value.split(' - ');
-                for(var i = values.length; i < 4; i++) {
+                let values = value.split(' - ');
+                for(let i = values.length; i < 4; i++) {
                     values[i] = '';
                 }
 
@@ -161,10 +161,10 @@ $(document).ready(function() {
             ret.find('button.btn-success').click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                var day = ret.find('select[name=day] option:selected').text();
-                var cycle = ret.find('select[name=cycle] option:selected').text();
-                var from = ret.find('input[name=from]').val().trim().replace(',', '');
-                var to = ret.find('input[name=to]').val().trim().replace(',', '');
+                let day = ret.find('select[name=day] option:selected').text();
+                let cycle = ret.find('select[name=cycle] option:selected').text();
+                let from = ret.find('input[name=from]').val().trim().replace(',', '');
+                let to = ret.find('input[name=to]').val().trim().replace(',', '');
                 input.val(day + ' - ' + cycle + ' - ' + from + ' - ' + to).change();
                 input.change();
                 input.popover('dispose');
@@ -189,7 +189,7 @@ $(document).ready(function() {
             return;
         }
 
-        var row = $(this).closest('tr');
+        let row = $(this).closest('tr');
         if ($(this).hasClass('date')) {
             row.find('.periodic').val('');
         }

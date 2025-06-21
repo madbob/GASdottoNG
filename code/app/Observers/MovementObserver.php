@@ -48,7 +48,7 @@ class MovementObserver
             return false;
         }
 
-        if ($movement->archived == true) {
+        if ($movement->archived) {
             Log::error('Movimento: tentata modifica di movimento già storicizzato in bilancio passato');
 
             return false;

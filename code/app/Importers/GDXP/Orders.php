@@ -21,6 +21,9 @@ class Orders extends GDXPImporter
                 case 'deliveryDate':
                     $order->shipping = self::xmlDateFormat((string) $p);
                     break;
+                default:
+                    \Log::warning('Attributo GDXP non riconosciuto: ' . $p->getName());
+                    break;
             }
         }
 

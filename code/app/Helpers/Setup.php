@@ -38,7 +38,7 @@ function read_instance_config_file($path)
 
     foreach ($config as $c) {
         $c = trim($c);
-        if (empty($c) == false) {
+        if (empty($c) === false) {
             if (strpos($c, '=') === false) {
                 \Log::error('Configurazione ambigua in file ' . $path . ' - ' . $c);
             }

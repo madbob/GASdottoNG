@@ -12,7 +12,7 @@ class Welcome extends MailType
     public function description()
     {
         $gas = currentAbsoluteGas();
-        $manual = $gas->hasFeature('public_registrations') && $gas->public_registrations['manual'] == true;
+        $manual = $gas->hasFeature('public_registrations') && $gas->public_registrations['manual'];
 
         if ($manual) {
             return __('texts.mail.newuser.description_manual');

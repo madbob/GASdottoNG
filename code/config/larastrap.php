@@ -171,7 +171,7 @@ return [
             'params' => [
                 'classes' => ['btn'],
                 'color' => 'light',
-                'postlabel' => '<i class="bi-download"></i>',
+                'postlabel' => ' <i class="bi-download"></i>',
             ],
         ],
         'iconbutton' => [

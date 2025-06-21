@@ -288,10 +288,8 @@ class Products extends CSVImporter
         }
 
         $reset_mode = $request->input('reset_list', 'no');
-        switch ($reset_mode) {
-            case 'disable':
-                $s->products()->whereNotIn('id', $products_ids)->update(['active' => false]);
-                break;
+        if ($reset_mode == 'disable') {
+            $s->products()->whereNotIn('id', $products_ids)->update(['active' => false]);
         }
 
         $s->import_template = json_encode(explode(',', $request['sorted_fields']));

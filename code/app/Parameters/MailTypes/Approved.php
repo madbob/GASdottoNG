@@ -24,6 +24,6 @@ class Approved extends MailType
 
     public function enabled($gas)
     {
-        return $gas->hasFeature('public_registrations') && $gas->public_registrations['manual'] == true;
+        return $gas->hasFeature('public_registrations') && $gas->public_registrations['manual'];
     }
 }

@@ -39,9 +39,7 @@ class UsersService extends BaseService
             $query->filterEnabled();
         }
 
-        $users = $query->sorted()->get();
-
-        return $users;
+        return $query->sorted()->get();
     }
 
     public function show($id)

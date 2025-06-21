@@ -25,9 +25,7 @@ abstract class CSVImporter
     public static function getImporter($type)
     {
         $classname = 'App\\Importers\\CSV\\' . ucwords($type);
-        $ret = new $classname();
-
-        return $ret;
+        return new $classname();
     }
 
     private function guessCsvFileSeparator($path)

@@ -23,6 +23,8 @@ trait SuspendableTrait
                 $this->suspended_at = null;
                 $this->deleted_at = decodeDate($deleted_at) ?: date('Y-m-d');
                 break;
+            default:
+                throw new \InvalidArgumentException("Stato non valido: " . $status);
         }
     }
 
@@ -53,6 +55,8 @@ trait SuspendableTrait
                 return __('texts.user.statuses.deleted');
             case 'removed':
                 return __('texts.user.statuses.removed');
+            default:
+                throw new \InvalidArgumentException("Stato non valido: " . $status);
         }
     }
 

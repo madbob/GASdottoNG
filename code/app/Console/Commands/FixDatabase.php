@@ -104,7 +104,7 @@ class FixDatabase extends Command
         }
 
         $old_deliveries = DB::table('deliveries')->get();
-        if ($old_deliveries->isEmpty() == false) {
+        if ($old_deliveries->isEmpty() === false) {
             $group = new Group();
             $group->name = 'Luoghi di Consegna';
             $group->context = 'user';

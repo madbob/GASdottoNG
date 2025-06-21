@@ -53,9 +53,7 @@ class SuppliersService extends BaseService
             $query->filterEnabled();
         }
 
-        $suppliers = $query->get();
-
-        return $suppliers;
+        return $query->get();
     }
 
     public function show($id)
@@ -168,7 +166,7 @@ class SuppliersService extends BaseService
 
     public function destroy($id)
     {
-        $supplier = DB::transaction(function () use ($id) {
+        return DB::transaction(function () use ($id) {
             $supplier = $this->show($id);
 
             if ($supplier->trashed()) {
@@ -187,7 +185,5 @@ class SuppliersService extends BaseService
 
             return $supplier;
         });
-
-        return $supplier;
     }
 }

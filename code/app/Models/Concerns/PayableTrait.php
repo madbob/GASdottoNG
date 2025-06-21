@@ -75,6 +75,9 @@ trait PayableTrait
                     $query->where('target_type', $class)->where('target_id', $id);
                 });
                 break;
+
+            default:
+                throw new \InvalidArgumentException("Tipo di filtro non riconosciuto per ricerca movimenti contabili: " . $type);
         }
 
         return $query;

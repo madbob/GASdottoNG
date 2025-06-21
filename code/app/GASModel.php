@@ -30,7 +30,7 @@ trait GASModel
             $ret = $class::find($id);
         }
 
-        if ($ret == null && $fail == true) {
+        if ($ret == null && $fail === true) {
             abort(404);
         }
 

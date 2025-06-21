@@ -163,13 +163,11 @@ class InvoicesService extends BaseService
         $invoice = $this->show($id);
         $this->ensureAuth(['supplier.invoices' => $invoice->supplier]);
 
-        switch ($step) {
-            case 'review':
-                $order_ids = $request['order_id'] ?? [];
-                $invoice->orders()->sync($order_ids);
-                $invoice->status = 'to_verify';
-                $invoice->save();
-                break;
+        if ($step == 'review') {
+            $order_ids = $request['order_id'] ?? [];
+            $invoice->orders()->sync($order_ids);
+            $invoice->status = 'to_verify';
+            $invoice->save();
         }
     }
 

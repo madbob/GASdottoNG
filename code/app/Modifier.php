@@ -130,12 +130,11 @@ class Modifier extends Model
                 return 'order';
             }
             else {
-                switch ($this->applies_target) {
-                    case 'order':
-                        return 'global_product';
-
-                    default:
-                        return 'product';
+                if ($this->applies_target == 'order') {
+                    return 'global_product';
+                }
+                else {
+                    return 'product';
                 }
             }
         }

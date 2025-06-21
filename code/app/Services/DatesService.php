@@ -19,7 +19,7 @@ class DatesService extends BaseService
             $query->where('target_type', get_class($target))->where('target_id', $target->id);
         }
 
-        if ($editable == true) {
+        if ($editable) {
             $suppliers = $user->targetsByAction('supplier.orders');
             $query->where('target_type', 'App\Supplier')->whereIn('target_id', array_keys($suppliers));
         }

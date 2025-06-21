@@ -53,7 +53,7 @@ abstract class Constraint extends Parameter
         ];
 
         foreach ($constraints as $constraint) {
-            if ($only_mandatory == true && $constraint->mandatoryContraint() === false) {
+            if ($only_mandatory && $constraint->mandatoryContraint() === false) {
                 continue;
             }
 

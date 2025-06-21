@@ -228,6 +228,10 @@ class Movements extends CSVImporter
                     $m->$id_field = $current_gas->id;
                     $m->$type_field = 'App\Gas';
                     break;
+
+                default:
+                    // dummy
+                    break;
             }
         }
 

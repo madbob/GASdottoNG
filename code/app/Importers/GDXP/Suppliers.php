@@ -35,6 +35,10 @@ class Suppliers extends GDXPImporter
                         $orders->push($order);
                     }
                     break;
+
+                default:
+                    \Log::warning('Attributo GDXP non riconosciuto: ' . $c->getName());
+                    break;
             }
         }
 
@@ -119,6 +123,10 @@ class Suppliers extends GDXPImporter
                         $order->save();
                         $order->products()->attach($product_ids);
                     }
+                    break;
+
+                default:
+                    \Log::warning('Attributo GDXP non riconosciuto: ' . $c->getName());
                     break;
             }
         }

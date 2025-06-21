@@ -16,10 +16,9 @@ class Products extends GDXPImporter
         $product = new Product();
 
         foreach ($xml->children() as $p) {
-            switch ($p->getName()) {
-                case 'name':
-                    $product->name = html_entity_decode((string) $p);
-                    break;
+            if ($p->getName() == 'name') {
+                $product->name = html_entity_decode((string) $p);
+                break;
             }
         }
 
@@ -109,6 +108,10 @@ class Products extends GDXPImporter
                             $vv->value = html_entity_decode((string) $i);
                         }
                     }
+                    break;
+
+                default:
+                    \Log::warning('Attributo GDXP non riconosciuto: ' . $p->getName());
                     break;
             }
         }

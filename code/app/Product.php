@@ -204,9 +204,7 @@ class Product extends Model
             anche per i prodotti con pezzatura il prezzo è sempre riferito al
             chilo
         */
-        $str = sprintf('%.02f %s / %s', $price, $currency, $this->measure->name);
-
-        return $str;
+        return sprintf('%.02f %s / %s', $price, $currency, $this->measure->name);
     }
 
     public function printableMeasure($verbose = false)

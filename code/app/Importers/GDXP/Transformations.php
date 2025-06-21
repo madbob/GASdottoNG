@@ -86,13 +86,11 @@ class Transformations extends GDXPImporter
             $modifier->target_type = get_class($target);
         }
 
-        switch ($json->operation) {
-            case 'sum':
-                $modifier->arithmetic = 'sum';
-                break;
-            default:
-                $modifier->arithmetic = 'sub';
-                break;
+        if ($json->operation == 'sum') {
+            $modifier->arithmetic = 'sum';
+        }
+        else {
+            $modifier->arithmetic = 'sub';
         }
 
         $modifier->scale = 'major';

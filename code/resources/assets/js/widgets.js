@@ -37,13 +37,13 @@ class Widgets {
             animation:false
         })
         .on("mouseenter", function () {
-            var _this = this;
+            let _this = this;
             $(this).popover("show");
             $(".popover").on("mouseleave", function () {
                 $(_this).popover('hide');
             });
         }).on("mouseleave", function () {
-            var _this = this;
+            let _this = this;
             setTimeout(function () {
                 if (!$(".popover:hover").length) {
                     $(_this).popover("hide");
@@ -57,17 +57,17 @@ class Widgets {
                 return;
             }
 
-            var integer = $(this).attr('data-enforce-integer');
+            let integer = $(this).attr('data-enforce-integer');
             if (integer && (e.key == '.' || e.key == ',')) {
                 e.preventDefault();
                 return;
             }
 
-            var allow_negative = ($(this).attr('data-allow-negative') == '1');
-            var minimum = $(this).attr('data-enforce-minimum');
+            let allow_negative = ($(this).attr('data-allow-negative') == '1');
+            let minimum = $(this).attr('data-enforce-minimum');
 
             $(this).val(function(index, value) {
-                var val = value.replace(/,/g, '.');
+                let val = value.replace(/,/g, '.');
                 if (allow_negative)
                     val = val.replace(/[^\-0-9\.]/g, '');
                 else
@@ -80,9 +80,9 @@ class Widgets {
             });
         })
         .focus(function() {
-            var v = utils.parseFloatC($(this).val());
+            let v = utils.parseFloatC($(this).val());
             if (v == 0) {
-                var minimum = $(this).attr('data-enforce-minimum');
+                let minimum = $(this).attr('data-enforce-minimum');
                 if (minimum)
                     $(this).val(minimum);
                 else
@@ -91,9 +91,9 @@ class Widgets {
         })
         .blur(function() {
             $(this).val(function(index, value) {
-                var v = utils.parseFloatC(value);
+                let v = utils.parseFloatC(value);
 
-                var minimum = $(this).attr('data-enforce-minimum');
+                let minimum = $(this).attr('data-enforce-minimum');
                 if (minimum && v < minimum)
                     return minimum;
                 else
@@ -110,8 +110,8 @@ class Widgets {
 
         $('input:file[data-max-size]', container).change(function() {
             if (this.files && this.files[0]) {
-                var max = $(this).attr('data-max-size');
-                var file = this.files[0].size;
+                let max = $(this).attr('data-max-size');
+                let file = this.files[0].size;
                 if (file > max) {
                     $(this).val('');
                     utils.setInputErrorText($(this), _('Il file è troppo grande!'));
@@ -129,8 +129,8 @@ class Widgets {
         });
 
         $('.simple-sum', container).change(function() {
-            var sum = 0;
-            var container = $(this).closest('.simple-sum-container');
+            let sum = 0;
+            let container = $(this).closest('.simple-sum-container');
             container.find('.simple-sum').each(function() {
                 sum += utils.parseFloatC($(this).val());
             });
@@ -170,7 +170,7 @@ class Widgets {
             code/resources/views/variant/editsingle.blade.php
         */
         if ($('input[value="put_random_here"]', container).length != 0) {
-            var random = 'new_' + utils.randomString(5);
+            let random = 'new_' + utils.randomString(5);
             $('input[value="put_random_here"]', container).each(function() {
                 if ($(this).closest('.dynamic-table').length != 0) {
                     if ($(this).closest('tbody').length != 0) {
@@ -188,8 +188,8 @@ class Widgets {
 
     static dateEnforcePeer(node, attribute)
     {
-        var select = node.attr(attribute);
-        var target = node.closest('.input-group').find(select);
+        let select = node.attr(attribute);
+        let target = node.closest('.input-group').find(select);
         if (target.length == 0) {
 			target = node.closest('tr').find(select);
 	        if (target.length == 0) {
@@ -208,7 +208,7 @@ class Widgets {
             language: utils.currentLanguage(),
             clearBtn: true,
         }).each(function() {
-            var input = $(this);
+            let input = $(this);
             input.siblings('.input-group-addon').click(function() {
                 input.focus();
             });
@@ -229,19 +229,19 @@ class Widgets {
         });
 
         $('.date[data-enforce-after]', container).each((index, item) => {
-            var current = $(item);
-            var target = this.dateEnforcePeer(current, 'data-enforce-after');
+            let current = $(item);
+            let target = this.dateEnforcePeer(current, 'data-enforce-after');
 
             target.datepicker().on('changeDate', function() {
-                var current_start = current.datepicker('getDate');
-                var current_ref = target.datepicker('getDate');
+                let current_start = current.datepicker('getDate');
+                let current_ref = target.datepicker('getDate');
                 if (current_start < current_ref) {
                     current.datepicker('setDate', current_ref);
                 }
             });
         }).focus((e) => {
-			var current = $(e.currentTarget);
-            var target = this.dateEnforcePeer(current, 'data-enforce-after');
+            let current = $(e.currentTarget);
+            let target = this.dateEnforcePeer(current, 'data-enforce-after');
 
             /*
                 Problema: cercando di navigare tra i mesi all'interno del datepicker
@@ -252,8 +252,8 @@ class Widgets {
                 inizio forzato non corrisponde a quel che dovrebbe essere), badando
                 però a fare i confronti sui giusti formati
             */
-            var current_start = current.datepicker('getStartDate');
-            var current_ref = target.datepicker('getUTCDate');
+            let current_start = current.datepicker('getStartDate');
+            let current_ref = target.datepicker('getUTCDate');
             if (current_start.toString() != current_ref.toString()) {
                 current.datepicker('setStartDate', current_ref);
             }
@@ -267,20 +267,20 @@ class Widgets {
                 Questo è per inizializzare le nuove righe aggiunte dinamicamente
                 nella lista dei contatti
             */
-            var input = container.find('input[name="contact_value[]"]');
-            var typeclass = container.find('select option:selected').val();
+            let input = container.find('input[name="contact_value[]"]');
+            let typeclass = container.find('select option:selected').val();
             this.fixContactField(input, typeclass);
 
             $('select', container).change((e) => {
-                var input = $(e.currentTarget).closest('tr').find('input[name="contact_value[]"]');
-                var typeclass = $(e.currentTarget).find('option:selected').val();
+                let input = $(e.currentTarget).closest('tr').find('input[name="contact_value[]"]');
+                let typeclass = $(e.currentTarget).find('option:selected').val();
                 this.fixContactField(input, typeclass);
             });
         }
         else {
             $('.contacts-selection tr', container).each((index, item) => {
-                var input = $(item).find('input[name="contact_value[]"]');
-                var typeclass = $(item).find('select option:selected').val();
+                let input = $(item).find('input[name="contact_value[]"]');
+                let typeclass = $(item).find('select option:selected').val();
                 this.fixContactField(input, typeclass);
             });
         }
@@ -302,8 +302,8 @@ class Widgets {
     static previewImage(input)
     {
         if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            var img = $(input).closest('.img-preview').find('img');
+            let reader = new FileReader();
+            let img = $(input).closest('.img-preview').find('img');
 
             reader.onload = function (e) {
                 img.attr('src', e.target.result);

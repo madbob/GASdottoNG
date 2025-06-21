@@ -174,9 +174,7 @@ class MovementsService extends BaseService
             TODO Definire delle regole
         */
         $this->ensureAuth();
-        $movement = Movement::findOrFail($id);
-
-        return $movement;
+        return Movement::findOrFail($id);
     }
 
     private function setCommonAttributes($movement, $request)
@@ -423,14 +421,12 @@ class MovementsService extends BaseService
 
     public function destroy($id)
     {
-        $movement = DB::transaction(function () use ($id) {
+        return DB::transaction(function () use ($id) {
             $this->ensureAuth(['movements.admin' => 'gas']);
             $movement = Movement::findOrFail($id);
             $movement->delete();
 
             return $movement;
         });
-
-        return $movement;
     }
 }

@@ -36,7 +36,7 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
 
     <div class="row">
         <div class="col-12 col-lg-4">
-            @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'tlabel' => 'orders.supplier'])
+            @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => __('texts.orders.supplier')])
             <x-larastrap::text name="internal_number" tlabel="generic.number" readonly disabled tpophelp="orders.help.number" />
 
             <?php
