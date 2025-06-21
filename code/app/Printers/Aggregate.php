@@ -26,11 +26,18 @@ class Aggregate extends Printer
         $fields = splitFields($required_fields);
         $status = $request['status'] ?? 'pending';
         $circles = new CirclesFilter($obj, $request);
-        $isolate_friends = $request['isolate_friends'] ?? 0;
+        $isolate_friends = ($request['isolate_friends'] ?? 0) == 1;
 
         $temp_data = [];
         foreach ($obj->orders as $order) {
-            $temp_data[] = $this->formatShipping($order, $fields, $status, $isolate_friends, $circles, true);
+            if ($circles->getMode() == 'all_by_place') {
+                foreach ($circles->combinations() as $combo) {
+                    $temp_data[] = $this->formatShipping($order, $fields, $status, $isolate_friends, $combo, true);
+                }
+            }
+            else {
+                $temp_data[] = $this->formatShipping($order, $fields, $status, $isolate_friends, $circles, true);
+            }
         }
 
         if (empty($temp_data)) {
@@ -253,7 +260,7 @@ class Aggregate extends Printer
     {
         $status = $request['status'] ?? 'pending';
         $include_missing = $request['include_missing'] ?? 'no';
-        $circles = $request['circles'] ?? ['no'];
+        $circles = new CirclesFilter($obj, $request);
 
         $required_fields = $request['fields'] ?? [];
         $fields = splitFields($required_fields);
