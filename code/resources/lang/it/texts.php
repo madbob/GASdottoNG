@@ -772,7 +772,7 @@ return array (
       ),
       'suppliers' =>
       array (
-        'filename' => 'Saldi Fornitori al %s.csv',
+        'filename' => 'Saldi Fornitori al :date.csv',
         'integralces_filename' => 'IntegralCES Fornitori.csv',
       ),
       'balances' =>
@@ -786,7 +786,7 @@ return array (
     'payed' => 'Pagato',
     'delete_confirmation' => 'Vuoi davvero eliminare il movimento<br>:name?',
     'formatted_residual_credit' => 'Credito Residuo :currency',
-    'formatted_balance' => 'Saldo %s',
+    'formatted_balance' => 'Saldo :currency',
     'currency' => 'Valuta',
     'credit' => 'Credito',
     'defaults' =>
@@ -1075,11 +1075,11 @@ return array (
       ),
       'summary' =>
       array (
-        'heading' => 'Prodotti ordine %s presso %s',
+        'heading' => 'Prodotti ordine :identifier presso :supplier',
       ),
       'table' =>
       array (
-        'filename' => 'Tabella Ordine %s presso %s.csv',
+        'filename' => 'Tabella Ordine :identifier presso :supplier.csv',
       ),
     ),
     'all' => 'Ordini',

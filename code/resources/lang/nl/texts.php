@@ -764,7 +764,7 @@ return array (
     'payed' => 'Betaald',
     'delete_confirmation' => '',
     'formatted_residual_credit' => 'Resterend tegoed :currency',
-    'formatted_balance' => 'Saldo %s',
+    'formatted_balance' => 'Saldo :currency',
     'currency' => 'Beoordelen',
     'credit' => 'Krediet',
     'defaults' =>
@@ -1057,7 +1057,7 @@ return array (
       ),
       'table' =>
       array (
-        'filename' => 'Tabel Bestelling %s bij %s.csv',
+        'filename' => 'Tabel Bestelling :identifier bij :supplier.csv',
       ),
     ),
     'all' => 'Bestellingen',

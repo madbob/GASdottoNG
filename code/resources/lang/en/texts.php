@@ -678,7 +678,7 @@ return array(
                 'filename' => 'SEPA of :date.xml',
             ),
             'suppliers' => array(
-                'filename' => 'Suppliers Status on %s.csv',
+                'filename' => 'Suppliers Status on :date.csv',
                 'integralces_filename' => 'IntegralCES Suppliers.csv',
             ),
             'balances' => array(
@@ -691,7 +691,7 @@ return array(
         'payed' => 'Payed',
         'delete_confirmation' => 'Do you really want to delete accounting movement<br>:name?',
         'formatted_residual_credit' => 'Remaining credit :currency',
-        'formatted_balance' => 'Balance %s',
+        'formatted_balance' => 'Balance :currency',
         'currency' => 'Currency',
         'credit' => 'Credit',
         'defaults' => array(
@@ -955,10 +955,10 @@ return array(
                 'short_heading' => 'Deliveries Details on :date',
             ),
             'summary' => array(
-                'heading' => 'Products in order %s at %s',
+                'heading' => 'Products in order :identifier at :supplier',
             ),
             'table' => array(
-                'filename' => 'Table Order %s to %s.csv',
+                'filename' => 'Table Order :identifier to :supplier.csv',
             ),
         ),
         'all' => 'Orders',

@@ -768,7 +768,7 @@ return array (
       ),
       'suppliers' =>
       array (
-        'filename' => 'Soldes des fournisseurs au %s.csv',
+        'filename' => 'Soldes des fournisseurs au :date.csv',
         'integralces_filename' => '',
       ),
       'balances' =>
@@ -782,7 +782,7 @@ return array (
     'payed' => 'Payé',
     'delete_confirmation' => '',
     'formatted_residual_credit' => 'Crédit restant :currency',
-    'formatted_balance' => 'Solde %s',
+    'formatted_balance' => 'Solde :currency',
     'currency' => 'Monnaie',
     'credit' => 'Crédit',
     'defaults' =>
@@ -1071,11 +1071,11 @@ return array (
       ),
       'summary' =>
       array (
-        'heading' => 'Produits de la commande %s à %s',
+        'heading' => 'Produits de la commande :identifier à :supplier',
       ),
       'table' =>
       array (
-        'filename' => 'Tableau des commandes %s à %s.csv',
+        'filename' => 'Tableau des commandes :identifier à :supplier.csv',
       ),
     ),
     'all' => 'Commandes',

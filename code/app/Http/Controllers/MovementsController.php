@@ -309,7 +309,7 @@ class MovementsController extends BackedController
 
             $currencies = Currency::enabled();
             foreach ($currencies as $curr) {
-                $headers[] = __('texts.movements.formatted_balance', $curr->symbol);
+                $headers[] = __('texts.movements.formatted_balance', ['currency' => $curr->symbol]);
             }
 
             return output_csv($filename, $headers, $suppliers, function ($supplier) use ($currencies) {
