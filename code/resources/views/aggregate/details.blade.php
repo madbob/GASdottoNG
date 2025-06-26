@@ -18,9 +18,9 @@
 
             <x-larastrap::check name="change_dates" tlabel="orders.change_date" triggers_collapse="change_dates" tpophelp="orders.help_change_date" checked="false" />
             <x-larastrap::collapse id="change_dates">
-                <x-larastrap::datepicker name="start" tlabel="order.dates.start" />
-                <x-larastrap::datepicker name="end" tlabel="order.dates.end" />
-                <x-larastrap::datepicker name="shipping" tlabel="order.dates.shipping" />
+                <x-larastrap::datepicker name="start" tlabel="orders.dates.start" />
+                <x-larastrap::datepicker name="end" tlabel="orders.dates.end" />
+                <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" />
             </x-larastrap::collapse>
         </div>
         <div class="col-md-4">
