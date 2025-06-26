@@ -36,7 +36,12 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
                                 </td>
                                 @foreach($groups as $group)
                                     <td>
-                                        <x-dynamic-component :component="sprintf('larastrap::%s', $group->cardinality == 'single' ? 'radios-model' : 'checks-model')" :params="['name' => 'circles', 'npostfix' => sprintf('__%s__%s[]', $user->id, $group->id), 'squeeze' => true, 'options' => $group->circles]" />
+                                        <x-dynamic-component :component="sprintf('larastrap::%s', $group->cardinality == 'single' ? 'radios-model' : 'checks-model')" :params="[
+                                            'name' => 'circles',
+                                            'npostfix' => sprintf('__%s__%s[]', sanitizeId($user->id), sanitizeId($group->id)),
+                                            'squeeze' => true,
+                                            'options' => $group->circles
+                                        ]" />
                                     </td>
                                 @endforeach
                             </tr>
