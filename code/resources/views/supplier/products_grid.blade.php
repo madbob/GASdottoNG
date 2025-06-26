@@ -12,7 +12,7 @@ $identifier = sprintf('products-grid-%s', $supplier->id);
 $has_manual_sorting = $currentgas->manual_products_sorting;
 $products = $supplier->products()->sorted()->get();
 
-$categories = App\Category::whereNull('parent_id')->orderBy('name', 'asc')->get();
+$categories = App\Category::with(['children'])->orderBy('name', 'asc')->where('parent_id', '=', null)->get();
 $measures = App\Measure::orderBy('name', 'asc')->get();
 
 @endphp
@@ -121,7 +121,7 @@ $measures = App\Measure::orderBy('name', 'asc')->get();
                                         </td>
 
                                         <td class="order-cell-category {{ in_array('category', $columns) ? '' : 'hidden' }}">
-                                            <x-larastrap::select-model name="category_id" tlabel="generic.category" :options="$categories" squeeze :nprefix="$product->id . '-'" />
+                                            <x-larastrap::selectobj name="category_id" tlabel="generic.category" :options="$categories" squeeze :nprefix="$product->id . '-'" />
                                         </td>
 
                                         <td class="order-cell-measure {{ in_array('measure', $columns) ? '' : 'hidden' }}">
