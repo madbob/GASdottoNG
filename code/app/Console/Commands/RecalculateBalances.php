@@ -12,6 +12,9 @@ class RecalculateBalances extends Command
 
     public function handle()
     {
-        app()->make('MovementsService')->recalculate();
+        $ret = app()->make('MovementsService')->recalculate();
+        if ($ret) {
+            print_r($ret);
+        }
     }
 }

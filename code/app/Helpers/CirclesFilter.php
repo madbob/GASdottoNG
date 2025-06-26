@@ -170,22 +170,29 @@ class CirclesFilter
         $tmp_bookings = new Collection();
         $filter_circles = (empty($this->circles) === false);
 
-        foreach ($bookings as $booking) {
-            $valid = true;
+        if ($this->mode == 'all_by_place') {
+            foreach ($bookings as $booking) {
+                $tmp_bookings->push($booking);
+            }
+        }
+        else {
+            foreach ($bookings as $booking) {
+                $valid = true;
 
-            if ($filter_circles) {
-                $mycircles = $booking->involvedCircles();
+                if ($filter_circles) {
+                    $mycircles = $booking->involvedCircles();
 
-                foreach ($this->circles as $required_circle) {
-                    if (is_null($mycircles->firstWhere('id', $required_circle->id))) {
-                        $valid = false;
-                        break;
+                    foreach ($this->circles as $required_circle) {
+                        if (is_null($mycircles->firstWhere('id', $required_circle->id))) {
+                            $valid = false;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if ($valid) {
-                $tmp_bookings->push($booking);
+                if ($valid) {
+                    $tmp_bookings->push($booking);
+                }
             }
         }
 
