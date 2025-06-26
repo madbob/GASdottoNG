@@ -84,7 +84,7 @@ class InvoicesController extends BackedController
 
         $invoice_grand_total = $invoice->total + $invoice->total_vat;
         $main = Movement::generate('invoice-payment', $user->gas, $invoice, $invoice_grand_total);
-        $main->notes = __('texts.invoices.default_note', $invoice->printableName());
+        $main->notes = __('texts.invoices.default_note', ['name' => $invoice->printableName()]);
         $movements = new Collection();
         $movements->push($main);
 
