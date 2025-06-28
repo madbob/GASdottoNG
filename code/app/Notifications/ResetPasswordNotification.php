@@ -18,11 +18,11 @@ class ResetPasswordNotification extends ManyMailNotification
 {
     use MailFormatter, Queueable;
 
-    private $reset_token = null;
+    private $resetToken = null;
 
     public function __construct($token)
     {
-        $this->reset_token = $token;
+        $this->resetToken = $token;
     }
 
     public function toMail($notifiable)
@@ -30,7 +30,7 @@ class ResetPasswordNotification extends ManyMailNotification
         $message = $this->initMailMessage($notifiable);
 
         return $this->formatMail($message, $notifiable, 'password_reset', [
-            'gas_reset_link' => route('password.reset', ['token' => $this->reset_token]),
+            'gas_reset_link' => route('password.reset', ['token' => $this->resetToken]),
         ]);
     }
 }

@@ -591,6 +591,7 @@ return array (
       ),
       'description' => 'Notifica di promemoria per gli ordini in chiusura (inviato agli utenti che hanno esplicitamente abilitato le notifiche per il fornitore).',
       'list' => 'Elenco degli ordini in chiusura',
+      'suppliers' => 'Elenco dei fornitori',
     ),
     'password' =>
     array (

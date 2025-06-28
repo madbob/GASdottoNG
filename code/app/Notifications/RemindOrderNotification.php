@@ -47,14 +47,24 @@ class RemindOrderNotification extends ManyMailNotification
         $message = $this->initMailMessage($notifiable);
 
         $orders_list = '';
+        $closing_date = null;
+        $suppliers_list = [];
 
         foreach ($this->orders as $order) {
             $row = $this->formatOrder($order);
             $orders_list .= $row . "\n";
+
+            $suppliers_list[] = $order->supplier->printableName();
+
+            if ($closing_date === null) {
+                $closing_date = printableDate($order->end);
+            }
         }
 
         $message = $this->formatMail($message, $notifiable, 'order_reminder', [
+            'closing_date' => $closing_date,
             'orders_list' => $orders_list,
+            'suppliers_list' => join(', ', $suppliers_list),
         ]);
 
         return $message;

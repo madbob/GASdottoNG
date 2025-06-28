@@ -16,26 +16,26 @@ class BookingNotification extends ManyMailNotification
 {
     use MailReplyTo;
 
-    private $aggregate_id = null;
+    private $aggregateId = null;
 
     private $redux = null;
 
-    private $user_id = null;
+    private $userId = null;
 
     private $message = null;
 
     public function __construct($aggregate_id, $redux, $user_id, $message)
     {
-        $this->aggregate_id = $aggregate_id;
+        $this->aggregateId = $aggregate_id;
         $this->redux = $redux;
-        $this->user_id = $user_id;
+        $this->userId = $user_id;
         $this->message = $message;
     }
 
     public function toMail($notifiable)
     {
-        $aggregate = Aggregate::find($this->aggregate_id);
-        $booking = $aggregate->bookingBy($this->user_id);
+        $aggregate = Aggregate::find($this->aggregateId);
+        $booking = $aggregate->bookingBy($this->userId);
 
         $message = $this->initMailMessage($notifiable);
         $strings = $booking->convenient_strings;

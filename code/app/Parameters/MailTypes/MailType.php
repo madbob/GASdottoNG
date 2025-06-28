@@ -42,8 +42,6 @@ abstract class MailType extends Parameter
 
         foreach (array_keys($this->params()) as $identifier) {
             if (isset($params[$identifier]) === false) {
-                $value = null;
-
                 switch ($identifier) {
                     case 'username':
                         $value = $params['user']->username;
@@ -56,6 +54,10 @@ abstract class MailType extends Parameter
                     case 'current_credit':
                         $curr = defaultCurrency();
                         $value = printablePriceCurrency($params['user']->currentBalanceAmount($curr));
+                        break;
+
+                    default:
+                        $value = null;
                         break;
                 }
 

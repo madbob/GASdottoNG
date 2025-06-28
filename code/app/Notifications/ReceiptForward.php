@@ -10,11 +10,11 @@ class ReceiptForward extends ManyMailNotification
 {
     use MailFormatter, TemporaryFiles;
 
-    private $temp_file = null;
+    private $tempFile = null;
 
     public function __construct($temp_file)
     {
-        $this->temp_file = $temp_file;
+        $this->tempFile = $temp_file;
         $this->setFiles([$temp_file]);
     }
 
@@ -22,6 +22,6 @@ class ReceiptForward extends ManyMailNotification
     {
         $message = $this->initMailMessage($notifiable);
 
-        return $this->formatMail($message, $notifiable, 'receipt')->attach($this->temp_file);
+        return $this->formatMail($message, $notifiable, 'receipt')->attach($this->tempFile);
     }
 }

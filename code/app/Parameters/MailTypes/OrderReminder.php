@@ -17,7 +17,9 @@ class OrderReminder extends MailType
     public function params()
     {
         return [
+            'closing_date' => __('texts.orders.dates.end'),
             'orders_list' => __('texts.mail.reminder.list'),
+            'suppliers_list' => __('texts.mail.reminder.suppliers'),
         ];
     }
 
