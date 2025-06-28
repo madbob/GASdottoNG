@@ -17,7 +17,7 @@
         @include('order.partials.export.modifiers', ['order' => $order])
 
         @if(someoneCan('users.subusers'))
-            <x-larastrap::radios name="isolate_friends" tlabel="export.data.split_friends" :options="['0' => __('texts.generic.no'), '1' => __('texts.generic.yes')]" value="0" tpophelp="export.help_split_friends" />
+            <x-larastrap::radios name="isolate_friends" tlabel="export.data.split_friends" :options="['0' => __('texts.generic.no'), '1' => __('texts.generic.yes')]" :value="$currentgas->orders_shipping_separate_friends ? 1 : 0" tpophelp="export.help_split_friends" />
         @endif
 
         <x-larastrap::radios name="format" tlabel="export.data.format" :options="['pdf' => __('texts.export.data.formats.pdf'), 'csv' => __('texts.export.data.formats.csv')]" value="pdf" />

@@ -135,7 +135,7 @@ return array (
     array (
       'database' => 'Esporta database',
     ),
-    'help_split_friends' => 'Di default, le prenotazioni degli utenti "amici" vengono aggregate in quelle dei rispettivi utenti principali. Selezionando "Sì", vengono rappresentate nel documento come prenotazioni autonome.',
+    'help_split_friends' => 'Di default, le prenotazioni degli utenti \'amici\' vengono aggregate in quelle dei rispettivi utenti principali. Selezionando \'Sì\', vengono rappresentate nel documento come prenotazioni autonome.',
     'help_aggregate_export_summary' => 'Da qui puoi ottenere un documento che riassume le quantità prenotate di tutti i prodotti: utile da inviare al fornitore, una volta chiuso l\'ordine.',
     'flags' =>
     array (
@@ -158,6 +158,7 @@ return array (
       'enable_deliveries_no_quantities' => 'Abilitando questa opzione, sarà possibile attivare per ogni fornitore la possibilità di effettuare le consegne specificando direttamente il valore totale della consegna anziché le quantità di ogni prodotto consegnato. Attenzione: l\'uso di questa funzione non permetterà di ottenere delle statistiche precise sui prodotti consegnati, né una ripartizione equa dei modificatori basati sulle quantità e sui pesi dei prodotti consegnati.',
       'active_columns_summary' => 'Colonne visualizzate di default nella griglia di riassunto degli ordini. È comunque sempre possibile modificare la visualizzazione dall\'interno della griglia stessa per mezzo del selettore posto in alto a destra',
       'default_columns_shipping_document' => 'Attributi selezionati di default durante l\'esportazione del Dettaglio Consegne degli ordini',
+      'default_columns_shipping_split_friends' => 'Per determinare se gli amici devono essere tenuti separati o meno, di default',
       'custom_emails' => 'Da qui puoi modificare i testi delle mail in uscita da GASdotto. Per ogni tipologia sono previsti dei placeholders, che saranno sostituiti con gli opportuni valori al momento della generazione: per aggiungerli nei testi, usare la sintassi %[nome_placeholder]',
       'global_placeholders' => 'Placeholder globali, che possono essere usati in tutti i messaggi:',
       'manual_products_sorting' => 'Abilitando questa opzione, nel pannello di Modifica Rapida dei prodotti dei fornitori sarà possibile forzare un ordinamento arbitrario',

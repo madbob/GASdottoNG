@@ -45,6 +45,11 @@
 
                     <?php list($options, $values) = flaxComplexOptions(App\Formatters\Order::formattableColumns('shipping')) ?>
                     <x-larastrap::checks name="orders_shipping_product_columns" :options="$options" squeeze classes="mt-3" />
+
+                    @if(someoneCan('users.subusers'))
+                        <hr>
+                        <x-larastrap::check inline squeeze name="orders_shipping_separate_friends" tlabel="export.data.split_friends" tpophelp="gas.help.default_columns_shipping_split_friends" />
+                    @endif
                 </x-larastrap::field>
             </div>
         </div>

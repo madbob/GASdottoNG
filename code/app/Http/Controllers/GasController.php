@@ -108,6 +108,7 @@ class GasController extends Controller
             'orders_display_columns',
             'orders_shipping_user_columns',
             'orders_shipping_product_columns',
+            'orders_shipping_separate_friends',
         ]);
     }
 
