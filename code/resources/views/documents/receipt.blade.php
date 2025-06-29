@@ -116,7 +116,7 @@
             <tbody>
                 @foreach($rates as $id => $total)
                     <tr>
-                        <td width="85%">{{ __('texts.generic.vat') }} {{ App\VatRate::findOrFail($id)->percentage) }}%</td>
+                        <td width="85%">{{ __('texts.generic.vat') }} {{ App\VatRate::findOrFail($id)->percentage }}%</td>
                         <td width="15%">{{ printablePriceCurrency($total) }}</td>
                     </tr>
                 @endforeach
