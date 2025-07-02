@@ -120,7 +120,7 @@ class CirclesFilter
 
             foreach ($result as $res) {
                 $c = new CirclesFilter(null, null);
-                $c->mode = $this->mode;
+                $c->mode = 'combo';
                 $c->circles = $res;
                 $ret[] = $c;
             }
@@ -134,20 +134,20 @@ class CirclesFilter
             $ret[] = $c;
         }
         else {
-            throw new \Exception('La combinazione di gruppi non dovrebbe essere usata se non quando si ordina per cerchie', 1);
+            throw new \UnexpectedValueException('La combinazione di gruppi non dovrebbe essere usata se non quando si ordina per cerchie', 1);
         }
 
         return $ret;
     }
 
-    private function sortByUserName($bookings)
+    private function properSorting($bookings)
     {
-        return $bookings->sortBy(fn ($b) => $b->user->printableName());
-    }
-
-    private function sortByCircle($bookings)
-    {
-        return $bookings->sortBy(fn ($b) => $this->bookingSorting($b));
+        if ($this->mode == 'all_by_place' || str_starts_with($this->mode, 'group_')) {
+            return $bookings->sortBy(fn ($b) => $this->bookingSorting($b));
+        }
+        else {
+            return $bookings->sortBy(fn ($b) => $b->user->printableName());
+        }
     }
 
     public function bookingSorting($booking)
@@ -168,9 +168,8 @@ class CirclesFilter
     public function sortBookings($bookings)
     {
         $tmp_bookings = new Collection();
-        $filter_circles = (empty($this->circles) === false);
 
-        if ($this->mode == 'all_by_place') {
+        if ($this->mode == 'all_by_place' || empty($this->circles)) {
             foreach ($bookings as $booking) {
                 $tmp_bookings->push($booking);
             }
@@ -178,15 +177,12 @@ class CirclesFilter
         else {
             foreach ($bookings as $booking) {
                 $valid = true;
+                $mycircles = $booking->involvedCircles();
 
-                if ($filter_circles) {
-                    $mycircles = $booking->involvedCircles();
-
-                    foreach ($this->circles as $required_circle) {
-                        if (is_null($mycircles->firstWhere('id', $required_circle->id))) {
-                            $valid = false;
-                            break;
-                        }
+                foreach ($this->circles as $required_circle) {
+                    if (is_null($mycircles->firstWhere('id', $required_circle->id))) {
+                        $valid = false;
+                        break;
                     }
                 }
 
@@ -196,13 +192,6 @@ class CirclesFilter
             }
         }
 
-        if ($this->mode == 'all_by_place' || str_starts_with($this->mode, 'group_')) {
-            $bookings = $this->sortByCircle($tmp_bookings);
-        }
-        else {
-            $bookings = $this->sortByUserName($tmp_bookings);
-        }
-
-        return $bookings;
+        return $this->properSorting($tmp_bookings);
     }
 }

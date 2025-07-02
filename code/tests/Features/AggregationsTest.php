@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use MadBob\Larastrap\Integrations\LarastrapStack;
 
 use App\ModifierType;
+use App\Helpers\CirclesFilter;
 
 class AggregationsTest extends TestCase
 {
@@ -163,34 +164,38 @@ class AggregationsTest extends TestCase
 
         $order = app()->make('OrdersService')->show($order->id);
 
-        do {
-            $target_bookings = [];
+        $target_bookings = [];
+        $index = 0;
 
-            foreach ($order->bookings as $booking) {
-                if (rand() % 2 == 0) {
-                    $booking->circles()->sync([$right_circle->id]);
-                    $target_bookings[] = $booking->id;
-                }
-                else {
-                    $booking->circles()->sync([$wrong_circle->id]);
-                }
+        foreach ($order->bookings as $booking) {
+            if ($index % 2 == 0) {
+                $booking->circles()->sync([$right_circle->id]);
+                $target_bookings[] = $booking->id;
             }
+            else {
+                $booking->circles()->sync([$wrong_circle->id]);
+            }
+
+            $index++;
         }
-        while (empty($target_bookings) && count($target_bookings) != $order->bookings->count());
 
         $test_shipping_value = 10;
         $mod = $this->attachModifier($right_circle, $test_shipping_value);
+
+        $this->nextRound();
 
         $order = app()->make('OrdersService')->show($order->id);
         $redux = $order->aggregate->reduxData();
         $this->assertNotEquals($redux->price, 0.0);
         $checked = false;
+        $unchecked = false;
 
         foreach ($order->bookings as $booking) {
             $mods = $booking->applyModifiers($redux, true);
 
             if (in_array($booking->id, $target_bookings) == false) {
                 $this->assertEquals($mods->count(), 0);
+                $unchecked = true;
             }
             else {
                 $this->assertEquals($mods->count(), 1);
@@ -205,6 +210,7 @@ class AggregationsTest extends TestCase
         }
 
         $this->assertTrue($checked);
+        $this->assertTrue($unchecked);
     }
 
     public function test_associate_order()
@@ -250,5 +256,55 @@ class AggregationsTest extends TestCase
         $this->actingAs($user_no);
         $orders = getOrdersByStatus($user_no, 'open');
         $this->assertEquals(0, $orders->count());
+    }
+
+    public function test_distribute_groups()
+    {
+        $group = $this->createBasicGroup([
+            'context' => 'user',
+            'cardinality' => 'single',
+            'filters_orders' => false,
+        ]);
+
+        $first_circle = $group->circles()->where('is_default', false)->first();
+        $second_circle = $group->circles()->where('circles.id', '!=', $first_circle->id)->first();
+
+        $order = $this->initOrder(null);
+        $this->populateOrder($order);
+
+        $this->nextRound();
+
+        $order = app()->make('OrdersService')->show($order->id);
+
+        $target_bookings = [];
+        $index = 0;
+
+        foreach ($order->bookings as $booking) {
+            if ($index % 2 == 0) {
+                $booking->user->circles()->sync([$first_circle->id]);
+                $target_bookings[] = $booking->id;
+            }
+            else {
+                $booking->user->circles()->sync([$second_circle->id]);
+            }
+
+            $index++;
+        }
+
+        $this->nextRound();
+        $order = app()->make('OrdersService')->show($order->id);
+
+        $filter = new CirclesFilter($order->aggregate, [
+            'circles_' . $group->id => 'all_by_place',
+            'circles_master_sorting' => 'all_by_place',
+        ]);
+
+        $combos = $filter->combinations();
+        $this->assertTrue(count($combos) == 2);
+        foreach($combos as $combo) {
+            $bookings = $combo->sortBookings($order->bookings);
+            $this->assertTrue($bookings->count() != 0);
+            $this->assertTrue($bookings->count() != $order->bookings->count());
+        }
     }
 }
