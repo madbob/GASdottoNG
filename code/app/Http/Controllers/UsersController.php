@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\User;
+use App\Group;
 use App\Aggregate;
 
 use App\Services\UsersService;
@@ -276,8 +277,12 @@ class UsersController extends BackedController
         return $this->easyExecute(function () use ($id) {
             $this->ensureAuth(['users.admin' => 'gas', 'users.movements' => 'gas']);
             $user = User::findOrFail($id);
+            $groups = Group::orderBy('name', 'asc')->where('context', 'user')->get();
 
-            return view('user.partials.fee_row', ['user' => $user]);
+            return view('user.partials.fee_row', [
+                'user' => $user,
+                'groups' => $groups,
+            ]);
         });
     }
 
