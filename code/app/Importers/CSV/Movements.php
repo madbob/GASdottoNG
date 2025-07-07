@@ -118,7 +118,7 @@ class Movements extends CSVImporter
 
                                 if (is_null($user)) {
                                     $save_me = false;
-                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_user_found', $name);
+                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_user_found', ['name' => $name]);
 
                                     continue;
                                 }
@@ -142,7 +142,7 @@ class Movements extends CSVImporter
 
                                 if (is_null($supplier)) {
                                     $save_me = false;
-                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_supplier_found', $name);
+                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_supplier_found', ['name' => $name]);
 
                                     continue;
                                 }
@@ -167,7 +167,7 @@ class Movements extends CSVImporter
                         }
                         else {
                             $save_me = false;
-                            $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_currency_found', $value);
+                            $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_currency_found', ['name' => $value]);
 
                             continue;
                         }
