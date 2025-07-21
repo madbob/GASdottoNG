@@ -64,6 +64,15 @@ class ModifiedValue extends Model
         return $this->target->getModifiedRelations();
     }
 
+    /*
+        Data una collezione di ModifiedValue, ne ricava un array di piccole
+        strutture in cui i valori afferenti agli stessi modificatori sono
+        aggregati insieme.
+        Gli elementi in questo array possono essere formattati con
+        self::printAggregated()
+        Array diversi possono essere ulteriormente aggregati con
+        self::mergeAggregated()
+    */
     public static function aggregateByType($collection)
     {
         return $collection->reduce(function ($carry, $value) {
@@ -97,6 +106,30 @@ class ModifiedValue extends Model
 
             return $carry;
         }, []);
+    }
+
+    public static function mergeAggregated($first, $second)
+    {
+        $ret = [];
+
+        foreach([$first, $second] as $array) {
+            foreach($array as $id => $item) {
+                if (! isset($ret[$id])) {
+                    $ret[$id] = (object) [
+                        'name' => $item->name,
+                        'amount' => 0,
+                        'passive_amount' => 0,
+                        'total_amount' => 0,
+                    ];
+                }
+
+                $ret[$id]->amount += $item->amount;
+                $ret[$id]->passive_amount += $item->passive_amount;
+                $ret[$id]->total_amount += $item->total_amount;
+            }
+        }
+
+        return $ret;
     }
 
     /*
