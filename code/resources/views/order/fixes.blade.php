@@ -93,7 +93,7 @@
                                     </label>
                                 </td>
                                 <td>
-                                    <label>{{ printableDate($row_date) }}</label>
+                                    <label>{{ printableDate($row_date, true, true) }}</label>
                                 </td>
                                 <td>
                                     <input type="hidden" name="booking[]" value="{{ $po->id }}" />
@@ -145,7 +145,7 @@
                                                 </label>
                                             </td>
                                             <td>
-                                                <label>{{ printableDate($po->getBooked($product)?->created_at) }}</label>
+                                                <label>{{ printableDate($po->getBooked($product)?->created_at, true, true) }}</label>
                                             </td>
                                             <td>
                                                 {{ sprintf('%s %s', $po->getBookedQuantity($combo), $measure) }}

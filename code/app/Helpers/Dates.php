@@ -2,7 +2,7 @@
 
 use Carbon\Carbon;
 
-function printableDate($value, $short = false)
+function printableDate($value, $short = false, $hour = false)
 {
     if (blank($value)) {
         $ret = __('texts.generic.never');
@@ -21,13 +21,23 @@ function printableDate($value, $short = false)
         }
 
         if ($date) {
-            $date->startOfDay();
+            if ($hour == false) {
+                $date->startOfDay();
 
-            if ($short) {
-                $ret = ucwords($date->isoFormat('DD/MM/YYYY'));
+                if ($short) {
+                    $ret = ucwords($date->isoFormat('DD/MM/YYYY'));
+                }
+                else {
+                    $ret = ucwords($date->isoFormat('dddd D MMMM YYYY'));
+                }
             }
             else {
-                $ret = ucwords($date->isoFormat('dddd D MMMM YYYY'));
+                if ($short) {
+                    $ret = ucwords($date->isoFormat('DD/MM/YYYY HH:mm'));
+                }
+                else {
+                    $ret = ucwords($date->isoFormat('dddd D MMMM YYYY - HH:mm'));
+                }
             }
         }
         else {
