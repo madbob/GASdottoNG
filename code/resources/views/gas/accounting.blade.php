@@ -23,7 +23,7 @@
                     <x-larastrap::text name="rid->org" tlabel="movements.sepa.business_code" :value="$gas->rid['org'] ?? ''" />
                 </x-larastrap::collapse>
 
-                <x-larastrap::check name="enable_satispay" tlabel="movements.enable_satispay" triggers_collapse="enable_satispay" :value="$gas->hasFeature('satispay')" tpophelp="gas.help.enable_satispay" />
+                <x-larastrap::check name="enable_satispay" tlabel="gas.enable_satispay" triggers_collapse="enable_satispay" :value="$gas->hasFeature('satispay')" tpophelp="gas.help.enable_satispay" />
                 <x-larastrap::collapse id="enable_satispay">
                     @if($gas->hasFeature('satispay'))
                         {{ __('texts.gas.help.enabled_satispay') }}
