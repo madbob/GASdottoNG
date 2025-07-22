@@ -10,10 +10,20 @@ use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\Mailer\Bridge\Scaleway\Transport\ScalewayTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
 
+use App\Extensions\Translator;
 use App\Category;
 
 class AppServiceProvider extends ServiceProvider
 {
+    private function extendTranslations()
+    {
+        app()->extend('translator', function($command, $app) {
+            $loader = $app->make('translation.loader');
+            $locale = $app->getLocale();
+            return new Translator($loader, $locale);
+        });
+    }
+
     /*
         Qui vengono inizializzate configurazioni speciali per i driver mail
     */
@@ -102,6 +112,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         // Model::preventLazyLoading();
 
+        $this->extendTranslations();
         $this->initMailing();
         $this->initCollectionMacros();
     }
