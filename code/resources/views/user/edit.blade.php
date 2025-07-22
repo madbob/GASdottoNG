@@ -34,20 +34,22 @@ if ($user->isFriend() && $admin_editable) {
     <x-larastrap::tabpane :id="sprintf('profile-%s', sanitizeId($user->id))" label="{{ __('texts.user.personal_data') }}" active="true" classes="mb-2" icon="bi-person">
         @if($admin_editable)
             @if($user->pending)
-                <div class="alert alert-warning float-start w-100 mb-3">
-                    <div class="float-start d-inline-block">
+                <div class="alert alert-warning mb-3 d-flex flex-column flex-md-row align-items-center justify-content-between">
+                    <div class="d-inline-block">
                         {{ __('texts.user.help.waiting_approval') }}
                     </div>
 
-                    <x-larastrap::iform :action="route('users.revisioned', $user->id)" :buttons="[['tlabel' => 'user.approve', 'color' => 'success']]" classes="float-end ms-2">
-                        <x-larastrap::hidden name="post-saved-function" value="handleUserApproval" />
-                        <x-larastrap::hidden name="action" value="approve" />
-                    </x-larastrap::iform>
+                    <div>
+                        <x-larastrap::iform :action="route('users.revisioned', $user->id)" :buttons="[['tlabel' => 'user.approve', 'color' => 'success']]" classes="float-end ms-2">
+                            <x-larastrap::hidden name="post-saved-function" value="handleUserApproval" />
+                            <x-larastrap::hidden name="action" value="approve" />
+                        </x-larastrap::iform>
 
-                    <x-larastrap::iform :action="route('users.revisioned', $user->id)" :buttons="[['tlabel' => 'user.do_not_approve', 'color' => 'danger']]" classes="float-end">
-                        <x-larastrap::hidden name="post-saved-function" value="handleUserApproval" />
-                        <x-larastrap::hidden name="action" value="noapprove" />
-                    </x-larastrap::iform>
+                        <x-larastrap::iform :action="route('users.revisioned', $user->id)" :buttons="[['tlabel' => 'user.do_not_approve', 'color' => 'danger']]" classes="float-end">
+                            <x-larastrap::hidden name="post-saved-function" value="handleUserApproval" />
+                            <x-larastrap::hidden name="action" value="noapprove" />
+                        </x-larastrap::iform>
+                    </div>
                 </div>
             @endif
         @endif
