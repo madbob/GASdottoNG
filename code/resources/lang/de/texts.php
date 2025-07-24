@@ -2,7 +2,7 @@
 return array(
     'aggregations' => array(
         'all' => '',
-        'limit_access' => '',
+        'limit_access' => 'Eingeschränkter Zugriff',
         'help' => array(
             'limit_access_to_order' => '',
             'permit_selection' => '',
@@ -18,7 +18,7 @@ return array(
         'cardinality_many' => '',
         'user_selectable' => '',
         'group' => '',
-        'empty_list' => '',
+        'empty_list' => 'Es sind keine Elemente zum Anzeigen vorhanden.<br/>Durch das Hinzufügen von Elementen kannst du Benutzer*innen in mehrere Gruppen aufteilen, um Reservierungen zu trennen, die Lieferlogistik zu organisieren, oder spezielle Filter anzuwenden.',
         'name' => '',
     ),
     'auth' => array(
@@ -32,7 +32,7 @@ return array(
             'suspended_account_notice' => 'Dein Konto wurde gesperrt und du kannst keine Bestellungen mehr vornehmen. Überprüfe den Status deiner Zahlungen und deines Guthabens oder die von den Administrator/innen gesendeten Benachrichtigungen.',
             'invalid_username' => 'ungültiger Benutzername',
             'required_new_password' => 'Um fortzufahren musst du ein neues Passwort für dein Konto erstellen.',
-            'unconfirmed' => '',
+            'unconfirmed' => 'Dein Konto wurde noch nicht bestätigt. Du erhälst dann eine Email.',
             'username' => 'Benutzername, mit dem der Nutzer sich authentifiziert (muss eindeutig sein)',
             'email_mode' => 'Andernfalls erhalten Sie eine Einladungs-E-Mail mit dem Link, den Sie besuchen müssen, um sich zum ersten Mal anzumelden und Ihr Passwort festzulegen.',
         ),
@@ -58,7 +58,7 @@ return array(
             'opensource' => 'GASdotto wird als Open-Source-Projekt entwickelt!',
             'contribute' => '',
             'donate' => '',
-            'link' => '',
+            'link' => 'Du kannst auch <a href="https://gasdotto.net/" target="_blank">die GASdotto-Website</a> besuchen, um die Dokumentation anzusehen, oder uns <a href="https://twitter.com/GASdottoNet" target="_blank">auf Twitter</a> oder <a href="https://sociale.network/@gasdottonet" target="_blank">auf Mastodon</a> folgen, um regelmäßige Updates zu erhalten.',
             'local_contact' => 'Achtung: bei Problemen mit den Inhalten dieser Seite (Lieferant, (Vor-)Bestellung...) kontaktiere die Administratoren deiner Bestellgemeinschaft (GAS, FoodCoop, Solawi...).',
             'translations' => 'Wenn du zu der Übersetzung in deine Sprache beitragen willst, dann besuche <a href="https://hosted.weblate.org/projects/gasdottong/native/">diese Seite</a>.',
         ),
@@ -83,7 +83,7 @@ return array(
         ),
         'importing' => array(
             'deliveries' => array(
-                'first_product' => '',
+                'first_product' => 'Erstes Produkt',
                 'instruction' => '',
                 'notice' => '',
                 'product_error' => '',
@@ -102,8 +102,8 @@ return array(
             'columns' => 'Spalten',
             'format' => 'Format',
             'formats' => array(
-                'pdf' => '',
-                'csv' => '',
+                'pdf' => 'PDF',
+                'csv' => 'CSV',
                 'gdxp' => 'GDXP',
             ),
             'status' => 'Status der Vorbestellungen',
@@ -117,7 +117,7 @@ return array(
         'help_split_friends' => '',
         'help_aggregate_export_summary' => '',
         'flags' => array(
-            'include_unbooked' => '',
+            'include_unbooked' => 'Nicht vorbestellte Produkte inkludieren',
         ),
         'do_balance' => '',
         'movements_heading' => '',
@@ -133,7 +133,7 @@ return array(
             'empty_list_shared_files' => 'Es gibt derzeit keine Elemente, die angezeigt werden können.<br/>Wenn Dateien hinzugefügt werden, sind sie für alle Nutzer auf dem Dashboard zugänglich. Nützlich, um Dokumente im allgemeinen Interesse zu teilen.',
             'enable_deliveries_no_quantities' => '',
             'active_columns_summary' => 'Diese hier ausgewählten Spalten werden standardmäßig in der Übersicht zur Verwaltung der einzelnen Bestellungen angezeigt. Es ist jedoch jederzeit möglich, die Anzeige innerhalb der Übersicht selbst mit Hilfe des Auswahlbuttons oben rechts zu ändern',
-            'default_columns_shipping_document' => '',
+            'default_columns_shipping_document' => 'Beim Exportieren von Bestelllieferdetails standardmäßig ausgewählte Attribute',
             'custom_emails' => 'Hier kannst du die Texte der E-Mails verändern, die durch GASdotto verschickt werden. Für jeden Typ sind Platzhalter vorgesehen, die im Moment der Erstellung durch die entsprechenden Werte ersetzt werden: um die Texte einzufügen, nutze die Syntax %[name_placeholder]',
             'global_placeholders' => 'Allgemeine Platzhalter, die in allen Benachrichtigungen genutzt werden können:',
             'manual_products_sorting' => '',
@@ -263,7 +263,7 @@ return array(
         'description' => 'Beschreibung',
         'invoice' => 'Rechnung',
         'no_value' => 'Kein Wert',
-        'by_kg' => '',
+        'by_kg' => 'pro KG',
         'selection' => 'Auswahl',
         'home' => 'Startseite',
         'menu' => array(
@@ -327,7 +327,7 @@ return array(
         'created_at' => 'Eintragsdatum',
         'updated_at' => 'Ändern',
         'multigas_name' => 'Name der Bestellgemeinschaft',
-        'how_to_proceed' => '',
+        'how_to_proceed' => 'Wie möchtest du fortfahren?',
         'create' => 'Neu',
         'targets' => 'Subject',
         'suppliers_and_orders' => 'Lieferanten',
@@ -383,11 +383,11 @@ return array(
         'categories' => 'Kategorien',
         'no_data' => 'Es gibt keine Daten, die angezeigt werden können',
         'name' => '',
-        'url' => '',
+        'url' => 'URL',
         'only_selected' => '',
         'subject' => '',
         'aggregations_and_groups' => '',
-        'select' => '',
+        'select' => 'Auswahl',
         'to_do' => '',
         'opening' => '',
         'closing' => '',
@@ -490,9 +490,8 @@ return array(
             'defaults' => array(
                 'subject' => 'Willkommen!',
                 'body' => 'Willkommen im Bestellsystem von %[gas_name]!
-    In Zukunft kannst du dich über folgenden Link mit deinem Nutzernamen „%[username]“ und dem von dir gewählten Passwort anmelden.
-    %[gas_login_link]
-    Eine Benachrichtigungs-E-Mail wurde an die Administrator*innen geschickt.',
+    In Zukunft kannst du dich über folgenden Link mit deinem Nutzernamen "%[username]" und dem von dir gewählten Passwort anmelden.
+    %[gas_login_link]',
             ),
             'description' => '',
             'username' => 'Benutzername des neuen Nutzers',
@@ -846,7 +845,7 @@ return array(
             'friends_bookings_notice' => 'Hier kannst du Unter-Bestellungen hinzufügen für deine Freunde. Diese werden Teil deiner Bestellung sein, aber du kannst die Informationen trotzdem getrennt voneinander verwalten. Die Liste deiner Freunde kannst du auf der Seite deines Profils verwalten.',
             'no_friends' => 'Für diesen Nutzer sind keine \'Freunde\' registriert.',
             'closed_order_alert_new_booking' => 'Achtung: Diese Bestellung ist geschlossen. Bevor Sie eine Vorbestellung hinzufügen oder ändern, überprüfen Sie bitte, dass die Bestellung noch nicht dem Lieferant übermittelt wurde.',
-            'send_summaries' => 'Verschicke an alle Teilnehmer einer Bestellung eine Bestätigungsmail für ihre individuelle Bestellung. Es ist möglich, eine Nachricht an alle anzuhängen mit zusätzlichen Informationen',
+            'send_summaries' => 'Verschicke an alle Teilnehmer einer Bestellung eine Bestätigungsmail für ihre individuelle Bestellung. Es ist möglich, eine Nachricht an alle anzuhängen mit zusätzlichen Informationen.',
             'automatic_instructions' => '',
             'changed_products' => '',
             'waiting_closing_for_deliveries' => 'Dieses Feld wird freigeschaltet sobald die Vorbestellungen geschlossen sind',
@@ -861,7 +860,7 @@ return array(
             'mail_order_notification' => '',
             'target_supplier_notifications' => '',
             'notify_only_partecipants' => '',
-            'comment' => 'Möglicher Hinweis, der aufgenommen wird im Titel der Bestellung und der weder den Namen des Lieferanten noch die Daten zu Beginn und Ende der Bestellzeit enthält',
+            'comment' => 'Möglicher Hinweis, der aufgenommen wird im Titel der Bestellung und der weder den Namen des Lieferanten noch die Daten zu Beginn und Ende der Bestellzeit enthält.',
             'end' => 'Datum des Bestellschlusses. Am Ende des hier angegebenen Tages wird die Bestellung automatisch in den Status \'abgeschlossene Bestellungen\' überführt',
             'contacts' => '',
             'handle_packages' => '',
@@ -969,7 +968,7 @@ return array(
         ),
         'do_aggregate' => 'Bestellungen angliedern',
         'admin_dates' => 'Kalender verwalten',
-        'admin_automatics' => 'Nächste Daten im Kalender:',
+        'admin_automatics' => 'Nächste Daten im Kalender',
         'notices' => array(
             'closed_orders' => '',
             'email_attachments' => '',
@@ -1124,7 +1123,7 @@ return array(
             'max_quantity' => 'Wenn ungleich null, wird eine Warnung angezeigt, wenn eine höhere Anzahl als die hier Angegebene bestellt wird',
             'available' => 'Wenn ungleich null, ist dieses die maximale Anzahl der Produkte, die insgesamt in einer Bestellung vorgemerkt werden können. In der Bestellphase sehen die Nutzer, was bisher bestellt wurde',
             'global_min' => 'Wenn ungleich null, ist dieses die maximale Anzahl der Produkte, die insgesamt in einer Bestellung vorgemerkt werden können. In der Bestellphase sehen die Nutzer, was bisher bestellt wurde',
-            'variants' => 'Jedes Produkt kann mehrere Varianten haben, z.B. in der Größe oder Farbe der Wäscheteile. In der Phase der Bestellung können die Nutzer die gewünschte Anzahl für jede Kombination der Varianten angeben. Die Varianten können darüberhinaus einen eigenen Preis haben, der abhängig vom Gebindepreis des Produktes angegeben wird (z.B. +1 Euro oder -0.80 Euro)',
+            'variants' => 'Jedes Produkt kann mehrere Varianten haben, z.B. in der Größe oder Farbe der Wäscheteile. In der Phase der Bestellung können die Nutzer die gewünschte Anzahl für jede Kombination der Varianten angeben. Die Varianten können darüberhinaus einen eigenen Preis haben, der abhängig vom Gebindepreis des Produktes angegeben wird (z.B. +1 Euro oder -0.80 Euro).',
             'duplicate_notice' => 'Mit dem Duplizieren eines Produkts werden auch die Varianten des Originalprodukts kopiert bzw. dupliziert. Nach dem Speichern des Duplikats können die Varianten verändert werden.',
             'unit_price' => '',
             'vat_rate' => '',
@@ -1254,7 +1253,7 @@ return array(
             'mandate' => '',
             'date' => 'SEPA-Bewegung Datum',
             'intro' => 'SEPA Einstellung',
-            'help' => 'Geben Sie hier die Parameter für die Generierung von RIDs für diesen Benutzer an. Für Benutzer, für die diese Felder nicht ausgefüllt wurden, ist es nicht möglich, RIDs zu generieren',
+            'help' => 'Geben Sie hier die Parameter für die Generierung von RIDs für diesen Benutzer an. Für Benutzer, für die diese Felder nicht ausgefüllt wurden, ist es nicht möglich, RIDs zu generieren.',
             'identifier' => 'SEPA-Bewegung ID',
         ),
         'last_login' => 'Letzter Zugang',
