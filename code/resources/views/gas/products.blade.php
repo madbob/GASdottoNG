@@ -1,4 +1,4 @@
-<x-larastrap::accordionitem tlabel="gas.suppliers_and_products">
+<x-larastrap::accordionitem :label_html="formatAccordionLabel('gas.suppliers_and_products', 'tags')">
     <x-larastrap::form :obj="$gas" classes="inner-form gas-editor" method="PUT" :action="route('gas.update', $gas->id)">
         <div class="row">
             <input type="hidden" name="group" value="products">

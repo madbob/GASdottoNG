@@ -28,7 +28,7 @@ if (is_null($order)) {
     @endphp
 
     @if($limiting->isEmpty() == false || $selectable->isEmpty() == false)
-        <div class="card mb-4">
+        <div class="card shadow mb-4">
             <div class="card-header">{{ __('texts.aggregations.all') }}</div>
             <div class="card-body">
                 @if($limiting->isEmpty() == false)

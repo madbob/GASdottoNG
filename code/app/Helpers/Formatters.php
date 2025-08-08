@@ -295,3 +295,9 @@ function usernamePattern()
 {
     return '[A-Za-z0-9_@.\- ]{1,50}';
 }
+
+function formatAccordionLabel($label, $icon)
+{
+    $text = __('texts.' . $label);
+    return sprintf('<i class="bi-%s"></i> %s', $icon, $text);
+}

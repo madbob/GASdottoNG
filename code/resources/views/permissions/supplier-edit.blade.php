@@ -16,7 +16,7 @@
 		</p>
 	@else
 	    @foreach($roles as $role)
-	        <div class="card mb-4">
+	        <div class="card shadow mb-4">
                 <div class="card-header">{{ $role->name }}</div>
                 <div class="card-body">
     	            @include('commons.completionrows', [

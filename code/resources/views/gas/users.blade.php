@@ -1,4 +1,4 @@
-<x-larastrap::accordionitem tlabel="user.all">
+<x-larastrap::accordionitem :label_html="formatAccordionLabel('user.all', 'people')">
     <x-larastrap::form :obj="$gas" classes="inner-form gas-editor" method="PUT" :action="route('gas.update', $gas->id)">
         <div class="row">
             <input type="hidden" name="group" value="users">

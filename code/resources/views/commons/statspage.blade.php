@@ -10,9 +10,9 @@ else {
 
 @endphp
 
-<div class="card mb-2">
+<div class="card shadow mb-3">
     <div class="card-header">
-        <h3>{{ __('texts.generic.stats.generic') }}</h3>
+        {{ __('texts.generic.stats.generic') }}
     </div>
     <div class="card-body">
         <div class="row">
@@ -55,9 +55,9 @@ else {
     </div>
 </div>
 
-<div class="card mb-2">
+<div class="card shadow mb-3">
     <div class="card-header">
-        <h3>{{ __('texts.generic.stats.supplier') }}</h3>
+        {{ __('texts.generic.stats.supplier') }}
     </div>
     <div class="card-body">
         <div class="row">

@@ -20,7 +20,7 @@
 
 	            @endphp
 
-	            <div class="card mb-4">
+	            <div class="card shadow mb-4">
 	                <div class="card-header">{{ $role->name }}</div>
                     <div class="card-body">
     	                @foreach($targets as $target)

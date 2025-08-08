@@ -2,7 +2,7 @@
 Questo pannello viene ricaricato alla chiusura del modale di modifica dei
 permessi, cfr. permissions.user-edit
 -->
-<div class="card mt-4" id="permissions-list-{{ sanitizeId($object->id) }}" data-reload-url="{{ route('roles.usertable', $object->id) }}">
+<div class="card shadow mt-4" id="permissions-list-{{ sanitizeId($object->id) }}" data-reload-url="{{ route('roles.usertable', $object->id) }}">
     <div class="card-header">
         {{ __('texts.permissions.name') }}
     </div>

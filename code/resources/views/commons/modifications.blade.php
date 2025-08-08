@@ -39,7 +39,7 @@ foreach($modificationTypes as $mod) {
 @endphp
 
 @if(empty($modificationTypes) || empty($actual_modifiers) == false)
-    <div class="card mb-4">
+    <div class="card shadow mb-3">
         <div class="card-header">
             {{ __('texts.modifiers.all') }}
         </div>

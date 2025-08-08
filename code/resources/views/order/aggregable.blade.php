@@ -26,7 +26,7 @@
                     <?php $order_status = $order->status ?>
                     @if(($order_status == 'shipped' && $order->orders->count() > 1) || ($order_status != 'shipped' && $order_status != 'archived'))
                         @if($index % 5 == 0)
-                            <div class="card mb-1" data-aggregate-id="new">
+                            <div class="card shadow mb-1" data-aggregate-id="new">
                                 <div class="card-body">
                                     <p class="clearfix">
                                         <i class="bi-arrows-fullscreen float-end explode-aggregate"></i>
@@ -39,7 +39,7 @@
                             </div>
                         @endif
 
-                        <div class="card mb-1" data-aggregate-id="{{ $order->id }}">
+                        <div class="card shadow mb-1" data-aggregate-id="{{ $order->id }}">
                             <div class="card-body">
                                 <p class="clearfix">
                                     <i class="bi-arrows-fullscreen float-end explode-aggregate"></i>

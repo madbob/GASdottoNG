@@ -1,4 +1,4 @@
-<x-larastrap::accordionitem tlabel="gas.import_export">
+<x-larastrap::accordionitem :label_html="formatAccordionLabel('gas.import_export', 'cloud-plus')">
     <div class="row">
         <div class="col">
             <x-larastrap::form :obj="$gas" classes="inner-form gas-editor" method="PUT" :action="route('gas.update', $gas->id)">

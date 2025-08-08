@@ -1,4 +1,4 @@
-<x-larastrap::accordionitem tlabel="generic.menu.accounting">
+<x-larastrap::accordionitem :label_html="formatAccordionLabel('generic.menu.accounting', 'piggy-bank')">
     <x-larastrap::form :obj="$gas" classes="inner-form gas-editor" method="PUT" :action="route('gas.update', $gas->id)">
         <div class="row">
             <input type="hidden" name="group" value="banking">

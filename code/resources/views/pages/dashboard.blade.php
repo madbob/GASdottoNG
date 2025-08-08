@@ -5,7 +5,7 @@
 @if($notifications->isEmpty() == false)
     <div class="row mb-3" id="home-notifications">
         <div class="col">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-header">
                     {{ __('texts.generic.menu.notifications') }}
                 </div>
@@ -36,7 +36,7 @@
 <div class="row">
     <div class="col-md-6">
         @if(Gate::check('supplier.book', null))
-            <div class="card mb-3">
+            <div class="card shadow mb-3">
                 <div class="card-header">
                     <p class="float-end m-0">
                         <a target="_blank" href="{{ url('ordini.xml') }}"><i class="bi-rss"></i></a>
@@ -55,7 +55,7 @@
                 @endif
             </div>
 
-            <div class="card mb-3">
+            <div class="card shadow mb-3">
                 <div class="card-header">
                     {{ __('texts.orders.list_delivering') }}
                 </div>
@@ -72,7 +72,7 @@
         @endif
 
         @if($currentgas->attachments->isEmpty() == false)
-            <div class="card mb-3">
+            <div class="card shadow mb-3">
                 <div class="card-header">
                     {{ __('texts.generic.shared_files') }}
                 </div>
@@ -128,7 +128,7 @@
 
                 @endphp
 
-                <div class="alert {{ $balances[$default_currency->id] >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
+                <div class="alert shadow {{ $balances[$default_currency->id] >= $to_pay ? 'alert-success' : 'alert-danger' }} text-right">
                     @if($configuration['current_credit'])
                         @foreach($currencies as $curr)
                             <p class="d-flex align-items-center justify-content-start">

@@ -428,6 +428,13 @@ button {
             margin-left: 5px;
         }
     }
+
+    &.accordion-button {
+        i {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+    }
 }
 
 i[class^='bi-hidden-'] {

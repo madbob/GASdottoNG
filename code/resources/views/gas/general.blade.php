@@ -1,4 +1,4 @@
-<x-larastrap::accordionitem tlabel="generic.menu.configs">
+<x-larastrap::accordionitem :label_html="formatAccordionLabel('generic.menu.configs', 'tools')">
     <x-larastrap::form :obj="$gas" classes="inner-form gas-editor" method="PUT" :action="route('gas.update', $gas->id)">
         <div class="row">
             <input type="hidden" name="reload-whole-page" value="1">

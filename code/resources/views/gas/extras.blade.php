@@ -1,5 +1,5 @@
 <x-larastrap::accordion always_open="true">
-    <x-larastrap::accordionitem tlabel="aggregations.all">
+    <x-larastrap::accordionitem :label_html="formatAccordionLabel('aggregations.all', 'card-checklist')">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
@@ -22,7 +22,7 @@
         </div>
     </x-larastrap::accordionitem>
 
-    <x-larastrap::accordionitem tlabel="generic.shared_files">
+    <x-larastrap::accordionitem :label_html="formatAccordionLabel('generic.shared_files', 'share')">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
@@ -50,7 +50,7 @@
         </div>
     </x-larastrap::accordionitem>
 
-    <x-larastrap::accordionitem tlabel="movements.vat_rates">
+    <x-larastrap::accordionitem :label_html="formatAccordionLabel('movements.vat_rates', 'bank')">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
@@ -74,7 +74,7 @@
         </div>
     </x-larastrap::accordionitem>
 
-    <x-larastrap::accordionitem tlabel="modifiers.all">
+    <x-larastrap::accordionitem :label_html="formatAccordionLabel('modifiers.all', 'arrow-down-up')">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
@@ -97,7 +97,7 @@
         </div>
     </x-larastrap::accordionitem>
 
-    <x-larastrap::accordionitem tlabel="generic.logs">
+    <x-larastrap::accordionitem :label_html="formatAccordionLabel('generic.logs', 'list-columns')">
         <?php $logs = App\InnerLog::orderBy('created_at', 'desc')->take(20)->get() ?>
 
         <div class="row">

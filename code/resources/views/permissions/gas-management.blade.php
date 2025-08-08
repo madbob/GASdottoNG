@@ -1,5 +1,5 @@
 <div class="card-header">
-    <h3>{{ __('texts.permissions.name') }}</h3>
+    {{ __('texts.permissions.name') }}
 </div>
 <div class="card-body">
     <div class="row">

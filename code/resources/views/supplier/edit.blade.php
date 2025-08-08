@@ -6,7 +6,6 @@
             <div class="row">
                 <div class="col-md-6">
                     @include('supplier.base-edit', ['supplier' => $supplier])
-                    <hr>
                     @include('commons.contactswidget', ['obj' => $supplier])
                 </div>
                 <div class="col-md-6">

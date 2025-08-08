@@ -2,9 +2,9 @@
 
 @section('content')
 
-<div class="card mb-2">
+<div class="card shadow mb-3">
     <div class="card-header">
-        <h3>{{ __('texts.generic.menu.configs') }}</h3>
+        {{ __('texts.generic.menu.configs') }}
     </div>
     <div class="card-body">
         <div class="row">
@@ -28,7 +28,7 @@
 </div>
 
 @can('gas.permissions', $gas)
-    <div id="permissions-management" class="card gas-permission-editor" data-fetch-url="{{ route('roles.index') }}">
+    <div id="permissions-management" class="card shadow gas-permission-editor" data-fetch-url="{{ route('roles.index') }}">
         @include('permissions.gas-management', ['gas' => $gas])
     </div>
 @endcan
