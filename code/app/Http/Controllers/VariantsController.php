@@ -80,7 +80,10 @@ class VariantsController extends BackedController
             'value' => $values,
         ]);
 
-        $combinations = array_map(fn ($v) => $variant->values()->where('value', $v)->first()->id, $values);
+        $combinations = array_filter(array_map(function ($v) use ($variant) {
+            $varval = $variant->values()->where('value', $v)->first();
+            return $varval ? $varval->id : null;
+        }, $values));
 
         /*
             Ai nuovi valori dinamicamente immessi nella tabella aggiungo un

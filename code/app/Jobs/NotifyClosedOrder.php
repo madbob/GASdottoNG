@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Symfony\Component\Mailer\Exception\HttpTransportException;
 
 use App\Notifications\ClosedOrdersNotification;
 use App\Notifications\SupplierOrderShipping;
@@ -71,6 +72,9 @@ class NotifyClosedOrder implements ShouldQueue
 
                         $hub->enable(true);
                     }
+                    catch(HttpTransportException $e) {
+                        \Log::error('Errore in notifica chiusura ordine a fornitore: ' . print_r($e->getResponse(), true));
+                    }
                     catch (\Exception $e) {
                         \Log::error('Errore in notifica chiusura ordine a fornitore: ' . $e->getMessage());
                     }
@@ -87,6 +91,10 @@ class NotifyClosedOrder implements ShouldQueue
             if ($notifiable->user->gas->auto_referent_order_summary) {
                 try {
                     $notifiable->user->notify(new ClosedOrdersNotification($notifiable->orders, $notifiable->files));
+                    sleep(1);
+                }
+                catch(HttpTransportException $e) {
+                    \Log::error('Errore in notifica chiusura ordine: ' . print_r($e->getResponse(), true));
                 }
                 catch (\Exception $e) {
                     \Log::error('Errore in notifica chiusura ordine: ' . $e->getMessage());
