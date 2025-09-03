@@ -149,7 +149,7 @@ return array (
   array (
     'help' =>
     array (
-      'csv_separator' => 'Il carattere da usare per separare i campi in tutti i CSV esportati. La scelta di questo valore dipende soprattutto dall\'applicazione che si utilizza per aprire questi files. Si consiglia l\'uso di <a target="_blank" href="http://it.libreoffice.org/">LibreOffice</a>.',
+      'csv_separator' => 'Il carattere da usare per separare i campi in tutti i CSV esportati. La scelta di questo valore dipende soprattutto dall\'applicazione che si utilizza per aprire questi files. Si consiglia l\'uso di <a target=\'_blank\' href=\'http://it.libreoffice.org/\'>LibreOffice</a>.',
       'home_message' => 'Eventuale messaggio da visualizzare sulla pagina di autenticazione di GASdotto, utile per comunicazioni speciali verso i membri del GAS o come messaggio di benvenuto',
       'currency' => 'Simbolo della valuta in uso. Verrà usato in tutte le visualizzazioni in cui sono espressi dei prezzi',
       'maintenance_mode' => 'Se abilitato, il login sarà inibito a tutti gli utenti che non hanno il permesso Accesso consentito anche in manutenzione',

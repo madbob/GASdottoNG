@@ -127,7 +127,7 @@ return array(
     ),
     'gas' => array(
         'help' => array(
-            'csv_separator' => 'The character to be used to separate columns in exported CSV files. This choice depends on the software you want to use to open those files. We suggest the use of <a target="_blank" href="http://www.libreoffice.org/">LibreOffice</a>.',
+            'csv_separator' => 'The character to be used to separate columns in exported CSV files. This choice depends on the software you want to use to open those files. We suggest the use of <a target=\'_blank\' href=\'http://www.libreoffice.org/\'>LibreOffice</a>.',
             'home_message' => 'A customisation message for the GASdotto authentication page, offering a platform for special communications to GAS members or functioning as a warm welcome message',
             'currency' => 'The current currency symbol will be used wherever prices are shown',
             'maintenance_mode' => 'When enabled, users without the permission "Access allowed even in maintenance" will be unable to log in',
