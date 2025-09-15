@@ -71,6 +71,9 @@ class VariantCombo extends Model
         return $test != 0;
     }
 
+    /*
+        Per recuperare una combo a partire dagli ID dei suoi valori
+    */
     public static function byValues($values)
     {
         $query = self::orderBy('id', 'asc');

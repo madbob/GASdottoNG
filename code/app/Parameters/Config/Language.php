@@ -16,6 +16,6 @@ class Language extends Config
 
     public function default()
     {
-        return 'it_IT';
+        return 'it';
     }
 }
