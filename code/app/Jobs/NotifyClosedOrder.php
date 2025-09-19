@@ -40,7 +40,13 @@ class NotifyClosedOrder implements ShouldQueue
         $files = [];
         foreach ($types as $type) {
             foreach (['pdf', 'csv'] as $format) {
-                $f = $printer->document($order, $type, ['format' => $format, 'status' => 'pending', 'extra_modifiers' => 0, 'action' => 'save']);
+                $f = $printer->document($order, $type, [
+                    'format' => $format,
+                    'status' => 'pending',
+                    'extra_modifiers' => 0,
+                    'action' => 'save',
+                ]);
+
                 if ($f) {
                     $files[] = $f;
                 }

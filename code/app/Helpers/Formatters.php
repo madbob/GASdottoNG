@@ -246,6 +246,16 @@ function splitFields($fields)
     $user_headers = [];
     $product_headers = [];
 
+    /*
+        Se l'array dei campi esplicitamente richiesti è vuoto, lo popolo con i
+        campi di default (quelli che vengono selezionati anche dal pannello web)
+    */
+    if (empty($fields)) {
+        list($useless, $selected_user) = flaxComplexOptions($formattable_user);
+        list($useless, $selected_product) = flaxComplexOptions($formattable_product);
+        $fields = array_merge($selected_user, $selected_product);
+    }
+
     foreach ($fields as $f) {
         if (isset($formattable_user[$f])) {
             $ret->user_columns[] = $f;
