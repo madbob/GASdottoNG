@@ -212,9 +212,9 @@ return array(
         'remove' => 'Löschen',
         'export' => 'Exportieren',
         'undefined' => 'undefiniert',
-        'updated_at_formatted' => '',
+        'updated_at_formatted' => 'Letzte Änderung: <br class="d-block d-md-none">:date - :person',
         'address' => 'Adresse',
-        'email_no_notifications' => '',
+        'email_no_notifications' => 'E-Mail (keine Benachrichtigung)',
         'cellphone' => 'Handy',
         'fax' => 'Fax',
         'website' => 'Website',
@@ -223,7 +223,7 @@ return array(
         'measure' => 'Maßeinheit',
         'category' => 'Kategorie',
         'price' => 'Preis',
-        'yes' => '',
+        'yes' => 'Ja',
         'no' => 'Nein',
         'iban' => 'IBAN',
         'gas' => 'Solidarische Bestellgemeinschaft',
@@ -231,7 +231,7 @@ return array(
         'unspecified' => 'Nicht spezifiziert',
         'never' => 'Nie',
         'help' => array(
-            'save_reminder' => '',
+            'save_reminder' => 'Denk daran am Ende auf die Schaltfläche „Speichern“ zu klicken!',
             'preferred_date_format' => 'Bevorzugt im Format JJJJ-MM-TT (z.B. :now)',
             'contacts' => 'Hier lassen sich beliebige Kontaktdaten des Nutzers hinterlegen. Die Benachrichtigungen werden an alle angegebenen Emailadressen verschickt.',
             'unchange_password' => 'Lehrlassen um das Passwort nicht zu ändern',
@@ -239,7 +239,7 @@ return array(
             'discrete_measure' => 'Diskrete Einheiten sind nicht teilbar: für die Produkte, den eine diskrete Einheit zugewiesen ist, ist es nicht möglich Eigenschaften wie „Variabler Preis“ und „Gebindegröße“ freizuschalten',
             'categories_instructions' => 'Das Sortieren von Kategorien ist möglich durch Ziehen und Ablegen.',
             'insert_password_notice' => 'Um diesen Vorgang zu bestätigen musst du deinen Password eingeben',
-            'unassigned_group_warning' => '',
+            'unassigned_group_warning' => 'Achtung: :count Benutzende haben keine Gruppe für :group zugewiesen bekommen',
         ),
         'definitive_delete' => 'Endgültig löschen',
         'all' => 'Alle',
@@ -283,7 +283,7 @@ return array(
         'sortings' => array(
             'all_by_user' => 'Alle (nach Nutzer*innen)',
             'manual' => 'Manuelle Sortierung',
-            'all_by_group' => '',
+            'all_by_group' => 'Alle (nach Gruppe geordnet)',
         ),
         'minor_than' => 'kleiner ist als',
         'major_than' => 'größer ist als',
@@ -385,7 +385,7 @@ return array(
         'name' => 'Name',
         'url' => 'URL',
         'only_selected' => 'Nur ausgewählte',
-        'subject' => '',
+        'subject' => 'Thema',
         'aggregations_and_groups' => '',
         'select' => 'Auswahl',
         'to_do' => '',
@@ -462,7 +462,7 @@ return array(
     ),
     'mail' => array(
         'help' => array(
-            'removed_email_log' => '',
+            'removed_email_log' => 'Email entfernt :address',
             'send_error' => 'Es war nicht möglich, die E-Mail an :email: :message weiterzuleiten',
         ),
         'summary' => array(
@@ -500,9 +500,9 @@ return array(
         'declined' => array(
             'defaults' => array(
                 'subject' => '',
-                'body' => '',
+                'body' => 'Leider wurde dein Konto von %[gas_name] nicht genehmigt.',
             ),
-            'description' => '',
+            'description' => 'Nachricht an nicht genehmigte Mitglieder gesendet.',
         ),
         'order' => array(
             'defaults' => array(
@@ -519,7 +519,7 @@ return array(
         ),
         'reminder' => array(
             'defaults' => array(
-                'subject' => '',
+                'subject' => 'Bestellungen für %[gas_name] werden geschlossen',
                 'body' => '',
             ),
             'description' => '',
@@ -613,25 +613,25 @@ return array(
                     'product' => 'addiere zu den Kosten des Produkts hinzu',
                     'booking' => 'addiere zum Gesamtbetrag der einzelnen Vorbestellung hinzu',
                     'order' => 'addiere zu den Kosten der Gesamtbestellung hinzu',
-                    'product_kg' => '',
-                    'booking_kg' => '',
-                    'order_kg' => '',
+                    'product_kg' => 'pro Kg des Produktes, summiere',
+                    'booking_kg' => 'pro Kilo (vorbestellt), summiere',
+                    'order_kg' => 'pro Kg in der Bestellung, summiere',
                 ),
                 'sub' => array(
                     'product' => 'ziehe von den Kosten des Produkts ab',
                     'booking' => 'ziehe vom Gesamtbetrag der einzelnen Vorbestellung ab',
                     'order' => 'ziehe von den Kosten der Gesamtbestellung ab',
-                    'product_kg' => '',
-                    'booking_kg' => '',
-                    'order_kg' => '',
+                    'product_kg' => 'pro Kg des Produktes, subtrahiere',
+                    'booking_kg' => 'pro Kg (vorbestellt), subtrahiere',
+                    'order_kg' => 'pro Kg in der Bestellung, subtrahiere',
                 ),
                 'passive' => array(
                     'product' => 'verglichen mit den Kosten des Produkts, berechne',
                     'booking' => 'verglichen mit dem Gesamtbetrag der Vorbestellung, berechne',
                     'order' => 'verglichen mit den Kosten der Gesamtbestellung, berechne',
-                    'product_kg' => '',
-                    'booking_kg' => '',
-                    'order_kg' => '',
+                    'product_kg' => 'pro Kg des Produktes, berechne',
+                    'booking_kg' => 'pro Kg in der Vorbestellung, berechne',
+                    'order_kg' => 'pro Kg in der Bestellung, berechne',
                 ),
                 'apply' => array(
                     'product' => 'wende den Stück-/Gebindepreis an',
