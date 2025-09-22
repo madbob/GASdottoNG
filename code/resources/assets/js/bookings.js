@@ -503,10 +503,16 @@ class Bookings
             this.dynamicBookingRequest = null;
         }
 
+        /*
+            Nota bene: il payload di questa richiesta è potenzialmente molto
+            grande, in particolare quando ci sono molte varianti nell'ordine.
+            Pertanto evito di usare una GET ed invio invece i dati della
+            prenotazione corrente nel body della request
+        */
     	this.dynamicBookingRequest = $.ajax({
     		url: url,
-    		method: 'GET',
-    		data: data,
+            method: 'POST',
+            data: data,
     		dataType: 'JSON',
     		success: (data) => {
                 this.dynamicBookingRequest = null;
