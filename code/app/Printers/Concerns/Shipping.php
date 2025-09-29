@@ -1,5 +1,9 @@
 <?php
 
+/*
+    Per la formattazione del Dettaglio Consegne
+*/
+
 namespace App\Printers\Concerns;
 
 use App\Formatters\User as UserFormatter;

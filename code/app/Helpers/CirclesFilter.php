@@ -143,7 +143,18 @@ class CirclesFilter
     private function properSorting($bookings)
     {
         if ($this->mode == 'all_by_place' || str_starts_with($this->mode, 'group_')) {
-            return $bookings->sortBy(fn ($b) => $this->bookingSorting($b));
+            /*
+                Ordino le prenotazioni usando come criterio la concatenazione
+                tra i nomi dei gruppi coinvolti ed il nome dell'utente.
+                In questo modo ottengo l'ordinamento prima in funzione del
+                gruppo (che mi interessa per separare, poi, i diversi blocchi
+                nel PDF) e poi in funzione del nome (per mantenere un
+                ordinamento all'interno del blocco stesso).
+                Non usare questo concatenamento direttamente in bookingSorting()
+                in quanto tale funzione viene usata poi anche per formattare i
+                titoli dei separatori dei gruppi nel PDF
+            */
+            return $bookings->sortBy(fn ($b) => $this->bookingSorting($b)  . $b->user->printableName());
         }
         else {
             return $bookings->sortBy(fn ($b) => $b->user->printableName());
