@@ -48,7 +48,9 @@ class NotifyClosedOrder implements ShouldQueue
                 ]);
 
                 if ($f) {
-                    $files[] = $f;
+                    if (file_exists($f) && filesize($f) != 0) {
+                        $files[] = $f;
+                    }
                 }
             }
         }
@@ -69,12 +71,17 @@ class NotifyClosedOrder implements ShouldQueue
                         $hub->enable(false);
                         $files = $this->filesForSupplier($order);
 
-                        /*
-                            Reminder: i files vengono automaticamente rimossi
-                            dopo l'invio della notifica, da parte di
-                            SupplierOrderShipping
-                        */
-                        $supplier->notify(new SupplierOrderShipping($gas, $order, $files));
+                        if (empty($files)) {
+                            \Log::warning('Non ci sono files da allegare al fornitore per la notifica di chiusura ordine');
+                        }
+                        else {
+                            /*
+                                Reminder: i files vengono automaticamente rimossi
+                                dopo l'invio della notifica, da parte di
+                                SupplierOrderShipping
+                            */
+                            $supplier->notify(new SupplierOrderShipping($gas, $order, $files));
+                        }
 
                         $hub->enable(true);
                     }
