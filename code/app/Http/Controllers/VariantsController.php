@@ -131,7 +131,7 @@ class VariantsController extends BackedController
         $prices = $request->input('price_offset', []);
         $weights = $request->input('weight_offset', []);
 
-        $this->service->matrix($product, $combinations, $actives, $codes, $prices, $weights);
+        $this->service->matrix($combinations, $actives, $codes, $prices, $weights);
 
         DB::commit();
 

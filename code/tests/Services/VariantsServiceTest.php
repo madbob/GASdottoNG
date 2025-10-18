@@ -71,7 +71,7 @@ class VariantsServiceTest extends TestCase
 
         $product = app()->make('ProductsService')->show($this->product->id);
         $this->assertEquals(9, $product->variant_combos->count());
-        $this->assertEquals('L, M, S', $other_variant->printableValues());
+        $this->assertEquals('S, M, L', $other_variant->printableValues());
     }
 
     /*
@@ -99,6 +99,7 @@ class VariantsServiceTest extends TestCase
 
         $this->assertEquals('Colore', $variant->name);
         $this->assertEquals(4, $variant->values()->count());
+        $this->assertEquals(0, $variant->values()->where('value', 'Rosso')->first()->sorting);
         $this->assertEquals(4, $product->variant_combos->count());
 
         /*
@@ -111,11 +112,11 @@ class VariantsServiceTest extends TestCase
             'variant_id' => $variant->id,
             'name' => 'Colore',
             'id' => [
-                $variant->values()->where('value', 'Rosso')->first()->id,
                 $variant->values()->where('value', 'Verde')->first()->id,
+                $variant->values()->where('value', 'Rosso')->first()->id,
                 $variant->values()->where('value', 'Giallo')->first()->id,
             ],
-            'value' => ['Rosso', 'Verde', 'Giallo'],
+            'value' => ['Verde', 'Rosso', 'Giallo'],
         ]);
 
         $this->nextRound();
@@ -123,6 +124,7 @@ class VariantsServiceTest extends TestCase
         $this->assertEquals(3, $variant->values()->count());
         $this->assertEquals(3, $product->variant_combos->count());
         $this->assertNull(VariantValue::where('value', 'Blu')->first());
+        $this->assertEquals(1, $variant->values()->where('value', 'Rosso')->first()->sorting);
     }
 
     /*
@@ -178,7 +180,7 @@ class VariantsServiceTest extends TestCase
             }
         }
 
-        app()->make('VariantsService')->matrix($this->product, $ids, $actives, ['', 'ABC', ''], [0, 0, 1], [0.1, 0, 0]);
+        app()->make('VariantsService')->matrix($ids, $actives, ['', 'ABC', ''], [0, 0, 1], [0.1, 0, 0]);
 
         $this->nextRound();
 

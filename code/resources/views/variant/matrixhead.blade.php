@@ -1,5 +1,7 @@
 <thead>
 	<tr>
+        <th scope="col">&nbsp;</th>
+
 		@foreach($combos->first()->values as $value)
 			<th scope="col">{{ $value->variant->name }}</th>
 		@endforeach

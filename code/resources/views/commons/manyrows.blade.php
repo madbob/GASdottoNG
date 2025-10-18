@@ -72,6 +72,8 @@ if (isset($extra_class)) {
                                 @if($column['type'] == 'custom')
                                     @if($column['field'] == 'static')
                                         <span class="form-control-plaintext">{!! vsprintf($column['contents'], []) !!}</span>
+                                    @elseif($column['field'] == 'html')
+                                        {!! vsprintf($column['contents'], []) !!}
                                     @else
                                         <?php
 
@@ -149,6 +151,8 @@ if (isset($extra_class)) {
                             @if($column['type'] == 'custom')
                                 @if($column['field'] == 'static')
                                     <span class="form-control-plaintext">{!! vsprintf($column['contents'], []) !!}</span>
+                                @elseif($column['field'] == 'html')
+                                    {!! vsprintf($column['contents'], []) !!}
                                 @endif
                             @else
                                 <x-dynamic-component :component="sprintf('larastrap::%s', $column['type'])" :params="$attributes" />

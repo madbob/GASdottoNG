@@ -20,7 +20,7 @@ class VariantsService extends BaseService
         return $variant;
     }
 
-    private function updateVariantValue($id, $variant, $value)
+    private function updateVariantValue($sorting, $id, $variant, $value)
     {
         if (empty($id)) {
             $val = new VariantValue();
@@ -31,6 +31,7 @@ class VariantsService extends BaseService
 
         $val->variant_id = $variant->id;
         $val->value = $value;
+        $val->sorting = $sorting;
         $val->save();
 
         return $val;
@@ -73,7 +74,7 @@ class VariantsService extends BaseService
             }
 
             $id = $ids[$i];
-            $val = $this->updateVariantValue($id, $variant, $value);
+            $val = $this->updateVariantValue($i, $id, $variant, $value);
             $new_ids[] = $val->id;
         }
 
@@ -89,7 +90,7 @@ class VariantsService extends BaseService
         return $variant;
     }
 
-    public function matrix($product, $combinations, $actives, $codes, $prices, $weights)
+    public function matrix($combinations, $actives, $codes, $prices, $weights)
     {
         foreach ($combinations as $index => $combination) {
             $combo = VariantCombo::byValues(explode(',', $combination));

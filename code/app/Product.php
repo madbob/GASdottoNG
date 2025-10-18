@@ -144,6 +144,10 @@ class Product extends Model
                         }
                     }
 
+                    $ret = $ret->sortBy(function($var) {
+                        return $var->values->reduce(fn($sum, $val) => $sum + $val->sorting, 0);
+                    });
+
                     return $ret;
                 }
             });
@@ -152,7 +156,7 @@ class Product extends Model
 
     public function getSortedVariantCombosAttribute()
     {
-        return $this->variant_combos->where('active', true)->sortBy(function ($combo, $key) {
+        return $this->variant_combos->where('active', true)->sortBy(function ($combo) {
             return $combo->values->pluck('value')->join(' ');
         }, SORT_NATURAL);
     }
@@ -283,25 +287,30 @@ class Product extends Model
 
     public function comparePrices($other): bool
     {
+        $ret = true;
+
         if ($this->getPrice(false) != $other->getPrice(false)) {
-            return false;
+            $ret = false;
         }
-
-        foreach ($other->variant_combos as $vc) {
-            $ovc = $this->variant_combos->firstWhere('id', $vc->id);
-            if ($ovc) {
-                if ($ovc->getPrice(false) != $vc->getPrice(false)) {
-                    return false;
+        else {
+            foreach ($other->variant_combos as $vc) {
+                $ovc = $this->variant_combos->firstWhere('id', $vc->id);
+                if ($ovc) {
+                    if ($ovc->getPrice(false) != $vc->getPrice(false)) {
+                        $ret = false;
+                        break;
+                    }
+                }
+                else {
+                    if ($vc->price_offset != 0) {
+                        $ret = false;
+                        break;
+                    }
                 }
             }
-            else {
-                if ($vc->price_offset != 0) {
-                    return false;
-                }
-            }
         }
 
-        return true;
+        return $ret;
     }
 
     public static function displayColumns()

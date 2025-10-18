@@ -651,7 +651,7 @@ class OrdersServiceTest extends TestCase
             $actives[] = $combo->id;
         }
 
-        app()->make('VariantsService')->matrix($product, $ids, $actives, ['', '', ''], [0, 0, 0], [0, 0, 0]);
+        app()->make('VariantsService')->matrix($ids, $actives, ['', '', ''], [0, 0, 0], [0, 0, 0]);
 
         $this->nextRound();
 
@@ -679,7 +679,7 @@ class OrdersServiceTest extends TestCase
         $this->nextRound();
 
         $product = app()->make('ProductsService')->show($product->id);
-        app()->make('VariantsService')->matrix($product, $ids, $actives, ['', '', ''], [0, 0, 1], [0, 0, 0]);
+        app()->make('VariantsService')->matrix($ids, $actives, ['', '', ''], [0, 0, 1], [0, 0, 0]);
 
         $this->nextRound();
 

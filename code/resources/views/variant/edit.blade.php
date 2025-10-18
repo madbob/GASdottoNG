@@ -13,7 +13,14 @@
             @include('commons.manyrows', [
                 'contents' => $variant ? $variant->values : [],
                 'removable_check' => fn($v) => $v->hasBookings(),
+                'extra_class' => 'sortable-table',
                 'columns' => [
+                    [
+                        'label' => '',
+                        'type' => 'custom',
+                        'field' => 'html',
+                        'contents' => '<span class="btn btn-info sorter"><i class="bi bi-arrow-down-up"></i></span>',
+                    ],
                     [
                         'label' => __('texts.generic.id'),
                         'field' => 'id',

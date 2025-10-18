@@ -12,7 +12,7 @@
 
                 <hr />
 
-                <table class="table table-borderless table-sm dynamic-table">
+                <table class="table table-borderless table-sm dynamic-table sortable-table">
 					@include('variant.matrixhead', [
                         'combos' => $combos,
                     ])
@@ -21,6 +21,10 @@
                         @foreach($combos as $index => $combo)
                             <x-larastrap::enclose :obj="$combo">
                                 <tr>
+                                    <td>
+                                        <span class="btn btn-info sorter"><i class="bi bi-arrow-down-up"></i></span>
+                                    </td>
+
                                     @foreach($combo->values as $value)
                                         <td>
 											<input type="hidden" name="combination[]" value="{{ $combo->values->pluck('id')->join(',') }}">
@@ -64,6 +68,10 @@
 					<tfoot>
 						<x-larastrap::enclose :obj="null">
 							<tr>
+                                <td>
+                                    <span class="btn btn-info sorter"><i class="bi bi-arrow-down-up"></i></span>
+                                </td>
+
 								<td>
 									<input type="hidden" name="combination[]" value="put_random_here">
 									<x-larastrap::text name="value" squeeze npostfix="[]" />

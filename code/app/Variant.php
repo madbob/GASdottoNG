@@ -29,7 +29,7 @@ class Variant extends Model
 
     public function values(): HasMany
     {
-        return $this->hasMany(VariantValue::class)->orderBy('value', 'asc');
+        return $this->hasMany(VariantValue::class)->orderBy('sorting', 'asc');
     }
 
     public function booked(): HasMany
