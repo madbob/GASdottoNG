@@ -51,7 +51,7 @@ trait AttachableTrait
         return $relation;
     }
 
-    private function retrieveAttachment($id)
+    private function retrieveAttachment($id, $new_filename)
     {
         if (is_null($id)) {
             $attachment = new Attachment();
@@ -60,7 +60,20 @@ trait AttachableTrait
         }
         else {
             $attachment = Attachment::findOrFail($id);
-            @unlink($attachment->getPathAttribute());
+
+            /*
+                Nota bene: questa funzione viene chiamata dopo che un nuovo
+                file è stato caricato in sostituzione di uno precedente.
+                Dunque, se il vecchio filename corrisponde al nuovo, rischio di
+                eliminare anche la nuova versione.
+                Questa funzione va comunque chiamata dopo aver salvato con
+                successo il nuovo file, altrimenti potrei arrivare qui,
+                eliminare la copia vecchia, e se la procedura fallisce mi
+                troverei senza il file vecchio né quello nuovo
+            */
+            if ($new_filename != $attachment->filename) {
+                @unlink($attachment->getPathAttribute());
+            }
         }
 
         return $attachment;
@@ -125,7 +138,7 @@ trait AttachableTrait
             return false;
         }
 
-        $attachment = $this->retrieveAttachment($id);
+        $attachment = $this->retrieveAttachment($id, $filename);
         $attachment->name = $name;
         $attachment->filename = $filename;
         $attachment->url = $url;
@@ -146,7 +159,7 @@ trait AttachableTrait
         $fullpath = sprintf('%s/%s', $filepath, $filename);
         file_put_contents($fullpath, $contents);
 
-        $attachment = $this->retrieveAttachment($id);
+        $attachment = $this->retrieveAttachment($id, $filename);
         $attachment->name = $filename;
         $attachment->filename = $filename;
         $attachment->save();
