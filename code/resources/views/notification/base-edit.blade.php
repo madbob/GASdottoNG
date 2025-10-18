@@ -1,4 +1,4 @@
-<?php
+@php
 
 if(!isset($select_users)) {
     $select_users = true;
@@ -11,7 +11,7 @@ if (!isset($instant)) {
 $content_help = '';
 $mailtype_id = null;
 
-if (isset($mailtype) == false) {
+if (!isset($mailtype)) {
 	if ($notification) {
 		$mailtype = $notification->mailtype;
 	}
@@ -26,7 +26,7 @@ if (filled($mailtype)) {
 	$content_help = $meta->formatParams();
 }
 
-?>
+@endphp
 
 @if($mailtype_id)
 	<x-larastrap::hidden name="mailtype" :value="$mailtype_id" />
@@ -46,21 +46,11 @@ if (filled($mailtype)) {
 <x-larastrap::datepicker name="start_date" tlabel="generic.start" defaults_now required />
 <x-larastrap::datepicker name="end_date" tlabel="generic.expiration" defaults_now required />
 
-@if($notification && $notification->attachments->isEmpty() == false)
-    <x-larastrap::field tlabel="generic.attachment">
-        @foreach($notification->attachments as $attachment)
-            <a class="btn btn-info" href="{{ $attachment->download_url }}">
-                {{ $attachment->name }} <i class="bi-download"></i>
-            </a>
-        @endforeach
-    </x-larastrap::field>
-@else
-    <x-larastrap::file name="file" tlabel="generic.attachment" />
-@endif
+@include('notification.partials.attachment', ['notification' => $notification])
 
-<?php
+@php
 
-if ($instant == true) {
+if ($instant) {
     $mail_help = '';
 }
 else {
@@ -72,6 +62,6 @@ else {
     }
 }
 
-?>
+@endphp
 
 <x-larastrap::check name="mailed" tlabel="generic.send_mail" :help="$mail_help" />

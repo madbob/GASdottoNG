@@ -167,7 +167,9 @@ class Date extends Model implements Datable
 
     public function printableHeader()
     {
-        return $this->printableDate('date') . ' - Calendario Condiviso - ' . substr($this->description, 0, 100) . '...';
+        $ret = $this->printableDate('date') . ' - Calendario Condiviso - ' . substr($this->description, 0, 100) . '...';
+        $ret .= $this->headerIcons();
+        return $ret;
     }
 
     private function internalAttribute($name)

@@ -18,7 +18,10 @@ class CommonsController extends Controller
         $user->last_login = date('Y-m-d G:i:s');
         $user->save();
 
-        $data['notifications'] = $user->notifications()->where('start_date', '<=', date('Y-m-d'))->where('end_date', '>=', date('Y-m-d'))->get();
+        $data['notifications'] = $user->notifications()->where(function($query) {
+            $now = date('Y-m-d');
+            $query->where('start_date', '<=', $now)->where('end_date', '>=', $now);
+        })->get();
 
         $opened = getOrdersByStatus($user, 'open');
         $opened = $opened->sort(function ($a, $b) {

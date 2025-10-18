@@ -238,7 +238,7 @@ function miscInnerCallbacks(form, data) {
             let o = $('<option value="' + data.id + '" selected="selected">' + data.name + '</option>');
             if (data.hasOwnProperty('parent') && data.parent != null) {
                 let parent = $(this).find('option[value=' + data.parent + ']').first();
-                let pname = parent.text().replace(/&nbsp;/g, ' ');
+                let pname = parent.text().replaceAll(/&nbsp;/g, ' ');
                 let indent = '&nbsp;&nbsp;';
 
                 for (let i = 0; i < pname.length; i++) {
@@ -333,7 +333,7 @@ function miscInnerCallbacks(form, data) {
     test = form.find('input[name=void-form]');
     if (test.length != 0) {
         test.each(function() {
-			form.find('input[type!=hidden]').val('');
+            form.find('input[type!=hidden]').filter(':not([type=radio])').val('');
 		    form.find('textarea').val('');
 		    form.find('select option:first').prop('selected', true);
 		    form.find('.error-message').remove();
@@ -425,7 +425,7 @@ function enforceMeasureDiscrete(node) {
 
 		multiple_widget.attr('data-enforce-minimum', 1);
 
-		multiple_widget.val(parseInt(multiple_widget.val()));
+        multiple_widget.val(Number.parseInt(multiple_widget.val()));
 		if (multiple_widget.val() < 1) {
 			multiple_widget.val('1.000');
         }
@@ -434,7 +434,7 @@ function enforceMeasureDiscrete(node) {
 	}
 	else {
 		let weight = form.find('input[name=weight]');
-		if (parseFloat(weight.val()) == 0) {
+        if (Number.parseFloat(weight.val()) == 0) {
 			weight.val('1');
 		}
 
@@ -707,22 +707,6 @@ $(document).ready(function() {
         totals_row.find('.taxable').text(utils.priceRound(total_taxable));
         totals_row.find('.tax').text(utils.priceRound(total_tax));
         totals_row.find('.total').text(utils.priceRound(grand_total));
-    });
-
-    /*
-        Notifiche
-    */
-
-    $('body').on('change', '.notification-type-switch input', function() {
-        if ($(this).prop('checked') == false) {
-            return;
-        }
-
-        let form = $(this).closest('form');
-        form.find('[name^=users]').closest('.row').toggle();
-        form.find('[name=end_date]').closest('.row').toggle();
-        form.find('[name=mailed]').closest('.row').toggle();
-		form.find('[name=file]').closest('.row').toggle();
     });
 
     /*

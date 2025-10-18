@@ -32,7 +32,13 @@
 
 <div class="row">
     <div class="col" id="main-notifications-list">
-        @include('commons.loadablelist', ['identifier' => 'notification-list', 'items' => $notifications])
+        @include('commons.loadablelist', [
+            'identifier' => 'notification-list',
+            'items' => $notifications,
+            'legend' => (object)[
+                'class' => [App\Notification::class, App\Date::class],
+            ],
+        ])
     </div>
 </div>
 

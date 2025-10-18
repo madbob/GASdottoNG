@@ -67,11 +67,11 @@ class Widgets {
             let minimum = $(this).attr('data-enforce-minimum');
 
             $(this).val(function(index, value) {
-                let val = value.replace(/,/g, '.');
+                let val = value.replaceAll(/,/g, '.');
                 if (allow_negative)
-                    val = val.replace(/[^\-0-9\.]/g, '');
+                    val = val.replaceAll(/[^\-0-9\.]/g, '');
                 else
-                    val = val.replace(/[^0-9\.]/g, '');
+                    val = val.replaceAll(/[^0-9\.]/g, '');
 
                 if (val != '' && minimum && val < minimum)
                     val = minimum;
@@ -137,24 +137,27 @@ class Widgets {
             container.find('.simple-sum-result').val(sum);
         });
 
-        $('.selective-display', container).each(function() {
-            let target = $(this).attr('data-target');
-            let value = $(this).find('input:radio').filter(':checked').val();
-            $(target, container).addClass('d-none').filter((i, el) => {
-                return $(el).attr('data-type').split(',').includes(value);
-            }).removeClass('d-none');
-        }).find('input:radio').change(function() {
-            if ($(this).prop('checked') == false) {
+        $('.selective-display', container).find('input:radio').change((e) => {
+            let sel = $(e.currentTarget);
+            if (sel.prop('checked') == false) {
                 return;
             }
 
-            let field = $(this).closest('.selective-display');
-            let target = field.attr('data-target');
-            let value = $(this).val();
-            $(target, container).addClass('d-none').filter((i, el) => {
-                return $(el).attr('data-type').split(',').includes(value);
-            }).removeClass('d-none');
-        });
+            let parent = sel.closest('form');
+            let target = sel.closest('.selective-display').attr('data-target');
+            let value = sel.val();
+
+            parent.find(target).addClass('d-none').filter((i, el) => {
+                let e = $(el);
+                e.find('input,select,textarea').addClass('skip-on-submit');
+                e.find('[required]').prop('required', false).attr('data-required', 'true');
+                return e.attr('data-type').split(',').includes(value);
+            }).removeClass('d-none').each((index, valid) => {
+                valid = $(valid);
+                valid.find('input,select,textarea').removeClass('skip-on-submit');
+                valid.find('[data-required=true]').prop('required', true);
+            });
+        }).change();
 
         $('.status-selector input:radio[name*="status"]', container).change(function() {
             let field = $(this).closest('.status-selector');

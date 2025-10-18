@@ -73,15 +73,28 @@ class NotificationsService extends BaseService
     private function setCommonAttributes($notification, $request)
     {
         $this->setIfSet($notification, $request, 'content');
-        $this->setIfSet($notification, $request, 'mailtype');
-        $this->boolIfSet($notification, $request, 'mailed');
-        $this->transformAndSetIfSet($notification, $request, 'start_date', 'decodeDate');
-        $this->transformAndSetIfSet($notification, $request, 'end_date', 'decodeDate');
+
+        if ($notification->permanent == false) {
+            $this->setIfSet($notification, $request, 'mailtype');
+            $this->boolIfSet($notification, $request, 'mailed');
+            $this->transformAndSetIfSet($notification, $request, 'start_date', 'decodeDate');
+            $this->transformAndSetIfSet($notification, $request, 'end_date', 'decodeDate');
+        }
+        else {
+            $notification->mailtype = '';
+            $notification->mailed = false;
+            $notification->start_date = '1900-01-01';
+            $notification->end_date = '2100-01-01';
+        }
+
         $notification->save();
 
         $notification->attachByRequest($request);
         $this->syncUsers($notification, $request);
-        $notification->sendMail();
+
+        if ($notification->permanent == false) {
+            $notification->sendMail();
+        }
 
         return $notification;
     }
@@ -109,6 +122,7 @@ class NotificationsService extends BaseService
             $n = new Notification();
             $n->creator_id = $user->id;
             $n->gas_id = $user->gas_id;
+            $n->permanent = ($type == 'permanent');
             $n = $this->setCommonAttributes($n, $request);
         }
 

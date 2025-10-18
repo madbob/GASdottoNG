@@ -12,8 +12,10 @@
                 <div class="card-body">
                     @foreach($notifications as $notify)
                         <x-larastrap::suggestion classes="alert-dismissible fade show">
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            <input type="hidden" name="notification_id" value="{{ $notify->id }}" />
+                            @if($notify->permanent == false)
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <input type="hidden" name="notification_id" value="{{ $notify->id }}" />
+                            @endif
 
                             {!! $notify->formattedContent($currentuser) !!}
 

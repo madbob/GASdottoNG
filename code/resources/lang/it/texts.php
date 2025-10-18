@@ -887,6 +887,7 @@ return array (
       'visibility_by_selection' => 'Se nessun utente viene selezionato, l\'elemento sarà visibile a tutti.',
       'suspend' => 'Se un ordine automatico viene sospeso, le prossime aperture verranno ignorate. Usa questa opzione per gestire i periodi di inattività del GAS, ad esempio durante le festività.',
       'arbitrary_dates' => 'Da qui è possibile aggiungere date arbitrarie al calendario delle consegne, anche per ordini non ancora esistenti. Questa funzione è consigliata per facilitare il coordinamento di diversi referenti all\'interno del GAS e pianificare le attività a lungo termine.',
+      'types' => 'Le notifiche normali hanno una data di inizio e di fine, entro le quali essa viene visualizzata sulla dashboard degli utenti destinatari (i quali le possono comunque anche chiudere autonomamente).<br>Le notifiche permanenti viceversa rimangono sulla dashboard degli utenti destinatari a tempo indefinito, e possono essere rimosse solo dagli amministratori.<br>Le date sul calendario appaiono nel calendario della dashboard, e servono come promemoria di eventi che non necessariamente coinvolgono ordini e prenotazioni (e.g. assemblee, riunioni, incontri, altri appuntamenti...).',
     ),
     'cycle' =>
     array (
@@ -898,6 +899,8 @@ return array (
       'last_of_month' => 'Ultimo del Mese',
     ),
     'name' => 'Notifica',
+    'permanent_notification' => 'Notifica Permanente',
+    'permanent' => 'Permanente',
     'notices' =>
     array (
       'new_notification_from' => 'Nuova notifica da parte di :author',
