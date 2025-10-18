@@ -57,7 +57,7 @@ class MenuServiceProvider extends ServiceProvider
         }
     }
 
-    private function accessBookings($user, $gas, &$menu)
+    private function accessBookings($user, &$menu)
     {
         if ($user->can('supplier.book', null)) {
             $menu['<i class="bi-bookmark"></i> ' . __('texts.generic.menu.bookings')] = [
@@ -84,14 +84,14 @@ class MenuServiceProvider extends ServiceProvider
         }
     }
 
-    private function accessNotifications($user, $gas, &$menu)
+    private function accessNotifications(&$menu)
     {
         $menu['<i class="bi-bell"></i> ' . __('texts.generic.menu.notifications')] = route('notifications.index');
     }
 
     private function accessConfigs($user, $gas, &$menu)
     {
-        if ($user->can('gas.config', $gas)) {
+        if ($user->can('gas.config', $gas) || $user->can('gas.permissions')) {
             $menu['<bi class="bi-tools"></i> ' . __('texts.generic.menu.configs')] = [
                 'url' => route('gas.edit', $gas->id),
                 'attributes' => ['id' => 'menu_config'],
@@ -118,10 +118,10 @@ class MenuServiceProvider extends ServiceProvider
             $this->accessUsers($user, $gas, $menu);
             $this->accessSuppliers($user, $gas, $menu);
             $this->accessOrders($user, $gas, $menu);
-            $this->accessBookings($user, $gas, $menu);
+            $this->accessBookings($user, $menu);
             $this->accessAccounting($user, $gas, $menu);
             $this->accessStatistics($user, $gas, $menu);
-            $this->accessNotifications($user, $gas, $menu);
+            $this->accessNotifications($menu);
             $this->accessConfigs($user, $gas, $menu);
             $this->accessMultigas($user, $gas, $menu);
         }

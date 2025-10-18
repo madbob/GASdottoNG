@@ -45,7 +45,7 @@ class GasController extends Controller
     {
         $user = Auth::user();
         $gas = Gas::findOrFail($id);
-        if ($user->can('gas.config', $gas) === false) {
+        if ($user->can('gas.config', $gas) === false && $user->can('gas.permissions', $gas) === false) {
             abort(503);
         }
 
