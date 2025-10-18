@@ -451,7 +451,7 @@ return array (
     'update_supplier' => 'Vorhandenen Lieferant ändern',
     'select_supplier' => 'Einen Lieferant auswählen',
     'products_count' => 'Die Datei enthält %s Produkte.',
-    'index_column' => 'Spalte',
+    'index_column' => 'Spalte :index',
     'column' => 'Spalte',
     'imported_suppliers' => 'Importierte Lieferanten',
     'updated' => 'Aktualisiere',

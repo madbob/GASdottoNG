@@ -451,7 +451,7 @@ return array (
     'update_supplier' => 'Bestaande leverancier bijwerken',
     'select_supplier' => 'Een leverancier selecteren',
     'products_count' => 'In het bestand zijn er %s producten.',
-    'index_column' => 'Kolom',
+    'index_column' => 'Kolom :index',
     'column' => 'Kolom',
     'imported_suppliers' => 'Geïmporteerde leveranciers',
     'updated' => '',

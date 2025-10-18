@@ -418,7 +418,7 @@ return array(
         'update_supplier' => 'Update existing supplier',
         'select_supplier' => 'Select a supplier',
         'products_count' => '%s products in the file.',
-        'index_column' => 'Column: :name',
+        'index_column' => 'Column: :index',
         'column' => 'Column',
         'imported_suppliers' => 'Suppliers imported',
         'updated' => 'Updated',

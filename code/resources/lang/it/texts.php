@@ -455,7 +455,7 @@ return array (
     'update_supplier' => 'Aggiorna fornitore esistente',
     'select_supplier' => 'Seleziona un fornitore',
     'products_count' => 'Nel file ci sono :count prodotti.',
-    'index_column' => 'Colonna :name',
+    'index_column' => 'Colonna :index',
     'column' => 'Colonna',
     'imported_suppliers' => 'Fornitori importati',
     'updated' => 'Aggiornato',
