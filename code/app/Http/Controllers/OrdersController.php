@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use FeedIo\FeedIo;
 use FeedIo\Feed;
 use FeedIo\Feed\Item\Author;
-use FeedIo\Factory\Builder\GuzzleClientBuilder;
 use Psr\Log\NullLogger;
 use App\Services\OrdersService;
 use App\Printers\Order as Printer;
@@ -95,7 +94,9 @@ class OrdersController extends BackedController
             informazioni utili per GASdotto: qui disabilito del tutto il suo
             proprio logging
         */
-        $feedIo = new FeedIo((new GuzzleClientBuilder())->getClient(), new NullLogger());
+        $guzzle = new \GuzzleHttp\Client();
+        $client = new \FeedIo\Adapter\Http\Client($guzzle);
+        $feedIo = new FeedIo($client, new NullLogger());
 
         return $feedIo->getPsrResponse($feed, 'rss');
     }
