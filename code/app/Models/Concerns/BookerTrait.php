@@ -4,6 +4,8 @@ namespace App\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use App\Booking;
+
 trait BookerTrait
 {
     /*
@@ -17,7 +19,7 @@ trait BookerTrait
 
     public function bookings(): HasMany
     {
-        return $this->hasMany('App\Booking')->orderBy('created_at', 'desc');
+        return $this->hasMany(Booking::class)->orderBy('created_at', 'desc');
     }
 
     public function getLastBookingAttribute()
@@ -56,9 +58,8 @@ trait BookerTrait
     */
     public function getPendingBalanceAttribute()
     {
-        $bookings = $this->bookings()->where('status', 'pending')->whereHas('order', function ($query) {
-            $query->whereIn('status', ['open', 'closed']);
-        })->angryload()->get();
+        $all_bookings = app()->make('AllBookings')->allPendingBookings();
+        $bookings = $all_bookings->filter(fn($b) => $b->user_id == $this->id);
 
         $value = 0;
 
@@ -67,6 +68,21 @@ trait BookerTrait
         }
 
         return $value;
+    }
+
+    /*
+        Ritorna la cifra dovuta dall'utente per le prenotazioni fatte e non
+        ancora pagate, considerando anche gli amici
+    */
+    public function getPendingBalanceWithFriendsAttribute()
+    {
+        $total = $this->pending_balance;
+
+        foreach($this->friends as $friend) {
+            $total += $friend->pending_balance;
+        }
+
+        return $total;
     }
 
     /*

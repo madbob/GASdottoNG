@@ -15,6 +15,7 @@ class SingletonsProvider extends ServiceProvider implements DeferrableProvider
         */
         return [
             \App\Singletons\AggregationSwitch::class,
+            \App\Singletons\AllBookings::class,
             \App\Singletons\GlobalScopeHub::class,
             \App\Singletons\LogHarvester::class,
             \App\Singletons\ModifierEngine::class,
@@ -30,7 +31,7 @@ class SingletonsProvider extends ServiceProvider implements DeferrableProvider
         $classes = $this->singletons();
 
         foreach ($classes as $class) {
-            $this->app->singleton(class_basename($class), function ($app) use ($class) {
+            $this->app->singleton(class_basename($class), function () use ($class) {
                 return new $class();
             });
         }

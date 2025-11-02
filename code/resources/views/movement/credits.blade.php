@@ -7,7 +7,7 @@
             </div>
 
             <div class="modal-body">
-				<div class="row">
+                <div class="row">
                     <div class="col">
                         <x-larastrap::field tlabel="movements.credit">
                             <div class="input-group table-number-filters" data-table-target="#creditsTable">
@@ -24,22 +24,22 @@
                             </div>
                         </x-larastrap::field>
 
-						@php
+                        @php
 
-						$payment_options = [
-							'all' => __('texts.generic.all'),
-							'none' => __('texts.generic.unspecified'),
-						];
+                        $payment_options = [
+                            'all' => __('texts.generic.all'),
+                            'none' => __('texts.generic.unspecified'),
+                        ];
 
-						foreach(paymentTypes() as $payment_identifier => $payment_meta) {
-							$payment_options[$payment_identifier] = $payment_meta->name;
-						}
+                        foreach(paymentTypes() as $payment_identifier => $payment_meta) {
+                            $payment_options[$payment_identifier] = $payment_meta->name;
+                        }
 
                         $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
 
-						@endphp
+                        @endphp
 
-						<x-larastrap::radios
+                        <x-larastrap::radios
                             name="payment_method"
                             :label="__('texts.user.payment_method')"
                             :options="$payment_options"
@@ -60,25 +60,26 @@
                     </div>
                 </div>
 
-				<hr />
+                <hr />
 
                 <div class="row">
-					<div class="col" id="user-list">
-						<div class="table-responsive">
-							<table class="table" id="creditsTable">
-								<?php $currencies = App\Currency::enabled() ?>
+                    <div class="col" id="user-list">
+                        <div class="table-responsive">
+                            <table class="table" id="creditsTable">
+                                <?php $currencies = App\Currency::enabled() ?>
 
-								<thead>
-									<tr>
-										<th scope="col" width="40%">{{ __('texts.generic.name') }}</th>
-										@foreach($currencies as $curr)
-											<th scope="col" width="{{ round(35 / $currencies->count(), 2) }}%">{{ __('texts.movements.credit') }}</th>
-										@endforeach
-										<th scope="col" width="25%">{{ __('texts.user.payment_method') }}</th>
-									</tr>
-								</thead>
-								<tbody>
-									@foreach($currentgas->users()->topLevel()->get() as $user)
+                                <thead>
+                                    <tr>
+                                        <th scope="col" width="35%">{{ __('texts.generic.name') }}</th>
+                                        @foreach($currencies as $curr)
+                                            <th scope="col" width="{{ round(35 / $currencies->count(), 2) }}%">{{ __('texts.movements.credit') }}</th>
+                                        @endforeach
+                                        <th scope="col" width="15%">{{ __('texts.movements.to_pay') }}</th>
+                                        <th scope="col" width="15%">{{ __('texts.user.payment_method') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($currentgas->users()->topLevel()->get() as $user)
                                         @php
 
                                         $serialized_circles = [];
@@ -90,31 +91,41 @@
 
                                         @endphp
 
-										<tr data-filtered-payment_method="{{ $user->payment_method_id }}" {!! join(' ', $serialized_circles) !!}>
-											<td>
-												<input type="hidden" name="user_id[]" value="{{ $user->id }}">
-												{{ $user->printableName() }}
-											</td>
+                                        <tr data-filtered-payment_method="{{ $user->payment_method_id }}" {!! join(' ', $serialized_circles) !!}>
+                                            <td>
+                                                <input type="hidden" name="user_id[]" value="{{ $user->id }}">
+                                                {{ $user->printableName() }}
+                                            </td>
 
-											@foreach($currencies as $curr)
-												<td class="text-filterable-cell">
-													{{ printablePriceCurrency($user->currentBalanceAmount($curr), '.', $curr) }}
-												</td>
-											@endforeach
+                                            @foreach($currencies as $curr)
+                                                <td class="text-filterable-cell">
+                                                    {{ printablePriceCurrency($user->currentBalanceAmount($curr), '.', $curr) }}
+                                                </td>
+                                            @endforeach
 
-											<td>
-												{{ $user->payment_method->name }}
+                                            <td>
+                                                @php
+                                                $pending_pay = $user->pending_balance_with_friends;
+                                                @endphp
 
-												@if(($user->payment_method->valid_config)($user) == false)
-													<i class="bi-slash-circle"></i>
-												@endif
-											</td>
-										</tr>
-									@endforeach
-								</tbody>
-							</table>
-						</div>
-					</div>
+                                                @if($pending_pay > 0)
+                                                    {{ printablePriceCurrency($pending_pay) }}
+                                                @endif
+                                            </td>
+
+                                            <td>
+                                                {{ $user->payment_method->name }}
+
+                                                @if(($user->payment_method->valid_config)($user) == false)
+                                                    <i class="bi-slash-circle"></i>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -165,11 +176,11 @@
                         <input type="hidden" name="type" value="notification">
 
                         @include('notification.base-edit', [
-							'notification' => null,
-							'select_users' => false,
-							'instant' => true,
-							'mailtype' => 'credit_notification',
-						])
+                            'notification' => null,
+                            'select_users' => false,
+                            'instant' => true,
+                            'mailtype' => 'credit_notification',
+                        ])
 
                         <button type="submit" class="btn btn-success">{{ __('texts.notifications.name') }}</button>
                     </form>
