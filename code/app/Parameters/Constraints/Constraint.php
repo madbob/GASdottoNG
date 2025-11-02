@@ -30,6 +30,11 @@ abstract class Constraint extends Parameter
         return false;
     }
 
+    /*
+        Sovrascrivere questa funzione e farla tornare true se si vuole un
+        vincolo "soft", ovvero che visualizzi solo un warning all'utente senza
+        risultare bloccante
+    */
     public function hardContraint(): bool
     {
         return true;

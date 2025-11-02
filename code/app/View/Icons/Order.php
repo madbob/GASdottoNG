@@ -11,7 +11,7 @@ class Order extends IconsMap
         $ret = [
             'plus-circle' => (object) [
                 'test' => function ($obj) {
-                    return $obj->keep_open_packages != 'no' && $obj->status == 'closed' && $obj->pendingPackages()->isEmpty() === false;
+                    return $obj->inPendingPackageState();
                 },
                 'text' => __('texts.orders.pending_packages'),
                 'group' => 'status',

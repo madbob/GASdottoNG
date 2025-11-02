@@ -16,6 +16,7 @@ use Carbon\Carbon;
 
 use App\Models\Concerns\InCircles;
 use App\Models\Concerns\AttachableTrait;
+use App\Models\Concerns\HasContacts;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\ModifiableTrait;
@@ -27,7 +28,7 @@ use App\Events\SluggableCreating;
 
 class Order extends Model
 {
-    use AttachableTrait, CreditableTrait, ExportableTrait, GASModel, HasFactory, InCircles, ModifiableTrait, PayableTrait, ReducibleTrait, SluggableID, TracksUpdater;
+    use AttachableTrait, CreditableTrait, HasContacts, ExportableTrait, GASModel, HasFactory, InCircles, ModifiableTrait, PayableTrait, ReducibleTrait, SluggableID, TracksUpdater;
 
     public $incrementing = false;
 
@@ -39,10 +40,12 @@ class Order extends Model
 
     protected function casts(): array
     {
+        $just_date = 'datetime:Y-m-d';
+
         return [
-            'start' => 'datetime:Y-m-d',
-            'end' => 'datetime:Y-m-d',
-            'shipping' => 'datetime:Y-m-d',
+            'start' => $just_date,
+            'end' => $just_date,
+            'shipping' => $just_date,
         ];
     }
 
@@ -65,12 +68,12 @@ class Order extends Model
             accedere al fornitore di un ordine anche se il fornitore stesso non
             è visibile al GAS
         */
-        return $this->belongsTo('App\Supplier')->withoutGlobalScopes()->withTrashed();
+        return $this->belongsTo(Supplier::class)->withoutGlobalScopes()->withTrashed();
     }
 
     public function aggregate(): BelongsTo
     {
-        return $this->belongsTo('App\Aggregate');
+        return $this->belongsTo(Aggregate::class);
     }
 
     public function products(): BelongsToMany
@@ -81,27 +84,27 @@ class Order extends Model
             di accesso al prezzo (cfr. Priceable) dipendono dall'esistenza di
             questo attributo nell'oggetto
         */
-        return $this->belongsToMany('App\Product')->with(['measure', 'variants', 'modifiers'])->withPivot(['notes', 'prices'])->withTrashed();
+        return $this->belongsToMany(Product::class)->with(['measure', 'variants', 'modifiers'])->withPivot(['notes', 'prices'])->withTrashed();
     }
 
     public function bookings(): HasMany
     {
-        return $this->hasMany('App\Booking')->with(['user', 'products']);
+        return $this->hasMany(Booking::class)->with(['user', 'products']);
     }
 
     public function payment(): BelongsTo
     {
-        return $this->belongsTo('App\Movement');
+        return $this->belongsTo(Movement::class);
     }
 
     public function invoice(): BelongsToMany
     {
-        return $this->belongsToMany('App\Invoice');
+        return $this->belongsToMany(Invoice::class);
     }
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany('App\User');
+        return $this->belongsToMany(User::class);
     }
 
     public function printableName()
@@ -419,77 +422,6 @@ class Order extends Model
         \Log::info('Rimosso prodotto ' . $product->id . ' da ordine ' . $this->id . ', alterate ' . $altered_bookings . ' prenotazioni');
     }
 
-    public function showableContacts()
-    {
-        $gas = currentAbsoluteGas();
-        $ret = null;
-
-        switch ($gas->booking_contacts) {
-            case 'none':
-                $ret = new Collection();
-                break;
-
-            case 'manual':
-                $ret = $this->users;
-                break;
-
-            default:
-                $role = Role::find($gas->booking_contacts);
-                if ($role) {
-                    $ret = $role->usersByTarget($this->supplier);
-                }
-                else {
-                    $ret = new Collection();
-                }
-        }
-
-        return $ret;
-    }
-
-    public function enforcedContacts()
-    {
-        return $this->innerCache('enforced_contacts', function ($obj) {
-            $contacts = $obj->showableContacts();
-            if ($contacts->isEmpty()) {
-                $contacts = everybodyCan('supplier.orders', $obj->supplier);
-            }
-
-            return $contacts;
-        });
-    }
-
-    public function notifiableUsers($gas)
-    {
-        $order = $this;
-
-        if ($gas->notify_all_new_orders) {
-            $query_users = User::whereNull('parent_id');
-        }
-        else {
-            $query_users = User::whereHas('suppliers', function ($query) use ($order) {
-                $query->where('suppliers.id', $order->supplier->id);
-            });
-        }
-
-        $query_users->fullEnabled();
-
-        $user_circles = $order->circles()->whereHas('group', function ($query) {
-            $query->where('context', 'user')->where('filters_orders', true);
-        })->pluck('id');
-
-        if ($user_circles->isEmpty() === false) {
-            $query_users->whereHas('circles', function ($query) use ($user_circles) {
-                $query->whereIn('id', $user_circles);
-            });
-        }
-
-        $query_users->whereHas('contacts', function ($query) {
-            $query->where('type', 'email');
-        });
-
-        return $query_users->get();
-    }
-
     public function angryBookings()
     {
         $had_cache = $this->hasInnerCache('angry_bookings');
@@ -527,6 +459,11 @@ class Order extends Model
         return $bookings;
     }
 
+    public function inPendingPackageState()
+    {
+        return $this->status == 'closed' && $this->keep_open_packages != 'no' && $this->pendingPackages()->isEmpty() === false;
+    }
+
     public function isActive(): bool
     {
         return $this->status != 'shipped' && $this->status != 'archived';
@@ -534,7 +471,7 @@ class Order extends Model
 
     public function isRunning(): bool
     {
-        return ($this->status == 'open') || ($this->status == 'closed' && $this->keep_open_packages != 'no' && $this->pendingPackages()->isEmpty() === false);
+        return ($this->status == 'open') || $this->inPendingPackageState();
     }
 
     public function pendingPackages(): Collection
@@ -560,7 +497,8 @@ class Order extends Model
                             }
 
                             $p->is_pending_package = true;
-                            $p->max_available = $fake_max_available;
+                            $p->max_completing = $fake_max_available;
+                            $p->quantity_completing = $quantity;
                             $ret->push($p);
                         }
                     }
@@ -709,11 +647,6 @@ class Order extends Model
         ];
 
         return $ret;
-    }
-
-    public function getPermissionsProxies()
-    {
-        return [$this->supplier];
     }
 
     public function involvedModifiers($include_groups = false)
@@ -865,6 +798,13 @@ class Order extends Model
         }
 
         return $ret;
+    }
+
+    /*************************************************************** GASModel */
+
+    public function getPermissionsProxies()
+    {
+        return [$this->supplier];
     }
 
     /********************************************************* ReducibleTrait */

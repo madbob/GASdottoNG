@@ -39,22 +39,10 @@ class MaxAvailable extends Constraint
 
         if ($product->$field != 0) {
             $still_available = $this->stillAvailable($product, $order);
-
-            // L'attributo is_pending_package non fa parte del model Product,
-            // viene valorizzato staticamente da Order::pendingPackages() ai
-            // prodotti per i quali si devono completare le confezioni
-            if ($product->is_pending_package ?? false) {
-                return __('texts.orders.constraints.global_max_short', [
-                    'icon' => sprintf('<span class="badge rounded-pill bg-primary" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="%s" data-bs-original-title="" title="">?</span>', __('texts.orders.constraints.global_max_help', ['still' => $still_available, 'measure' => $product->printableMeasure(true)])),
-                    'quantity' => sprintf('%.02f', $still_available),
-                ]);
-            }
-            else {
-                return __('texts.orders.constraints.global_max', [
-                    'still' => $still_available,
-                    'global' => $product->max_available,
-                ]);
-            }
+            return __('texts.orders.constraints.global_max', [
+                'still' => $still_available,
+                'global' => $product->max_available,
+            ]);
         }
 
         return null;
@@ -65,10 +53,8 @@ class MaxAvailable extends Constraint
         $product = $booked->product;
         $order = $booked->booking->order;
 
-        if ($product->max_available != 0) {
-            if ($quantity > ($this->stillAvailable($product, $order) + $booked->quantity)) {
-                throw new InvalidQuantityConstraint(__('texts.orders.constraints.global_max_generic'), 3);
-            }
+        if ($product->max_available != 0 && $quantity > ($this->stillAvailable($product, $order) + $booked->quantity)) {
+            throw new InvalidQuantityConstraint(__('texts.orders.constraints.global_max_generic'), 3);
         }
     }
 }
