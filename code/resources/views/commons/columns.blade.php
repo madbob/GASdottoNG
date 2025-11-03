@@ -7,7 +7,7 @@
             <li>
                 <div class="checkbox dropdown-item">
                     <label>
-                        <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label }}
+                        <input type="checkbox" value="{{ $identifier }}" {{ in_array($identifier, $columns) ? 'checked' : '' }}> {{ $metadata->label ?? $metadata->name }}
                     </label>
                 </div>
             </li>

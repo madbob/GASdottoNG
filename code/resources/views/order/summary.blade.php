@@ -81,13 +81,13 @@ foreach($display_columns as $identifier => $metadata) {
                 <tr>
                     @foreach($display_columns as $identifier => $metadata)
                         @if($identifier == 'selection')
-                            <th scope="col" width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
+                            <th scope="col" width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }}">
                                 @if($products->count() != $order_products->count())
                                     <button class="btn btn-light btn-sm toggle-product-abilitation" data-bs-toggle="button">{{ __('texts.generic.view_all') }}</button>
                                 @endif
                             </th>
                         @else
-                            <th scope="col" width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">{{ $metadata->label }}</th>
+                            <th scope="col" width="{{ $metadata->width }}%" class="order-cell-{{ $identifier }}">{{ $metadata->label }}</th>
                         @endif
                     @endforeach
                 </tr>
@@ -134,7 +134,7 @@ foreach($display_columns as $identifier => $metadata) {
                     @endif
 
                         <!-- Visualizza tutti -->
-                        <td class="order-cell-selection {{ in_array('selection', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-selection">
                             <input class="enabling-toggle" type="checkbox" name="enabled[]" value="{{ $product->id }}" {{ $enabled ? 'checked' : '' }} {{ $order->isActive() ? '' : 'disabled' }} />
                             @if($order->isActive() == false)
                                 <input type="hidden" name="enabled[]" value="{{ $product->id }}">
@@ -148,7 +148,7 @@ foreach($display_columns as $identifier => $metadata) {
                         </td>
 
                         <!-- Prodotto -->
-                        <td class="order-cell-name {{ in_array('name', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-name">
                             <input type="hidden" name="productid[]" value="{{ $product->id }}" />
 
 							@can('supplier.modify', $order->supplier)
@@ -171,12 +171,12 @@ foreach($display_columns as $identifier => $metadata) {
                         </td>
 
                         <!-- Prezzo -->
-                        <td class="order-cell-price {{ in_array('price', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-price">
                             <label>{{ printablePriceCurrency($product->getPrice(false)) }}</label>
                         </td>
 
                         <!-- Disponibile -->
-                        <td class="order-cell-available {{ in_array('available', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-available">
                             <label>
                                 @if($product->max_available != 0)
                                     @if($product->portion_quantity != 0)
@@ -191,22 +191,22 @@ foreach($display_columns as $identifier => $metadata) {
                         </td>
 
                         <!-- Unità di Misura -->
-                        <td class="order-cell-unit_measure {{ in_array('unit_measure', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-unit_measure">
                             <label>{{ $product->printableMeasure(true) }}</label>
                         </td>
 
                         <!-- Modificatori sui Prodotti -->
                         @foreach($products_modifiers as $pmod_id => $pmod)
-                            <td class="order-cell-modifier-pending-{{ $pmod_id }} {{ in_array('modifier-pending-' . $pmod_id, $columns) ? '' : 'hidden' }}">
+                            <td class="order-cell-modifier-pending-{{ $pmod_id }}">
                                 <label>{{ printablePriceCurrency($pmod->pending[$product->id] ?? 0) }}</label>
                             </td>
-                            <td class="order-cell-modifier-shipped-{{ $pmod_id }} {{ in_array('modifier-shipped-' . $pmod_id, $columns) ? '' : 'hidden' }}">
+                            <td class="order-cell-modifier-shipped-{{ $pmod_id }}">
                                 <label>{{ printablePriceCurrency($pmod->shipped[$product->id] ?? 0) }}</label>
                             </td>
                         @endforeach
 
                         <!-- Quantità Ordinata -->
-                        <td class="order-cell-quantity {{ in_array('quantity', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-quantity">
                             <label>
                                 @if($product->portion_quantity != 0)
                                     <span class="order-summary-product-quantity">{{ $summary->products[$product->id]->quantity_pieces ?? 0 }}</span> Pezzi
@@ -217,32 +217,32 @@ foreach($display_columns as $identifier => $metadata) {
                         </td>
 
                         <!-- Peso Ordinato -->
-                        <td class="order-cell-weight {{ in_array('weight', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-weight">
                             <label class="order-summary-product-weight">{{ $summary->products[$product->id]->weight ?? 0 }} {{ $product->measure->discrete ? __('texts.generic.kilos') : $product->measure->name }}</label>
                         </td>
 
                         <!-- Totale Prezzo -->
-                        <td class="order-cell-total_price {{ in_array('total_price', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-total_price">
                             <label class="order-summary-product-price">{{ printablePriceCurrency($summary->products[$product->id]->price ?? 0) }}</label>
                         </td>
 
                         <!-- Quantità Consegnata -->
-                        <td class="order-cell-quantity_delivered {{ in_array('quantity_delivered', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-quantity_delivered">
                             <label class="order-summary-product-delivered">{{ $summary->products[$product->id]->delivered ?? 0 }} {{ $product->measure->name }}</label>
                         </td>
 
                         <!-- Peso Consegnato -->
-                        <td class="order-cell-weight_delivered {{ in_array('weight_delivered', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-weight_delivered">
                             <label class="order-summary-product-weight_delivered">{{ $summary->products[$product->id]->weight_delivered ?? 0 }} {{ $product->measure->discrete ? __('texts.generic.kilos') : $product->measure->name }}</label>
                         </td>
 
                         <!-- Totale Consegnato -->
-                        <td class="order-cell-price_delivered {{ in_array('price_delivered', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-price_delivered">
                             <label class="order-summary-product-price_delivered">{{ printablePriceCurrency($summary->products[$product->id]->price_delivered ?? 0) }}</label>
                         </td>
 
                         <!-- Note -->
-                        <td class="order-cell-notes {{ in_array('notes', $columns) ? '' : 'hidden' }}">
+                        <td class="order-cell-notes">
                             @if($order->isActive())
                                 @if($product->hasWarningWithinOrder($summary))
                                     <a href="{{ url('orders/fixes/' . $order->id . '/' . $product->id) }}" class="btn btn-danger async-modal">
@@ -262,7 +262,7 @@ foreach($display_columns as $identifier => $metadata) {
             <thead>
                 <tr>
                     @foreach($display_columns as $identifier => $metadata)
-                        <th scope="col" class="order-cell-{{ $identifier }} {{ in_array($identifier, $columns) ? '' : 'hidden' }}">
+                        <th scope="col" class="order-cell-{{ $identifier }}">
                             @switch($identifier)
                                 @case('total_price')
                                     <span class="order-summary-order-price">{{ printablePriceCurrency($summary->price ?? 0) }}</span>

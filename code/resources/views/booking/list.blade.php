@@ -61,43 +61,5 @@
         </div>
     </div>
 @else
-    <div class="alert alert-danger mb-3">
-        {{ __('texts.orders.help.waiting_closing_for_deliveries') }}
-    </div>
-
-    <div class="row">
-        <div class="col">
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ __('texts.user.name') }}</th>
-                            <th scope="col">{{ __('texts.generic.created_at') }}</th>
-                            <th scope="col">{{ __('texts.generic.updated_at') }}</th>
-                            <th scope="col">{{ __('texts.orders.totals.booked') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-
-                        $bookings = $aggregate->bookings;
-                        usort($bookings, function($a, $b) {
-                            return $a->user->printableName() <=> $b->user->printableName();
-                        });
-
-                        @endphp
-
-                        @foreach($bookings as $booking)
-                            <tr>
-                                <td>{{ $booking->user->printableName() }}</td>
-                                <td>{{ printableDate($booking->created_at) }}</td>
-                                <td>{{ printableDate($booking->updated_at) }}</td>
-                                <td>{{ printablePriceCurrency($booking->getValue('booked', true)) }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    @include('booking.partials.staticgrid')
 @endif
