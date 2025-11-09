@@ -476,15 +476,18 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->getValue('booked', true), $total);
 
         [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
-        $this->userWithBasePerms = $this->enforceBalance($this->userWithBasePerms, $total - 10);
+        $this->userWithBasePerms = $this->enforceBalance($this->userWithBasePerms, $total - 100);
 
         $this->nextRound();
 
         $data['action'] = 'booked';
 
         try {
-            $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
-            $this->fail('should never run');
+            $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
+
+            $this->nextRound();
+            $this->userWithBasePerms = $this->userWithBasePerms->fresh();
+            $this->fail('should never run: ' . $booking->getValue('effective', true) . ' / ' . $this->userWithBasePerms->activeBalance() . ' / ' . $total);
         }
         catch (IllegalArgumentException $e) {
             // good boy

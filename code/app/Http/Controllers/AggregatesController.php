@@ -7,17 +7,21 @@ use Illuminate\Http\Request;
 use DB;
 use Log;
 
+use App\Services\AggregatesService;
 use App\Jobs\AggregateSummaries;
 use App\Printers\Aggregate as Printer;
 use App\Aggregate;
 use App\Order;
 
-class AggregatesController extends Controller
+class AggregatesController extends BackedController
 {
-    public function __construct()
+    public function __construct(AggregatesService $service)
     {
+        $this->service = $service;
+
         $this->commonInit([
-            'reference_class' => 'App\\Aggregate',
+            'reference_class' => Aggregate::class,
+            'service' => $service,
         ]);
     }
 
@@ -33,87 +37,11 @@ class AggregatesController extends Controller
         return view('order.aggregable', ['orders' => $orders]);
     }
 
-    public function store(Request $request)
-    {
-        DB::beginTransaction();
-
-        $data = $request->input('data');
-        $data = json_decode($data);
-
-        foreach ($data as $a) {
-            if ($a->id == 'new') {
-                $aggr = new Aggregate();
-                $aggr->save();
-            }
-            else {
-                $aggr = Aggregate::find($a->id);
-                if (is_null($aggr)) {
-                    continue;
-                }
-            }
-
-            $circles = $aggr->circles->pluck('id');
-            $old_aggregates = [];
-
-            foreach ($a->orders as $index => $o) {
-                $order = Order::find($o);
-                if ($order) {
-                    $old_aggregates[] = $order->aggregate;
-                    $order->aggregate_id = $aggr->id;
-                    $order->aggregate_sorting = $index;
-                    $order->save();
-                    $order->circles()->sync($circles);
-                }
-            }
-
-            $aggr->transferAttachmentsFrom($old_aggregates);
-        }
-
-        foreach (Aggregate::doesnthave('orders')->get() as $ea) {
-            $ea->delete();
-        }
-
-        return $this->successResponse();
-    }
-
     public function show(Request $request, $id)
     {
         $a = Aggregate::findOrFail($id);
 
         return view('order.aggregate', ['aggregate' => $a]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        DB::beginTransaction();
-
-        $a = Aggregate::findOrFail($id);
-        $a->comment = $request->input('comment', '');
-        $a->save();
-
-        $status = $request->input('status', 'no');
-        if ($status != 'no') {
-            $a->orders()->update(['status' => $status]);
-        }
-
-        $circles = array_filter($request->input('circles', []));
-        foreach ($a->orders as $o) {
-            $o->circles()->sync($circles);
-        }
-
-        if ($request->has('change_dates')) {
-            $a->orders()->update([
-                'start' => decodeDate($request->input('start')),
-                'end' => decodeDate($request->input('end')),
-                'shipping' => decodeDate($request->input('shipping')),
-            ]);
-        }
-
-        return $this->successResponse([
-            'id' => $a->id,
-            'header' => $a->printableHeader(),
-            'url' => route('aggregates.show', $a->id),
-        ]);
     }
 
     public function notify(Request $request, $id)

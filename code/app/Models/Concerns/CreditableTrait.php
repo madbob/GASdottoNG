@@ -150,8 +150,12 @@ trait CreditableTrait
         return $diff;
     }
 
-    public function currentBalance($currency)
+    public function currentBalance($currency = null)
     {
+        if (is_null($currency)) {
+            $currency = defaultCurrency();
+        }
+
         $proxy = $this->getActualObject();
 
         $balance = $proxy->balances()->where('current', true)->where('currency_id', $currency->id)->orderBy('date', 'desc')->first();

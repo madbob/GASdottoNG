@@ -46,6 +46,11 @@ trait RoleableTrait
         }
     }
 
+    /*
+        Reminder: i ruoli vengono tenuti nella cache locale della classe Role.
+        Scrivendo i test, tenere in considerazione che non vengono
+        necessariamente valutati in tempo reale
+    */
     public function addRole($role, $assigned)
     {
         $role_id = normalizeId($role);

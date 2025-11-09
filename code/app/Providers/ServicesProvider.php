@@ -14,6 +14,7 @@ class ServicesProvider extends ServiceProvider implements DeferrableProvider
             app/Services: da tenere aggiornato!
         */
         return [
+            \App\Services\AggregatesService::class,
             \App\Services\BookingsService::class,
             \App\Services\CirclesService::class,
             \App\Services\DatesService::class,

@@ -464,10 +464,10 @@ class Aggregate extends Model
     {
         return $this->innerCache($name, function ($obj) use ($name, $operator) {
             if ($operator == 'min') {
-                return $obj->orders->sortByDesc($name)->first()->$name;
+                return $obj->orders->sortBy($name)->first()->$name;
             }
             else {
-                return $obj->orders->sortBy($name)->first()->$name;
+                return $obj->orders->sortByDesc($name)->first()->$name;
             }
         });
     }
