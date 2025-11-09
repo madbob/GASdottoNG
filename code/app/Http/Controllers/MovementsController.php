@@ -368,6 +368,8 @@ class MovementsController extends BackedController
                     $headers[] = __('texts.movements.formatted_residual_credit', ['currency' => $curr->symbol]);
                 }
 
+                $headers[] = __('texts.movements.to_pay');
+
                 if ($has_fee) {
                     $headers[] = __('texts.user.payed_fee');
                 }
@@ -386,6 +388,8 @@ class MovementsController extends BackedController
                     foreach ($currencies as $curr) {
                         $row[] = printablePrice($user->currentBalanceAmount($curr));
                     }
+
+                    $row[] = printablePrice($user->pending_balance_with_friends);
 
                     if ($has_fee) {
                         $row[] = $user->fee != null ? __('texts.generic.yes') : __('texts.generic.no');
