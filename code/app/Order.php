@@ -120,6 +120,11 @@ class Order extends Model
         return $ret;
     }
 
+    public function printableShortName()
+    {
+        return sprintf('%s - %s', $this->supplier->name, $this->internal_number);
+    }
+
     public function statusIcons()
     {
         $icons = $this->icons('status');

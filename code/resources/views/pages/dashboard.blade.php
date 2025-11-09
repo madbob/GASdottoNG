@@ -73,21 +73,9 @@
             </div>
         @endif
 
-        @if($currentgas->attachments->isEmpty() == false)
-            <div class="card shadow mb-3">
-                <div class="card-header">
-                    {{ __('texts.generic.shared_files') }}
-                </div>
-                <div class="list-group list-group-flush">
-                    @foreach($currentgas->attachments as $attachment)
-                        <a href="{{ $attachment->download_url }}" class="list-group-item list-group-item-action" target="_blank">
-                            {{ $attachment->name }}
-                            <i class="bi-download float-end"></i>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        @endif
+        @include('attachment.partials.downloadable', [
+            'obj' => $currentgas,
+        ])
     </div>
 
     <div class="col-md-6">

@@ -12,6 +12,7 @@ use Auth;
 use Log;
 
 use App\Helpers\Status;
+use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\ModifiableTrait;
 use App\Models\Concerns\ReducibleTrait;
 use App\Models\Concerns\WithinGas;
@@ -19,7 +20,7 @@ use App\Events\AttachableToGas;
 
 class Aggregate extends Model
 {
-    use GASModel, HasFactory, ModifiableTrait, ReducibleTrait, WithinGas;
+    use GASModel, HasFactory, AttachableTrait, ModifiableTrait, ReducibleTrait, WithinGas;
 
     protected $dispatchesEvents = [
         'created' => AttachableToGas::class,
@@ -463,26 +464,11 @@ class Aggregate extends Model
     {
         return $this->innerCache($name, function ($obj) use ($name, $operator) {
             if ($operator == 'min') {
-                $test = '3000-12-31';
+                return $obj->orders->sortByDesc($name)->first()->$name;
             }
             else {
-                $test = '1000-01-01';
+                return $obj->orders->sortBy($name)->first()->$name;
             }
-
-            foreach ($obj->orders as $order) {
-                if ($operator == 'min') {
-                    if ($test > $order->$name) {
-                        $test = $order->$name;
-                    }
-                }
-                else {
-                    if ($test < $order->$name) {
-                        $test = $order->$name;
-                    }
-                }
-            }
-
-            return $test;
         });
     }
 

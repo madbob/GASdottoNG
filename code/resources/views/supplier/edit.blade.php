@@ -42,7 +42,10 @@
     </x-larastrap::tabpane>
 
     <x-larastrap::tabpane tlabel="supplier.attachments" icon="bi-files">
-        @include('supplier.files', ['supplier' => $supplier])
+        @include('commons.fileslist', [
+            'obj' => $supplier,
+            'editable' => $currentuser->can('supplier.modify', $supplier),
+        ])
     </x-larastrap::tabpane>
 
     @if(Gate::check('movements.view', $currentgas) || Gate::check('movements.admin', $currentgas))

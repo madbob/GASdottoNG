@@ -259,5 +259,33 @@ return [
                 'button_classes' => ['async-tab'],
             ],
         ],
+
+        'card' => [
+            'extends' => 'composite',
+            'params' => [
+                'node' => 'div',
+                'classes' => ['card', 'shadow', 'mb-3'],
+                'prependNodes' => [
+                    [
+                        'extends' => 't',
+                        'params' => [
+                            'node' => 'div',
+                            'classes' => ['card-header'],
+                            'tcontentfrom' => 'header',
+                        ],
+                    ],
+                    [
+                        'extends' => 't',
+                        'params' => [
+                            'node' => 'div',
+                            'classes' => ['card-body'],
+                            'innerAppendNodes' => [
+                                '$slot',
+                            ],
+                        ],
+                    ]
+                ],
+            ]
+        ],
     ],
 ];

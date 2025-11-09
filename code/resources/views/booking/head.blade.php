@@ -1,4 +1,4 @@
-<?php
+@php
 
 $selected_circles = new Illuminate\Support\Collection();
 
@@ -32,7 +32,7 @@ if ($user->isFriend() == false) {
     }
 }
 
-?>
+@endphp
 
 <div class="row booking-header">
     <div class="col-12 col-md-8">
@@ -59,19 +59,27 @@ if ($user->isFriend() == false) {
         @endif
     </div>
     <div class="col-12 col-md-4">
-        <div class="list-group">
-            <a href="{{ url('booking/' . $aggregate->id . '/user/' . $user->id . '/document') }}" class="list-group-item">
-                {{ __('texts.orders.files.order.shipping') }} <i class="bi-download"></i>
-            </a>
+        <x-larastrap::card header="generic.download">
+            <div class="list-group">
+                <a href="{{ url('booking/' . $aggregate->id . '/user/' . $user->id . '/document') }}" class="list-group-item list-group-item-action">
+                    {{ __('texts.orders.files.order.shipping') }}
+                    <i class="bi-download float-end"></i>
+                </a>
 
-            @if($currentgas->hasFeature('extra_invoicing'))
-                @foreach(App\Receipt::retrieveByAggregateUser($aggregate, $user) as $receipt)
-                    <a href="{{ route('receipts.download', $receipt->id) }}" class="list-group-item">
-                        {{ __('texts.generic.invoice') }} <i class="bi-download"></i>
-                    </a>
-                @endforeach
-            @endif
-        </div>
+                @if($currentgas->hasFeature('extra_invoicing'))
+                    @foreach(App\Receipt::retrieveByAggregateUser($aggregate, $user) as $receipt)
+                        <a href="{{ route('receipts.download', $receipt->id) }}" class="list-group-item list-group-item-action">
+                            {{ __('texts.generic.invoice') }}
+                            <i class="bi-download float-end"></i>
+                        </a>
+                    @endforeach
+                @endif
+            </div>
+        </x-larastrap::card>
+
+        @include('attachment.partials.downloadable', [
+            'obj' => $aggregate,
+        ])
     </div>
 </div>
 

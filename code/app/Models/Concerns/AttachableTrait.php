@@ -32,9 +32,14 @@ trait AttachableTrait
         return $relation;
     }
 
+    public function rawAttachments()
+    {
+        return $this->morphMany(Attachment::class, 'target')->orderBy('name', 'asc');
+    }
+
     public function attachments()
     {
-        $relation = $this->morphMany('App\Attachment', 'target')->orderBy('name', 'asc');
+        $relation = $this->rawAttachments();
         $relation = $this->fillDefaultAttachments($relation);
 
         if ($this->attachmentPermissionGranted() === false) {
@@ -77,6 +82,16 @@ trait AttachableTrait
         }
 
         return $attachment;
+    }
+
+    private function pathFor($name)
+    {
+        $filepath = $this->filesPath();
+        if (is_null($filepath)) {
+            return false;
+        }
+
+        return sprintf('%s/%s', $filepath, $name);
     }
 
     private function storeFile(&$name, $file)
@@ -151,12 +166,7 @@ trait AttachableTrait
 
     public function attachByContents($filename, $contents, $id = null)
     {
-        $filepath = $this->filesPath();
-        if (is_null($filepath)) {
-            return false;
-        }
-
-        $fullpath = sprintf('%s/%s', $filepath, $filename);
+        $fullpath = $this->pathFor($filename);
         file_put_contents($fullpath, $contents);
 
         $attachment = $this->retrieveAttachment($id, $filename);
@@ -192,7 +202,8 @@ trait AttachableTrait
         $prefix = Str::slug(get_class($this));
         $path = gas_storage_path($prefix . '-' . $this->id);
         if (file_exists($path) === false && $create) {
-            if (@mkdir($path, 0750, true) === false) {
+            $test = @mkdir($path, 0750, true);
+            if ($test === false) {
                 return null;
             }
         }
@@ -211,5 +222,23 @@ trait AttachableTrait
         }
 
         return true;
+    }
+
+    public function transferAttachmentsFrom(array $others): void
+    {
+        foreach($others as $other) {
+            foreach($other->rawAttachments as $attach) {
+                if ($attach->attached->id != $this->id) {
+                    if (filled($attach->filename)) {
+                        $old_path = $attach->path;
+                        $new_path = $this->pathFor($attach->filename);
+                        rename($old_path, $new_path);
+                    }
+
+                    $attach->attached()->associate($this);
+                    $attach->save();
+                }
+            }
+        }
     }
 }

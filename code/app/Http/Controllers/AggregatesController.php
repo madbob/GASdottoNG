@@ -53,16 +53,20 @@ class AggregatesController extends Controller
             }
 
             $circles = $aggr->circles->pluck('id');
+            $old_aggregates = [];
 
             foreach ($a->orders as $index => $o) {
                 $order = Order::find($o);
                 if ($order) {
+                    $old_aggregates[] = $order->aggregate;
                     $order->aggregate_id = $aggr->id;
                     $order->aggregate_sorting = $index;
                     $order->save();
                     $order->circles()->sync($circles);
                 }
             }
+
+            $aggr->transferAttachmentsFrom($old_aggregates);
         }
 
         foreach (Aggregate::doesnthave('orders')->get() as $ea) {

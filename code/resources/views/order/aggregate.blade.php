@@ -1,4 +1,4 @@
-<?php
+@php
 
 $orders = $aggregate->orders()->with([
     'products', 'products.measure', 'products.category',
@@ -31,7 +31,7 @@ $multi_gas = ($aggregate->gas->count() > 1 && $currentuser->can('gas.multi', $cu
 $panel_rand_wrap = rand();
 $master_summary = $aggregate->reduxData();
 
-?>
+@endphp
 
 <div class="row">
     @if($controllable && ($shippable_status || $shipped_status))
@@ -80,7 +80,7 @@ $master_summary = $aggregate->reduxData();
     <div class="col-12">
         <x-larastrap::tabs :id="md5($orders->pluck('id')->join(''))">
             @foreach($orders as $index => $order)
-                <x-larastrap::tabpane :label="$order->printableName()" :active="$index == 0" :icon="$order->statusIcons()">
+                <x-larastrap::tabpane :label="$order->printableShortName()" :active="$index == 0" :icon="$order->statusIcons()">
                     @can('supplier.orders', $order->supplier)
                         @include('order.edit', ['order' => $order, 'master_summary' => $master_summary])
                     @else
@@ -94,6 +94,13 @@ $master_summary = $aggregate->reduxData();
 					@include('aggregate.details', ['aggregate' => $aggregate, 'master_summary' => $master_summary])
 				</x-larastrap::tabpane>
             @endif
+
+            <x-larastrap::tabpane tlabel="supplier.attachments" icon="bi-files">
+                @include('commons.fileslist', [
+                    'obj' => $aggregate,
+                    'editable' => true,
+                ])
+            </x-larastrap::tabpane>
 
             @if($multi_gas)
                 <x-larastrap::remotetabpane tlabel="generic.menu.multigas" :button_attributes="['data-tab-url' => route('aggregates.multigas', $aggregate->id)]" icon="bi-people">
