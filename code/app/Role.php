@@ -22,11 +22,11 @@ class Role extends Model implements AutoReadsFields
 {
     use Cachable, GASModel, HasFactory;
 
-    private $real_targets = null;
+    private $realTargets = null;
 
-    private $applies_cache = null;
+    private $appliesCache = null;
 
-    private $applies_only_cache = null;
+    private $appliesOnlyCache = null;
 
     public function users(): BelongsToMany
     {
@@ -153,21 +153,21 @@ class Role extends Model implements AutoReadsFields
 
     public function getTargetsAttribute()
     {
-        if (is_null($this->real_targets)) {
-            $this->real_targets = new Collection();
+        if (is_null($this->realTargets)) {
+            $this->realTargets = new Collection();
 
             $classes = $this->getAllClasses();
             foreach ($classes as $class) {
-                $this->real_targets = $this->real_targets->merge($class::tAll());
+                $this->realTargets = $this->realTargets->merge($class::tAll());
             }
         }
 
-        return $this->real_targets;
+        return $this->realTargets;
     }
 
     private function appliesCache()
     {
-        if (is_null($this->applies_cache)) {
+        if (is_null($this->appliesCache)) {
             $applies_cache = [];
             $applies_only_cache = [];
 
@@ -190,15 +190,15 @@ class Role extends Model implements AutoReadsFields
                 }
             }
 
-            $this->applies_cache = $applies_cache;
-            $this->applies_only_cache = $applies_only_cache;
+            $this->appliesCache = $applies_cache;
+            $this->appliesOnlyCache = $applies_only_cache;
         }
     }
 
     private function invalidateAppliesCache()
     {
-        $this->applies_cache = null;
-        $this->applies_only_cache = null;
+        $this->appliesCache = null;
+        $this->appliesOnlyCache = null;
     }
 
     private function testApplication($obj, $cache_type): bool
@@ -231,7 +231,7 @@ class Role extends Model implements AutoReadsFields
     */
     public function applies($obj)
     {
-        return $this->testApplication($obj, 'applies_cache');
+        return $this->testApplication($obj, 'appliesCache');
     }
 
     /*
@@ -241,7 +241,7 @@ class Role extends Model implements AutoReadsFields
     */
     public function appliesOnly($obj): bool
     {
-        return $this->testApplication($obj, 'applies_only_cache');
+        return $this->testApplication($obj, 'appliesOnlyCache');
     }
 
     /*
@@ -284,10 +284,10 @@ class Role extends Model implements AutoReadsFields
         $this->appliesCache();
 
         if ($all) {
-            $cache_type = 'applies_cache';
+            $cache_type = 'appliesCache';
         }
         else {
-            $cache_type = 'applies_only_cache';
+            $cache_type = 'appliesOnlyCache';
         }
 
         $ret = new Collection();

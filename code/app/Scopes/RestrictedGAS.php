@@ -21,17 +21,17 @@ class RestrictedGAS implements Scope
 {
     private $key = null;
 
-    private $involve_trashed = false;
+    private $involveTrashed = false;
 
     public function __construct($key = 'gas', $involve_trashed = false)
     {
         $this->key = $key;
-        $this->involve_trashed = $involve_trashed;
+        $this->involveTrashed = $involve_trashed;
     }
 
     private function initInnerQuery($gas_id)
     {
-        if ($this->involve_trashed) {
+        if ($this->involveTrashed) {
             return function ($query) use ($gas_id) {
                 $query->withTrashed()->where('gas_id', $gas_id);
             };

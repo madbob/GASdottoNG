@@ -30,18 +30,22 @@ trait SuspendableTrait
 
     public function plainStatus()
     {
+        $ret = '';
+
         if (is_null($this->suspended_at) && is_null($this->deleted_at)) {
-            return 'active';
+            $ret = 'active';
         }
         elseif ($this->suspended_at != null && $this->deleted_at != null) {
-            return 'removed';
+            $ret = 'removed';
         }
         elseif ($this->suspended_at != null) {
-            return 'suspended';
+            $ret = 'suspended';
         }
         elseif ($this->deleted_at != null) {
-            return 'deleted';
+            $ret = 'deleted';
         }
+
+        return $ret;
     }
 
     public function printableStatus()

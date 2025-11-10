@@ -121,12 +121,10 @@ class BookedProduct extends Model
             In questo caso devo comunque poter consegnare quanto è stato
             prenotato, dunque ignoro lo stato di ordinabilità
         */
-        if (! $only_mandatory) {
-            if ($variant) {
-                $combo = $variant->variantsCombo();
-                if (! $combo->active) {
-                    throw new InvalidQuantityConstraint(_('Questa combinazione di varianti non è attualmente ordinabile'), 4);
-                }
+        if (! $only_mandatory && $variant) {
+            $combo = $variant->variantsCombo();
+            if (! $combo->active) {
+                throw new InvalidQuantityConstraint(_('Questa combinazione di varianti non è attualmente ordinabile'), 4);
             }
         }
 

@@ -10,7 +10,7 @@ use App\Role;
 
 trait RoleableTrait
 {
-    public function roles($target = null): BelongsToMany
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class)->orderBy('name', 'asc')->withPivot('id');
     }

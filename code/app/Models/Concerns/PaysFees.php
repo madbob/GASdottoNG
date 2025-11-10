@@ -40,13 +40,7 @@ trait PaysFees
             $expiration = $this->gas->getConfig('year_closing');
             $previous_expiration = Carbon::parse($expiration)->subYears(1);
             $actual_expiration = Carbon::parse($this->fee->date);
-
-            if ($actual_expiration->lessThan($previous_expiration)) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return $actual_expiration->lessThan($previous_expiration);
         }
 
         return true;

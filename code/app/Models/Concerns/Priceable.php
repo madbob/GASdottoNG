@@ -18,26 +18,26 @@ namespace App\Models\Concerns;
 
 trait Priceable
 {
-    private $hard_price = null;
+    private $hardPrice = null;
 
     public function setPrice($price)
     {
-        $this->hard_price = $price;
+        $this->hardPrice = $price;
     }
 
     public function getPrice($rectify = false)
     {
-        if (is_null($this->hard_price)) {
+        if (is_null($this->hardPrice)) {
             return $this->realPrice($rectify);
         }
         else {
-            return $this->hard_price;
+            return $this->hardPrice;
         }
     }
 
     public function copyPrice($obj)
     {
-        $this->hard_price = $obj->hard_price;
+        $this->hardPrice = $obj->hardPrice;
     }
 
     abstract public function realPrice($rectify);

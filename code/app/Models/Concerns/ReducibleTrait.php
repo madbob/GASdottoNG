@@ -113,7 +113,7 @@ trait ReducibleTrait
         Funzione introdotta per condensare le varianti dei prodotti presenti in
         diverse prenotazioni (che vengono ridotte indipendentemente tra loro)
     */
-    protected function deepMergingAttributes($child, $first, $second)
+    protected function deepMergingAttributes($first, $second)
     {
         $ret = $this->describingAttributesMerge($first, $second);
 
@@ -158,7 +158,7 @@ trait ReducibleTrait
             $merged = $behaviours->merged ?? '';
             if (! empty($merged)) {
                 foreach ($reduxed_child->$merged as $to_merge) {
-                    $ret->$merged[$to_merge->id] = $this->deepMergingAttributes($child, $ret->$merged[$to_merge->id] ?? null, $to_merge);
+                    $ret->$merged[$to_merge->id] = $this->deepMergingAttributes($ret->$merged[$to_merge->id] ?? null, $to_merge);
                 }
             }
         }

@@ -15,21 +15,21 @@ namespace App\Models\Concerns;
 
 trait ManagesInnerCache
 {
-    private $inner_runtime_cache;
+    private $innerRuntimeCache;
 
-    private $uses_global_cache = false;
+    private $usesGlobalCache = false;
 
-    private $global_store = null;
+    private $globalStore = null;
 
     protected function enableGlobalCache()
     {
-        $this->uses_global_cache = true;
-        $this->global_store = app()->make('TempCache');
+        $this->usesGlobalCache = true;
+        $this->globalStore = app()->make('TempCache');
     }
 
     private function globalKey($name)
     {
-        if ($this->uses_global_cache === false) {
+        if ($this->usesGlobalCache === false) {
             $hub = app()->make('GlobalScopeHub');
             if ($hub->hubRequired() && $hub->enabled()) {
                 $gas_id = $hub->getGas();
@@ -43,36 +43,36 @@ trait ManagesInnerCache
 
     protected function hasInnerCache($name)
     {
-        if ($this->uses_global_cache) {
+        if ($this->usesGlobalCache) {
             $name = $this->globalKey($name);
 
-            return $this->global_store->has($name);
+            return $this->globalStore->has($name);
         }
         else {
-            return isset($this->inner_runtime_cache[$name]);
+            return isset($this->innerRuntimeCache[$name]);
         }
     }
 
     protected function innerCache($name, $function)
     {
-        if ($this->uses_global_cache) {
+        if ($this->usesGlobalCache) {
             $name = $this->globalKey($name);
 
-            if ($this->global_store->has($name) === false) {
+            if ($this->globalStore->has($name) === false) {
                 $value = $function($this);
-                $this->global_store->put($name, $value);
+                $this->globalStore->put($name, $value);
                 $ret = $value;
             }
             else {
-                $ret = $this->global_store->get($name);
+                $ret = $this->globalStore->get($name);
             }
         }
         else {
-            if (! isset($this->inner_runtime_cache[$name])) {
-                $this->inner_runtime_cache[$name] = $function($this);
+            if (! isset($this->innerRuntimeCache[$name])) {
+                $this->innerRuntimeCache[$name] = $function($this);
             }
 
-            $ret = $this->inner_runtime_cache[$name];
+            $ret = $this->innerRuntimeCache[$name];
         }
 
         return $ret;
@@ -80,23 +80,23 @@ trait ManagesInnerCache
 
     protected function setInnerCache($name, $value)
     {
-        if ($this->uses_global_cache) {
+        if ($this->usesGlobalCache) {
             $name = $this->globalKey($name);
-            $this->global_store->put($name, $value);
+            $this->globalStore->put($name, $value);
         }
         else {
-            $this->inner_runtime_cache[$name] = $value;
+            $this->innerRuntimeCache[$name] = $value;
         }
     }
 
     protected function emptyInnerCache($name)
     {
-        if ($this->uses_global_cache) {
+        if ($this->usesGlobalCache) {
             $name = $this->globalKey($name);
-            $this->global_store->forget($name);
+            $this->globalStore->forget($name);
         }
         else {
-            unset($this->inner_runtime_cache[$name]);
+            unset($this->innerRuntimeCache[$name]);
         }
     }
 }

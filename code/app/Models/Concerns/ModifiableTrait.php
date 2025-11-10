@@ -61,7 +61,7 @@ trait ModifiableTrait
             }
             else {
                 $current_class = get_class($this);
-                $modifiers = ModifierType::orderBy('name', 'asc')->get()->filter(function ($modtype, $key) use ($current_class) {
+                $modifiers = ModifierType::orderBy('name', 'asc')->get()->filter(function ($modtype) use ($current_class) {
                     return in_array($current_class, accessAttr($modtype, 'classes'));
                 });
             }

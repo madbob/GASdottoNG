@@ -92,12 +92,6 @@ class AggregatesServiceTest extends TestCase
             $aggregate->printableHeader();
             $aggregate->getBookingURL();
         }
-
-        $empty = Aggregate::supplier($supplier3->id)->get();
-        $this->assertEquals(0, $empty->count());
-
-        $filled = Aggregate::supplier($supplier1->id)->get();
-        $this->assertEquals(1, $filled->count());
     }
 
     public function test_create_large()

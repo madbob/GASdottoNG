@@ -11,11 +11,11 @@ use App\Movement;
 
 class MovementObserver
 {
-    private $movements_hub;
+    private $movementsHub;
 
     public function __construct()
     {
-        $this->movements_hub = App::make('MovementsHub');
+        $this->movementsHub = App::make('MovementsHub');
     }
 
     private function testPeer(&$movement, $metadata, $peer): bool
@@ -83,7 +83,7 @@ class MovementObserver
 
     public function saving(Movement $movement)
     {
-        if ($this->movements_hub->isSuspended()) {
+        if ($this->movementsHub->isSuspended()) {
             return true;
         }
 
@@ -143,7 +143,7 @@ class MovementObserver
 
     public function saved(Movement $movement)
     {
-        if ($this->movements_hub->isSuspended()) {
+        if ($this->movementsHub->isSuspended()) {
             return;
         }
 
@@ -174,7 +174,7 @@ class MovementObserver
             stato riportato alla situazione di partenza, e rieseguo tutti i
             movimenti come se fosse la prima volta.
         */
-        if ($this->movements_hub->isRecalculating() || $this->movements_hub->isSuspended()) {
+        if ($this->movementsHub->isRecalculating() || $this->movementsHub->isSuspended()) {
             return true;
         }
 
@@ -202,7 +202,7 @@ class MovementObserver
     */
     public function deleting(Movement $movement)
     {
-        if ($this->movements_hub->isSuspended()) {
+        if ($this->movementsHub->isSuspended()) {
             return;
         }
 

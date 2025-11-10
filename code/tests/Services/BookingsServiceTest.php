@@ -440,6 +440,7 @@ class BookingsServiceTest extends TestCase
     {
         $currency = defaultCurrency();
         $balance = $user->currentBalance($currency);
+        $this->assertEquals($user->id, $balance->target->id);
         $balance->bank = $amount;
         $balance->save();
 
@@ -476,18 +477,21 @@ class BookingsServiceTest extends TestCase
         $this->assertEquals($booking->getValue('booked', true), $total);
 
         [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
-        $this->userWithBasePerms = $this->enforceBalance($this->userWithBasePerms, $total - 100);
+        $this->userWithBasePerms = $this->enforceBalance($this->userWithBasePerms, $total - 10);
+        $latest_balance = $this->userWithBasePerms->activeBalance();
 
         $this->nextRound();
 
-        $data['action'] = 'booked';
+        $this->userWithBasePerms = $this->userWithBasePerms->fresh();
+        $this->sample_order = $this->sample_order->fresh();
 
         try {
+            $data['action'] = 'booked';
             $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
 
             $this->nextRound();
             $this->userWithBasePerms = $this->userWithBasePerms->fresh();
-            $this->fail('should never run: ' . $booking->getValue('effective', true) . ' / ' . $this->userWithBasePerms->activeBalance() . ' / ' . $total);
+            $this->fail('should never run - booking: ' . $booking->getValue('booked', true) . ' / latest: ' . $latest_balance . ' / current: ' . $this->userWithBasePerms->activeBalance());
         }
         catch (IllegalArgumentException $e) {
             // good boy

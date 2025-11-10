@@ -31,13 +31,6 @@ class Aggregate extends Model
         return $this->hasMany('App\Order')->with(['supplier'])->orderBy('aggregate_sorting', 'asc');
     }
 
-    public function scopeSupplier($query, $supplier_id)
-    {
-        $query->whereHas('orders', function ($query) use ($supplier_id) {
-            $query->where('supplier_id', '=', $supplier_id);
-        });
-    }
-
     public function getStatusAttribute()
     {
         $priority = [];
