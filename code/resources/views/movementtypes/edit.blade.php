@@ -103,7 +103,7 @@ foreach($classes as $class => $name) {
                             <th scope="col" width="{{ $width }}%">
                                 {{ $pay->name }}
                                 <div class="form-check form-switch">
-                                    <input type="checkbox" name="{{ $pay_id }}" class="form-check-input" {{ $payments[$pay_id] ? 'checked' : '' }} data-active-for="{{ $pay->active_for }}" {{ $pay->active_for != null && $pay->active_for != $type->sender_type && $pay->active_for != $type->target_type ? 'disabled' : '' }}>
+                                    <input type="checkbox" name="{{ $pay_id }}" class="form-check-input" {{ $payments[$pay_id] ? 'checked' : '' }}>
                                 </div>
                                 <div class="form-check form-switch p-0">
                                     <input type="radio" name="payment_default" value="{{ $pay_id }}" {{ isset($defaults[$pay_id]) && $defaults[$pay_id] ? 'checked' : '' }}> {{ __('texts.generic.default') }}

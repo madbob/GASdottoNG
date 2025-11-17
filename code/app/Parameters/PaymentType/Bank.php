@@ -15,7 +15,6 @@ class Bank extends PaymentType
             'name' => __('texts.movements.methods.bank'),
             'identifier' => true,
             'icon' => 'bank',
-            'active_for' => null,
             'valid_config' => function ($target) {
                 return true;
             },

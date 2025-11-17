@@ -15,7 +15,6 @@ class Credit extends PaymentType
             'name' => __('texts.movements.methods.credit'),
             'identifier' => false,
             'icon' => 'person-badge',
-            'active_for' => 'App\User',
             'valid_config' => function ($target) {
                 return true;
             },

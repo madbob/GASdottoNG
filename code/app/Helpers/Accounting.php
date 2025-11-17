@@ -96,7 +96,6 @@ function paymentTypes()
             'name' => 'IntegralCES',
             'identifier' => true,
             'icon' => 'cloud-plus',
-            'active_for' => 'App\User',
             'valid_config' => function ($target) {
                 return get_class($target) == 'App\User' && ! empty($target->getContactsByType('integralces'));
             },

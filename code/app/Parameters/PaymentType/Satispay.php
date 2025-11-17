@@ -20,7 +20,6 @@ class Satispay extends PaymentType
             'name' => 'Satispay',
             'identifier' => true,
             'icon' => 'cloud-plus',
-            'active_for' => 'App\User',
             'valid_config' => function ($target) {
                 return true;
             },

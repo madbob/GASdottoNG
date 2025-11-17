@@ -71,16 +71,6 @@ class Movements {
                     $(this).prop('hidden', type != 'sender-' + sender && type != 'target-' + target);
                 }
             });
-
-            table.find('thead input[data-active-for]').each(function() {
-                var type = $(this).attr('data-active-for');
-                if(type != '' && type != sender && type != target) {
-                    $(this).prop('checked', false).prop('disabled', true).change();
-                }
-                else {
-                    $(this).prop('disabled', false);
-                }
-            });
         });
 
         $('table thead input:checkbox', container).change(function() {

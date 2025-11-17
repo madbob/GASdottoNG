@@ -15,7 +15,6 @@ class Cash extends PaymentType
             'name' => __('texts.movements.methods.cash'),
             'identifier' => false,
             'icon' => 'cash',
-            'active_for' => null,
             'valid_config' => function ($target) {
                 return true;
             },
