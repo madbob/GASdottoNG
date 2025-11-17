@@ -73,12 +73,14 @@ trait ContactableTrait
 
     public function addContact($type, $value)
     {
-        $contact = new Contact();
-        $contact->target_id = $this->id;
-        $contact->target_type = get_class($this);
-        $contact->type = $type;
-        $contact->value = $value;
-        $contact->save();
+        if (filled($value)) {
+            $contact = new Contact();
+            $contact->target_id = $this->id;
+            $contact->target_type = get_class($this);
+            $contact->type = $type;
+            $contact->value = $value;
+            $contact->save();
+        }
     }
 
     /*

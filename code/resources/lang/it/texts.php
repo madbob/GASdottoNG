@@ -167,6 +167,7 @@ return array(
 		'manual_approve_users' => 'Approvazione manuale nuovi utenti',
 		'privacy_policy_link' => 'Link Privacy Policy',
 		'terms_link' => 'Link Condizioni d\'Uso',
+        'enabled_fields' => 'Campi Abilitati',
 		'mandatory_fields' => 'Campi Obbligatori',
 		'orders_and_deliveries' => 'Ordini e Consegne',
 		'only_bookings_with_credit' => 'Permetti solo prenotazioni entro il credito disponibile',

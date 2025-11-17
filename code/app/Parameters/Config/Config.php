@@ -13,7 +13,14 @@ abstract class Config extends Parameter
         switch ($this->type()) {
             case 'object':
             case 'array':
-                return (array) json_decode($value);
+                /*
+                    Qui faccio un merge tra le configurazioni esistenti e quelle
+                    di default, onde avere dei valori validi anche per i nuovi
+                    campi introdotti in corso d'opera
+                */
+                $default = (array) $this->default();
+                $value = (array) json_decode($value);
+                return array_merge($default, $value);
 
             case 'boolean':
                 return filter_var($value, FILTER_VALIDATE_BOOLEAN);

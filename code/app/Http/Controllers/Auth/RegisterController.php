@@ -84,25 +84,24 @@ class RegisterController extends Controller
         $options = [
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
             'verify' => [new Captcha()],
         ];
 
+        $enabled = $gas->public_registrations['enabled_fields'];
         $mandatory = $gas->public_registrations['mandatory_fields'];
 
-        if (in_array('firstname', $mandatory)) {
-            $options['firstname'] = ['required', 'string', 'max:255'];
-        }
-
-        if (in_array('lastname', $mandatory)) {
-            $options['lastname'] = ['required', 'string', 'max:255'];
-        }
-
-        if (in_array('email', $mandatory)) {
+        if (in_array('email', $enabled) && in_array('email', $mandatory)) {
             $options['email'] = ['required', 'string', 'email', 'max:255', new EMail()];
         }
 
-        if (in_array('phone', $mandatory)) {
+        if (in_array('phone', $enabled) && in_array('phone', $mandatory)) {
             $options['phone'] = 'required|string|max:255';
+        }
+
+        if (in_array('address', $enabled) && in_array('address', $mandatory)) {
+            $options['address'] = 'required|string|max:255';
         }
 
         /*
@@ -148,23 +147,9 @@ class RegisterController extends Controller
 
         $user->save();
 
-        if (! empty($data['email'])) {
-            $contact = new Contact();
-            $contact->target_id = $user->id;
-            $contact->target_type = get_class($user);
-            $contact->type = 'email';
-            $contact->value = $data['email'];
-            $contact->save();
-        }
-
-        if (! empty($data['phone'])) {
-            $contact = new Contact();
-            $contact->target_id = $user->id;
-            $contact->target_type = get_class($user);
-            $contact->type = 'phone';
-            $contact->value = $data['phone'];
-            $contact->save();
-        }
+        $user->addContact('email', $data['email'] ?? '');
+        $user->addContact('phone', $data['phone'] ?? '');
+        $user->addContact('address', $data['address'] ?? '');
 
         return $user;
     }

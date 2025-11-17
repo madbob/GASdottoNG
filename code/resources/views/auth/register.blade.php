@@ -2,12 +2,30 @@
 
 @section('content')
 
+@php
+
+$enabled = currentAbsoluteGas()->public_registrations['enabled_fields'];
+$mandatories = currentAbsoluteGas()->public_registrations['mandatory_fields'];
+
+@endphp
+
 <div class="col-12 col-md-6 offset-md-3 mt-3">
     <x-larastrap::form method="POST" action="{{ route('register') }}" :buttons="[['type' => 'submit', 'color' => 'success', 'tlabel' => 'auth.register']]">
-        <x-larastrap::text name="firstname" tlabel="user.firstname" :required="in_array('firstname', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
-        <x-larastrap::text name="lastname" tlabel="user.lastname" :required="in_array('lastname', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
-        <x-larastrap::email name="email" tlabel="generic.email" :required="in_array('email', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
-        <x-larastrap::text name="phone" tlabel="generic.phone" :required="in_array('phone', currentAbsoluteGas()->public_registrations['mandatory_fields'])" />
+        <x-larastrap::text name="firstname" tlabel="user.firstname" :required="in_array('firstname', $mandatories)" />
+        <x-larastrap::text name="lastname" tlabel="user.lastname" :required="in_array('lastname', $mandatories)" />
+
+        @if(in_array('email', $enabled))
+            <x-larastrap::email name="email" tlabel="generic.email" :required="in_array('email', $mandatories)" />
+        @endif
+
+        @if(in_array('phone', $enabled))
+            <x-larastrap::tel name="phone" tlabel="generic.phone" :required="in_array('phone', $mandatories)" />
+        @endif
+
+        @if(in_array('address', $enabled))
+            <x-larastrap::address name="address" tlabel="generic.address" :required="in_array('address', $mandatories)" />
+        @endif
+
         <x-larastrap::text name="username" tlabel="auth.username" required pattern="{{ usernamePattern() }}" />
         <x-larastrap::password name="password" tlabel="auth.password" required />
         <x-larastrap::password name="password_confirmation" tlabel="auth.confirm_password" required />
