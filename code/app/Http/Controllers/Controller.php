@@ -81,6 +81,25 @@ class Controller extends BaseController
         abort(404);
     }
 
+    protected function toJQueryAutocompletionFormat($items)
+    {
+        $ret = [];
+
+        foreach ($items as $item) {
+            $fullname = $item->printableName();
+
+            $u = (object) [
+                'id' => $item->id,
+                'label' => $fullname,
+                'value' => $fullname,
+            ];
+
+            $ret[] = $u;
+        }
+
+        return $ret;
+    }
+
     /*
         Controparte della funzione JS collectFilteredUsers(), questa funzione ne
         deserializza il contenuto

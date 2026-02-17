@@ -73,7 +73,7 @@
         </td>
 
         <td>
-            @include('commons.statusfield', ['target' => $user, 'squeeze' => true, 'postfix' => $user->id])
+            @include('commons.statusfield', ['target' => $user, 'squeeze' => true, 'postfix' => sanitizeId($user->id)])
         </td>
 
         <td>

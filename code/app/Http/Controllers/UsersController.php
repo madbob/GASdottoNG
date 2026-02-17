@@ -236,22 +236,6 @@ class UsersController extends BackedController
         });
     }
 
-    private function toJQueryAutocompletionFormat($users)
-    {
-        $ret = [];
-        foreach ($users as $user) {
-            $fullname = $user->printableName();
-            $u = (object) [
-                'id' => $user->id,
-                'label' => $fullname,
-                'value' => $fullname,
-            ];
-            $ret[] = $u;
-        }
-
-        return $ret;
-    }
-
     /*
         Per ottenere il modale dello "Stato Quote"
     */
@@ -295,7 +279,11 @@ class UsersController extends BackedController
 
             foreach ($users as $user_id) {
                 $user = User::tFind($user_id);
-                $user->setStatus($request->input('status' . $user_id), $request->input('deleted_at' . $user_id), $request->input('suspended_at' . $user_id));
+                $normalized_id = sanitizeId($user_id);
+                $status = $request->input('status' . $normalized_id);
+                $deleted = $request->input('deleted_at' . $normalized_id);
+                $suspended = $request->input('suspended_at' . $normalized_id);
+                $user->setStatus($status, $deleted, $suspended);
                 $user->save();
             }
 
