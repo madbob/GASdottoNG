@@ -29,7 +29,7 @@ class NotificationsService extends BaseService
             $dates_query->where('date', '<=', $end);
         }
 
-        if ($user->can('notifications.admin', $user->gas) === false) {
+        if (!$user->can('notifications.admin', $user->gas)) {
             $notifications_query->whereHas('users', function ($query) use ($user) {
                 $query->where('users.id', $user->id);
             });
@@ -58,7 +58,7 @@ class NotificationsService extends BaseService
         }
 
         if (empty($users)) {
-            $us = User::select('id')->whereNull('parent_id')->get();
+            $us = User::select('id')->topLevel()->fullEnabled()->get();
             foreach ($us as $u) {
                 $users[] = $u->id;
             }
@@ -74,7 +74,7 @@ class NotificationsService extends BaseService
     {
         $this->setIfSet($notification, $request, 'content');
 
-        if ($notification->permanent == false) {
+        if (!$notification->permanent) {
             $this->setIfSet($notification, $request, 'mailtype');
             $this->boolIfSet($notification, $request, 'mailed');
             $this->transformAndSetIfSet($notification, $request, 'start_date', 'decodeDate');
@@ -92,7 +92,7 @@ class NotificationsService extends BaseService
         $notification->attachByRequest($request);
         $this->syncUsers($notification, $request);
 
-        if ($notification->permanent == false) {
+        if (!$notification->permanent) {
             $notification->sendMail();
         }
 

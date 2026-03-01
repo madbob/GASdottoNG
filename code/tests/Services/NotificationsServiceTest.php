@@ -3,11 +3,14 @@
 namespace Tests\Services;
 
 use Tests\TestCase;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Notification as SystemNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Carbon\Carbon;
 
 use App\Exceptions\AuthException;
 use App\Notifications\GenericNotificationWrapper;
+use App\User;
+use App\Notification;
 
 class NotificationsServiceTest extends TestCase
 {
@@ -18,9 +21,9 @@ class NotificationsServiceTest extends TestCase
         parent::setUp();
 
         $this->userNotificationAdmin = $this->createRoleAndUser($this->gas, 'gas.config,movements.admin,notifications.admin');
-        $this->userWithNoPerms = \App\User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
 
-        $this->notification = \App\Notification::factory()->create([
+        $this->notification = Notification::factory()->create([
             'creator_id' => $this->userNotificationAdmin->id,
         ]);
     }
@@ -35,6 +38,13 @@ class NotificationsServiceTest extends TestCase
         app()->make('NotificationsService')->store([]);
     }
 
+    private function referenceDates()
+    {
+        $start = date('Y-m-d');
+        $end = date('Y-m-d', strtotime('+20 days'));
+        return [$start, $end];
+    }
+
     /*
         Salvataggio Notifica con permessi corretti
     */
@@ -42,8 +52,8 @@ class NotificationsServiceTest extends TestCase
     {
         $this->actingAs($this->userNotificationAdmin);
 
-        $start = date('Y-m-d');
-        $end = date('Y-m-d', strtotime('+20 days'));
+        $count_users = User::topLevel()->fullEnabled()->count();
+        list($start, $end) = $this->referenceDates();
 
         $notification = app()->make('NotificationsService')->store([
             'type' => 'notification',
@@ -56,6 +66,36 @@ class NotificationsServiceTest extends TestCase
         $this->assertEquals($this->userNotificationAdmin->id, $notification->creator->id);
         $this->assertEquals($start, $notification->start_date);
         $this->assertEquals($end, $notification->end_date);
+        $this->assertEquals($notification->users()->count(), $count_users);
+    }
+
+    /*
+        Salvataggio Notifica saltando utenti sospesi
+    */
+    public function test_store_with_suspended()
+    {
+        $this->actingAs($this->userNotificationAdmin);
+
+        $initial_count_users = User::topLevel()->fullEnabled()->count();
+        $this->userWithNoPerms->suspended_at = Carbon::now();
+        $this->userWithNoPerms->save();
+        $count_users = User::topLevel()->fullEnabled()->count();
+        $this->assertEquals($initial_count_users - 1, $count_users);
+
+        list($start, $end) = $this->referenceDates();
+
+        $notification = app()->make('NotificationsService')->store([
+            'type' => 'notification',
+            'content' => 'Test',
+            'start_date' => printableDate($start),
+            'end_date' => printableDate($end),
+        ]);
+
+        $this->assertEquals('Test', $notification->content);
+        $this->assertEquals($this->userNotificationAdmin->id, $notification->creator->id);
+        $this->assertEquals($start, $notification->start_date);
+        $this->assertEquals($end, $notification->end_date);
+        $this->assertEquals($notification->users()->count(), $count_users);
     }
 
     /*
@@ -65,7 +105,7 @@ class NotificationsServiceTest extends TestCase
     {
         $this->actingAs($this->userNotificationAdmin);
 
-        $end = date('Y-m-d', strtotime('+20 days'));
+        list($start, $end) = $this->referenceDates();
 
         $notification = app()->make('NotificationsService')->update($this->notification->id, [
             'content' => 'Test Modifica',
@@ -83,8 +123,7 @@ class NotificationsServiceTest extends TestCase
     {
         $this->actingAs($this->userNotificationAdmin);
 
-        $start = date('Y-m-d');
-        $end = date('Y-m-d', strtotime('+20 days'));
+        list($start, $end) = $this->referenceDates();
 
         $notification = app()->make('NotificationsService')->store([
             'users' => [$this->userWithNoPerms->id],
@@ -114,12 +153,11 @@ class NotificationsServiceTest extends TestCase
     */
     public function test_mail()
     {
-        Notification::fake();
+        SystemNotification::fake();
 
         $this->actingAs($this->userNotificationAdmin);
 
-        $start = date('Y-m-d');
-        $end = date('Y-m-d', strtotime('+20 days'));
+        list($start, $end) = $this->referenceDates();
 
         $notification = app()->make('NotificationsService')->store([
             'users' => [$this->userWithNoPerms->id, $this->userNotificationAdmin->id],
@@ -130,8 +168,8 @@ class NotificationsServiceTest extends TestCase
             'end_date' => printableDate($end),
         ]);
 
-        Notification::assertSentTo([$this->userWithNoPerms, $this->userNotificationAdmin], GenericNotificationWrapper::class);
-        Notification::assertCount(2);
+        SystemNotification::assertSentTo([$this->userWithNoPerms, $this->userNotificationAdmin], GenericNotificationWrapper::class);
+        SystemNotification::assertCount(2);
 
         $this->assertEquals('2 utenti', $notification->printableName());
     }
@@ -141,7 +179,7 @@ class NotificationsServiceTest extends TestCase
     */
     public function test_unroll()
     {
-        $this->assertTrue($this->userNotificationAdmin->roles->isEmpty() == false);
+        $this->assertTrue(!$this->userNotificationAdmin->roles->isEmpty());
 
         foreach ($this->userNotificationAdmin->roles as $role) {
             $selected = unrollSpecialSelectors(['special::role::' . $role->id]);
@@ -149,7 +187,7 @@ class NotificationsServiceTest extends TestCase
             $this->assertTrue(in_array($this->userNotificationAdmin->id, $selected));
         }
 
-        $this->assertTrue($this->userAdmin->roles->isEmpty() == false);
+        $this->assertTrue(!$this->userAdmin->roles->isEmpty());
 
         foreach ($this->userAdmin->roles as $role) {
             $selected = unrollSpecialSelectors(['special::role::' . $role->id]);
