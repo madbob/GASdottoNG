@@ -180,21 +180,27 @@ class GasController extends Controller
 
         switch (config('database.default')) {
             case 'mysql':
-                \Spatie\DbDumper\Databases\MySql::create()->setDbName(env('DB_DATABASE'))->setUserName(env('DB_USERNAME'))->setPassword(env('DB_PASSWORD'))->dumpToFile($filepath);
+                $dumper = \Spatie\DbDumper\Databases\MySql::create();
                 break;
 
             case 'mariadb':
-                \Spatie\DbDumper\Databases\MariaDb::create()->setDbName(env('DB_DATABASE'))->setUserName(env('DB_USERNAME'))->setPassword(env('DB_PASSWORD'))->dumpToFile($filepath);
+                $dumper = \Spatie\DbDumper\Databases\MariaDb::create();
                 break;
 
             case 'pgsql':
-                \Spatie\DbDumper\Databases\PostgreSql::create()->setDbName(env('DB_DATABASE'))->setUserName(env('DB_USERNAME'))->setPassword(env('DB_PASSWORD'))->dumpToFile($filepath);
+                $dumper = \Spatie\DbDumper\Databases\PostgreSql::create();
                 break;
 
             default:
                 Log::error('Formato database non supportato');
                 abort(500);
         }
+
+        $dumper->setHost(env('DB_HOST'))
+            ->setDbName(env('DB_DATABASE'))
+            ->setUserName(env('DB_USERNAME'))
+            ->setPassword(env('DB_PASSWORD'))
+            ->dumpToFile($filepath);
 
         return response()->download($filepath, 'database_gasdotto_' . date('Y_m_d') . '.sql')->deleteFileAfterSend();
     }
