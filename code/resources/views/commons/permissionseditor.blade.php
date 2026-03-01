@@ -2,26 +2,27 @@
 Questo pannello viene ricaricato alla chiusura del modale di modifica dei
 permessi, cfr. permissions.supplier-edit
 -->
-<div class="card shadow mt-4" id="permissions-list-{{ sanitizeId($object->id) }}" data-reload-url="{{ route('roles.suppliertable', $object->id) }}">
+<div class="card shadow" id="permissions-list-{{ sanitizeId($object->id) }}" data-reload-url="{{ route('roles.suppliertable', $object->id) }}">
     <div class="card-header">
         {{ __('texts.permissions.name') }}
     </div>
     <div class="card-body">
         @foreach(rolesByClass(get_class($object)) as $role)
             <x-larastrap::field :label="$role->name">
-                <label class="static-label">
-                    <?php
+                <span class="static-label">
+                    @php
 
                     $final = [];
 
                     $users = $role->usersByTarget($object);
-                    foreach($users as $user)
+                    foreach($users as $user) {
                         $final[] = $user->printableName();
+                    }
 
-                    ?>
+                    @endphp
 
                     {{ join(', ', $final) }}
-                </label>
+                </span>
             </x-larastrap::field>
         @endforeach
 

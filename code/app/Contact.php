@@ -71,6 +71,13 @@ class Contact extends Model
         return $tokens;
     }
 
+    public function asFlatAddress()
+    {
+        $tokens = $this->asAddress();
+        $tokens = array_filter($tokens, fn($t) => filled($t));
+        return join(', ', $tokens);
+    }
+
     /*************************************************************** GASModel */
 
     public function printableName()

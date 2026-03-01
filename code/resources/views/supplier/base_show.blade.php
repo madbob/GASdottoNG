@@ -20,17 +20,20 @@
 
     <div class="row">
         <div class="col-md-6">
-            <x-larastrap::text name="name" tlabel="generic.name" readonly disabled />
-            <x-larastrap::text name="business_name" tlabel="supplier.legal_name" readonly disabled />
+            <x-ls::card header="user.personal_data">
+                <x-larastrap::text name="name" tlabel="generic.name" readonly disabled />
+                <x-larastrap::text name="business_name" tlabel="supplier.legal_name" readonly disabled />
 
-            <x-larastrap::field tlabel="generic.description">
-                <p class="form-control-plaintext">
-                    {!! prettyFormatHtmlText($supplier->description) !!}
-                </p>
-            </x-larastrap::field>
+                <x-larastrap::field tlabel="generic.description">
+                    <p class="form-control-plaintext">
+                        {!! prettyFormatHtmlText($supplier->description) !!}
+                    </p>
+                </x-larastrap::field>
 
-            <x-larastrap::text name="taxcode" tlabel="user.taxcode" readonly disabled />
-            <x-larastrap::text name="vat" tlabel="supplier.vat" readonly disabled />
+                <x-larastrap::text name="taxcode" tlabel="user.taxcode" readonly disabled />
+                <x-larastrap::text name="vat" tlabel="supplier.vat" readonly disabled />
+            </x-ls::card>
+
             @include('commons.staticcontactswidget', ['obj' => $supplier])
         </div>
         <div class="col-md-6">
