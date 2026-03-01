@@ -178,9 +178,13 @@ class GasController extends Controller
 
         $filepath = sprintf('%s/dump_%s', sys_get_temp_dir(), Str::random(20));
 
-        switch (env('DB_CONNECTION')) {
+        switch (config('database.default')) {
             case 'mysql':
                 \Spatie\DbDumper\Databases\MySql::create()->setDbName(env('DB_DATABASE'))->setUserName(env('DB_USERNAME'))->setPassword(env('DB_PASSWORD'))->dumpToFile($filepath);
+                break;
+
+            case 'mariadb':
+                \Spatie\DbDumper\Databases\MariaDb::create()->setDbName(env('DB_DATABASE'))->setUserName(env('DB_USERNAME'))->setPassword(env('DB_PASSWORD'))->dumpToFile($filepath);
                 break;
 
             case 'pgsql':
@@ -189,7 +193,7 @@ class GasController extends Controller
 
             default:
                 Log::error('Formato database non supportato');
-                exit();
+                abort(500);
         }
 
         return response()->download($filepath, 'database_gasdotto_' . date('Y_m_d') . '.sql')->deleteFileAfterSend();
