@@ -258,8 +258,8 @@ class Utils {
             return 0;
         }
 
-        let ret = parseFloat(value.replace(/,/, '.'));
-        if (isNaN(ret)) {
+        let ret = Number.parseFloat(value.replace(/,/, '.'));
+        if (Number.isNaN(ret)) {
             ret = 0;
         }
 

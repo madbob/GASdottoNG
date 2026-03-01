@@ -18,7 +18,7 @@ class Orders
                 let action = row.find('select[name^=action]').val();
 
                 if (action == 'ship') {
-                    let max = parseInt(i.val()) - 1;
+                    let max = Number.parseInt(i.val()) - 1;
                     peer.attr('max', max);
                     peer.removeAttr('min');
 
@@ -27,7 +27,7 @@ class Orders
                     }
                 }
                 else {
-                    let min = parseInt(i.val()) + 1;
+                    let min = Number.parseInt(i.val()) + 1;
                     peer.attr('min', min);
                     peer.removeAttr('max');
 

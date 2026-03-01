@@ -231,7 +231,7 @@ function miscInnerCallbacks(form, data) {
             let o = $('<option value="' + data.id + '" selected="selected">' + data.name + '</option>');
             if (data.hasOwnProperty('parent') && data.parent != null) {
                 let parent = $(this).find('option[value=' + data.parent + ']').first();
-                let pname = parent.text().replaceAll(/&nbsp;/g, ' ');
+                let pname = parent.text().replaceAll('&nbsp;', ' ');
                 let indent = '&nbsp;&nbsp;';
 
                 for (let i = 0; i < pname.length; i++) {

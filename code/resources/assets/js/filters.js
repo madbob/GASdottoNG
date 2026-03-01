@@ -60,7 +60,7 @@ class Filters {
                     let attr_b = $(b).attr('data-sorting-' + attribute);
 
                     if (is_numeric) {
-                        return parseFloat(attr_a) - parseFloat(attr_b);
+                        return Number.parseFloat(attr_a) - Number.parseFloat(attr_b);
                     }
                     else {
                          return attr_a.localeCompare(attr_b);
@@ -180,10 +180,10 @@ class Filters {
                         display = display && true;
                     }
                     else {
-                        let number = parseFloat(text);
+                        let number = Number.parseFloat(text);
                         let mode = $(this).find('input[name=filter_mode]:checked').val();
                         let cell = row.find('.text-filterable-cell');
-                        let val = parseFloat(cell.text());
+                        let val = Number.parseFloat(cell.text());
 
                         if (mode == 'min' && val <= number) {
                             display = display && true;

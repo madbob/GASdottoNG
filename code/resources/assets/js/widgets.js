@@ -75,7 +75,7 @@ class Widgets {
             let minimum = $(this).attr('data-enforce-minimum');
 
             $(this).val(function(index, value) {
-                let val = value.replaceAll(/,/g, '.');
+                let val = value.replaceAll(',', '.');
                 if (allow_negative)
                     val = val.replaceAll(/[^\-0-9\.]/g, '');
                 else

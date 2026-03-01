@@ -113,7 +113,7 @@ class Modifiers {
     static updateBookingModifiers(dynamic_modifiers, container)
     {
         $('input[name^="modifier-"]', container).each(function() {
-            let modid = parseInt($(this).attr('name').split('-')[1]);
+            let modid = Number.parseInt($(this).attr('name').split('-')[1]);
             if (modid == 0) {
                 return;
             }

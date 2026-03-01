@@ -169,7 +169,7 @@ class Bookings
 
         $('input.manual-total', container).keyup((e) => {
             let i = $(e.currentTarget);
-            if (parseFloat(i.val()) > 0) {
+            if (Number.parseFloat(i.val()) > 0) {
                 i.addClass('is-changed');
             }
             else {
@@ -454,7 +454,7 @@ class Bookings
         */
         let max_bookable = form.find('input:hidden[name="max-bookable"]');
         if (max_bookable.length != 0) {
-            max_bookable = parseFloat(max_bookable.val());
+            max_bookable = Number.parseFloat(max_bookable.val());
             utils.j().submitButton(form).each(function() {
                 $(this).prop('disabled', grand_total > max_bookable);
             });
@@ -551,7 +551,7 @@ class Bookings
 
     					let t = utils.priceRound(booking_data.total);
     					$('.booking-total', container).textVal(t);
-    					grand_total += parseFloat(t);
+    					grand_total += Number.parseFloat(t);
     					status[booking_id] = booking_data.total;
 
                         this.verifyManualTotal(container, booking_data);
