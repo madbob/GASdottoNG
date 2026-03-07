@@ -3,13 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
-
-use Auth;
-use Log;
 
 use App\Helpers\Status;
 use App\Models\Concerns\AttachableTrait;
@@ -28,7 +27,18 @@ class Aggregate extends Model
 
     public function orders(): HasMany
     {
-        return $this->hasMany('App\Order')->with(['supplier'])->orderBy('aggregate_sorting', 'asc');
+        return $this->hasMany(Order::class)->with(['supplier'])->orderBy('aggregate_sorting', 'asc');
+    }
+
+    public function getProductsAttribute(): Collection
+    {
+        $ret = new Collection();
+
+        foreach ($this->orders as $order) {
+            $ret = $ret->merge($order->products);
+        }
+
+        return $ret;
     }
 
     public function getStatusAttribute()
@@ -54,7 +64,7 @@ class Aggregate extends Model
         return $priority[$index];
     }
 
-    public function getCirclesAttribute()
+    public function getCirclesAttribute(): Collection
     {
         $ret = new Collection();
 

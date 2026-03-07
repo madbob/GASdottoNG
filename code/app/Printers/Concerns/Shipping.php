@@ -73,17 +73,17 @@ trait Shipping
         }
     }
 
-    public function formatShipping($order, $fields, $status, $isolate_friends, $circles, $extra_modifiers)
+    public function formatShipping($order, $params, $circles)
     {
         $ret = (object) [
-            'headers' => $fields->headers,
+            'headers' => $params->fields->headers,
             'contents' => [],
         ];
 
         $formattable_product = OrderFormatter::formattableColumns('shipping');
-        $internal_offsets = $this->offsetsByStatus($status);
+        $internal_offsets = $this->offsetsByStatus($params->status);
 
-        if ($isolate_friends === false) {
+        if ($params->isolate_friends === false) {
             $bookings = $order->topLevelBookings(null);
             $products_source = 'products_with_friends';
         }
@@ -111,7 +111,7 @@ trait Shipping
                 'gas_sorting' => $booking->user->gas_id,
                 'circles_sorting' => $circles->bookingSorting($booking),
 
-                'user' => UserFormatter::format($booking->user, $fields->user_columns, $order->aggregate),
+                'user' => UserFormatter::format($booking->user, $params->fields->user_columns, $order->aggregate),
                 'products' => [],
                 'totals' => [],
                 'notes' => ! empty($booking->notes) ? [$booking->notes] : [],
@@ -129,7 +129,7 @@ trait Shipping
 
                 $summary = $booked->as_summary;
 
-                $row = $this->formatProduct($fields->product_columns, $formattable_product, $summary->products[$booked->product->id], $product, $internal_offsets);
+                $row = $this->formatProduct($params->fields->product_columns, $formattable_product, $summary->products[$booked->product->id], $product, $internal_offsets);
                 if (! empty($row)) {
                     $obj->products = array_merge($obj->products, $row);
                 }
@@ -139,13 +139,13 @@ trait Shipping
                 continue;
             }
 
-            $original_booking_status = $this->fakeBookingStatus($status, $isolate_friends, $booking);
+            $original_booking_status = $this->fakeBookingStatus($params->status, $params->isolate_friends, $booking);
 
-            [$labels_modifiers, $total_modifiers] = $this->collectModifiersTotal($booking, $aggregate_data, $isolate_friends, $extra_modifiers);
+            [$labels_modifiers, $total_modifiers] = $this->collectModifiersTotal($booking, $aggregate_data, $params->isolate_friends, $params->extra_modifiers);
             $obj->totals = array_merge($obj->totals, $labels_modifiers);
-            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, $isolate_friends === false) + $total_modifiers;
+            $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, $params->isolate_friends === false) + $total_modifiers;
 
-            $this->restoreBookingStatus($original_booking_status, $isolate_friends, $booking);
+            $this->restoreBookingStatus($original_booking_status, $params->isolate_friends, $booking);
 
             $ret->contents[] = $obj;
         }

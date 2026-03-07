@@ -90,11 +90,11 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
             $FH = fopen($out_file, 'w');
         }
 
-        if (is_null($format_callback)) {
-            if ($head) {
-                fputcsv($FH, $head, $csv_separator);
-            }
+        if ($head) {
+            fputcsv($FH, $head, $csv_separator);
+        }
 
+        if (is_null($format_callback)) {
             if (is_string($contents)) {
                 fwrite($FH, $contents);
             }
@@ -105,10 +105,6 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
             }
         }
         else {
-            if ($head) {
-                fputcsv($FH, $head, $csv_separator);
-            }
-
             foreach ($contents as $c) {
                 $row = $format_callback($c);
                 if ($row) {
@@ -225,59 +221,6 @@ function closestNumber(array $array, $goal)
     return array_reduce($array, function ($carry, $item) use ($goal) {
         return abs($item - $goal) < abs($carry - $goal) ? $item : $carry;
     }, reset($array));
-}
-
-/*
-    Questo serve a separare le colonne per utenti e prodotti quando si generano
-    i Dettagli Consegne che contengono tutto
-*/
-function splitFields($fields)
-{
-    $formattable_user = App\Formatters\User::formattableColumns('shipping');
-    $formattable_product = App\Formatters\Order::formattableColumns('shipping');
-
-    $ret = (object) [
-        'headers' => [],
-        'user_columns' => [],
-        'product_columns' => [],
-        'user_columns_names' => [],
-        'product_columns_names' => [],
-    ];
-
-    $user_headers = [];
-    $product_headers = [];
-
-    /*
-        Se l'array dei campi esplicitamente richiesti è vuoto, lo popolo con i
-        campi di default (quelli che vengono selezionati anche dal pannello web)
-    */
-    if (empty($fields)) {
-        list($useless, $selected_user) = flaxComplexOptions($formattable_user);
-        list($useless, $selected_product) = flaxComplexOptions($formattable_product);
-        $fields = array_merge($selected_user, $selected_product);
-    }
-
-    foreach ($fields as $f) {
-        if (isset($formattable_user[$f])) {
-            $ret->user_columns[] = $f;
-            $ret->user_columns_names[] = $formattable_user[$f]->name;
-            $user_headers[] = $formattable_user[$f]->name;
-        }
-        else {
-            $ret->product_columns[] = $f;
-            $ret->product_columns_names[] = $formattable_product[$f]->name;
-            $product_headers[] = $formattable_product[$f]->name;
-        }
-    }
-
-    /*
-        Non necessariamente $fields è ordinato per attributi dell'utente e del
-        prodotto: nel ciclo sopra li raccolgo separatamente, e poi riunisco le
-        intestazioni nell'ordine giusto
-    */
-    $ret->headers = array_merge($user_headers, $product_headers);
-
-    return $ret;
 }
 
 /*

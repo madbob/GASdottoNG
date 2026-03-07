@@ -7,9 +7,53 @@
 
 namespace App\Printers\Concerns;
 
+use App\Formatters\User as UserFormatter;
+use App\Printers\PrintParams;
+use App\Booking;
+
 trait Table
 {
-    protected function formatTableHead($user_columns, $orders)
+    protected function realHandleTable($master, $aggregate, $orders, $request)
+    {
+        $params = new PrintParams($request, $master);
+
+        /*
+            Formatto riga di intestazione
+        */
+
+        $user_columns = UserFormatter::getHeaders($params->fields->user_columns);
+        [$all_products, $headers, $prices_rows] = $this->formatTableHead($user_columns, $orders);
+
+        /*
+            Formatto righe delle singole prenotazioni
+        */
+
+        [$orders, $bookings] = $this->getFormattableDataForTable($master, $params);
+        [$data, $total_price] = $this->formatTableRows($bookings, $orders, $params, $all_products);
+        array_unshift($data, $prices_rows);
+
+        /*
+            Formatto riga dei totali
+        */
+
+        $row = $this->formatTableFooter($orders, $user_columns, $all_products, $total_price);
+        $data[] = $row;
+        $data[] = $headers;
+
+        if ($params->include_missing == 'no') {
+            $data = $this->compressTable($user_columns, $data);
+            $headers = $data[count($data) - 1];
+        }
+
+        /*
+            Genero documento
+        */
+
+        $filename = __('texts.orders.files.order.table') . '.csv';
+        return $this->outputCsv($params, $filename, $headers, $data);
+    }
+
+    private function formatTableHead($user_columns, $orders)
     {
         $all_products = [];
         $headers = $user_columns;
@@ -30,7 +74,39 @@ trait Table
         return [$all_products, $headers, $prices_rows];
     }
 
-    protected function formatBookingInTable($order, $booking, $status, &$all_products)
+    private function formatTableRows($bookings, $orders, $params, &$all_products)
+    {
+        [$get_total, $get_function] = $this->bookingsRules($params->status);
+
+        $data = [];
+        $total_price = 0;
+
+        foreach ($bookings as $booking) {
+            $row = UserFormatter::format($booking->user, $params->fields->user_columns);
+
+            foreach ($orders as $order) {
+                if (is_a($booking, Booking::class)) {
+                    $sub_booking = $booking;
+                }
+                else {
+                    $sub_booking = $booking->getOrderBooking($order);
+                }
+
+                $subrow = $this->formatBookingInTable($order, $sub_booking, $params->status, $all_products);
+                $row = array_merge($row, $subrow);
+            }
+
+            $price = $booking->getValue($get_total, true);
+            $total_price += $price;
+            $row[] = printablePrice($price);
+
+            $data[] = $row;
+        }
+
+        return [$data, $total_price];
+    }
+
+    private function formatBookingInTable($order, $booking, $status, &$all_products)
     {
         $row = [];
         [$get_total, $get_function] = $this->bookingsRules($status);
@@ -49,7 +125,7 @@ trait Table
         return $row;
     }
 
-    protected function formatTableFooter($orders, $user_columns, $all_products, $total_price)
+    private function formatTableFooter($orders, $user_columns, $all_products, $total_price)
     {
         $row = [];
 
@@ -72,7 +148,7 @@ trait Table
         Per eliminare, ove richiesto, le colonne dei prodotti non prenotati (con
         prezzo totale = 0)
     */
-    protected function compressTable($user_columns, $data)
+    private function compressTable($user_columns, $data)
     {
         $compressed = [];
 
@@ -99,4 +175,6 @@ trait Table
 
         return $compressed;
     }
+
+    protected abstract function getFormattableDataForTable($master, $params);
 }

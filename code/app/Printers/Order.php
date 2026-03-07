@@ -2,13 +2,11 @@
 
 namespace App\Printers;
 
-use Illuminate\Support\Facades\Mail;
 use PDF;
 
 use App\Helpers\CirclesFilter;
 use App\Printers\Concerns\Orders;
 use App\Formatters\User as UserFormatter;
-use App\Notifications\GenericOrderShipping;
 use App\Printers\Components\Document;
 use App\Printers\Components\Title;
 
@@ -16,27 +14,7 @@ class Order extends Printer
 {
     use Orders;
 
-    private function sendDocumentMail($request, $temp_file_path)
-    {
-        $recipient_mails = $request['recipient_mail_value'] ?? [];
-
-        $real_recipient_mails = array_map(function ($item) {
-            return (object) ['email' => $item];
-        }, array_filter($recipient_mails));
-
-        if (empty($real_recipient_mails)) {
-            return;
-        }
-
-        try {
-            Mail::to($real_recipient_mails)->send(new GenericOrderShipping($temp_file_path, $request['subject_mail'], $request['body_mail']));
-        }
-        catch (\Exception $e) {
-            \Log::error('Impossibile inoltrare documento ordine: ' . $e->getMessage());
-        }
-
-        @unlink($temp_file_path);
-    }
+    /*************************************************************** Shipping */
 
     /*
         Se extra_modifiers == false (o non definito affatto): non contempla i
@@ -45,16 +23,10 @@ class Order extends Printer
     */
     protected function handleShipping($obj, $request)
     {
-        $action = $request['action'] ?? 'download';
-        $subtype = $request['format'] ?? 'pdf';
-        $status = $request['status'] ?? 'pending';
-        $isolate_friends = ($request['isolate_friends'] ?? 0) == 1;
-        $extra_modifiers = ($request['extra_modifiers'] ?? 0) == 1;
-        $required_fields = $request['fields'] ?? [];
-        $fields = splitFields($required_fields);
+        $params = new PrintParams($request, $obj);
         $circles = new CirclesFilter($obj->aggregate, $request);
 
-        $data = $this->formatShipping($obj, $fields, $status, $isolate_friends, $circles, $extra_modifiers);
+        $data = $this->formatShipping($obj, $params, $circles);
 
         $title = __('texts.orders.documents.shipping.heading', [
             'identifier' => $obj->internal_number,
@@ -62,12 +34,11 @@ class Order extends Printer
             'date' => $obj->shipping ? date('d/m/Y', strtotime($obj->shipping)) : date('d/m/Y'),
         ]);
 
-        $filename = sanitizeFilename($title . '.' . $subtype);
-        $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+        $filename = sanitizeFilename($title . '.' . $params->subtype);
 
-        if ($subtype == 'pdf') {
+        if ($params->subtype == 'pdf') {
             $pdf = PDF::loadView('documents.order_shipping_pdf', [
-                'fields' => $fields,
+                'fields' => $params->fields,
                 'order' => $obj,
                 'circles' => $circles,
                 'data' => $data,
@@ -75,14 +46,9 @@ class Order extends Printer
 
             enablePdfPagesNumbers($pdf);
 
-            if (in_array($action, ['save', 'email'])) {
-                $pdf->save($temp_file_path);
-            }
-            else {
-                return $pdf->download($filename);
-            }
+            return $this->outputPdf($params, $filename, $pdf);
         }
-        elseif ($subtype == 'csv') {
+        elseif ($params->subtype == 'csv') {
             $flat_contents = [];
 
             foreach ($data->contents as $c) {
@@ -91,93 +57,47 @@ class Order extends Printer
                 }
             }
 
-            if (in_array($action, ['save', 'email'])) {
-                output_csv($filename, $data->headers, $flat_contents, function ($row) {
-                    return $row;
-                }, $temp_file_path);
-            }
-            else {
-                return output_csv($filename, $data->headers, $flat_contents, function ($row) {
-                    return $row;
-                });
-            }
-        }
-
-        if ($action == 'email') {
-            $this->sendDocumentMail($request, $temp_file_path);
-        }
-        elseif ($action == 'save') {
-            return $temp_file_path;
+            return $this->outputCsv($params, $filename, $data->headers, $flat_contents);
         }
     }
 
-    private function autoGuessFields($order)
-    {
-        $guessed_fields = [];
-
-        if ($order->products->filter(fn ($p) => empty($p->code) === false)->count() != 0) {
-            $guessed_fields[] = 'code';
-        }
-
-        $guessed_fields[] = 'name';
-        $guessed_fields[] = 'quantity';
-
-        if ($order->products->filter(fn ($p) => $p->package_size != 0)->count() != 0) {
-            $guessed_fields[] = 'boxes';
-        }
-
-        $guessed_fields[] = 'measure';
-        $guessed_fields[] = 'unit_price';
-        $guessed_fields[] = 'price';
-
-        return $guessed_fields;
-    }
+    /**************************************************************** Summary */
 
     protected function handleSummary($obj, $request)
     {
-        $action = $request['action'] ?? 'download';
-        $subtype = $request['format'] ?? 'pdf';
-        $extra_modifiers = ($request['extra_modifiers'] ?? 0) == 1;
+        $params = new PrintParams($request, $obj);
 
         $title = __('texts.orders.documents.summary.heading', [
             'identifier' => $obj->internal_number,
             'supplier' => $obj->supplier->name,
         ]);
 
-        $filename = sanitizeFilename($title . '.' . $subtype);
-        $temp_file_path = sprintf('%s/%s', gas_storage_path('temp', true), $filename);
+        $filename = sanitizeFilename($title . '.' . $params->subtype);
 
-        if ($subtype == 'gdxp') {
+        if ($params->subtype == 'gdxp') {
             $contents = view('gdxp.json.supplier', ['obj' => $obj->supplier, 'order' => $obj, 'bookings' => true])->render();
+            $temp_file_path = sprintf('%s/%s', gas_storage_path('temp', true), $filename);
 
-            if ($action == 'email') {
+            if ($params->action == 'email') {
                 file_put_contents($temp_file_path, $contents);
                 $this->sendDocumentMail($request, $temp_file_path);
 
                 return $temp_file_path;
             }
-            elseif ($action == 'download') {
+            elseif ($params->action == 'download') {
                 download_headers('application/json', $filename);
 
                 return $contents;
             }
-            elseif ($action == 'save') {
+            elseif ($params->action == 'save') {
                 file_put_contents($temp_file_path, $contents);
 
                 return $temp_file_path;
             }
         }
         else {
-            $status = $request['status'];
-
-            $required_fields = $request['fields'] ?? [];
-            if (empty($required_fields)) {
-                $required_fields = $this->autoGuessFields($obj);
-            }
-
             $circles = new CirclesFilter($obj->aggregate, $request);
-
-            $document = new Document($subtype);
+            $document = new Document($params->subtype);
 
             $document_title = __('texts.orders.documents.summary.heading', [
                 'identifier' => $obj->internal_number,
@@ -186,111 +106,26 @@ class Order extends Printer
 
             $document->append(new Title($document_title));
 
-            $document = $this->formatSummary($obj, $document, $required_fields, $status, $circles, $extra_modifiers);
-
-            if ($action == 'email') {
-                $document->save($temp_file_path);
-                $this->sendDocumentMail($request, $temp_file_path);
-
-                return $temp_file_path;
-            }
-            elseif ($action == 'download') {
-                return $document->download($filename);
-            }
-            elseif ($action == 'save') {
-                $document->save($temp_file_path);
-
-                return $temp_file_path;
-            }
+            $document = $this->formatSummary($obj, $document, $params, $circles);
+            return $this->outputPdf($params, $filename, $document);
         }
     }
 
-    private function formatTableRows($order, $circles, $status, $fields, &$all_products)
+    /****************************************************************** Table */
+
+    protected function getFormattableDataForTable($master, $params)
     {
-        $bookings = $order->topLevelBookings($status == 'saved' ? 'saved' : null);
+        $circles = new CirclesFilter($master->aggregate, $params->request);
+        $bookings = $master->topLevelBookings($params->status == 'saved' ? 'saved' : null);
         $bookings = $circles->sortBookings($bookings);
 
-        [$get_total, $get_function] = $this->bookingsRules($status);
+        $orders = [$master];
 
-        $data = [];
-        $total_price = 0;
-
-        foreach ($bookings as $booking) {
-            $row = UserFormatter::format($booking->user, $fields->user_columns);
-            $subrow = $this->formatBookingInTable($order, $booking, $status, $all_products);
-            $row = array_merge($row, $subrow);
-
-            $price = $booking->getValue($get_total, true);
-            $total_price += $price;
-            $row[] = printablePrice($price);
-
-            $data[] = $row;
-        }
-
-        return [$data, $total_price];
+        return [$orders, $bookings];
     }
 
     protected function handleTable($obj, $request)
     {
-        $action = $request['action'] ?? 'download';
-        $status = $request['status'] ?? 'pending';
-        $include_missing = $request['include_missing'] ?? 'no';
-        $circles = new CirclesFilter($obj->aggregate, $request);
-
-        $required_fields = $request['fields'] ?? [];
-        $fields = splitFields($required_fields);
-
-        $obj->setRelation('products', $obj->products()->sorted()->get());
-
-        /*
-            Formatto riga di intestazione
-        */
-
-        $user_columns = UserFormatter::getHeaders($fields->user_columns);
-        [$all_products, $headers, $prices_rows] = $this->formatTableHead($user_columns, [$obj]);
-
-        /*
-            Formatto righe delle singole prenotazioni
-        */
-
-        [$data, $total_price] = $this->formatTableRows($obj, $circles, $status, $fields, $all_products);
-        array_unshift($data, $prices_rows);
-
-        /*
-            Formatto riga dei totali
-        */
-
-        $row = $this->formatTableFooter([$obj], $user_columns, $all_products, $total_price);
-        $data[] = $row;
-        $data[] = $headers;
-
-        if ($include_missing == 'no') {
-            $data = $this->compressTable($user_columns, $data);
-            $headers = $data[count($data) - 1];
-        }
-
-        /*
-            Genero documento
-        */
-
-        $filename = sanitizeFilename(__('texts.orders.documents.table.filename', [
-            'identifier' => $obj->internal_number,
-            'supplier' => $obj->supplier->name,
-        ]));
-
-        if ($action == 'email') {
-            $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
-            output_csv($filename, $headers, $data, null, $temp_file_path);
-            $this->sendDocumentMail($request, $temp_file_path);
-        }
-        elseif ($action == 'download') {
-            return output_csv($filename, $headers, $data, null);
-        }
-        elseif ($action == 'save') {
-            $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
-            output_csv($filename, $headers, $data, null, $temp_file_path);
-
-            return $temp_file_path;
-        }
+        return $this->realHandleTable($obj, $obj->aggregate, [$obj], $request);
     }
 }

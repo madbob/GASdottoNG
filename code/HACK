@@ -20,3 +20,9 @@ Per eseguire i test e farsi generare il report di coverage:
 ```
 XDEBUG_MODE=coverage ./vendor/bin/phpunit --stop-on-error --stop-on-failure --coverage-html=/tmp/gasdotto
 ```
+
+oppure
+
+```
+php artisan test --parallel --coverage-html /tmp/gasdotto/
+```

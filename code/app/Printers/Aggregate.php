@@ -12,31 +12,27 @@ use App\Printers\Concerns\Orders;
 use App\Printers\Components\Document;
 use App\Printers\Components\Header;
 use App\Printers\Components\Title;
-use App\Formatters\User as UserFormatter;
 
 class Aggregate extends Printer
 {
     use Orders;
 
+    /*************************************************************** Shipping */
+
     protected function handleShipping($obj, $request)
     {
-        $subtype = $request['format'] ?? 'pdf';
-        $required_fields = $request['fields'] ?? [];
-
-        $fields = splitFields($required_fields);
-        $status = $request['status'] ?? 'pending';
+        $params = new PrintParams($request, $obj);
         $circles = new CirclesFilter($obj, $request);
-        $isolate_friends = ($request['isolate_friends'] ?? 0) == 1;
 
         $temp_data = [];
         foreach ($obj->orders as $order) {
             if ($circles->getMode() == 'all_by_place') {
                 foreach ($circles->combinations() as $combo) {
-                    $temp_data[] = $this->formatShipping($order, $fields, $status, $isolate_friends, $combo, true);
+                    $temp_data[] = $this->formatShipping($order, $params, $combo);
                 }
             }
             else {
-                $temp_data[] = $this->formatShipping($order, $fields, $status, $isolate_friends, $circles, true);
+                $temp_data[] = $this->formatShipping($order, $params, $circles);
             }
         }
 
@@ -100,11 +96,11 @@ class Aggregate extends Printer
         }
 
         $title = __('texts.orders.files.order.shipping');
-        $filename = sanitizeFilename($title . '.' . $subtype);
+        $filename = sanitizeFilename($title . '.' . $params->subtype);
 
-        if ($subtype == 'pdf') {
+        if ($params->subtype == 'pdf') {
             $pdf = PDF::loadView('documents.order_shipping_pdf', [
-                'fields' => $fields,
+                'fields' => $params->fields,
                 'aggregate' => $obj,
                 'circles' => $circles,
                 'data' => $data,
@@ -112,9 +108,9 @@ class Aggregate extends Printer
 
             enablePdfPagesNumbers($pdf);
 
-            return $pdf->download($filename);
+            return $this->outputPdf($params, $filename, $pdf);
         }
-        elseif ($subtype == 'csv') {
+        elseif ($params->subtype == 'csv') {
             $flat_contents = [];
 
             foreach ($data->contents as $c) {
@@ -123,11 +119,11 @@ class Aggregate extends Printer
                 }
             }
 
-            return output_csv($filename, $data->headers, $flat_contents, function ($row) {
-                return $row;
-            });
+            return $this->outputCsv($params, $filename, $data->headers, $flat_contents);
         }
     }
+
+    /**************************************************************** Summary */
 
     private function handleGDXP($obj)
     {
@@ -172,17 +168,14 @@ class Aggregate extends Printer
 
     protected function handleSummary($obj, $request)
     {
-        $subtype = $request['format'] ?? 'pdf';
+        $params = new PrintParams($request, $obj);
 
-        if ($subtype == 'gdxp') {
+        if ($params->subtype == 'gdxp') {
             return $this->handleGDXP($obj);
         }
         else {
-            $required_fields = $request['fields'] ?? [];
-            $status = $request['status'];
             $circles = new CirclesFilter($obj, $request);
-
-            $document = new Document($subtype);
+            $document = new Document($params->subtype);
 
             $document_title = __('texts.products.list') . '<br>';
             if ($obj->orders->count() <= aggregatesConvenienceLimit()) {
@@ -207,98 +200,35 @@ class Aggregate extends Printer
 
                 foreach ($obj->orders as $order) {
                     $document->append(new Header($order->printableName()));
-                    $document = $this->formatSummary($order, $document, $required_fields, $status, $circles, false);
+                    $document = $this->formatSummary($order, $document, $params, $circles);
                 }
             }
 
             $title = __('texts.products.list');
-            $filename = sanitizeFilename($title . '.' . $subtype);
-
-            return $document->download($filename);
+            $filename = sanitizeFilename($title . '.' . $params->subtype);
+            return $this->outputPdf($params, $filename, $document);
         }
     }
 
-    private function orderTopBookingsByShipping($aggregate, $circles, $status = null)
-    {
-        $bookings = $aggregate->bookings;
+    /****************************************************************** Table */
 
-        if ($status) {
-            $bookings = $bookings->where('status', $status);
+    protected function getFormattableDataForTable($master, $params)
+    {
+        $bookings = $master->bookings;
+
+        if ($params->status == 'saved') {
+            $bookings = $bookings->where('status', $params->status);
         }
 
-        return $circles->sortBookings($bookings);
-    }
+        $circles = new CirclesFilter($master, $params->request);
+        $bookings = $circles->sortBookings($bookings);
 
-    private function formatTableRows($aggregate, $circles, $status, $fields, &$all_products)
-    {
-        $bookings = $this->orderTopBookingsByShipping($aggregate, $circles, $status == 'saved' ? 'saved' : null);
-        [$get_total, $get_function] = $this->bookingsRules($status);
-
-        $data = [];
-        $total_price = 0;
-
-        foreach ($bookings as $booking) {
-            $row = UserFormatter::format($booking->user, $fields->user_columns);
-
-            foreach ($aggregate->orders as $order) {
-                $sub_booking = $booking->getOrderBooking($order);
-                $subrow = $this->formatBookingInTable($order, $sub_booking, $status, $all_products);
-                $row = array_merge($row, $subrow);
-            }
-
-            $price = $booking->getValue($get_total, true);
-            $total_price += $price;
-            $row[] = printablePrice($price);
-
-            $data[] = $row;
-        }
-
-        return [$data, $total_price];
+        $orders = $master->orders;
+        return [$orders, $bookings];
     }
 
     protected function handleTable($obj, $request)
     {
-        $status = $request['status'] ?? 'pending';
-        $include_missing = $request['include_missing'] ?? 'no';
-        $circles = new CirclesFilter($obj, $request);
-
-        $required_fields = $request['fields'] ?? [];
-        $fields = splitFields($required_fields);
-
-        /*
-            Formatto riga di intestazione
-        */
-
-        $user_columns = UserFormatter::getHeaders($fields->user_columns);
-        [$all_products, $headers, $prices_rows] = $this->formatTableHead($user_columns, $obj->orders);
-
-        /*
-            Formatto righe delle singole prenotazioni
-        */
-
-        [$data, $total_price] = $this->formatTableRows($obj, $circles, $status, $fields, $all_products);
-        array_unshift($data, $prices_rows);
-
-        /*
-            Formatto riga dei totali
-        */
-
-        $row = $this->formatTableFooter($obj->orders, $user_columns, $all_products, $total_price);
-        $data[] = $row;
-        $data[] = $headers;
-
-        if ($include_missing == 'no') {
-            $data = $this->compressTable($user_columns, $data);
-            $headers = $data[count($data) - 1];
-        }
-
-        /*
-            Genero documento
-        */
-
-        $filename = __('texts.orders.files.order.table');
-        $filename = sanitizeFilename($filename . '.csv');
-
-        return output_csv($filename, $headers, $data, null);
+        return $this->realHandleTable($obj, $obj, $obj->orders, $request);
     }
 }

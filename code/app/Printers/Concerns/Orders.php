@@ -2,6 +2,10 @@
 
 namespace App\Printers\Concerns;
 
+use Illuminate\Support\Facades\Mail;
+
+use App\Notifications\GenericOrderShipping;
+
 trait Orders
 {
     use Shipping, Summary, Table;
@@ -56,7 +60,7 @@ trait Orders
         return $modifiers;
     }
 
-    private function formatProduct($fields, $formattable, $product_redux, $product, $internal_offsets)
+    private function formatProduct($fields, $formattable, $product_redux, $product, $internal_offsets): array
     {
         $ret = [];
 
@@ -105,6 +109,68 @@ trait Orders
         }
 
         return $ret;
+    }
+
+    protected function sendDocumentMail($request, $temp_file_path)
+    {
+        $recipient_mails = $request['recipient_mail_value'] ?? [];
+
+        $real_recipient_mails = array_map(function ($item) {
+            return (object) ['email' => $item];
+        }, array_filter($recipient_mails));
+
+        if (empty($real_recipient_mails)) {
+            return;
+        }
+
+        try {
+            Mail::to($real_recipient_mails)->send(new GenericOrderShipping($temp_file_path, $request['subject_mail'], $request['body_mail']));
+        }
+        catch (\Exception $e) {
+            \Log::error('Impossibile inoltrare documento ordine: ' . $e->getMessage());
+        }
+
+        @unlink($temp_file_path);
+    }
+
+    /*
+        Reminder: questa viene usata anche per le istanze di
+        App\Printers\Components\Document (che opportunamente hanno la stessa API
+        di PDF)
+    */
+    protected function outputPdf($params, $filename, $pdf)
+    {
+        if ($params->action == 'download') {
+            return $pdf->download($filename);
+        }
+        else {
+            $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+            $pdf->save($temp_file_path);
+
+            if ($params->action == 'email') {
+                $this->sendDocumentMail($params->request, $temp_file_path);
+            }
+            elseif ($params->action == 'save') {
+                return $temp_file_path;
+            }
+        }
+    }
+
+    protected function outputCsv($params, $filename, $headers, $data)
+    {
+        if ($params->action == 'email') {
+            $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+            output_csv($filename, $headers, $data, null, $temp_file_path);
+            $this->sendDocumentMail($params->request, $temp_file_path);
+        }
+        elseif ($params->action == 'download') {
+            return output_csv($filename, $headers, $data, null);
+        }
+        elseif ($params->action == 'save') {
+            $temp_file_path = sprintf('%s/%s', sys_get_temp_dir(), $filename);
+            output_csv($filename, $headers, $data, null, $temp_file_path);
+            return $temp_file_path;
+        }
     }
 
     /*

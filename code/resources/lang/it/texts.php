@@ -1109,10 +1109,6 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
       array (
         'heading' => 'Prodotti ordine :identifier presso :supplier',
       ),
-      'table' =>
-      array (
-        'filename' => 'Tabella Ordine :identifier presso :supplier.csv',
-      ),
     ),
     'all' => 'Ordini',
     'pending_packages' => 'Confezioni Da Completare',

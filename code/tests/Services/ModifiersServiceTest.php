@@ -9,6 +9,7 @@ use App\Helpers\CirclesFilter;
 use App\Booking;
 use App\Exceptions\AuthException;
 use App\Printers\Order as OrderPrinter;
+use App\Printers\PrintParams;
 
 class ModifiersServiceTest extends TestCase
 {
@@ -990,7 +991,14 @@ class ModifiersServiceTest extends TestCase
         $shipping_cost_found = false;
 
         $printer = new OrderPrinter();
-        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', false, new CirclesFilter($order->aggregate, null), 1);
+
+        $params = new PrintParams([
+            'fields' => ['lastname', 'firstname', 'name', 'quantity', 'price'],
+            'status' => 'booked',
+            'isolate_friends' => false,
+        ], $order);
+
+        $formatted = $printer->formatShipping($order, $params, new CirclesFilter($order->aggregate, null));
 
         foreach ($formatted->contents as $d) {
             if ($d->user_id == $booking->user_id) {
@@ -1067,7 +1075,14 @@ class ModifiersServiceTest extends TestCase
         $shipping_cost_found = false;
 
         $printer = new OrderPrinter();
-        $formatted = $printer->formatShipping($order, splitFields(['lastname', 'firstname', 'name', 'quantity', 'price']), 'booked', false, new CirclesFilter($order->aggregate, null), 1);
+
+        $params = new PrintParams([
+            'fields' => ['lastname', 'firstname', 'name', 'quantity', 'price'],
+            'status' => 'booked',
+            'isolate_friends' => false,
+        ], $order);
+
+        $formatted = $printer->formatShipping($order, $params, new CirclesFilter($order->aggregate, null));
 
         foreach ($formatted->contents as $d) {
             if ($d->user_id == $newUser->id) {
