@@ -16,7 +16,19 @@ trait ContactableTrait
 {
     public function contacts(): MorphMany
     {
-        return $this->morphMany(Contact::class, 'target');
+        /*
+            Qui forzo un qualche tipo di ordinamento per i contatti, in modo che
+            sia possibile scegliere il loro ordine (alla peggio: eliminandoli e
+            ricreandoli nell'ordine desiderato).
+            Questo perché quando accedo ad un indirizzo email per le notifiche
+            con getEmailAttribute() prendo "il primo", ma senza un esplicito
+            ordinamento di qualche tipo non è possibile determinare quale sia
+            questo "primo" e, in mancanza di un parametro, "il primo" è quello
+            il cui ID viene alfabeticamente prima: considerando che gli ID dei
+            Contact sono degli slug, con all'interno un hash del valore stesso,
+            non c'è modo di avere un ordinamento predicibile
+        */
+        return $this->morphMany(Contact::class, 'target')->orderBy('created_at', 'asc');
     }
 
     public function updateContacts($request)
