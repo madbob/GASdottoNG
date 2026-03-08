@@ -74,7 +74,7 @@ class Statistics {
     {
         this.loadingGraphs('generic');
 
-        $.getJSON('stats/summary', {
+        $.getJSON(utils.absoluteUrl() + '/stats/summary', {
             startdate: $('#stats-summary-form input[name=startdate]').val(),
             enddate: $('#stats-summary-form input[name=enddate]').val(),
             target: $('#stats-summary-form input[name=target]').val(),
@@ -89,7 +89,7 @@ class Statistics {
     {
         this.loadingGraphs('products');
 
-        $.getJSON('stats/supplier', {
+        $.getJSON(utils.absoluteUrl() + '/stats/supplier', {
             supplier: $('#stats-supplier-form select[name=supplier] option:selected').val(),
             startdate: $('#stats-supplier-form input[name=startdate]').val(),
             enddate: $('#stats-supplier-form input[name=enddate]').val(),

@@ -5,20 +5,21 @@
 
     RewriteEngine On
 
-    <IfDefine BASE>
-        RewriteBase ${BASE}
-    </IfDefine>
+    # Per rendere accessibile GASdotto da una sottocartella è consigliato
+    # sfruttare il rewrite di apache.
+    # Nel file di configurazione del proprio VirtualHost si può aggiungere un
+    # parametro tipo
+    # Alias /sottocartella "/path/a/GASdottoNG/code/public"
+    #
+    # RewriteBase /sottocartella
 
-    # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)/$ /$1 [L,R=301]
 
-    # Handle Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 
-    # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 </IfModule>
