@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -11,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Notifications\RemindOrderNotification;
 use App\Order;
 
-class NotifyRemindOrder implements ShouldQueue
+class NotifyRemindOrder
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -26,10 +25,12 @@ class NotifyRemindOrder implements ShouldQueue
     {
         foreach ($aggregate_users as $auser) {
             try {
-                $auser->user->notify(new RemindOrderNotification($auser->orders));
+                if (filled($auser->user->email)) {
+                    $auser->user->notify(new RemindOrderNotification($auser->orders));
+                }
             }
             catch (\Exception $e) {
-                \Log::error('Impossibile inoltrare mail di promemoria ordine a ' . $auser->user->id . ': ' . $e->getMessage());
+                \Log::error('Impossibile inoltrare mail di promemoria ordine a ' . $auser->user->email . ': ' . $e->getMessage());
             }
         }
     }
@@ -42,7 +43,6 @@ class NotifyRemindOrder implements ShouldQueue
             $order = Order::find($order_id);
             if (is_null($order)) {
                 \Log::error('Ordine non trovato per notifica reminder: ' . $order_id);
-
                 continue;
             }
 

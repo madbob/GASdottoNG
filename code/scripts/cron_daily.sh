@@ -23,3 +23,4 @@ do
 done
 
 mv /tmp/.env .
+chown -R www-data:www-data storage/logs/*

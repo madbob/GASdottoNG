@@ -78,14 +78,14 @@ class RegisterController extends Controller
     {
         $gas = Gas::find($data['gas_id']);
         if ($gas == null) {
-            throw new \Exception('No GAS selected', 1);
+            throw new \UnexpectedValueException('Nessun GAS selezionato');
         }
 
         $options = [
-            'username' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'firstname' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
             'verify' => [new Captcha()],
         ];
 
@@ -116,8 +116,8 @@ class RegisterController extends Controller
         */
         $test = User::where('firstname', $data['firstname'])->where('lastname', $data['lastname'])->first();
         if ($test != null) {
-            $options['firstname'] = array_merge($options['firstname'] ?? [], [new FirstLastName()]);
-            $options['lastname'] = array_merge($options['lastname'] ?? [], [new FirstLastName()]);
+            $options['firstname'] = array_merge($options['firstname'], [new FirstLastName()]);
+            $options['lastname'] = array_merge($options['lastname'], [new FirstLastName()]);
         }
 
         return Validator::make($data, $options);

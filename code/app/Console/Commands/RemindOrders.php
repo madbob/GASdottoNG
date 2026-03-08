@@ -37,7 +37,7 @@ class RemindOrders extends Command
                 $days = (int) $gas->send_order_reminder;
                 $expiration = $today->copy()->addDays($days);
 
-                if ($order->end == $expiration->format('Y-m-d')) {
+                if ($order->end->format('Y-m-d') == $expiration->format('Y-m-d')) {
                     if (isset($notifications[$gas->id]) === false) {
                         $notifications[$gas->id] = [];
                     }
@@ -56,10 +56,8 @@ class RemindOrders extends Command
         }
 
         $gas = Gas::all();
-        $today = Carbon::today()->format('Y-m-d');
-
         foreach ($gas as $g) {
-            $g->setConfig('last_sent_order_reminder', $today);
+            $g->setConfig('last_sent_order_reminder', $today_formatted);
         }
     }
 }

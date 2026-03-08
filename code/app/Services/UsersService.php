@@ -62,7 +62,7 @@ class UsersService extends BaseService
     private function updatePassword($user, $request)
     {
         $user->password = Hash::make($request['password']);
-        \Log::debug('Cambio password utente ' . $user->username);
+        \Log::debug('Cambio password utente ' . $user->username . ' in updatePassword');
 
         if (isset($request['enforce_password_change']) && $request['enforce_password_change'] == 'true') {
             $user->enforce_password_change = true;
@@ -144,7 +144,7 @@ class UsersService extends BaseService
                     $user = $this->show($id);
 
                     $this->transformAndSetIfSet($user, $request, 'password', function ($password) use ($user) {
-                        \Log::debug('Cambio password utente ' . $user->username);
+                        \Log::debug('Cambio password utente ' . $user->username . ' in updateAccessType');
 
                         return Hash::make($password);
                     });
@@ -237,7 +237,7 @@ class UsersService extends BaseService
 
         if (isset($request['password']) && ! empty($request['password'])) {
             $this->transformAndSetIfSet($user, $request, 'password', function ($password) use ($user) {
-                \Log::debug('Cambio password utente ' . $user->username);
+                \Log::debug('Cambio password utente ' . $user->username . ' in update');
 
                 return Hash::make($password);
             });
@@ -319,12 +319,12 @@ class UsersService extends BaseService
         }
 
         $parent = $this->show($parent_id);
-        if ($parent->can('users.subusers') === false) {
+        if (!$parent->can('users.subusers')) {
             throw new IllegalArgumentException('Il nuovo utente assegnatario non può gestire amici');
         }
 
         $user = $this->show($user_id);
-        if ($user->isFriend() === false) {
+        if (!$user->isFriend()) {
             throw new IllegalArgumentException('Un utente regolare non può essere retrocesso ad amico');
         }
 
@@ -345,7 +345,7 @@ class UsersService extends BaseService
     {
         $user = $this->show($id);
 
-        if ($user->testUserAccess() === false) {
+        if (!$user->testUserAccess()) {
             $this->ensureAuth(['users.admin' => 'gas']);
         }
 
@@ -358,7 +358,7 @@ class UsersService extends BaseService
 
         $user = $this->show($id);
 
-        if ($user->testUserAccess() === false) {
+        if (!$user->testUserAccess()) {
             $this->ensureAuth(['users.destroy' => 'gas']);
         }
         else {
@@ -369,7 +369,7 @@ class UsersService extends BaseService
                 fatto la richiesta, mi accerto che abbia il relativo permesso di
                 autodistruzione
             */
-            if ($user->isFriend() == false) {
+            if (!$user->isFriend()) {
                 $this->ensureAuth(['users.selfdestroy' => 'gas']);
             }
         }

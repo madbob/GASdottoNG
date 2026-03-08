@@ -48,10 +48,12 @@ class NotifyNewOrder implements ShouldQueue
 
             foreach ($users as $user) {
                 try {
-                    $user->notify(new NewOrderNotification($order));
+                    if (filled($user->email)) {
+                        $user->notify(new NewOrderNotification($order));
+                    }
                 }
                 catch (\Exception $e) {
-                    \Log::error('Impossibile inoltrare mail di notifica apertura ordine: ' . $e->getMessage());
+                    \Log::error('Impossibile inoltrare mail di notifica apertura ordine a ' . $user->email . ': ' . $e->getMessage());
                 }
             }
         }

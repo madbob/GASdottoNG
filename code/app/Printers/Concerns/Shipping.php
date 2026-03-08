@@ -12,8 +12,11 @@ use App\ModifiedValue;
 
 trait Shipping
 {
-    private function collectModifiersTotal($booking, $aggregate_data, $isolate_friends, $extra_modifiers)
+    private function collectModifiersTotal($booking, $aggregate_data, $params)
     {
+        $isolate_friends = $params->isolate_friends;
+        $extra_modifiers = $params->extra_modifiers;
+
         $total_modifiers = 0;
         $labels = [];
 
@@ -141,7 +144,7 @@ trait Shipping
 
             $original_booking_status = $this->fakeBookingStatus($params->status, $params->isolate_friends, $booking);
 
-            [$labels_modifiers, $total_modifiers] = $this->collectModifiersTotal($booking, $aggregate_data, $params->isolate_friends, $params->extra_modifiers);
+            [$labels_modifiers, $total_modifiers] = $this->collectModifiersTotal($booking, $aggregate_data, $params);
             $obj->totals = array_merge($obj->totals, $labels_modifiers);
             $obj->totals['total'] = $booking->getValue($internal_offsets->by_booking, $params->isolate_friends === false) + $total_modifiers;
 

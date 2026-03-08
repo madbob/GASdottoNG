@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -14,7 +13,7 @@ use App\Notifications\SupplierOrderShipping;
 use App\Printers\Order as OrderPrinter;
 use App\Order;
 
-class NotifyClosedOrder implements ShouldQueue
+class NotifyClosedOrder
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -84,7 +83,6 @@ class NotifyClosedOrder implements ShouldQueue
             $order = Order::find($order_id);
             if (is_null($order)) {
                 \Log::error('Non trovato ordine in fase di notifica chiusura: ' . $order_id . ' / ' . env('DB_DATABASE'));
-
                 continue;
             }
 
@@ -95,8 +93,17 @@ class NotifyClosedOrder implements ShouldQueue
                 $hub->enable(true);
                 $hub->setGas($gas->id);
 
-                $pdf_file_path = $printer->document($order, 'summary', ['format' => 'pdf', 'status' => 'pending', 'action' => 'save']);
-                $csv_file_path = $printer->document($order, 'summary', ['format' => 'csv', 'status' => 'pending', 'action' => 'save']);
+                $pdf_file_path = $printer->document($order, 'summary', [
+                    'format' => 'pdf',
+                    'status' => 'pending',
+                    'action' => 'save'
+                ]);
+
+                $csv_file_path = $printer->document($order, 'summary', [
+                    'format' => 'csv',
+                    'status' => 'pending',
+                    'action' => 'save'
+                ]);
 
                 $all_files[] = $pdf_file_path;
                 $all_files[] = $csv_file_path;
