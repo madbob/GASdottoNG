@@ -303,9 +303,7 @@ class MovementsService extends BaseService
                 $current_status = resetAllCurrentBalances();
                 $this->recalculateCurrentBalance();
                 $hub->setRecalculating(false);
-                $diffs = CreditableTrait::compareBalances($current_status);
-
-                return $diffs;
+                return CreditableTrait::compareBalances($current_status);
             });
         }
         catch (\Exception $e) {
@@ -339,7 +337,7 @@ class MovementsService extends BaseService
 
                 $index = 0;
                 do {
-                    $movements = Movement::where('date', '<', $date)->where('archived', false)->take(100)->offset(100 * $index)->get();
+                    $movements = Movement::where('date', '<=', $date)->where('archived', false)->take(100)->offset(100 * $index)->get();
                     if ($movements->count() == 0) {
                         break;
                     }

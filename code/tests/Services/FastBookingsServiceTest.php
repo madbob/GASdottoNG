@@ -99,8 +99,6 @@ class FastBookingsServiceTest extends TestCase
         $friend = $this->createFriend($this->userWithBasePerms);
         $this->actingAs($friend);
 
-        \Log::debug('qui: ' . $friend->id);
-
         [$data_friend, $booked_count_friend, $total_friend] = $this->randomQuantities($this->sample_order->products);
         $data_friend['action'] = 'booked';
         app()->make('BookingsService')->bookingUpdate($data_friend, $this->sample_order->aggregate, $friend, false);
