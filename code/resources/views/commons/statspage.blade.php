@@ -36,19 +36,25 @@ else {
 
         <div class="row">
             <div class="col-lg mb-2">
-                <h4>{{ __('texts.generic.value') }}</h4>
+                <div class="row row-cols-auto">
+                    <h4>{{ __('texts.generic.value') }}</h4>
+                </div>
                 <div class="ct-chart-bar" id="stats-generic-expenses"></div>
             </div>
 
 			@if(is_a($target, \App\User::class) == false)
 	            <div class="col-lg mb-2">
-	                <h4>{{ __('texts.user.all') }}</h4>
+                    <div class="row row-cols-auto">
+                        <h4>{{ __('texts.user.all') }}</h4>
+                    </div>
 	                <div class="ct-chart-bar" id="stats-generic-users"></div>
 	            </div>
 			@endif
 
             <div class="col-lg mb-2">
-                <h4>{{ __('texts.generic.categories') }}</h4>
+                <div class="row row-cols-auto">
+                    <h4>{{ __('texts.generic.categories') }}</h4>
+                </div>
                 <div class="ct-chart-bar" id="stats-generic-categories"></div>
             </div>
         </div>
@@ -82,19 +88,25 @@ else {
 
         <div class="row">
             <div class="col-lg mb-2">
-                <h4>{{ __('texts.generic.value') }}</h4>
+                <div class="row row-cols-auto">
+                    <h4>{{ __('texts.generic.value') }}</h4>
+                </div>
                 <div class="ct-chart-bar" id="stats-products-expenses"></div>
             </div>
 
 			@if(is_a($target, \App\User::class) == false)
 	            <div class="col-lg mb-2">
-	                <h4>{{ __('texts.user.all') }}</h4>
+                    <div class="row row-cols-auto">
+    	                <h4>{{ __('texts.user.all') }}</h4>
+                    </div>
 	                <div class="ct-chart-bar" id="stats-products-users"></div>
 	            </div>
 			@endif
 
             <div class="col-lg mb-2">
-                <h4>{{ __('texts.generic.categories') }}</h4>
+                <div class="row row-cols-auto">
+                    <h4>{{ __('texts.generic.categories') }}</h4>
+                </div>
                 <div class="ct-chart-bar" id="stats-products-categories"></div>
             </div>
         </div>
