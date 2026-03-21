@@ -57,19 +57,8 @@ class MovementsService extends BaseService
         }
     }
 
-    public function list($request)
+    private function filterByDate($request, $query)
     {
-        /*
-            TODO sarebbe assai più efficiente usare with('sender') e
-            with('target'), ma poi la relazione in Movement si spacca (cambiando
-            in virtù del tipo di oggetto linkato). Sarebbe opportuno introdurre
-            un'altra relazione espressamente dedicata ai tipi di oggetto
-            soft-deletable
-        */
-        $query = Movement::orderBy('date', 'desc');
-        $own_movements = false;
-        $currentuser = Auth::user();
-
         if (isset($request['startdate'])) {
             $start = decodeDate($request['startdate']);
         }
@@ -91,6 +80,30 @@ class MovementsService extends BaseService
         if (! empty($end)) {
             $query->where('date', '<=', $end);
         }
+
+        return $query;
+    }
+
+    private function filterByRange($request, $query)
+    {
+        if (isset($request['amountstart']) && ! empty($request['amountstart']) && $request['amountstart'] != '0') {
+            $query->where('amount', '>=', $request['amountstart']);
+        }
+
+        if (isset($request['amountend']) && ! empty($request['amountend']) && $request['amountend'] != '0') {
+            $query->where('amount', '<=', $request['amountend']);
+        }
+
+        return $query;
+    }
+
+    public function list($request)
+    {
+        $query = Movement::orderBy('date', 'desc');
+        $own_movements = false;
+        $currentuser = Auth::user();
+
+        $query = $this->filterByDate($request, $query);
 
         if (isset($request['type']) && $request['type'] != 'none') {
             $query->where('type', $request['type']);
@@ -149,14 +162,7 @@ class MovementsService extends BaseService
         }
 
         $query = $this->filterBySupplier($supplier, $currentuser, $query, $own_movements);
-
-        if (isset($request['amountstart']) && ! empty($request['amountstart']) && $request['amountstart'] != '0') {
-            $query->where('amount', '>=', $request['amountstart']);
-        }
-
-        if (isset($request['amountend']) && ! empty($request['amountend']) && $request['amountend'] != '0') {
-            $query->where('amount', '<=', $request['amountend']);
-        }
+        $query = $this->filterByRange($request, $query);
 
         return $query->with(['sender', 'currency', 'target' => function (MorphTo $morphTo) {
             $morphTo->morphWith([
@@ -314,6 +320,15 @@ class MovementsService extends BaseService
         }
     }
 
+    /*
+        Inizializza il query builder per accedere ai movimenti archiviabili a
+        partire da una certa data
+    */
+    private function closableMovements(string $date)
+    {
+        return Movement::where('date', '<=', $date)->where('archived', false);
+    }
+
     public function closeBalance($request)
     {
         $this->ensureAuth(['movements.admin' => 'gas']);
@@ -337,7 +352,7 @@ class MovementsService extends BaseService
 
                 $index = 0;
                 do {
-                    $movements = Movement::where('date', '<=', $date)->where('archived', false)->take(100)->offset(100 * $index)->get();
+                    $movements = $this->closableMovements($date)->take(100)->offset(100 * $index)->get();
                     if ($movements->count() == 0) {
                         break;
                     }
@@ -356,7 +371,7 @@ class MovementsService extends BaseService
                 /*
                     Archivio i movimenti più vecchi della data indicata
                 */
-                Movement::where('date', '<', $date)->where('archived', false)->update(['archived' => true]);
+                $this->closableMovements($date)->update(['archived' => true]);
 
                 /*
                     Duplico i saldi appena calcolati, e alle copie precedenti

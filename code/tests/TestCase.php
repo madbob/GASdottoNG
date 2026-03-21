@@ -212,25 +212,18 @@ abstract class TestCase extends BaseTestCase
         $data = [];
         $booked_count = 0;
         $total = 0;
-        $available = $products->count();
 
-        foreach ($products as $product) {
-            $q = rand(0, 3);
+        do {
+            foreach ($products as $product) {
+                $q = rand(0, 3);
 
-            if ($q != 0) {
-                $data[$product->id] = $q;
-                $booked_count++;
-                $total += $product->price * $q;
-
-                /*
-                    Deliberatamente faccio in modo di avere sempre almeno un
-                    prodotto dell'ordine non prenotato
-                */
-                if ($booked_count == $available - 1) {
-                    break;
+                if ($q != 0) {
+                    $data[$product->id] = $q;
+                    $booked_count++;
+                    $total += $product->price * $q;
                 }
             }
-        }
+        } while($booked_count == 0);
 
         return [$data, $booked_count, $total];
     }
