@@ -54,8 +54,7 @@ class Statistics {
                 const chart = new BarChart(selector, data, this.commonGraphConfig());
 
                 chart.on('created', (data) => {
-                    const el = this.addBootstrapDropdown(selector);
-                    this.addDownloadButtons(data.svg['_node'], el, selector);
+                    this.addDownloadButtons(data.svg['_node'], selector);
                 });
             }
         }
@@ -106,7 +105,7 @@ class Statistics {
         });
     }
 
-    static addBootstrapDropdown(selector) 
+    /* static addBootstrapDropdown(selector) 
     {
         const container = document.createElement('div');
         container.className = 'dropdown';
@@ -130,39 +129,51 @@ class Statistics {
         $(selector).prev().append(container);   
         
         return ul;
-    }
+    } */
 
-    static async addDownloadButtons(svg, root, filename) 
+    static async addDownloadButtons(svg, selector) 
     {
         const url = await svgToImage(svg);
-
-        for (const type in url) {
+        
+        /* for (const type in url) {
             const li = document.createElement('li');
             root.appendChild(li);
 
-            const firstLetter = type.charAt(0);
+            // const firstLetter = type.charAt(0);
             const a = document.createElement('a');
             a.classList.add('dropdown-item', 'form-download');
             a.href = url[type];
             a.download = filename.replace('#', '') + '.' + type;
             a.text = type.replace(firstLetter, firstLetter.toUpperCase());
             li.appendChild(a);
-        }
+        } */
+
+        const a = document.createElement('a');
+        a.classList.add('btn', 'btn-light', 'form-download');
+        a.href = url;
+        a.download = selector.replace('#', '') + '.jpeg';
+        a.text = 'Esporta ';
+
+        const i = document.createElement('i');
+        i.className = 'bi-download';
+        a.append(i);
+
+        $(selector).prev().append(a);
     }
 }
 
 function svgToImage(svgElement) 
 {
-    // 1. Clone the SVG to avoid messing with the live page
-    const clonedSvg = svgElement.cloneNode(true);
-
-    // 2. Load element classes to inline style 
-    inlineStyle(svgElement, clonedSvg);
-
-    // 3. Validate SVG
-    validateSVG(clonedSvg);
-
     return new Promise((resolve, reject) => {
+        // 1. Clone the SVG to avoid messing with the live page
+        const clonedSvg = svgElement.cloneNode(true);
+
+        // 2. Load element classes to inline style 
+        inlineStyle(svgElement, clonedSvg);
+
+        // 3. Validate SVG
+        validateSVG(clonedSvg);
+
         // 4. Serialize SVG and create URL
         const svgData = new XMLSerializer().serializeToString(clonedSvg);
         const base64Svg = toBase64(svgData);
@@ -181,15 +192,17 @@ function svgToImage(svgElement)
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0);
+            
+            // const jpegUrl = canvas.toDataURL('image/jpeg');
+            // const pngUrl = canvas.toDataURL('image/png');
 
-            const jpegUrl = canvas.toDataURL('image/jpeg');
-            const pngUrl = canvas.toDataURL('image/png');
+            const dataUrl = canvas.toDataURL('image/jpeg');
 
             URL.revokeObjectURL(url);
-            resolve({
+            resolve(dataUrl /* {
                 'jpeg': jpegUrl, 
                 'png': pngUrl
-            });
+            } */);
         }
 
         img.onerror = (error) => {
