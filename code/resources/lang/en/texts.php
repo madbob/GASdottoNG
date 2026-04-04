@@ -1051,7 +1051,6 @@ return array(
         'save_delivery' => 'Save informations',
         'do_delivery' => 'Delivery',
         'help_order_export_shipping' => 'From here you can obtain a document with all the informations about each reservation. Useful to handle while managing deliveries.',
-        'notify_days_before' => 'How many days before?',
         'handle_packages' => 'Force pack completion',
         'list_delivering' => 'Orders in Delivery',
         'help_aggregate_export_table' => 'Here you can obtain a CSV document with the details of all ordered products in the current order.',

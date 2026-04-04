@@ -1178,7 +1178,6 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
     'save_delivery' => 'Salva Informazioni',
     'do_delivery' => 'Consegna',
     'help_order_export_shipping' => 'Da qui puoi ottenere un documento in cui si trovano le informazioni relative alle singole prenotazioni. Utile da consultare mentre si effettuano le consegne.',
-    'notify_days_before' => 'Quanti giorni prima?',
     'handle_packages' => 'Forza completamento confezioni',
     'list_delivering' => 'Ordini in Consegna',
     'help_aggregate_export_table' => 'Da qui puoi ottenere un documento CSV coi dettagli di tutti i prodotti prenotati in quest\'ordine.',

@@ -9,7 +9,7 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-xl-6">
                     <x-larastrap::accordion always_open="true">
                         @include('gas.general')
                         @include('gas.users')
@@ -21,7 +21,7 @@
                     </x-larastrap::accordion>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-xl-6">
                     @include('gas.extras')
                 </div>
             </div>
