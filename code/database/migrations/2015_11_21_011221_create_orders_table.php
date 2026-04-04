@@ -34,7 +34,7 @@ class CreateOrdersTable extends Migration
             $table->string('order_id');
             $table->string('product_id');
             $table->string('notes', 500)->default('');
-            $table->string('prices', 2000)->default('');
+            $table->string('prices', 4000)->default('');
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
