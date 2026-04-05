@@ -72,7 +72,7 @@ class CloseOrders extends Command
         }
     }
 
-    private function dispatchToReferents()
+    private function dispatchToReferents($notifiable_users)
     {
         foreach ($notifiable_users as $notifiable) {
             try {
