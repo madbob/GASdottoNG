@@ -357,6 +357,83 @@ class Utils {
             }
         });
     }
+
+    static svgToImage(svgElement)
+    {
+        return new Promise((resolve, reject) => {
+            const clonedSvg = svgElement.cloneNode(true);
+            this.inlineStyle(svgElement, clonedSvg);
+            this.validateSVG(clonedSvg);
+            const svgData = new XMLSerializer().serializeToString(clonedSvg);
+            const base64Svg = this.toBase64(svgData);
+            const url = 'data:image/svg+xml;charset=utf-8;base64,' + base64Svg;
+
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = url;
+
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = svgElement.clientWidth;
+                canvas.height = svgElement.clientHeight;
+
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                const dataUrl = canvas.toDataURL('image/jpeg');
+                URL.revokeObjectURL(url);
+                resolve(dataUrl);
+            }
+
+            img.onerror = (error) => {
+                URL.revokeObjectURL(url);
+                reject(error);
+            }
+        });
+    }
+
+    static toBase64(data)
+    {
+        const uInt8Array = new TextEncoder().encode(data);
+        let binary = '';
+
+        for (let i = 0; i < uInt8Array.length; ++i) {
+            binary += String.fromCharCode(uInt8Array[i]);
+        }
+
+        return btoa(binary);
+    }
+
+    static inlineStyle(original, clone)
+    {
+        const originalElements = original.querySelectorAll('*');
+        const clonedElements = clone.querySelectorAll('*');
+
+        originalElements.forEach((el, i) => {
+            const computed = getComputedStyle(el);
+            const target = clonedElements[i];
+
+            const styleProps = [
+                'fill', 'stroke', 'stroke-width', 'opacity',
+                'display', 'font-family', 'font-size', 'stop-color'
+            ];
+
+            styleProps.forEach(prop => {
+                target.style[prop] = computed.getPropertyValue(prop);
+            });
+        });
+    }
+
+    static validateSVG(svg)
+    {
+        const elements = svg.querySelectorAll('*');
+        elements.forEach(el => {
+            if(el instanceof HTMLElement) {
+                el.removeAttribute('xmlns');
+            }
+        })
+    }
 }
 
 $.fn.textVal = function(value) {

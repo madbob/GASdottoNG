@@ -36,26 +36,23 @@ else {
 
         <div class="row">
             <div class="col-lg mb-2">
-                <div class="row row-cols-auto">
-                    <h4>{{ __('texts.generic.value') }}</h4>
-                </div>
-                <div class="ct-chart-bar" id="stats-generic-expenses"></div>
+                <x-ls::card header="generic.value">
+                    <div class="ct-chart-bar" id="stats-generic-expenses"></div>
+                </x-ls::card>
             </div>
 
 			@if(is_a($target, \App\User::class) == false)
 	            <div class="col-lg mb-2">
-                    <div class="row row-cols-auto">
-                        <h4>{{ __('texts.user.all') }}</h4>
-                    </div>
-	                <div class="ct-chart-bar" id="stats-generic-users"></div>
+                    <x-ls::card header="user.all">
+	                   <div class="ct-chart-bar" id="stats-generic-users"></div>
+                   </x-ls::card>
 	            </div>
 			@endif
 
             <div class="col-lg mb-2">
-                <div class="row row-cols-auto">
-                    <h4>{{ __('texts.generic.categories') }}</h4>
-                </div>
-                <div class="ct-chart-bar" id="stats-generic-categories"></div>
+                <x-ls::card header="generic.categories">
+                    <div class="ct-chart-bar" id="stats-generic-categories"></div>
+                </x-ls::card>
             </div>
         </div>
     </div>
@@ -88,26 +85,23 @@ else {
 
         <div class="row">
             <div class="col-lg mb-2">
-                <div class="row row-cols-auto">
-                    <h4>{{ __('texts.generic.value') }}</h4>
-                </div>
-                <div class="ct-chart-bar" id="stats-products-expenses"></div>
+                <x-ls::card header="generic.value">
+                    <div class="ct-chart-bar" id="stats-products-expenses"></div>
+                </x-ls::card>
             </div>
 
 			@if(is_a($target, \App\User::class) == false)
 	            <div class="col-lg mb-2">
-                    <div class="row row-cols-auto">
-    	                <h4>{{ __('texts.user.all') }}</h4>
-                    </div>
-	                <div class="ct-chart-bar" id="stats-products-users"></div>
+                    <x-ls::card header="user.all">
+	                   <div class="ct-chart-bar" id="stats-products-users"></div>
+                   </x-ls::card>
 	            </div>
 			@endif
 
             <div class="col-lg mb-2">
-                <div class="row row-cols-auto">
-                    <h4>{{ __('texts.generic.categories') }}</h4>
-                </div>
-                <div class="ct-chart-bar" id="stats-products-categories"></div>
+                <x-ls::card header="generic.categories">
+                    <div class="ct-chart-bar" id="stats-products-categories"></div>
+                </x-ls::card>
             </div>
         </div>
     </div>

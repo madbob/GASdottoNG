@@ -136,6 +136,7 @@ function serializeClientTranslations()
         'texts.generic.days.sunday' => __('texts.generic.days.sunday'),
         'texts.notifications.cycle_param' => __('texts.notifications.cycle_param'),
         'texts.generic.all' => __('texts.generic.all'),
+        'texts.generic.export' => __('texts.generic.export'),
         'texts.notifications.cycle.two_weeks' => __('texts.notifications.cycle.two_weeks'),
         'texts.notifications.cycle.first_of_month' => __('texts.notifications.cycle.first_of_month'),
         'texts.notifications.cycle.second_of_month' => __('texts.notifications.cycle.second_of_month'),
