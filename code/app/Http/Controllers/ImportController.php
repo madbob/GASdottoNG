@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\App;
 
-use DB;
-use Log;
-use App;
-
-use ezcArchive;
 use App\Exceptions\MissingFieldException;
 use App\Importers\CSV\CSVImporter;
 use App\Importers\GDXP\Suppliers;
@@ -33,31 +31,34 @@ class ImportController extends Controller
             return $this->errorResponse(__('texts.generic.unauthorized'));
         }
 
+        $return = null;
+
         try {
             switch ($step) {
                 case 'guess':
                     $parameters = $importer->guess($request);
-
-                    return view('import.csvsortcolumns', $parameters);
+                    $return = view('import.csvsortcolumns', $parameters);
+                    break;
 
                 case 'select':
                     try {
                         $parameters = $importer->select($request);
-
-                        return $importer->formatSelect($parameters);
+                        $return = $importer->formatSelect($parameters);
                     }
                     catch (MissingFieldException $e) {
-                        return view('import.csvimportfinal', [
+                        $return = view('import.csvimportfinal', [
                             'title' => __('texts.imports.help.failure_notice'),
                             'objects' => [],
                             'errors' => [$e->getMessage()],
                         ]);
                     }
 
+                    break;
+
                 case 'run':
                     $parameters = $importer->run($request);
-
-                    return view($importer->finalTemplate(), $parameters);
+                    $return = view($importer->finalTemplate(), $parameters);
+                    break;
 
                 default:
                     throw new \InvalidArgumentException('Passaggio non previsto in fase di importazione: ' . $step);
@@ -65,13 +66,10 @@ class ImportController extends Controller
             }
         }
         catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage());
+            $return = $this->errorResponse($e->getMessage());
         }
 
-        return $this->errorResponse(__('texts.imports.help.invalid_command', [
-            'type' => $type,
-            'step' => $step,
-        ]));
+        return $return;
     }
 
     public function getGdxp(Request $request)
@@ -81,70 +79,24 @@ class ImportController extends Controller
         $obj = $classname::findOrFail($id);
 
         $working_dir = sys_get_temp_dir();
-
-        switch ($request->input('format', 'json')) {
-            case 'xml':
-                $xml = $obj->exportXML();
-
-                chdir($working_dir);
-                $filename = md5($xml);
-                file_put_contents($filename, $xml);
-
-                $downloadable = sprintf('%s/%s.gdxp', $working_dir, str_replace('/', '_', $obj->printableName()));
-                $archive = ezcArchive::open('compress.zlib://' . $downloadable, ezcArchive::TAR_USTAR);
-                $archive->append([$filename], '');
-                unlink($filename);
-                break;
-
-            case 'json':
-            default:
-                $json = $obj->exportJSON();
-                $downloadable = sprintf('%s/%s.json', $working_dir, str_replace('/', '_', $obj->printableName()));
-                file_put_contents($downloadable, $json);
-                break;
-        }
+        $json = $obj->exportJSON();
+        $downloadable = sprintf('%s/%s.json', $working_dir, str_replace('/', '_', $obj->printableName()));
+        file_put_contents($downloadable, $json);
 
         return response()->download($downloadable)->deleteFileAfterSend(true);
     }
 
     private function readGdxpFile($path, $execute, $supplier_replace)
     {
-        $working_dir = sys_get_temp_dir();
-
         $data = [];
-        $type = mime_content_type($path);
 
-        if (in_array($type, ['text/plain', 'application/json'])) {
-            $info = json_decode(file_get_contents($path));
-            foreach ($info->blocks as $c) {
-                if ($execute) {
-                    $data[] = Suppliers::importJSON($info, $c->supplier, $supplier_replace);
-                }
-                else {
-                    $data[] = Suppliers::readJSON($c->supplier);
-                }
+        $info = json_decode(file_get_contents($path));
+        foreach ($info->blocks as $c) {
+            if ($execute) {
+                $data[] = Suppliers::importJSON($info, $c->supplier, $supplier_replace);
             }
-        }
-        else {
-            $archive = ezcArchive::open('compress.zlib://' . $path);
-            while ($archive->valid()) {
-                $entry = $archive->current();
-                $archive->extractCurrent($working_dir);
-                $filepath = sprintf('%s/%s', $working_dir, $entry->getPath());
-                $contents = file_get_contents($filepath);
-                $contents = simplexml_load_string($contents);
-
-                foreach ($contents->children() as $c) {
-                    if ($execute) {
-                        $data[] = Suppliers::importXML($c, $supplier_replace);
-                    }
-                    else {
-                        $data[] = Suppliers::readXML($c);
-                    }
-                }
-
-                unlink($filepath);
-                $archive->next();
+            else {
+                $data[] = Suppliers::readJSON($c->supplier);
             }
         }
 

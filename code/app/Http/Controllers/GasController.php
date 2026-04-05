@@ -196,10 +196,12 @@ class GasController extends Controller
                 abort(500);
         }
 
-        $dumper->setHost(env('DB_HOST'))
-            ->setDbName(env('DB_DATABASE'))
-            ->setUserName(env('DB_USERNAME'))
-            ->setPassword(env('DB_PASSWORD'))
+        $config_prefix = 'database.' . config('database.default') . '.';
+
+        $dumper->setHost(config($config_prefix . 'host'))
+            ->setDbName(config($config_prefix . 'database'))
+            ->setUserName(config($config_prefix . 'username'))
+            ->setPassword(config($config_prefix . 'password'))
             ->dumpToFile($filepath);
 
         return response()->download($filepath, 'database_gasdotto_' . date('Y_m_d') . '.sql')->deleteFileAfterSend();

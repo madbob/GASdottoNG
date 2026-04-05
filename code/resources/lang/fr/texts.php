@@ -398,7 +398,6 @@ return array(
             'new_remote_products_list' => 'Nouvelle mise à jour disponible pour la liste de prix :supplier (:date). Consultez-le à partir du panneau Fournisseurs -> Index à distance.',
             'failed_file' => 'Le fichier n\'a pas été téléversé correctement',
             'failure_notice' => 'L\'importation a échoué',
-            'invalid_command' => 'Commande :type/:step non valide',
             'currency_id' => 'Une des monnaies gérées par le système. Si elle n\'est pas spécifiée, la devise par défaut sera sélectionnée (:default). Valeurs autorisées: :values',
             'unique_user_id' => 'Les utilisateurs sont identifiés par leur nom d\'utilisateur ou leur adresse courriel (qui doivent être uniques).',
             'no_user_found' => 'Utilisateur non trouvé: :name',

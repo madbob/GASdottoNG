@@ -435,7 +435,6 @@ return array (
       'new_remote_products_list' => '',
       'failed_file' => '',
       'failure_notice' => '',
-      'invalid_command' => 'Ugyldig kommando :type/:step',
       'currency_id' => '',
       'unique_user_id' => '',
       'no_user_found' => '',

@@ -9,7 +9,7 @@ function gas_storage_path($path = null, $folder = false)
 {
     $ret = storage_path();
 
-    $local = env('STORAGE_FOLDER', null);
+    $local = config('gasdotto.storage.folder', null);
     if ($local != null) {
         $ret .= sprintf('/%s', $local);
     }
@@ -18,10 +18,8 @@ function gas_storage_path($path = null, $folder = false)
         $ret .= sprintf('/%s', $path);
     }
 
-    if ($folder) {
-        if (file_exists($ret) === false) {
-            mkdir($ret, 0777);
-        }
+    if ($folder && file_exists($ret) === false) {
+        mkdir($ret, 0777);
     }
 
     return $ret;
@@ -51,7 +49,7 @@ function env_file()
             $instance = substr($_SERVER['HTTP_HOST'], 0, strpos($_SERVER['HTTP_HOST'], '.'));
         }
         elseif (app()->runningInConsole()) {
-            $domain = parse_url(env('APP_URL'), PHP_URL_HOST);
+            $domain = parse_url(config('app.url'), PHP_URL_HOST);
             $instance = preg_replace('/^([^\.]*)\.gasdotto\.net.*$/', '\1', $domain);
         }
 

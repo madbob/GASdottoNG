@@ -205,11 +205,6 @@ class Supplier extends Model
 
     /******************************************************** ExportableTrait */
 
-    public function exportXML()
-    {
-        return view('gdxp.xml.supplier', ['obj' => $this])->render();
-    }
-
     public function exportJSON()
     {
         return view('gdxp.json.supplier', ['obj' => $this])->render();

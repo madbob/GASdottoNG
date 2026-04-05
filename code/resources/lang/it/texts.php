@@ -456,7 +456,6 @@ return array (
       'new_remote_products_list' => 'Nuovo aggiornamento disponibile per il listino :supplier (:date). Consultalo dal pannello Fornitori -> Indice Remoto.',
       'failed_file' => 'File non caricato correttamente',
       'failure_notice' => 'Importazione fallita',
-      'invalid_command' => 'Comando :type/:step non valido',
       'currency_id' => 'Una delle valute gestite dal sistema. Se non specificato, verrà selezionata quella di default(:default). Valori ammessi: :values',
       'unique_user_id' => 'Gli utenti sono identificati per username o indirizzo mail (che deve essere univoco!).',
       'no_user_found' => 'Utente non trovato: :name',

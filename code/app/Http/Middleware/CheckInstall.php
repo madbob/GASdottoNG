@@ -22,7 +22,7 @@ class CheckInstall
             Artisan::call('db:seed', ['--force' => true]);
             Artisan::call('db:seed', ['--force' => true, '--class' => 'FirstInstallSeed']);
 
-            if (env('GASDOTTO_NET', false) == true) {
+            if (config('gasdotto.network', false)) {
                 Artisan::call('db:seed', ['--force' => true, '--class' => 'GasdottoNetSeeder']);
             }
 

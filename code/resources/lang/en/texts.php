@@ -419,7 +419,6 @@ return array(
             'new_remote_products_list' => 'New update available for the product list :supplier (:date). Find it in Suppliers -> Remote Index.',
             'failed_file' => 'File not uploaded correctly',
             'failure_notice' => 'Failed import',
-            'invalid_command' => 'Command :type/:step not valid',
             'currency_id' => 'One of currency used in the system. If not specified, the default will be used (:default). Accepted values: :values',
             'unique_user_id' => 'Users are identified by their username or e-mail address (which should be unique!).',
             'no_user_found' => 'User not found: :name',

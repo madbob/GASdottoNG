@@ -9,8 +9,6 @@ trait ExportableTrait
         return url('import/gdxp?classname=' . get_class($this) . '&id=' . $this->id);
     }
 
-    abstract public function exportXML();
-
     abstract public function exportJSON();
 
     abstract public function catalogueExportURL();

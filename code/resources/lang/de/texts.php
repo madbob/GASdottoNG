@@ -419,7 +419,6 @@ return array(
             'new_remote_products_list' => 'Neues Update für die Produktliste :supplier (:date) verfügbar. Abrufbar über Lieferanten > Remote Index.',
             'failed_file' => 'Die Datei wurde nicht korrekt hochgeladen',
             'failure_notice' => 'Import fehlgeschlagen',
-            'invalid_command' => 'Ungültiger Befehl :type/:step',
             'currency_id' => 'Eine der vom System verwendeten Währungen. Wenn nicht angegeben, wird die Standardwährung ausgewählt (:default). Zulässige Werte: :values',
             'unique_user_id' => 'Die Benutzer werden über den Nutzernamen oder die E-Mail-Adresse identifiziert (letztere muss eindeutig sein!).',
             'no_user_found' => 'Benutzer nicht gefunden: :name',

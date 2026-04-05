@@ -434,7 +434,6 @@ return array (
       'new_remote_products_list' => '',
       'failed_file' => 'Bestand niet juist geladen',
       'failure_notice' => '',
-      'invalid_command' => 'Ongeldige :type/:step opdracht',
       'currency_id' => '',
       'unique_user_id' => 'Gebruikers worden geïdentificeerd door middel van een gebruikersnaam of e-mailadres (dat uniek moet zijn!).',
       'no_user_found' => 'Gebruiker niet gevonden: :name',

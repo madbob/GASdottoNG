@@ -84,23 +84,23 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
         $csv_separator = currentAbsoluteGas()->getConfig('csv_separator');
 
         if (is_null($out_file)) {
-            $FH = fopen('php://output', 'w');
+            $fh = fopen('php://output', 'w');
         }
         else {
-            $FH = fopen($out_file, 'w');
+            $fh = fopen($out_file, 'w');
         }
 
         if ($head) {
-            fputcsv($FH, $head, $csv_separator);
+            fputcsv($fh, $head, $csv_separator);
         }
 
         if (is_null($format_callback)) {
             if (is_string($contents)) {
-                fwrite($FH, $contents);
+                fwrite($fh, $contents);
             }
             elseif (is_array($contents)) {
                 foreach ($contents as $c) {
-                    fputcsv($FH, $c, $csv_separator);
+                    fputcsv($fh, $c, $csv_separator);
                 }
             }
         }
@@ -108,12 +108,12 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
             foreach ($contents as $c) {
                 $row = $format_callback($c);
                 if ($row) {
-                    fputcsv($FH, $row, $csv_separator);
+                    fputcsv($fh, $row, $csv_separator);
                 }
             }
         }
 
-        fclose($FH);
+        fclose($fh);
     };
 
     if (is_null($out_file)) {
@@ -258,14 +258,14 @@ function formatAccordionLabel($label, $icon)
 
 function baseEncrypt($string)
 {
-    $key = substr(env('APP_KEY'), 0, SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
+    $key = substr(config('app.key'), 0, SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
     $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
     return base64_encode($nonce . sodium_crypto_secretbox($string, $nonce, $key));
 }
 
 function baseDecrypt($string)
 {
-    $key = substr(env('APP_KEY'), 0, SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
+    $key = substr(config('app.key'), 0, SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
     $decoded = base64_decode($string);
     $nonce = mb_substr($decoded, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, '8bit');
     $ciphertext = mb_substr($decoded, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES, null, '8bit');

@@ -59,7 +59,7 @@ class MailController extends Controller
 
     public function postStatusScaleway(Request $request)
     {
-        if (env('MAIL_MAILER') == 'scaleway') {
+        if (config('mail.default') == 'scaleway') {
             $message = Message::fromRawPostData();
             $validator = new MessageValidator(null, '/\.scw\.cloud$/');
 

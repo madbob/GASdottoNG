@@ -43,6 +43,15 @@ class OrdersServiceTest extends TestCase
         ]);
     }
 
+    private function commonDates()
+    {
+        return [
+            date('Y-m-d'),
+            date('Y-m-d', strtotime('+20 days')),
+            date('Y-m-d', strtotime('+30 days')),
+        ];
+    }
+
     private function storeMailableOrder()
     {
         $this->gas->setConfig('notify_all_new_orders', '1');
@@ -57,9 +66,7 @@ class OrdersServiceTest extends TestCase
         $this->actingAs($this->userReferrer);
         $this->assertEquals($this->gas->id, $this->userReferrer->gas->id);
 
-        $start = date('Y-m-d');
-        $end = date('Y-m-d', strtotime('+20 days'));
-        $shipping = date('Y-m-d', strtotime('+30 days'));
+        list($start, $end, $shipping) = $this->commonDates();
 
         $aggregate = app()->make('OrdersService')->store([
             'supplier' => $this->order->supplier_id,
@@ -315,7 +322,7 @@ class OrdersServiceTest extends TestCase
 
         app()->make('OrdersService')->destroy($this->order->id);
         $this->expectException(ModelNotFoundException::class);
-        $order = app()->make('OrdersService')->show($this->order->id);
+        app()->make('OrdersService')->show($this->order->id);
     }
 
     /*
@@ -326,10 +333,7 @@ class OrdersServiceTest extends TestCase
         $this->actingAs($this->userReferrer);
 
         $this_year = date('Y');
-
-        $start = date('Y-m-d');
-        $end = date('Y-m-d', strtotime('+20 days'));
-        $shipping = date('Y-m-d', strtotime('+30 days'));
+        list($start, $end, $shipping) = $this->commonDates();
 
         $aggregate = app()->make('OrdersService')->store([
             'supplier' => $this->order->supplier_id,
@@ -388,9 +392,7 @@ class OrdersServiceTest extends TestCase
             'simplified_amount' => 30,
         ]);
 
-        $start = date('Y-m-d');
-        $end = date('Y-m-d', strtotime('+20 days'));
-        $shipping = date('Y-m-d', strtotime('+30 days'));
+        list($start, $end, $shipping) = $this->commonDates();
 
         $this->nextRound();
 
@@ -417,7 +419,6 @@ class OrdersServiceTest extends TestCase
     public function test_export_gdxp()
     {
         $this->actingAs($this->userReferrer);
-        $this->assertNotNull($this->order->exportXML());
         $this->assertNotNull($this->order->exportJSON());
     }
 
@@ -496,7 +497,7 @@ class OrdersServiceTest extends TestCase
             $target_product_2->id => 3,
         ];
 
-        $booking = $this->updateAndFetch($data, $this->order, $this->userWithBasePerms, false);
+        $this->updateAndFetch($data, $this->order, $this->userWithBasePerms, false);
 
         $this->nextRound();
 
@@ -642,9 +643,9 @@ class OrdersServiceTest extends TestCase
         $product_price = $product->getPrice();
 
         $ids = [];
-        $active = [];
+        $actives = [];
         $variant = $this->createVariant($product);
-        foreach ($variant->values as $index => $val) {
+        foreach ($variant->values as $val) {
             $ids[] = $val->id;
 
             $combo = VariantCombo::byValues([$val->id]);
@@ -655,9 +656,7 @@ class OrdersServiceTest extends TestCase
 
         $this->nextRound();
 
-        $start = date('Y-m-d');
-        $end = date('Y-m-d', strtotime('+20 days'));
-        $shipping = date('Y-m-d', strtotime('+30 days'));
+        list($start, $end, $shipping) = $this->commonDates();
 
         $aggregate = app()->make('OrdersService')->store([
             'supplier' => $this->order->supplier_id,

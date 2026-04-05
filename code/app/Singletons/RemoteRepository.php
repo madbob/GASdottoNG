@@ -13,7 +13,7 @@ class RemoteRepository
         if (is_null($this->list)) {
             try {
                 $client = new \GuzzleHttp\Client();
-                $response = $client->request('GET', sprintf('%s/api/list', env('HUB_URL')));
+                $response = $client->request('GET', sprintf('%s/api/list', config('gasdotto.hub.url')));
                 $response = json_decode($response->getBody());
 
                 usort($response->results, function ($a, $b) {
@@ -33,6 +33,6 @@ class RemoteRepository
 
     public function getSupplierLink($vat)
     {
-        return sprintf('%s/api/get/%s', env('HUB_URL'), $vat);
+        return sprintf('%s/api/get/%s', config('gasdotto.hub.url'), $vat);
     }
 }

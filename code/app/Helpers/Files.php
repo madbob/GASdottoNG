@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
 function localFilePath($obj, $field)
 {
     if (! empty($obj->$field)) {
@@ -14,7 +17,7 @@ function localFilePath($obj, $field)
 
 function saveFile($file, $obj, $field)
 {
-    $filename = \Illuminate\Support\Str::random(30);
+    $filename = Str::random(30);
     $file->move(gas_storage_path('app'), $filename);
     $obj->$field = sprintf('app/%s', $filename);
     $obj->save();
@@ -55,10 +58,11 @@ function downloadFile($obj, $field)
 
 function zipAll($path, $files)
 {
-    $archive = \ezcArchive::open($path, \ezcArchive::ZIP);
+    $archive = new ZipArchive();
+    $archive->open($path, ZipArchive::CREATE);
 
     foreach ($files as $f) {
-        $archive->append([$f], '');
+        $archive->addFile($f, basename($f));
         unlink($f);
     }
 }

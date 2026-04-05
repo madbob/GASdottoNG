@@ -865,11 +865,6 @@ class Order extends Model
 
     /******************************************************** ExportableTrait */
 
-    public function exportXML()
-    {
-        return view('gdxp.xml.supplier', ['obj' => $this->supplier, 'orders' => [$this]])->render();
-    }
-
     public function exportJSON()
     {
         $hub = app()->make('GlobalScopeHub');
