@@ -1129,7 +1129,6 @@ return array (
     'help_aggregate_export_table' => '',
     'help_aggregate_export_table_for_delivery' => '',
     'include_all_modifiers' => '',
-    'help_aggregate_export_shipping' => '',
     'bookings_from_friends' => '',
     'communications_points' => '',
     'booking_total_amount' => '',

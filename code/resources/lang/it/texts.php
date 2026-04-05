@@ -1183,7 +1183,6 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
     'help_aggregate_export_table' => 'Da qui puoi ottenere un documento CSV coi dettagli di tutti i prodotti prenotati in quest\'ordine.',
     'help_aggregate_export_table_for_delivery' => 'Se intendi utilizzare questo documento con la funzione \'Consegne -> Importa CSV\', per importare le quantità consegnate dopo averle elaborate manualmente, ti raccomandiamo di includere nell\'esportazione anche lo Username degli utenti coinvolti.',
     'include_all_modifiers' => 'Includi tutti i modificatori',
-    'help_aggregate_export_shipping' => 'Da qui puoi ottenere un documento PDF formattato per la stampa, in cui si trovano le informazioni relative alle singole prenotazioni di tutti gli ordini inclusi in questo aggregato.',
     'bookings_from_friends' => 'Gli ordini dei tuoi amici',
     'communications_points' => 'Per comunicazioni su quest\'ordine, si raccomanda di contattare:',
     'booking_total_amount' => 'Totale da pagare: :amount',

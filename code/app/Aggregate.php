@@ -513,6 +513,17 @@ class Aggregate extends Model
         return $suppliers;
     }
 
+    public function involvedModifiers($include_groups = false)
+    {
+        $ret = new Collection();
+
+        foreach($this->orders as $order) {
+            $ret = $ret->merge($order->involvedModifiers($include_groups));
+        }
+
+        return $ret;
+    }
+
     /********************************************************* ReducibleTrait */
 
     protected function reduxBehaviour()

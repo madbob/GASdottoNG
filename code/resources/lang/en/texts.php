@@ -1056,7 +1056,6 @@ return array(
         'help_aggregate_export_table' => 'Here you can obtain a CSV document with the details of all ordered products in the current order.',
         'help_aggregate_export_table_for_delivery' => 'If you intend to use this document with the \'Deliveries -> Import CSV\' function, to import the delivered quantities after having processed them manually, we recommend that you also include the Username of the users involved in the export.',
         'include_all_modifiers' => 'Include all modifiers',
-        'help_aggregate_export_shipping' => 'From here you can obtain a PDF document ready to be printed, with all information about all reservation to all orders included in this aggregate.',
         'bookings_from_friends' => 'Reservations from you friends',
         'communications_points' => 'For communications about this order it is suggested to contact:',
         'booking_total_amount' => 'To pay: :amount',

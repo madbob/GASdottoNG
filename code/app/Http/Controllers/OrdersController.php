@@ -291,8 +291,7 @@ class OrdersController extends BackedController
     public function exportModal(Request $request, $id, $type)
     {
         $order = $this->service->show($id);
-
-        return view('order.export' . $type, ['order' => $order]);
+        return view('order.partials.export.' . $type, ['order' => $order]);
     }
 
     public function document(Request $request, $id, $type)

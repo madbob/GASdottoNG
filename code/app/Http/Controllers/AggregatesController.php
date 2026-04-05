@@ -63,8 +63,7 @@ class AggregatesController extends BackedController
     public function exportModal(Request $request, $id, $type)
     {
         $aggregate = Aggregate::findOrFail($id);
-
-        return view('aggregate.export' . $type, ['aggregate' => $aggregate]);
+        return view('order.partials.export.' . $type, ['order' => $aggregate]);
     }
 
     /*

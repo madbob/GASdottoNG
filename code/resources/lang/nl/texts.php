@@ -1126,7 +1126,6 @@ return array (
     'help_aggregate_export_table' => 'Vanaf hier kunt u een CSV-document verkrijgen met de details van alle producten die in deze bestelling zijn gereserveerd.',
     'help_aggregate_export_table_for_delivery' => '',
     'include_all_modifiers' => 'Alle leveranciers zien',
-    'help_aggregate_export_shipping' => 'Hier kunt u een PDF-document verkrijgen dat voor het afdrukken is geformatteerd en dat informatie bevat over de afzonderlijke reserveringen van alle bestellingen die in deze groepering zijn opgenomen.',
     'bookings_from_friends' => 'De bestellingen van uw vrienden',
     'communications_points' => '',
     'booking_total_amount' => '',

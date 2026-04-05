@@ -1040,7 +1040,6 @@ In Zukunft können Sie sich über diesen anderen Link, den Benutzernamen „%[us
         'help_aggregate_export_table' => 'Hier kannst du eine CSV-Datei erhalten, in der Details zu allen vorbestellten Produkten vorhanden sind.',
         'help_aggregate_export_table_for_delivery' => '',
         'include_all_modifiers' => 'Alle Lieferanten anzeigen',
-        'help_aggregate_export_shipping' => 'Hier kannst du ein pdf-Dokument zum Ausdrucken erhalten, in dem sich alle Informationen finden bezüglich der einzelnen Bestellungen aller, die an dieser Teil-Bestellung teilgenommen haben.',
         'bookings_from_friends' => 'Bestellungen deiner Freunde',
         'communications_points' => '',
         'booking_total_amount' => 'Gesamtpreis: :amount',

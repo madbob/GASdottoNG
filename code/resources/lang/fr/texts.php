@@ -1016,7 +1016,6 @@ return array(
         'help_aggregate_export_table' => 'Depuis cette page vous pouvez obtenir un fichier CSV avec le détail de l\'ensemble des produits commandés.',
         'help_aggregate_export_table_for_delivery' => '',
         'include_all_modifiers' => 'Voir tous les fournisseurs',
-        'help_aggregate_export_shipping' => 'Depuis cette page, vous pouvez obtenir un document PDF à imprimer avec toutes les informations relatives aux commandes contenues dans cette sélection.',
         'bookings_from_friends' => 'Commandes de vos amis',
         'communications_points' => '',
         'booking_total_amount' => 'Total à payer: :amount',
