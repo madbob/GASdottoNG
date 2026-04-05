@@ -22,7 +22,7 @@ class ClosedOrdersNotification extends ManyMailNotification
             Reminder: i files qui allegati non vanno rimossi subito dopo l'invio
             della notifica in quanto possono essere usati molteplici volte, per
             tutti i referenti dell'ordine. Vengono semmai rimossi a posteriori,
-            una volta sola. Cfr. NotifyClosedOrder
+            una volta sola. Cfr. CloseOrders
         */
     }
 

@@ -114,7 +114,7 @@ class PrintParams
         return $guessed_fields;
     }
 
-    public function getPriceOffset($absolute = true): int
+    public function getPriceOffset($absolute = true): int|null
     {
         $price_offset = null;
 
