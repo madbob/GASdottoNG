@@ -53,7 +53,7 @@ class CloseOrders extends Command
 
     private function notifySuppliers($notifications)
     {
-        foreach($notifications as $gas_id => $data) {
+        foreach($notifications as $data) {
             foreach($data->orders as $order) {
                 $supplier = $order->supplier;
 
@@ -72,6 +72,21 @@ class CloseOrders extends Command
         }
     }
 
+    private function dispatchToReferents()
+    {
+        foreach ($notifiable_users as $notifiable) {
+            try {
+                $notifiable->user->notify(new ClosedOrdersNotification($notifiable->orders, $notifiable->files));
+            }
+            catch(HttpTransportException $e) {
+                Log::error('Errore in notifica chiusura ordine a referente: ' . print_r($e->getResponse(), true));
+            }
+            catch (\Exception $e) {
+                Log::error('Errore in notifica chiusura ordine a referente: ' . $e->getMessage());
+            }
+        }
+    }
+
     private function notifyReferents($notifications)
     {
         $hub = app()->make('GlobalScopeHub');
@@ -79,7 +94,7 @@ class CloseOrders extends Command
         $printer = new OrderPrinter();
         $all_files = [];
 
-        foreach($notifications as $gas_id => $data) {
+        foreach($notifications as $data) {
             if ($data->gas->auto_referent_order_summary) {
                 $notifiable_users = [];
 
@@ -117,17 +132,7 @@ class CloseOrders extends Command
                     }
                 }
 
-                foreach ($notifiable_users as $notifiable) {
-                    try {
-                        $notifiable->user->notify(new ClosedOrdersNotification($notifiable->orders, $notifiable->files));
-                    }
-                    catch(HttpTransportException $e) {
-                        Log::error('Errore in notifica chiusura ordine a referente: ' . print_r($e->getResponse(), true));
-                    }
-                    catch (\Exception $e) {
-                        Log::error('Errore in notifica chiusura ordine a referente: ' . $e->getMessage());
-                    }
-                }
+                $this->dispatchToReferents($notifiable_users);
             }
         }
 
@@ -138,7 +143,7 @@ class CloseOrders extends Command
 
     public function notifyUsers($notifications)
     {
-        foreach($notifications as $gas_id => $data) {
+        foreach($notifications as $data) {
             if ($data->gas->auto_user_order_summary) {
                 foreach($data->orders as $order) {
                     $aggregate = $order->aggregate;

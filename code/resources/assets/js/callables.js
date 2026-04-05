@@ -263,6 +263,13 @@ class Callables {
         });
     }
 
+    static savedFeedback(form, data)
+    {
+        utils.j().submitButton(form).each((index, node) => {
+            utils.inlineFeedback($(node), _('texts.generic.saved'));
+        });
+    }
+
     static afterProductChange(form, data) {
         Callables.genericAfterChange(form, data, 'products');
     }

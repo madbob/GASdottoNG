@@ -36,7 +36,7 @@ class DeliveryUserController extends Controller
 
     public function update(Request $request, $aggregate_id, $user_id)
     {
-        $target_user = User::find($user_id);
+        $target_user = User::tFind($user_id);
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
         $this->service->bookingUpdate($request->all(), $aggregate, $target_user, true);
