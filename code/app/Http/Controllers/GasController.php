@@ -196,7 +196,7 @@ class GasController extends Controller
                 abort(500);
         }
 
-        $config_prefix = 'database.' . config('database.default') . '.';
+        $config_prefix = 'database.connections.' . config('database.default') . '.';
 
         $dumper->setHost(config($config_prefix . 'host'))
             ->setDbName(config($config_prefix . 'database'))
