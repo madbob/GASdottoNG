@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Questa struttura dati è comune alle diverse tipologie di Printer, e ne
+ * include tutte le possibili varianti ed opzioni. Questo per accentrare in un
+ * posto solo tutti i possibili default, e rendere un po' più leggibile il
+ * codice dei Printer stessi
+ */
+
 namespace App\Printers;
 
 use Illuminate\Database\Eloquent\Model;
@@ -28,8 +35,8 @@ class PrintParams
         $this->subtype = $request['format'] ?? 'pdf';
         $this->status = $request['status'] ?? 'pending';
         $this->include_missing = $request['include_missing'] ?? 'no';
-        $this->isolate_friends = ($request['isolate_friends'] ?? false) == true;
-        $this->extra_modifiers = ($request['extra_modifiers'] ?? false) == true;
+        $this->isolate_friends = ($request['isolate_friends'] ?? false);
+        $this->extra_modifiers = ($request['extra_modifiers'] ?? false);
 
         $this->required_fields = $request['fields'] ?? [];
         if (empty($this->required_fields)) {
@@ -39,10 +46,10 @@ class PrintParams
         $this->fields = $this->splitFields($this->required_fields);
     }
 
-    /*
-        Questo serve a separare le colonne per utenti e prodotti quando si generano
-        i Dettagli Consegne che contengono tutto
-    */
+    /**
+     * Questo serve a separare le colonne per utenti e prodotti quando si
+     * generano i Dettagli Consegne che contengono tutto
+     */
     private function splitFields(array $fields): object
     {
         $formattable_user = User::formattableColumns('all');
@@ -92,9 +99,16 @@ class PrintParams
         return $ret;
     }
 
+    /**
+     * Qui si enumerano le informazioni da includere nei files esportati quando
+     * non ne viene esplicitamente richiesta nessuna (e.g. quando genero il file
+     * scaricabile dal fornitore)
+     */
     private function autoGuessFields(Model $order): array
     {
         $guessed_fields = [];
+
+        $guessed_fields[] = 'fullname';
 
         if ($order->products->first(fn ($p) => !empty($p->code)) != null) {
             $guessed_fields[] = 'code';
