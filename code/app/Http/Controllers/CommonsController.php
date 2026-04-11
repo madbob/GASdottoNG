@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class CommonsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function getIndex()
     {
         $user = Auth::user();
@@ -34,6 +30,7 @@ class CommonsController extends Controller
         $shipping = $shipping->sort(function ($a, $b) {
             return strcmp($a->shipping, $b->shipping);
         });
+
         $data['shipping'] = $shipping;
 
         return view('pages.dashboard', $data);
