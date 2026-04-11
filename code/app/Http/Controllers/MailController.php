@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
@@ -61,7 +62,10 @@ class MailController extends Controller
     {
         if (config('mail.default') == 'scaleway') {
             $message = Message::fromRawPostData();
-            $validator = new MessageValidator(null, '/\.scw\.cloud$/');
+            $validator = new MessageValidator(function($certUrl) {
+                $hash = md5($certUrl);
+                return Cache::forever('scaleway_certificate_' . $hash, fn() => @file_get_contents($certUrl));
+            }, '/\.scw\.cloud$/');
 
             try {
                 $validator->validate($message);
