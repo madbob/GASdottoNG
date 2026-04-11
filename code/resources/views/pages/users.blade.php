@@ -24,7 +24,7 @@
                     <input type="hidden" name="collectFilteredUsers" value="#user-list">
                     <input type="hidden" name="pre-saved-function" value="formToDownload">
 
-                    <p>{{ __('texts.export.help_csv_libreoffice') }}</p>
+                    <p>{!! __('texts.export.help_csv_libreoffice') !!}</p>
 
                     <hr/>
 
