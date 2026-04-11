@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class CommonsController extends Controller
 {
@@ -43,12 +43,13 @@ class CommonsController extends Controller
     {
         $password = $request->input('password');
         $user = $request->user();
-        $test = Auth::attempt(['username' => $user->username, 'password' => $password]);
-        if ($test) {
-            return 'ok';
+
+        if (!Hash::check($password, $user->password)) {
+            return 'ko';
         }
         else {
-            return 'ko';
+            $request->session()->passwordConfirmed();
+            return 'ok';
         }
     }
 }

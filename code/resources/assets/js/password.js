@@ -2,11 +2,13 @@ import utils from "./utils";
 
 $(document).ready(function() {
     $('body').on('click', '.password-field .bi-eye-slash', function() {
-        var i = $(this).closest('.password-field').find('input[type!=hidden]');
-        if (i.attr('type') == 'password')
+        let i = $(this).closest('.password-field').find('input[type!=hidden]');
+        if (i.attr('type') == 'password') {
             i.attr('type', 'text');
-        else
+        }
+        else {
             i.attr('type', 'password');
+        }
 
         $(this).toggleClass('bi-eye').toggleClass('bi-eye-close');
     });
@@ -19,10 +21,10 @@ $(document).ready(function() {
             appendTo = '#' + modal.attr('id');
         }
 
-        var input = $(this);
+        let input = $(this);
         input.popover({
             content: function() {
-                var ret = `<div>
+                let ret = `<div>
                 <div class="row mb-2"><label for="password" class="col-4 col-form-label">${_('texts.auth.password')}</label><div class="col-8"><input type="password" class="form-control" name="password" value="" autocomplete="off" minlength="8"></div></div>
                     <div class="row mb-2"><label for="password_confirm" class="col-4 col-form-label">${_('texts.auth.confirm_password')}</label><div class="col-8"><input type="password" class="form-control" name="password_confirm" value="" autocomplete="off" minlength="8"></div></div>`;
 
@@ -37,12 +39,12 @@ $(document).ready(function() {
                 ret.find('button.btn-success').click(function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var password = ret.find('input[name=password]').val();
-                    var confirm = ret.find('input[name=password_confirm]').val();
+                    let password = ret.find('input[name=password]').val();
+                    let confirm = ret.find('input[name=password_confirm]').val();
 
                     if (password == confirm) {
                         if (ret.find('input[name=enforce_change]').length != 0) {
-                            var enforce = ret.find('input[name=enforce_change]').prop('checked') ? 'true' : 'false';
+                            let enforce = ret.find('input[name=enforce_change]').prop('checked') ? 'true' : 'false';
                             input.closest('.input-group').find('input[name=enforce_password_change]').val(enforce);
                         }
 
@@ -77,7 +79,7 @@ $(document).ready(function() {
 
     $('body').on('submit', '#password-protection-dialog form', function(event) {
         event.preventDefault();
-        var modal = $(this).closest('.modal');
+        let modal = $(this).closest('.modal');
 
         $.ajax({
             method: 'POST',
@@ -87,15 +89,15 @@ $(document).ready(function() {
             },
             success: function(data) {
                 modal.modal('hide');
-                var target = modal.attr('data-form-target');
-                var form = $(target);
+                let target = modal.attr('data-form-target');
+                let form = $(target);
 
                 if (data == 'ok') {
                     form.attr('data-password-protected-verified', '1');
                     form.submit();
                 }
                 else {
-                    var save_button = form.find('button:submit');
+                    let save_button = utils.j().submitButton(form);
                     utils.inlineFeedback(save_button, _('texts.auth.wrong'));
                 }
             }

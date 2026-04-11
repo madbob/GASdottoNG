@@ -8,7 +8,7 @@
     @endif
 
     @if(get_class($obj) == 'App\Gas')
-        <x-larastrap::iform classes="form-inline iblock" id="recalculate-account" method="POST" :action="url('/movements/recalculate')" :buttons="[['attributes' => ['type' => 'submit'], 'color' => 'danger', 'label' => __('texts.movements.recalculate_balances')]]">
+        <x-larastrap::iform classes="form-inline iblock" id="recalculate-account" method="POST" route="movements.recalculate" :buttons="[['attributes' => ['type' => 'submit'], 'color' => 'danger', 'label' => __('texts.movements.recalculate_balances')]]">
             <input type="hidden" name="pre-saved-function" value="passwordProtected">
             <input type="hidden" name="post-saved-function" value="displayRecalculatedBalances">
         </x-larastrap::iform>
@@ -51,7 +51,7 @@
 
                 <hr>
 
-                <x-larastrap::iform id="close-balance" :action="url('/movements/close')">
+                <x-larastrap::iform id="close-balance" route="movements.close">
                     <input type="hidden" name="reload-whole-page" value="1">
                     <input type="hidden" name="pre-saved-function" value="passwordProtected">
                     <x-larastrap::datepicker name="date" defaults_now="true" tlabel="generic.closing_date" />

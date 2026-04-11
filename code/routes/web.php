@@ -181,11 +181,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('movements/{targetid}/history', 'MovementsController@getHistory')->name('movements.history');
         Route::get('movements/history/details', 'MovementsController@getHistoryDetails')->name('movements.history.details');
         Route::get('movements/{targetid}/balance', 'MovementsController@getBalance')->name('movements.balance');
-        Route::post('movements/recalculate', 'MovementsController@recalculate');
-        Route::post('movements/close', 'MovementsController@closeBalance');
         Route::get('movements/askdelete/{id}', 'MovementsController@askDelete')->name('movements.askdelete');
         Route::get('movements/askdeletebalance/{id}', 'MovementsController@askDeleteBalance')->name('movements.askdeletebalance');
-        Route::post('movements/deletebalance/{id}', 'MovementsController@deleteBalance')->name('movements.deletebalance');
         Route::get('movements/document/{type}/{subtype?}', 'MovementsController@document');
 
         Route::get('movtypes/{id}/post_feedback', 'MovementTypesController@postFeedback')->name('movtypes.feedback');
@@ -195,6 +192,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('import/csv', 'ImportController@postCsv');
         Route::get('import/gdxp', 'ImportController@getGdxp');
         Route::post('import/gdxp', 'ImportController@postGdxp');
+
+        Route::middleware('password.confirm')->group(function() {
+            Route::post('movements/recalculate', 'MovementsController@recalculate')->name('movements.recalculate');
+            Route::post('movements/close', 'MovementsController@closeBalance')->name('movements.close');
+            Route::post('movements/deletebalance/{id}', 'MovementsController@deleteBalance')->name('movements.deletebalance');
+        });
 
         Route::resource('gas', 'GasController');
         Route::resource('multigas', 'MultiGasController');
