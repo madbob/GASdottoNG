@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Jobs\NotifyNewOrder;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 
 use App\Aggregate;
 use App\Order;
@@ -101,6 +101,8 @@ class OrderObserver
 
     public function deleting(Order $order)
     {
+        Log::info('Elimino ordine ' . $order->id);
+
         foreach ($order->bookings as $booking) {
             $booking->deleteMovements();
         }

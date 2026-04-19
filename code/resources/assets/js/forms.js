@@ -55,6 +55,33 @@ class Forms {
         form.find('.bottom-helper').last().prop('hidden', false);
     }
 
+    /**
+     * Dato un form ed un evento di submit, verifica se è stato attivato da un
+     * button che ha un name e un value. Se sì, appende i relativi valori al
+     * form stesso in modo che possano essere serializzati nel payload
+     * https://stackoverflow.com/a/77001045/3135371
+     *
+     * TODO: rendere implicito questo comportamento nella funzione
+     * serializeForm() di jBob
+     */
+    static appendButtonValue(form, event)
+    {
+        if (event.originalEvent.submitter) {
+            let button = $(event.originalEvent.submitter);
+            let name = button.attr('name');
+            let value = button.attr('value');
+            if (name && value) {
+                let hidden = form.find('input[type=hidden][name=' + name + ']');
+                if (hidden.length == 0) {
+                    hidden = $('<input type="hidden" name="' + name + '">');
+                    form.append(hidden);
+                }
+
+                hidden.attr('value', value);
+            }
+        }
+    }
+
     static removeSaveAlert(form)
     {
         form.find('.bottom-helper').last().prop('hidden', true);

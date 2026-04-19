@@ -20,17 +20,17 @@ abstract class CSVImporter
         return null;
     }
 
-    /*
-        Come parametro di questa funzione si usa il nome della sotto-classe di
-        CSVImporter che si intende usare, scritto tutto minuscolo
-    */
+    /**
+     * Come parametro di questa funzione si usa il nome della sotto-classe di
+     * CSVImporter che si intende usare, scritto tutto minuscolo
+     */
     public static function getImporter($type)
     {
         $classname = 'App\\Importers\\CSV\\' . ucwords($type);
         return new $classname();
     }
 
-    private function startReader(Request $request, string $path)
+    private function startReader(array $request, string $path)
     {
         $reader = Reader::from($path, 'r');
         $options = Info::getDelimiterStats($reader, [',', ';', "\t"]);
@@ -38,7 +38,7 @@ abstract class CSVImporter
         $target_separator = array_keys($options)[0];
         $reader->setDelimiter($target_separator);
 
-        $skip = $request->has('skip_header');
+        $skip = isset($request['skip_header']);
         if ($skip) {
             $reader->setHeaderOffset(0);
         }
@@ -47,83 +47,90 @@ abstract class CSVImporter
         return $reader;
     }
 
-    private function retrievePreSelectedFields(&$parameters)
+    /**
+     * Se la sotto-classe specifica un attributo "sorted_fields" tra i
+     * parametri, pre-popolo l'array dei campi selezionati in fase di
+     * revisione del CSV. Questo viene usato, ad esempio, dall'importer
+     * "Products" per inizializzare l'importazione dei prodotti di un certo
+     * fornitore usando sempre le stesse colonne (anziché doverle
+     * riassegnare a mano ogni volta)
+     */
+    private function retrievePreSortedFields($parameters)
     {
         $selected = [];
+        $sorted = $parameters['sorted_fields'];
+        $fields = $this->fields();
 
-        /*
-            Se la sotto-classe specifica un attributo "sorted_fields" tra i
-            parametri, pre-popolo l'array dei campi selezionati in fase di
-            revisione del CSV. Questo viene usato, ad esempio, dall'importer
-            "Products" per inizializzare l'importazione dei prodotti di un certo
-            fornitore usando sempre le stesse colonne (anziché doverle
-            riassegnare a mano ogni volta)
-        */
-        if (isset($parameters['sorted_fields']) && !empty($parameters['sorted_fields'])) {
-            $sorted = $parameters['sorted_fields'];
-            $fields = $this->fields();
-
-            foreach ($parameters['columns'] as $index => $c) {
-                if (isset($sorted[$index]) && isset($fields[$sorted[$index]])) {
-                    $selected[] = (object) [
-                        'label' => $fields[$sorted[$index]]->label,
-                        'name' => $sorted[$index],
-                    ];
-                }
-                else {
-                    $selected[] = (object) [
-                        'label' => __('texts.imports.ignore_slot'),
-                        'name' => 'none',
-                    ];
-                }
+        foreach ($parameters['columns'] as $index => $c) {
+            if (isset($sorted[$index]) && isset($fields[$sorted[$index]])) {
+                $selected[] = (object) [
+                    'label' => $fields[$sorted[$index]]->label,
+                    'name' => $sorted[$index],
+                ];
             }
-        }
-        else {
-            /*
-                Qui cerco di auto-assegnare le colonne in funzione
-                dell'intestazione nella prima riga del CSV. Se funziona, devo
-                badare a non considerare la prima riga (perché, appunto,
-                contiene una intestazione e non dei dati da importare)
-            */
-            $mapped_cols = 0;
-
-            foreach ($parameters['columns'] as $c) {
-                $found = false;
-
-                foreach ($parameters['sorting_fields'] as $sf => $sf_meta) {
-                    if ($sf_meta->label == $c) {
-                        $selected[] = (object) [
-                            'label' => $c,
-                            'name' => $sf,
-                        ];
-
-                        $mapped_cols++;
-                        $found = true;
-                        break;
-                    }
-                }
-
-                if ($found == false) {
-                    $selected[] = (object) [
-                        'label' => __('texts.imports.ignore_slot'),
-                        'name' => 'none',
-                    ];
-                }
-            }
-
-            if ($mapped_cols > count($parameters['columns']) / 2) {
-                $parameters['skip_header'] = true;
+            else {
+                $selected[] = (object) [
+                    'label' => __('texts.imports.ignore_slot'),
+                    'name' => 'none',
+                ];
             }
         }
 
         return $selected;
     }
 
-    protected function storeUploadedFile($request, $parameters)
+    private function retrievePreSelectedFields(&$parameters)
+    {
+        if (isset($parameters['sorted_fields']) && !empty($parameters['sorted_fields'])) {
+            return $this->retrievePreSortedFields($parameters);
+        }
+
+        $selected = [];
+
+        /*
+            Qui cerco di auto-assegnare le colonne in funzione
+            dell'intestazione nella prima riga del CSV. Se funziona, devo
+            badare a non considerare la prima riga (perché, appunto,
+            contiene una intestazione e non dei dati da importare)
+        */
+        $mapped_cols = 0;
+
+        foreach ($parameters['columns'] as $c) {
+            $found = false;
+
+            foreach ($parameters['sorting_fields'] as $sf => $sf_meta) {
+                if ($sf_meta->label == $c) {
+                    $selected[] = (object) [
+                        'label' => $c,
+                        'name' => $sf,
+                    ];
+
+                    $mapped_cols++;
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $selected[] = (object) [
+                    'label' => __('texts.imports.ignore_slot'),
+                    'name' => 'none',
+                ];
+            }
+        }
+
+        if ($mapped_cols > count($parameters['columns']) / 2) {
+            $parameters['skip_header'] = true;
+        }
+
+        return $selected;
+    }
+
+    protected function storeUploadedFile(array $request, array $parameters)
     {
         try {
-            $f = $request->file('file', null);
-            if (is_null($f) || $f->isValid() === false) {
+            $f = $request['file'];
+            if (is_null($f) || !$f->isValid()) {
                 throw new \InvalidArgumentException('File non caricato correttamente, possibili problemi con la dimensione');
             }
 
@@ -188,10 +195,10 @@ abstract class CSVImporter
         return $ret;
     }
 
-    protected function initRead($request)
+    protected function initRead(array $request)
     {
-        $path = $request->input('path');
-        $columns = $request->input('column');
+        $path = $request['path'];
+        $columns = $request['column'];
 
         $testable = $this->mandatoryFields();
         $tested = $this->getColumnsIndex($columns, $testable);
@@ -264,13 +271,13 @@ abstract class CSVImporter
 
     abstract public function fields();
 
-    abstract public function testAccess($request);
+    abstract public function testAccess(array $request);
 
-    abstract public function guess($request);
+    abstract public function guess(array $request);
 
-    abstract public function select($request);
+    abstract public function select(array $request);
 
     abstract public function formatSelect($parameters);
 
-    abstract public function run($request);
+    abstract public function run(array $request);
 }

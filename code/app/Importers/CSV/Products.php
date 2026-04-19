@@ -2,7 +2,8 @@
 
 namespace App\Importers\CSV;
 
-use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 use App\Supplier;
 use App\Product;
@@ -62,19 +63,18 @@ class Products extends CSVImporter
         ];
     }
 
-    private function getSupplier($request)
+    private function getSupplier(array $request)
     {
-        $supplier_id = $request->input('supplier_id');
-
+        $supplier_id = $request['supplier_id'];
         return Supplier::findOrFail($supplier_id);
     }
 
-    public function testAccess($request)
+    public function testAccess(array $request)
     {
-        return $request->user()->can('supplier.modify', $this->getSupplier($request));
+        return Auth::user()->can('supplier.modify', $this->getSupplier($request));
     }
 
-    public function guess($request)
+    public function guess(array $request)
     {
         $s = $this->getSupplier($request);
 
@@ -131,7 +131,7 @@ class Products extends CSVImporter
         return $price;
     }
 
-    public function select($request)
+    public function select(array $request)
     {
         $columns = $this->initRead($request);
         [$name_index, $supplier_code_index] = $this->getColumnsIndex($columns, ['name', 'supplier_code']);
@@ -232,23 +232,22 @@ class Products extends CSVImporter
         return view('import.csvproductsselect', $parameters);
     }
 
-    public function run($request)
+    public function run(array $request)
     {
         DB::beginTransaction();
 
         $direct_fields = ['name', 'weight', 'description', 'price', 'supplier_code', 'package_size', 'min_quantity', 'multiple', 'portion_quantity'];
-        $data = $request->all();
 
         $s = $this->getSupplier($request);
         $errors = $products = $products_ids = $new_categories = $new_measures = $new_vats = [];
         $service = app()->make('ProductsService');
 
-        foreach ($data['import'] as $index) {
+        foreach ($request['import'] as $index) {
             try {
                 $fields = [];
 
-                if (isset($data['want_replace'][$index]) && $data['want_replace'][$index] != '0') {
-                    $product_id = $data['want_replace'][$index];
+                if (isset($request['want_replace'][$index]) && $request['want_replace'][$index] != '0') {
+                    $product_id = $request['want_replace'][$index];
                     $ex_novo = false;
                 }
                 else {
@@ -260,21 +259,21 @@ class Products extends CSVImporter
                 $fields['active'] = true;
 
                 foreach ($direct_fields as $field) {
-                    $v = trim($data[$field][$index]);
+                    $v = trim($request[$field][$index]);
                     if (filled($v)) {
                         $fields[$field] = $v;
                     }
                 }
 
-                $fields['category_id'] = $this->mapNewElements($data['category_id'][$index], $new_categories, function ($name) {
+                $fields['category_id'] = $this->mapNewElements($request['category_id'][$index], $new_categories, function ($name) {
                     return Category::easyCreate(['name' => $name]);
                 });
 
-                $fields['measure_id'] = $this->mapNewElements($data['measure_id'][$index], $new_measures, function ($name) {
+                $fields['measure_id'] = $this->mapNewElements($request['measure_id'][$index], $new_measures, function ($name) {
                     return Measure::easyCreate(['name' => $name]);
                 });
 
-                $fields['vat_rate_id'] = $this->mapNewElements($data['vat_rate_id'][$index], $new_vats, function ($name) {
+                $fields['vat_rate_id'] = $this->mapNewElements($request['vat_rate_id'][$index], $new_vats, function ($name) {
                     $name = (float) $name;
                     $vat = new VatRate();
                     $vat->percentage = $name;
@@ -299,12 +298,12 @@ class Products extends CSVImporter
             }
         }
 
-        $reset_mode = $request->input('reset_list', 'no');
+        $reset_mode = $request['reset_list'] ?? 'no';
         if ($reset_mode == 'disable') {
             $s->products()->whereNotIn('id', $products_ids)->update(['active' => false]);
         }
 
-        $s->import_template = json_encode(explode(',', $request['sorted_fields']));
+        $s->import_template = json_encode(explode(',', $request['sorted_fields'] ?? ''));
         $s->save();
 
         DB::commit();

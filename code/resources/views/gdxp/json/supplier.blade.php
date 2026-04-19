@@ -204,10 +204,12 @@ if ($attachments->isEmpty() == false) {
     $json_object->blocks[0]->supplier->attachments = [];
 
     foreach($attachments as $attachment) {
-        $json_object->blocks[0]->supplier->attachments[] = (object) [
-            'name' => $attachment->name,
-            'contents' => base64_encode(file_get_contents($attachment->path)),
-        ];
+        if (file_exists($attachment->path)) {
+            $json_object->blocks[0]->supplier->attachments[] = (object) [
+                'name' => $attachment->name,
+                'contents' => base64_encode(file_get_contents($attachment->path)),
+            ];
+        }
     }
 }
 

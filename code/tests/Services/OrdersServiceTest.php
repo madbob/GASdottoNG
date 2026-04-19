@@ -761,4 +761,50 @@ class OrdersServiceTest extends TestCase
         $this->assertNotNull($order->payment);
         $this->assertEquals('archived', $order->status);
     }
+
+    private function populateAndDuplicate($mode)
+    {
+        $this->populateOrder($this->order);
+        list($start, $end, $shipping) = $this->commonDates();
+
+        $this->actingAs($this->userReferrer);
+
+        $order = app()->make('OrdersService')->duplicate($this->order->id, [
+            'start' => printableDate($start),
+            'end' => printableDate($end),
+            'shipping' => printableDate($shipping),
+            'status' => 'closed',
+            'action' => $mode,
+        ]);
+
+        $this->assertTrue($this->order->id != $order->id);
+        $this->assertTrue($this->order->aggregate_id != $order->aggregate_id);
+
+        $this->nextRound();
+
+        return app()->make('OrdersService')->show($order->id);
+    }
+
+    /*
+        Duplica ordine
+    */
+    public function test_duplicate()
+    {
+        $order = $this->populateAndDuplicate('simple');
+        $this->assertEquals($this->order->supplier_id, $order->supplier_id);
+        $this->assertEquals($this->order->products()->count(), $order->products()->count());
+        $this->assertTrue($order->bookings->isEmpty());
+    }
+
+    /*
+        Duplica ordine e prenotazioni
+    */
+    public function test_duplicate_with_bookings()
+    {
+        $order = $this->populateAndDuplicate('full');
+        $this->assertEquals($this->order->supplier_id, $order->supplier_id);
+        $this->assertEquals($this->order->products()->count(), $order->products()->count());
+        $this->assertEquals($this->order->bookings()->count(), $order->bookings()->count());
+        $this->assertEquals($this->order->reduxData()->price, $order->reduxData()->price);
+    }
 }

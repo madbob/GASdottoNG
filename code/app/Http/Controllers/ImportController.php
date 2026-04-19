@@ -36,13 +36,13 @@ class ImportController extends Controller
         try {
             switch ($step) {
                 case 'guess':
-                    $parameters = $importer->guess($request);
+                    $parameters = $importer->guess($request->all());
                     $return = view('import.csvsortcolumns', $parameters);
                     break;
 
                 case 'select':
                     try {
-                        $parameters = $importer->select($request);
+                        $parameters = $importer->select($request->all());
                         $return = $importer->formatSelect($parameters);
                     }
                     catch (MissingFieldException $e) {
@@ -56,7 +56,7 @@ class ImportController extends Controller
                     break;
 
                 case 'run':
-                    $parameters = $importer->run($request);
+                    $parameters = $importer->run($request->all());
                     $return = view($importer->finalTemplate(), $parameters);
                     break;
 

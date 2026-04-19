@@ -26,6 +26,7 @@ class UserFactory extends Factory
         while (User::where('firstname', $firstname)->where('lastname', $lastname)->count() != 0);
 
         return [
+            'id' => Str::random(10),
             'username' => $username,
             'firstname' => $firstname,
             'lastname' => $lastname,

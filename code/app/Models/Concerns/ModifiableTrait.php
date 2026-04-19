@@ -11,7 +11,7 @@ trait ModifiableTrait
 {
     public function modifiers(): MorphMany
     {
-        return $this->morphMany('App\Modifier', 'target');
+        return $this->morphMany(Modifier::class, 'target');
     }
 
     public function attachEmptyModifier($modtype)

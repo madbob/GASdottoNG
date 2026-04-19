@@ -47,11 +47,11 @@ trait TracksUpdater
         }
     }
 
-    /*
-        Questa funzione va invocata nel method boot() del Model, ed inizializza
-        gli eventi che permettono di aggiornare automaticamente l'informazione
-        sull'utente che ha modificato per l'ultima volta l'entità
-    */
+    /**
+     * Questa funzione va invocata nel method boot() del Model, ed inizializza
+     * gli eventi che permettono di aggiornare automaticamente l'informazione
+     * sull'utente che ha modificato per l'ultima volta l'entità
+     */
     protected static function initTrackingEvents(): void
     {
         static::creating(fn ($model) => self::updateUser($model));

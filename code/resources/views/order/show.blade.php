@@ -7,7 +7,7 @@
             <x-larastrap::datepicker name="start" tlabel="orders.dates.start" readonly disabled />
             <x-larastrap::datepicker name="end" tlabel="orders.dates.end" readonly disabled />
             <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" readonly disabled />
-            @include('commons.orderstatus', ['order' => $order, 'editable' => false])
+            <x-ls::orderstatus readonly />
         </div>
 
         <div class="col-md-4">

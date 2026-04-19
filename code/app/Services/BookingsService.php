@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
@@ -36,11 +37,9 @@ class BookingsService extends BaseService
                 break;
             }
 
-            if ($delivering === false) {
-                if ($target->testUserAccess($user)) {
-                    $valid = true;
-                    break;
-                }
+            if (!$delivering && $target->testUserAccess($user)) {
+                $valid = true;
+                break;
             }
         }
 
@@ -122,9 +121,8 @@ class BookingsService extends BaseService
         }
     }
 
-    private function readVariants($product, $booked, $values, $quantities, $delivering)
+    private function readVariants($booked, $values, $quantities, $delivering)
     {
-        $param = $this->handlingParam($delivering);
         $quantity = 0;
         $saved_variants = [];
         $param = $this->handlingParam($delivering);
@@ -228,7 +226,6 @@ class BookingsService extends BaseService
                 oggetto temporaneo, che andrebbe solo a complicare le cose nel
                 database
             */
-
             $quantity = (float) ($request[$product->id] ?? 0);
             if (empty($quantity)) {
                 $quantity = 0;
@@ -256,7 +253,7 @@ class BookingsService extends BaseService
                         }
                     }
 
-                    [$booked, $quantity] = $this->readVariants($product, $booked, $values, $quantities, $delivering);
+                    [$booked, $quantity] = $this->readVariants($booked, $values, $quantities, $delivering);
                 }
             }
 
@@ -282,13 +279,12 @@ class BookingsService extends BaseService
             tal caso, la sua prenotazione vuota non va salvata
         */
         if (($delivering === false || $existed_before === false) && $booked_products->count() == 0) {
+            Log::info('Prenotazione vuota viene eliminata ' . $booking->id);
             $booking->delete();
-
             return null;
         }
         else {
             $booking->setRelation('products', $booked_products);
-
             return $booking;
         }
     }
@@ -411,11 +407,11 @@ class BookingsService extends BaseService
         return $booking;
     }
 
-    /*
-        Il controllo sul credito a disposizione viene fatto soprattutto
-        client-side, in fase di prenotazione; qui rifaccio il controllo per
-        prevenire eventuali problemi
-    */
+    /**
+     * Il controllo sul credito a disposizione viene fatto soprattutto
+     * client-side, in fase di prenotazione; qui rifaccio il controllo per
+     * prevenire eventuali problemi
+     */
     private function checkAvailableCredit($user)
     {
         if ($user->gas->hasFeature('restrict_booking_to_credit')) {

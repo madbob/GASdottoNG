@@ -113,7 +113,11 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
             }
         }
 
-        fclose($fh);
+        fflush($fh);
+        $test = fclose($fh);
+        if ($test == false) {
+            \Log::warning('Errore chiudendo il file formattato in CSV');
+        }
     };
 
     if (is_null($out_file)) {

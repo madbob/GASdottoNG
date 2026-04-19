@@ -118,14 +118,11 @@ class ImportersTest extends TestCase
             'measure_id' => $measure->id,
         ]);
 
-        $request = new \Illuminate\Http\Request();
-        $request->merge([
+        $data = $importer->select([
             'path' => $path,
             'supplier_id' => $supplier->id,
             'column' => ['name', 'supplier_code', 'measure', 'category', 'price', 'vat', 'package_price', 'package_size', 'weight', 'multiple', 'min_quantity'],
         ]);
-
-        $data = $importer->select($request);
 
         $this->assertEquals(10, count($data['products']));
         $this->assertEquals(0, count($data['errors']));
@@ -188,10 +185,7 @@ class ImportersTest extends TestCase
             $final_block['want_replace'][] = $prod->want_replace ? $prod->want_replace->id : 0;
         }
 
-        $request = new \Illuminate\Http\Request();
-        $request->merge($final_block);
-
-        $data = $importer->run($request);
+        $data = $importer->run($final_block);
 
         $this->nextRound();
 
@@ -214,13 +208,11 @@ class ImportersTest extends TestCase
 
         $importer = \App\Importers\CSV\CSVImporter::getImporter('users');
 
-        $request = new \Illuminate\Http\Request();
-        $request->merge([
+        $response = $importer->run([
             'path' => $path,
             'column' => ['firstname', 'lastname', 'username', 'password', 'email', 'phone'],
         ]);
 
-        $response = $importer->run($request);
         $this->assertEquals(3, count($response['objects']));
 
         $user1 = User::where('username', 'mario')->first();
@@ -244,14 +236,12 @@ class ImportersTest extends TestCase
         $path = base_path('tests/data/users2.csv');
         $importer = \App\Importers\CSV\CSVImporter::getImporter('users');
 
-        $request = new \Illuminate\Http\Request();
-        $request->merge([
+        $response = $importer->run([
             'path' => $path,
             'column' => ['firstname', 'lastname', 'username', 'password', 'email', 'phone'],
             'skip_headers' => true,
         ]);
 
-        $response = $importer->run($request);
         $this->assertEquals(3, count($response['objects']));
     }
 
@@ -282,13 +272,11 @@ class ImportersTest extends TestCase
 
         $importer = \App\Importers\CSV\CSVImporter::getImporter('movements');
 
-        $request = new \Illuminate\Http\Request();
-        $request->merge([
+        $data = $importer->select([
             'path' => $path,
             'column' => ['date', 'amount', 'user', 'supplier'],
         ]);
 
-        $data = $importer->select($request);
         $this->assertEquals(4, count($data['movements']));
         $this->assertEquals(0, count($data['errors']));
     }

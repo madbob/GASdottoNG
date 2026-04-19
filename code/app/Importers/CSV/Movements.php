@@ -2,8 +2,9 @@
 
 namespace App\Importers\CSV;
 
-use App;
-use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 
 use App\User;
 use App\Supplier;
@@ -53,14 +54,13 @@ class Movements extends CSVImporter
         return $ret;
     }
 
-    public function testAccess($request)
+    public function testAccess(array $request)
     {
-        $user = $request->user();
-
+        $user = Auth::user();
         return $user->can('movements.admin', $user->gas);
     }
 
-    public function guess($request)
+    public function guess(array $request)
     {
         return $this->storeUploadedFile($request, [
             'type' => 'movements',
@@ -72,7 +72,7 @@ class Movements extends CSVImporter
         ]);
     }
 
-    public function select($request)
+    public function select(array $request)
     {
         $columns = $this->initRead($request);
         $target_separator = ',';
@@ -80,16 +80,18 @@ class Movements extends CSVImporter
         $movements = [];
         $errors = [];
 
-        $cached_currencies = [];
         $default_currency = defaultCurrency();
-        $cached_currencies[$default_currency->symbol] = $default_currency;
+
+        $cached_currencies = [];
+        foreach(Currency::where('enabled', true)->get() as $cur) {
+            $cached_currencies[$cur->symbol] = $cur;
+        }
 
         foreach ($this->getRecords() as $line) {
             try {
                 /*
-                    In questa fase, genero dei Movement
-                    temporanei al solo scopo di popolare la
-                    vista di selezione.
+                    In questa fase, genero dei Movement temporanei al solo scopo
+                    di popolare la vista di selezione.
                     Non salvare gli oggetti qui creati!!!
                 */
                 $m = new Movement();
@@ -109,19 +111,14 @@ class Movements extends CSVImporter
 
                         $name = $line[$index];
                         if (filled($name)) {
-                            $user = User::where('username', $name)->first();
+                            $user = User::where('username', $name)->orWhereHas('contacts', function ($query) use ($name) {
+                                $query->where('value', $name);
+                            })->first();
 
                             if (is_null($user)) {
-                                $user = User::whereHas('contacts', function ($query) use ($name) {
-                                    $query->where('value', $name);
-                                })->first();
-
-                                if (is_null($user)) {
-                                    $save_me = false;
-                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_user_found', ['name' => $name]);
-
-                                    continue;
-                                }
+                                $save_me = false;
+                                $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_user_found', ['name' => $name]);
+                                continue;
                             }
 
                             $value = $user->id;
@@ -135,17 +132,12 @@ class Movements extends CSVImporter
 
                         $name = $line[$index];
                         if (filled($name)) {
-                            $supplier = Supplier::where('name', $name)->first();
+                            $supplier = Supplier::where('name', $name)->orWhere('vat', $name)->first();
 
                             if (is_null($supplier)) {
-                                $supplier = Supplier::where('vat', $name)->first();
-
-                                if (is_null($supplier)) {
-                                    $save_me = false;
-                                    $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_supplier_found', ['name' => $name]);
-
-                                    continue;
-                                }
+                                $save_me = false;
+                                $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_supplier_found', ['name' => $name]);
+                                continue;
                             }
 
                             $value = $supplier->id;
@@ -158,17 +150,12 @@ class Movements extends CSVImporter
                         $field = 'currency_id';
                         $value = $line[$index];
 
-                        if (! isset($cached_currencies[$value])) {
-                            $cached_currencies[$value] = Currency::where('symbol', $value)->where('enabled', true)->first();
-                        }
-
-                        if ($cached_currencies[$value]) {
+                        if (isset($cached_currencies[$value])) {
                             $value = $cached_currencies[$value]->id;
                         }
                         else {
                             $save_me = false;
                             $errors[] = implode($target_separator, $line) . '<br/>' . __('texts.imports.help.no_currency_found', ['name' => $value]);
-
                             continue;
                         }
                     }
@@ -238,18 +225,18 @@ class Movements extends CSVImporter
         return $m;
     }
 
-    public function run($request)
+    public function run(array $request)
     {
-        $imports = $request->input('import', []);
-        $dates = $request->input('date', []);
-        $senders = $request->input('sender_id', []);
-        $targets = $request->input('target_id', []);
-        $notes = $request->input('notes', []);
-        $types = $request->input('mtype', []);
-        $methods = $request->input('method', []);
-        $amounts = $request->input('amount', []);
-        $identifiers = $request->input('identifier', []);
-        $currencies = $request->input('currency_id', []);
+        $imports = $request['import'] ?? [];
+        $dates = $request['date'] ?? [];
+        $senders = $request['sender_id'] ?? [];
+        $targets = $request['target_id'] ?? [];
+        $notes = $request['notes'] ?? [];
+        $types = $request['mtype'] ?? [];
+        $methods = $request['method'] ?? [];
+        $amounts = $request['amount'] ?? [];
+        $identifiers = $request['identifier'] ?? [];
+        $currencies = $request['currency_id'] ?? [];
 
         $errors = [];
         $movements = [];

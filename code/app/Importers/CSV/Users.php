@@ -123,14 +123,13 @@ class Users extends CSVImporter
         return $ret;
     }
 
-    public function testAccess($request)
+    public function testAccess(array $request)
     {
-        $user = $request->user();
-
+        $user = Auth::user();
         return $user->can('users.admin', $user->gas);
     }
 
-    public function guess($request)
+    public function guess(array $request)
     {
         return $this->storeUploadedFile($request, [
             'type' => 'users',
@@ -141,7 +140,7 @@ class Users extends CSVImporter
         ]);
     }
 
-    public function select($request)
+    public function select(array $request)
     {
         return null;
     }
@@ -175,7 +174,7 @@ class Users extends CSVImporter
         return $u;
     }
 
-    public function run($request)
+    public function run(array $request)
     {
         DB::beginTransaction();
 

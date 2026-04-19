@@ -32,7 +32,7 @@ class UsersServiceTest extends TestCase
         $this->userWithBasePerm = User::factory()->create(['gas_id' => $this->gas->id]);
         $this->userWithBasePerm->addRole($role->id, $this->gas);
 
-        $this->userWithNoPerms = User::factory()->create(['gas_id' => $this->gas->id]);
+        $this->userWithNoPerms = User::factory()->createOneQuietly(['gas_id' => $this->gas->id]);
 
         $this->supplier = Supplier::factory()->create();
         $this->userWithShippingPerms = $this->createRoleAndUser($this->gas, 'supplier.shippings', $this->supplier);

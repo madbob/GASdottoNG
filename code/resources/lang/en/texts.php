@@ -260,6 +260,7 @@ return array(
         'identifier' => 'Identifier',
         'notes' => 'Notes',
         'id' => 'ID',
+        'advanced' => 'Advanced Actions',
         'closing_date' => 'Closing date',
         'stats' => array(
             'involved_orders' => 'Order value',

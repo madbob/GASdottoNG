@@ -142,6 +142,23 @@ return [
                 'reviewCallback' => 'formatObjectsToComponent',
             ],
         ],
+        'orderstatus' => [
+            'extends' => 'select',
+            'params' => [
+                'name' => 'status',
+                'tlabel' => 'generic.status',
+                'options' => function() {
+                    $statuses = [];
+
+                    foreach(\App\Helpers\Status::orders() as $identifier => $meta) {
+                        $statuses[$identifier] = $meta->label;
+                    }
+
+                    return $statuses;
+                },
+                'tpophelp' => 'orders.help.status',
+            ]
+        ],
         'periodic' => [
             'extends' => 'text',
             'params' => [

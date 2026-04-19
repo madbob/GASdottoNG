@@ -5,7 +5,11 @@ namespace App\Services;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
+use GeneaLabs\LaravelModelCaching\Facades\ModelCache;
+
 use App\Services\Concerns\ExportsCatalogue;
+use App\Printers\Order as Printer;
+use App\Importers\CSV\Deliveries;
 use App\Order;
 use App\Aggregate;
 use App\Supplier;
@@ -71,6 +75,8 @@ class OrdersService extends BaseService
             $o->circles()->sync($circles);
         }
 
+        DB::commit();
+
         return $a;
     }
 
@@ -124,6 +130,7 @@ class OrdersService extends BaseService
         DB::beginTransaction();
         $order = $this->show($id, true);
         $order->delete();
+        DB::commit();
         return $order;
     }
 
@@ -151,5 +158,71 @@ class OrdersService extends BaseService
         }
 
         return true;
+    }
+
+    public function duplicate($id, array $request)
+    {
+        $original_order = $this->show($id, true);
+        $status = $request['status'];
+
+        $aggregate = $this->store([
+            'start' => $request['start'],
+            'end' => $request['end'],
+            'shipping' => $request['shipping'],
+            'status' => $status,
+            'comment' => $original_order->comment,
+            'supplier' => $original_order->supplier_id,
+            'keep_open_packages' => $original_order->keep_open_packages,
+            'circles' => $original_order->circles()->pluck('id')->toArray(),
+        ]);
+
+        $order = $aggregate->orders()->first();
+
+        $products = $original_order->products()->withTrashed()->pluck('id')->toArray();
+        $order->products()->sync($products);
+
+        /*
+            In fase di creazione dell'ordine vado ad agganciare automaticamente
+            i modificatori assegnati al fornitore; qui sopprimo tali eventuali
+            modificatori assegnati di default, e vado a riassegnare dei
+            duplicati dei modificatori dell'ordine originale
+        */
+
+        foreach($order->modifiers as $redundant_mod) {
+            $redundant_mod->delete();
+        }
+
+        foreach($original_order->modifiers as $original_mod) {
+            $mod = $original_mod->replicate();
+            $mod->target()->associate($order);
+            $mod->save();
+        }
+
+        $action = $request['action'];
+        if ($action == 'full') {
+            /*
+                Per importare le prenotazioni nel nuovo ordine sfrutto
+                l'esportazione in CSV del Dettaglio Consegne dell'ordine
+                originale e la relativa reimportazione delle consegne nel nuovo
+                ordine
+            */
+            $printer = new Printer();
+
+            $exported = $printer->document($original_order, 'table', [
+                'action' => 'save',
+                'format' => 'csv',
+                'status' => 'pending',
+                'fields' => [
+                    'username',
+                ]
+            ]);
+
+            $import = new Deliveries();
+            $import->directImportFromFile($order, $exported);
+
+            unlink($exported);
+        }
+
+        return $order;
     }
 }

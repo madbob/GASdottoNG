@@ -37,4 +37,4 @@ $suppliers = $currentuser->targetsByAction('supplier.orders');
 </x-larastrap::field>
 
 @include('order.partials.groups', ['order' => null, 'readonly' => false])
-@include('commons.orderstatus', ['order' => $order])
+<x-ls::orderstatus />

@@ -1,12 +1,16 @@
-<?php
+@php
 
 $summary = $master_summary->orders[$order->id];
 
 $custom_buttons = [
     [
-        'tlabel' => 'generic.export',
-        'classes' => ['float-start', 'link-button', 'me-2'],
-        'attributes' => ['data-link' => $order->exportableURL()]
+        'color' => 'info',
+        'classes' => ['float-start', 'me-2', 'async-modal'],
+        'tlabel' => 'generic.advanced',
+        'postlabel' => '<i class="bi-window"></i>',
+        'attributes' => [
+            'data-modal-url' => route('orders.advanced', $order->id),
+        ]
     ]
 ];
 
@@ -28,7 +32,7 @@ else {
 
 $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
 
-?>
+@endphp
 
 <x-larastrap::mform :obj="$order" classes="order-editor" method="PUT" :action="route('orders.update', $order->id)" :nodelete="$nodelete" :other_buttons="$custom_buttons">
     <input type="hidden" name="order_id" value="{{ $order->id }}" />
@@ -39,7 +43,7 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
             @include('commons.staticobjfield', ['obj' => $order, 'name' => 'supplier', 'label' => __('texts.orders.supplier')])
             <x-larastrap::text name="internal_number" tlabel="generic.number" readonly disabled tpophelp="orders.help.number" />
 
-            <?php
+            @php
 
             $keep_open_packages_values = [
                 'no' => __('texts.orders.packages.ignore'),
@@ -50,7 +54,7 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
                 $keep_open_packages_values['all'] = __('texts.orders.packages.permit_all');
             }
 
-            ?>
+            @endphp
 
             @if(in_array($order->status, ['suspended', 'open', 'closed']))
                 <x-larastrap::textarea name="comment" tlabel="generic.comment" maxlength="190" rows="2" :pophelp="__('texts.orders.comment', ['limit' => longCommentLimit()])" />
@@ -59,7 +63,7 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
                 <x-larastrap::datepicker name="shipping" tlabel="orders.dates.shipping" :attributes="['data-enforce-after' => '.date[name=end]']" />
 
                 @if($currentgas->booking_contacts == 'manual')
-                    <?php
+                    @php
 
                     $contactable_users = new Illuminate\Support\Collection();
                     foreach(rolesByClass('App\Supplier') as $role) {
@@ -68,7 +72,7 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
 
                     $contactable_users = $contactable_users->sortBy('surname')->unique();
 
-                    ?>
+                    @endphp
 
                     <x-larastrap::selectobj name="users" tlabel="generic.contacts" :options="$contactable_users" multiple tpophelp="orders.help.contacts" />
                 @endif
@@ -94,7 +98,7 @@ $shipped_modifiers = $order->applyModifiers($master_summary, 'shipped');
                 @endif
             @endif
 
-            @include('commons.orderstatus', ['order' => $order])
+            <x-ls::orderstatus :readonly="!(isset($editable) == false || $editable == true)" />
         </div>
         <div class="col-12 col-lg-4">
             @include('order.partials.groups', [

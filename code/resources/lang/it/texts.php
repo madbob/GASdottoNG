@@ -286,6 +286,7 @@ return array (
     'identifier' => 'Identificativo',
     'notes' => 'Note',
     'id' => 'ID',
+    'advanced' => 'Funzioni Avanzate',
     'closing_date' => 'Data Chiusura',
     'stats' =>
     array (
@@ -1025,6 +1026,8 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
       'unremovable_instructions' => 'Si raccomanda di accedere al <a href=":link">pannello delle prenotazioni per questo ordine</a> e, con lo strumento "Prenotazioni per Altri Utenti", invalidare le prenotazioni esistenti.',
       'unremovable_notice' => 'Questo meccanismo è deliberatamente non automatico e volutamente complesso, per evitare la perdita involontaria di dati.',
       'downloadlink' => 'Link per scaricare i documenti',
+      'advanced_export' => "È possibile esportare un ordine in formato GDXP, per condividerlo con altri GAS.<br>Il file include le informazioni anagrafiche del fornitore (che potranno essere importate se l'altro GAS già non possiede queste informazioni), il listino dei prodotti inclusi nell'ordine, e le date di apertura, chiusura e consegna.",
+      'advanced_duplicate' => "È possibile duplicare l'ordine, con o senza prenotazioni.<br>Nel primo caso verrà creato un nuovo ordine in stato con gli stessi prodotti, gli stessi modificatori e le stesse impostazioni dell'ordine originale; nel secondo caso, inoltre, verranno anche duplicate tutte le prenotazioni di tutti gli utenti.",
     ),
     'booking_description' =>
     array (
@@ -1120,6 +1123,10 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
       'closing' => 'In Chiusura',
       'closed' => 'Chiuso',
     ),
+    'duplicate' => [
+        'simple' => 'Duplica Ordine',
+        'full' => 'Duplica Ordine e Prenotazioni',
+    ],
     'do_aggregate' => 'Aggrega Ordini',
     'admin_dates' => 'Gestione Date',
     'admin_automatics' => 'Gestione Ordini Automatici',

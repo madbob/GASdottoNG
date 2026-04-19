@@ -309,4 +309,18 @@ class OrdersController extends BackedController
             return $ret;
         }
     }
+
+    public function advanced(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+        return view('order.partials.advanced', [
+            'order' => $order,
+        ]);
+    }
+
+    public function duplicate(Request $request, $id)
+    {
+        $order = $this->service->duplicate($id, $request->all());
+        return $this->commonSuccessResponse($order->aggregate);
+    }
 }

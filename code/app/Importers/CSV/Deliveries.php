@@ -4,6 +4,7 @@ namespace App\Importers\CSV;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use App\User;
 use App\Aggregate;
@@ -31,23 +32,23 @@ class Deliveries extends CSVImporter
         return __('texts.export.importing.deliveries.instruction');
     }
 
-    public function testAccess($request)
+    public function testAccess(array $request)
     {
-        $user = $request->user();
-        $aggregate_id = $request->input('aggregate_id');
+        $user = Auth::user();
+        $aggregate_id = $request['aggregate_id'];
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
         return $user->can('supplier.shippings', $aggregate);
     }
 
-    public function guess($request)
+    public function guess(array $request)
     {
         return $this->storeUploadedFile($request, [
             'type' => 'deliveries',
             'next_step' => 'select',
             'sorting_fields' => $this->fields(),
             'extra_fields' => [
-                'aggregate_id' => $request->input('aggregate_id'),
+                'aggregate_id' => $request['aggregate_id'],
             ],
             'extra_description' => [
                 __('texts.export.importing.deliveries.notice'),
@@ -55,7 +56,41 @@ class Deliveries extends CSVImporter
         ]);
     }
 
-    public function select($request)
+    private function translateProductsInLine($line, $first_product_index, $mapped_products): array
+    {
+        $datarow = [];
+
+        for ($inner_index = $first_product_index; $inner_index < count($line); $inner_index++) {
+            if (isset($mapped_products[$inner_index])) {
+                $reference_product = $mapped_products[$inner_index];
+                $quantity = guessDecimal($line[$inner_index]);
+                $product_id = $reference_product->product->id;
+                $datarow[$product_id] = $quantity;
+
+                if ($reference_product->combo) {
+                    if (isset($datarow['variant_quantity_' . $product_id]) === false) {
+                        $datarow['variant_quantity_' . $product_id] = [];
+                    }
+
+                    foreach ($reference_product->combo->values as $val) {
+                        $variant_id = $val->variant->id;
+
+                        if (isset($datarow['variant_selection_' . $variant_id]) === false) {
+                            $datarow['variant_selection_' . $variant_id] = [];
+                        }
+
+                        $datarow['variant_selection_' . $variant_id][] = $val->id;
+                    }
+
+                    $datarow['variant_quantity_' . $product_id][] = $quantity;
+                }
+            }
+        }
+
+        return $datarow;
+    }
+
+    public function select(array $request)
     {
         $user = Auth::user();
         $service = app()->make('BookingsService');
@@ -64,7 +99,7 @@ class Deliveries extends CSVImporter
         $columns = $this->initRead($request);
         $target_separator = ',';
 
-        $aggregate_id = $request->input('aggregate_id');
+        $aggregate_id = $request['aggregate_id'];
         $aggregate = Aggregate::findOrFail($aggregate_id);
 
         $mapped_products = [];
@@ -114,6 +149,11 @@ class Deliveries extends CSVImporter
         else {
             DB::beginTransaction();
 
+            /*
+                Qui salto le prime due righe, che nel CSV della Tabella Prodotti
+                includono i nomi dei prodotti (che servono a rimapparli qui
+                sulle relative quantità) ed i prezzi (che ignoro)
+            */
             for ($i = 2; $i < count($csvdata); $i++) {
                 $line = $csvdata[$i];
 
@@ -128,31 +168,13 @@ class Deliveries extends CSVImporter
                         if ($field == 'username') {
                             $username = trim($line[$index]);
                             $target_user = User::where('username', $username)->first();
+                            if ($target_user == null) {
+                                break;
+                            }
                         }
                         elseif ($index >= $first_product_index) {
-                            if (isset($mapped_products[$index])) {
-                                $quantity = guessDecimal($line[$index]);
-                                $product_id = $mapped_products[$index]->product->id;
-                                $datarow[$product_id] = $quantity;
-
-                                if ($mapped_products[$index]->combo) {
-                                    if (isset($datarow['variant_quantity_' . $product_id]) === false) {
-                                        $datarow['variant_quantity_' . $product_id] = [];
-                                    }
-
-                                    foreach ($mapped_products[$index]->combo->values as $val) {
-                                        $variant_id = $val->variant->id;
-
-                                        if (isset($datarow['variant_selection_' . $variant_id]) === false) {
-                                            $datarow['variant_selection_' . $variant_id] = [];
-                                        }
-
-                                        $datarow['variant_selection_' . $variant_id][] = $val->id;
-                                    }
-
-                                    $datarow['variant_quantity_' . $product_id][] = $quantity;
-                                }
-                            }
+                            $dataline = $this->translateProductsInLine($line, $first_product_index, $mapped_products);
+                            $datarow = array_merge($datarow, $dataline);
                         }
                     }
 
@@ -169,6 +191,7 @@ class Deliveries extends CSVImporter
                     }
                 }
                 catch (\Exception $e) {
+                    Log::warning('Errore in importazione consegne', ['exception' => $e]);
                     $errors[] = implode($target_separator, $line) . '<br/>' . $e->getMessage();
                 }
             }
@@ -190,16 +213,10 @@ class Deliveries extends CSVImporter
         return view('import.csvbookingsselect', $parameters);
     }
 
-    public function run($request)
+    private function pushBookingData($order, $data, $users, $delivering)
     {
         $user = Auth::user();
         $service = app()->make('BookingsService');
-
-        $data = json_decode($request->input('data', '[]'), true);
-        $users = $request->input('user', []);
-
-        $order_id = $request->input('order_id');
-        $target_order = Order::findOrFail($order_id);
 
         $errors = [];
         $bookings = [];
@@ -209,7 +226,7 @@ class Deliveries extends CSVImporter
         foreach ($data as $index => $datarow) {
             try {
                 $target_user = User::find($users[$index]);
-                $booking = $service->handleBookingUpdate($datarow, $user, $target_order, $target_user, true);
+                $booking = $service->handleBookingUpdate($datarow, $user, $order, $target_user, $delivering);
                 $bookings[] = $booking;
             }
             catch (\Exception $e) {
@@ -219,8 +236,22 @@ class Deliveries extends CSVImporter
 
         DB::commit();
 
-        $action = $request->input('action', 'save');
+        return [$bookings, $errors];
+    }
+
+    public function run(array $request)
+    {
+        $data = json_decode($request['data'] ?? '[]', true);
+        $users = $request['user'] ?? [];
+
+        $order_id = $request['order_id'];
+        $target_order = Order::findOrFail($order_id);
+
+        list($bookings, $errors) = $this->pushBookingData($target_order, $data, $users, true);
+
+        $action = $request['action'] ?? 'save';
         if ($action == 'close') {
+            $user = Auth::user();
             app()->make('FastBookingsService')->fastShipping($user, $target_order->aggregate, null);
         }
 
@@ -234,5 +265,35 @@ class Deliveries extends CSVImporter
     public function finalTemplate()
     {
         return 'import.csvimportbookingsfinal';
+    }
+
+    /**
+     * Funzione di comodo per importare direttamente un file delle consegne in
+     * modo non interattivo.
+     * Si assume che il file CSV in ingresso abbia il formato della "Tabella
+     * Complessiva Prodotti" con lo username nella prima colonna e tutti gli
+     * altri dati a partire dalla seconda
+     */
+    public function directImportFromFile($order, $filepath)
+    {
+        /*
+            Qui avrei potuto isolare da select() il codice di lettura del CSV
+            e relativa conversione in prenotazioni, che vengono salvate con
+            handleBookingUpdate() ma invalidate dalla transazione che isola gran
+            parte della funzione stessa, ma in questo modo di fatto posso
+            testare sia la funzione di lettura che di scrittura di tutto questo
+            Importer
+        */
+
+        $parsed = $this->select([
+            'aggregate_id' => $order->aggregate_id,
+            'path' => $filepath,
+            'column' => ['username', 'first'],
+        ]);
+
+        $data = $parsed['data'];
+        $users = array_map(fn($b) => $b->user_id, $parsed['bookings']);
+
+        $this->pushBookingData($order, $data, $users, false);
     }
 }

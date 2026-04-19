@@ -596,6 +596,8 @@ $(document).ready(function() {
             }
         };
 
+        Forms.appendButtonValue(form, event);
+
         if (form.find('input[type="file"]').length) {
             params.data = utils.j().serializeFormData(form);
             params.processData = false;
