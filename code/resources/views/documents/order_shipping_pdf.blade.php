@@ -75,6 +75,8 @@ foreach($data->contents as $d) {
                 padding: 5px;
             }
         </style>
+
+        <meta charset="utf-8">
     </head>
 
     <body>

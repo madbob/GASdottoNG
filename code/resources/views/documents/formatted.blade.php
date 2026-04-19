@@ -55,6 +55,8 @@
                 padding: 5px;
             }
         </style>
+
+        <meta charset="utf-8">
     </head>
 
     <body>

@@ -6,6 +6,8 @@
                 border-collapse: collapse;
             }
         </style>
+
+        <meta charset="utf-8">
     </head>
 
     <body>
