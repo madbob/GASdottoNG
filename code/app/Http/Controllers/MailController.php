@@ -64,7 +64,7 @@ class MailController extends Controller
             $message = Message::fromRawPostData();
             $validator = new MessageValidator(function($certUrl) {
                 $hash = md5($certUrl);
-                return Cache::forever('scaleway_certificate_' . $hash, fn() => @file_get_contents($certUrl));
+                return Cache::rememberForever('scaleway_certificate_' . $hash, fn() => @file_get_contents($certUrl));
             }, '/\.scw\.cloud$/');
 
             try {
