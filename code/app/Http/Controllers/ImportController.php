@@ -24,6 +24,7 @@ class ImportController extends Controller
     {
         $type = $request->input('type');
         $step = $request->input('step', 'guess');
+        $request = $request->all();
 
         $importer = CSVImporter::getImporter($type);
 
@@ -36,13 +37,13 @@ class ImportController extends Controller
         try {
             switch ($step) {
                 case 'guess':
-                    $parameters = $importer->guess($request->all());
+                    $parameters = $importer->guess($request);
                     $return = view('import.csvsortcolumns', $parameters);
                     break;
 
                 case 'select':
                     try {
-                        $parameters = $importer->select($request->all());
+                        $parameters = $importer->select($request);
                         $return = $importer->formatSelect($parameters);
                     }
                     catch (MissingFieldException $e) {
@@ -56,7 +57,7 @@ class ImportController extends Controller
                     break;
 
                 case 'run':
-                    $parameters = $importer->run($request->all());
+                    $parameters = $importer->run($request);
                     $return = view($importer->finalTemplate(), $parameters);
                     break;
 
