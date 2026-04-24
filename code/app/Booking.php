@@ -535,7 +535,7 @@ class Booking extends Model
         $this->status = $keep_status;
     }
 
-    public function involvedModifiers()
+    public function involvedModifiers(): Collection
     {
         $modifiers = $this->order->involvedModifiers(false);
 

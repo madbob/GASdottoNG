@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Helpers\CirclesFilter;
 use App\Booking;
+use App\Product;
 use App\Exceptions\AuthException;
 use App\Printers\Order as OrderPrinter;
 use App\Printers\PrintParams;
@@ -103,14 +104,14 @@ class ModifiersServiceTest extends TestCase
     {
         $this->localInitOrder();
         $this->actingAs($this->userReferrer);
-        $product = $this->order->products->random();
-
-        $modifiers = $product->applicableModificationTypes();
-        $this->assertEquals(count($modifiers), 2);
-        $mod = null;
 
         $thresholds = [20, 10, 0];
         $threshold_prices = [0.9, 0.92, 0.94];
+
+        $product = $this->order->products->random();
+        $modifiers = $product->applicableModificationTypes();
+        $this->assertEquals(count($modifiers), 2);
+        $mod = null;
 
         foreach ($modifiers as $modifier_type) {
             if ($modifier_type->id == 'sconto') {
@@ -133,8 +134,10 @@ class ModifiersServiceTest extends TestCase
         }
 
         $this->assertNotNull($mod);
+        $this->assertEquals(Product::class, $mod->target_type);
+        $this->assertEquals($product->id, $mod->target_id);
 
-        foreach ([21, 15, 3] as $threshold_index => $total_quantity) {
+        foreach ([21, 15, 3, 0] as $threshold_index => $total_quantity) {
             $this->nextRound();
             $this->enforceBookingsTotalQuantity($product->id, $total_quantity);
             $this->nextRound();
@@ -142,17 +145,90 @@ class ModifiersServiceTest extends TestCase
             $order = app()->make('OrdersService')->show($this->order->id);
             $modifiers = $order->applyModifiers();
             $aggregated_modifiers = \App\ModifiedValue::aggregateByType($modifiers);
-            $this->assertEquals(1, count($aggregated_modifiers));
 
-            $without_discount = $product->price * $total_quantity;
-            $total = $threshold_prices[$threshold_index] * $total_quantity;
+            if ($total_quantity > 0) {
+                $this->assertEquals(1, count($aggregated_modifiers));
 
-            foreach ($aggregated_modifiers as $ag) {
-                $amount_check = round($ag->amount * -1, 3);
-                $total_check = round($without_discount - $total, 3);
-                $this->assertEquals($amount_check, $total_check);
+                $without_discount = $product->price * $total_quantity;
+                $total = $threshold_prices[$threshold_index] * $total_quantity;
+
+                foreach ($aggregated_modifiers as $ag) {
+                    $amount_check = round($ag->amount * -1, 3);
+                    $total_check = round($without_discount - $total, 3);
+                    $this->assertEquals($amount_check, $total_check);
+                }
+            }
+            else {
+                $this->assertEquals(0, count($aggregated_modifiers));
             }
         }
+    }
+
+    private function attachThresholdModifierOrderPrice($product, $thresholds, $threshold_prices)
+    {
+        $modifiers = $product->applicableModificationTypes();
+        $this->assertEquals(count($modifiers), 2);
+        $mod = null;
+
+        foreach ($modifiers as $modifier_type) {
+            if ($modifier_type->id == 'spese-trasporto') {
+                $mod = $product->modifiers()->where('modifier_type_id', $modifier_type->id)->first();
+                app()->make('ModifiersService')->update($mod->id, [
+                    'value' => 'absolute',
+                    'arithmetic' => 'sum',
+                    'scale' => 'minor',
+                    'applies_type' => 'order_price',
+                    'applies_target' => 'order',
+                    'distribution_type' => 'price',
+                    'threshold' => $thresholds,
+                    'amount' => $threshold_prices,
+                ]);
+
+                $this->assertNotNull($modifier_type->modifiers->firstWhere('id', $mod->id));
+
+                break;
+            }
+        }
+
+        $this->assertNotNull($mod);
+        $this->assertEquals(Product::class, $mod->target_type);
+        $this->assertEquals($product->id, $mod->target_id);
+    }
+
+    /*
+        Prodotto con modificatori ma non prenotato.
+        Copre il caso molto specifico di un prodotto con un modificatore che si
+        applica sul prezzo complessivo dell'ordine.
+        Cfr. commit e71c91aae4425aef8c7fd3226b5409f62d13d79f
+    */
+    public function test_missing_product()
+    {
+        $this->order = $this->initOrder(null);
+        $this->actingAs($this->userReferrer);
+
+        $thresholds = [100, 200, 300];
+        $threshold_prices = [100, 90, 80];
+
+        $product = $this->order->products->random();
+        $this->attachThresholdModifierOrderPrice($product, $thresholds, $threshold_prices);
+
+        do {
+            $missing_product = $this->order->products->random();
+        } while($missing_product->id == $product->id);
+
+        $this->attachThresholdModifierOrderPrice($missing_product, $thresholds, $threshold_prices);
+
+        $data = [
+            'action' => 'booked',
+            $product->id => 2,
+        ];
+
+        app()->make('BookingsService')->handleBookingUpdate($data, $this->userReferrer, $this->order, $this->userReferrer, false);
+
+        $this->nextRound();
+
+        $order = app()->make('OrdersService')->show($this->order->id);
+        $order->aggregate->printableUserHeader();
     }
 
     /*
