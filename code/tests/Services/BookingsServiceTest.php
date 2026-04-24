@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use App\Exceptions\AuthException;
 use App\Exceptions\IllegalArgumentException;
+use App\Product;
 use App\Booking;
 use App\Movement;
 
@@ -516,6 +517,38 @@ class BookingsServiceTest extends TestCase
         $data['action'] = 'booked';
         $booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
         $this->assertNotNull($booking);
+    }
+
+    /*
+        Consegna con prezzo forzato
+    */
+    public function test_apply_price()
+    {
+        $this->actingAs($this->userWithBasePerms);
+        [$data, $booked_count, $total] = $this->randomQuantities($this->sample_order->products);
+        $target_test_product = Product::find(array_rand($data));
+        $data['action'] = 'booked';
+        $booking_booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, false);
+        $initial_value = $booking_booking->getValue('booked', false);
+
+        $this->nextRound();
+
+        do {
+            $new_price = rand(1, 10);
+        } while($new_price == $target_test_product->price);
+
+        $this->actingAs($this->userWithShippingPerms);
+        $data['action'] = 'shipped';
+        $data['apply_price_' . $target_test_product->id] = $new_price;
+        $delivery_booking = $this->updateAndFetch($data, $this->sample_order, $this->userWithBasePerms, true);
+
+        $old_price = $target_test_product->price * $data[$target_test_product->id];
+        $new_price = $new_price * $data[$target_test_product->id];
+
+        $target_booked_test_product = $delivery_booking->products->firstWhere('product_id', $target_test_product->id);
+        $this->assertEquals($target_booked_test_product->getValue('delivered'), $new_price);
+
+        $this->assertEquals($initial_value - $old_price + $new_price, $delivery_booking->getValue('delivered', false));
     }
 
     /*
