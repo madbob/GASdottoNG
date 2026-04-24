@@ -326,7 +326,7 @@ class ModifierEngine
 
                     if ($modifier->target_type == Product::class) {
                         $booking_mod_target = $aggregate_data->orders[$order_id]->bookings[$booking->id]->products[$modifier->target->id] ?? null;
-                        $reference = $mod_target->products[$modifier->target->id]->$distribution_attribute;
+                        $reference = $mod_target->products[$modifier->target->id]->$distribution_attribute ?? null;
                     }
                     else {
                         $booking_mod_target = $aggregate_data->orders[$order_id]->bookings[$booking->id] ?? null;
