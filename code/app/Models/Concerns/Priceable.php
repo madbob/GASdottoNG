@@ -18,26 +18,40 @@ namespace App\Models\Concerns;
 
 trait Priceable
 {
-    private $hardPrice = null;
+    private function cacheKey()
+    {
+        $id = inlineId($this);
+        return 'forced-price-' . $id;
+    }
 
     public function setPrice($price)
     {
-        $this->hardPrice = $price;
+        $key = $this->cacheKey();
+        app()->make('TempCache')->put($key, $price);
     }
 
     public function getPrice($rectify = false)
     {
-        if (is_null($this->hardPrice)) {
+        $key = $this->cacheKey();
+        $hard = app()->make('TempCache')->get($key);
+
+        if (is_null($hard)) {
             return $this->realPrice($rectify);
         }
         else {
-            return $this->hardPrice;
+            return $hard;
         }
     }
 
     public function copyPrice($obj)
     {
-        $this->hardPrice = $obj->hardPrice;
+        $cache = app()->make('TempCache');;
+
+        $original_key = $obj->cacheKey();
+        $price = $cache->get($original_key);
+
+        $this_key = $this->cacheKey();
+        $cache->put($this_key, $price);
     }
 
     abstract public function realPrice($rectify);
