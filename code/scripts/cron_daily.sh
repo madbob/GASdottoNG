@@ -19,6 +19,7 @@ do
     php artisan close:orders
     php artisan open:orders
     php artisan remind:orders
+    php artisan auth:clear-resets
     php artisan model:prune --model "App\InnerLog"
 done
 
