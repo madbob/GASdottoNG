@@ -5,6 +5,8 @@ namespace Tests\Services;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use App\Booking;
+
 class FastBookingsServiceTest extends TestCase
 {
     use DatabaseTransactions;
@@ -45,6 +47,32 @@ class FastBookingsServiceTest extends TestCase
 
         $summary = $order->aggregate->reduxData();
         $this->assertTrue($summary->price_delivered > 0);
+    }
+
+    /*
+        Cancellazione prenotazione
+    */
+    public function test_remove_booking()
+    {
+        $this->populateOrder($this->sample_order);
+
+        $this->actingAs($this->userWithShippingPerms);
+        $order = app()->make('OrdersService')->show($this->sample_order->id);
+        app()->make('FastBookingsService')->fastShipping($this->userWithShippingPerms, $order->aggregate, null);
+
+        $this->nextRound();
+        $order = app()->make('OrdersService')->show($this->sample_order->id);
+        $this->assertTrue($order->bookings->count() > 0);
+
+        foreach ($order->bookings as $booking) {
+            $booking->delete();
+
+            $this->nextRound();
+
+            $existing = Booking::find($booking->id);
+            $this->assertNotNull($existing);
+            break;
+        }
     }
 
     /*

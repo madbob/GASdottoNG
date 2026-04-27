@@ -21,7 +21,6 @@ use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\ReducibleTrait;
 use App\Models\Concerns\TracksUpdater;
 use App\Events\SluggableCreating;
-use App\Events\BookingDeleting;
 
 class Booking extends Model
 {
@@ -35,7 +34,6 @@ class Booking extends Model
 
     protected $dispatchesEvents = [
         'creating' => SluggableCreating::class,
-        'deleting' => BookingDeleting::class,
     ];
 
     public function __construct($attributes = [])
