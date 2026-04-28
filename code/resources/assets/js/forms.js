@@ -66,7 +66,7 @@ class Forms {
      */
     static appendButtonValue(form, event)
     {
-        if (event.originalEvent.submitter) {
+        if (event.originalEvent && event.originalEvent.submitter) {
             let button = $(event.originalEvent.submitter);
             let name = button.attr('name');
             let value = button.attr('value');
