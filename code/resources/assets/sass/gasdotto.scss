@@ -757,7 +757,7 @@ i[class^='bi-hidden-'] {
     z-index: 1999;
 }
 
-@include media-breakpoint-down(lg) {
+@include media-breakpoint-down(md) {
     .btn {
         padding: 0.375rem 0.35rem;
     }

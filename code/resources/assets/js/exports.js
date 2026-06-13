@@ -16,7 +16,7 @@ class Exports {
 				$(this).removeClass('bg-success text-white');
 			},
             drop: function(event, ui) {
-                var node = ui.draggable.clone();
+                let node = ui.draggable.clone();
                 node.find('input:hidden').attr('name', 'column[]');
                 $(this).removeClass('bg-success text-white').find('.column_content').empty().append(node.contents());
             }

@@ -25,9 +25,7 @@ if (!isset($final_value)) {
         @endif
     </td>
 
-    @for($i = 0; $i < $skip_cells; $i++)
-        <td>&nbsp;</td>
-    @endfor
+    <td colspan="{{ $skip_cells }}">&nbsp;</td>
 
     <td class="text-end">
         <input type="hidden" name="modifier-{{ $mod_value ? $mod_value->modifier->id : '0' }}" class="skip-on-submit">

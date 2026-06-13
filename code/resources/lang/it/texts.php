@@ -1372,8 +1372,8 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
     'admin_categories' => 'Amministra Categorie',
     'admin_measures' => 'Amministra Unità di Misura',
     'legal_name' => 'Ragione Sociale',
-    'orders_mode' => 'Modalità Avanzamento Ordini',
-    'send_notification_on_close' => 'Invia notifica alla chiusura degli ordini',
+    'orders_mode' => 'Avanzamento Ordini',
+    'send_notification_on_close' => 'Notifica Chiusura Ordini',
   ),
   'tour' =>
   array (

@@ -48,15 +48,13 @@ class Statistics {
         if (data.labels.length == 0) {
             this.doEmpty(selector);
         }
-        else {
-            if ($(selector).length != 0) {
-                $(selector).empty().css('height', data.labels.length * 40);
-                const chart = new BarChart(selector, data, this.commonGraphConfig());
+        else if ($(selector).length != 0) {
+            $(selector).empty().css('height', data.labels.length * 40);
+            const chart = new BarChart(selector, data, this.commonGraphConfig());
 
-                chart.on('created', (data) => {
-                    this.addDownloadButtons(data.svg['_node'], selector);
-                });
-            }
+            chart.on('created', (data) => {
+                this.addDownloadButtons(data.svg['_node'], selector);
+            });
         }
     }
 

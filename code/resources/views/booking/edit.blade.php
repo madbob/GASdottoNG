@@ -272,21 +272,14 @@ $form_buttons = [
 
                                 @if($user->gas->hasFeature('restrict_booking_to_credit'))
                                     <tr class="do-not-sort">
-                                        <td>{{ __('texts.movements.available_credit') }}</td>
-                                        <td>&nbsp;</td>
-                                        <td>&nbsp;</td>
-                                        <td>&nbsp;</td>
-                                        <td class="text-end">{{ printablePriceCurrency($user->activeBalance()) }}</td>
+                                        <td colspan="3">{{ __('texts.movements.available_credit') }}</td>
+                                        <td colspan="2" class="text-end">{{ printablePriceCurrency($user->activeBalance()) }}</td>
                                     </tr>
                                 @endif
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="text-end fw-bold">{{ __('texts.orders.totals.total') }}:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</td>
+                                    <td colspan="5" class="text-end fw-bold">{{ __('texts.orders.totals.total') }}:<br><span class="booking-total">{{ printablePrice($booking_total) }}</span> {{ $currency_symbol }}</td>
                                 </tr>
                             </tfoot>
                         </table>
