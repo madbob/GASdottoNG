@@ -85,7 +85,7 @@ class Order extends Printer
                 return $temp_file_path;
             }
             elseif ($params->action == 'download') {
-                download_headers('application/json', $filename);
+                downloadHeaders('application/json', $filename);
 
                 return $contents;
             }

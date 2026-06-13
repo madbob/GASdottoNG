@@ -172,7 +172,7 @@ return [
             'extends' => 'button',
             'params' => [
                 'color' => 'dark',
-                'postlabel' => '<i class="bi-window"></i>',
+                'postlabel' => '<i class="bi-window ms-2"></i>',
             ],
         ],
         'ambutton' => [
@@ -180,7 +180,7 @@ return [
             'params' => [
                 'classes' => ['async-modal'],
                 'color' => 'dark',
-                'postlabel' => '<i class="bi-window"></i>',
+                'postlabel' => '<i class="bi-window ms-2"></i>',
             ],
         ],
         'downloading' => [
@@ -188,7 +188,7 @@ return [
             'params' => [
                 'classes' => ['btn'],
                 'color' => 'light',
-                'postlabel' => ' <i class="bi-download"></i>',
+                'postlabel' => ' <i class="bi-download ms-2"></i>',
             ],
         ],
         'iconbutton' => [

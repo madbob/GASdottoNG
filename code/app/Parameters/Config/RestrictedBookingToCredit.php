@@ -29,6 +29,10 @@ class RestrictedBookingToCredit extends Config
                 'enabled' => true,
                 'limit' => $request->input('restrict_booking_to_credit->limit', 0),
             ];
+
+            if (blank(trim($restriction_info->limit))) {
+                $restriction_info->limit = 0;
+            }
         }
         else {
             $restriction_info = (object) [

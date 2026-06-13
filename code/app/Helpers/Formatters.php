@@ -42,7 +42,7 @@ function sanitizeFilename($filename)
 function normalizeUrl($url)
 {
     $url = strtolower($url);
-    if (str_starts_with($url, 'http') === false) {
+    if (!str_starts_with($url, 'http')) {
         $url = 'http://' . $url;
     }
 
@@ -62,7 +62,7 @@ function prettyFormatHtmlText($str)
     return nl2br($str);
 }
 
-function download_headers($mimetype, $filename)
+function downloadHeaders($mimetype, $filename)
 {
     app('debugbar')->disable();
 
@@ -71,11 +71,6 @@ function download_headers($mimetype, $filename)
     header('Cache-Control: no-cache, no-store, must-revalidate');
     header('Pragma: no-cache');
     header('Expires: 0');
-}
-
-function http_csv_headers($filename)
-{
-    download_headers('text/csv', $filename);
 }
 
 function output_csv($filename, $head, $contents, $format_callback, $out_file = null)
@@ -115,7 +110,7 @@ function output_csv($filename, $head, $contents, $format_callback, $out_file = n
 
         fflush($fh);
         $test = fclose($fh);
-        if ($test == false) {
+        if (!$test) {
             \Log::warning('Errore chiudendo il file formattato in CSV');
         }
     };
@@ -169,7 +164,7 @@ function htmlize($string)
     return $string;
 }
 
-function iban_split($iban, $field)
+function ibanSplit($iban, $field)
 {
     switch ($field) {
         case 'country':
@@ -257,7 +252,7 @@ function usernamePattern()
 function formatAccordionLabel($label, $icon)
 {
     $text = __('texts.' . $label);
-    return sprintf('<i class="bi-%s"></i> %s', $icon, $text);
+    return sprintf('<i class="bi-%s me-2"></i> %s', $icon, $text);
 }
 
 function baseEncrypt($string)

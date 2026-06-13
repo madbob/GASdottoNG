@@ -59,12 +59,12 @@ class FormattersTest extends TestCase
     {
         $ibans = ['IT02L1234512345123456789012', 'IT 02 L 1234512345 123456789012'];
         foreach ($ibans as $iban) {
-            $this->assertEquals('IT', iban_split($iban, 'country'));
-            $this->assertEquals('02', iban_split($iban, 'check'));
-            $this->assertEquals('L', iban_split($iban, 'cin'));
-            $this->assertEquals('12345', iban_split($iban, 'abi'));
-            $this->assertEquals('12345', iban_split($iban, 'cab'));
-            $this->assertEquals('123456789012', iban_split($iban, 'account'));
+            $this->assertEquals('IT', ibanSplit($iban, 'country'));
+            $this->assertEquals('02', ibanSplit($iban, 'check'));
+            $this->assertEquals('L', ibanSplit($iban, 'cin'));
+            $this->assertEquals('12345', ibanSplit($iban, 'abi'));
+            $this->assertEquals('12345', ibanSplit($iban, 'cab'));
+            $this->assertEquals('123456789012', ibanSplit($iban, 'account'));
         }
     }
 

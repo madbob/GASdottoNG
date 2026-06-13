@@ -69,7 +69,7 @@ $count_total = $count_total * -1;
                 <urn1:CdtrAgt>
                     <urn1:FinInstnId>
                         <urn1:ClrSysMmbId>
-                            <urn1:MmbId>{{ iban_split($currentgas->rid['iban'], 'abi') }}</urn1:MmbId>
+                            <urn1:MmbId>{{ ibanSplit($currentgas->rid['iban'], 'abi') }}</urn1:MmbId>
                         </urn1:ClrSysMmbId>
                     </urn1:FinInstnId>
                 </urn1:CdtrAgt>
