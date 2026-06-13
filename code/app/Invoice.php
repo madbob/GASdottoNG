@@ -88,17 +88,19 @@ class Invoice extends Model implements Datable
     {
         return $invoices->sort(function ($a, $b) {
             if ($a->status == 'payed' && $a->payment && $b->status == 'payed' && $b->payment) {
-                return $a->payment->date <=> $b->payment->date;
+                $ret = $a->payment->date <=> $b->payment->date;
             }
             elseif ($a->status == 'payed') {
-                return -1;
+                $ret = -1;
             }
             elseif ($b->status == 'payed') {
-                return 1;
+                $ret = 1;
             }
             else {
-                return $a->date <=> $b->date;
+                $ret = $a->date <=> $b->date;
             }
+
+            return $ret;
         })->reverse();
     }
 

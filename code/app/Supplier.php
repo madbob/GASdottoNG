@@ -142,16 +142,16 @@ class Supplier extends Model
 
         $query->where(function ($query) use ($supplier, $type, $id, $with_invoices) {
             $query->where(function ($query) use ($supplier, $type, $id) {
-                $query->where($type, 'App\Supplier')->where($id, $supplier->id);
+                $query->where($type, Supplier::class)->where($id, $supplier->id);
             })->orWhere(function ($query) use ($supplier, $type, $id) {
-                $query->where($type, 'App\Order')->whereIn($id, $supplier->orders()->pluck('orders.id'));
+                $query->where($type, Order::class)->whereIn($id, $supplier->orders()->pluck('orders.id'));
             })->orWhere(function ($query) use ($supplier, $type, $id) {
-                $query->where($type, 'App\Booking')->whereIn($id, $supplier->bookings()->pluck('bookings.id'));
+                $query->where($type, Booking::class)->whereIn($id, $supplier->bookings()->pluck('bookings.id'));
             });
 
             if ($with_invoices) {
                 $query->orWhere(function ($query) use ($supplier, $type, $id) {
-                    $query->where($type, 'App\Invoice')->whereIn($id, $supplier->invoices()->pluck('invoices.id'));
+                    $query->where($type, Invoice::class)->whereIn($id, $supplier->invoices()->pluck('invoices.id'));
                 });
             }
         });
@@ -180,9 +180,9 @@ class Supplier extends Model
                 $invoices = $supplier->invoices()->pluck('invoices.id');
 
                 $query->where(function ($query) use ($invoices) {
-                    $query->where('sender_type', 'App\Invoice')->whereIn('sender_id', $invoices);
+                    $query->where('sender_type', Invoice::class)->whereIn('sender_id', $invoices);
                 })->orWhere(function ($query) use ($invoices) {
-                    $query->where('target_type', 'App\Invoice')->whereIn('target_id', $invoices);
+                    $query->where('target_type', Invoice::class)->whereIn('target_id', $invoices);
                 });
 
                 break;

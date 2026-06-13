@@ -44,6 +44,7 @@ class VariantsServiceTest extends TestCase
         $this->expectException(AuthException::class);
         $this->actingAs($this->userWithNoPerms);
         $variant = $this->createVariant($this->product);
+        $this->assertNotNull($variant);
     }
 
     /*
@@ -147,7 +148,7 @@ class VariantsServiceTest extends TestCase
     */
     public function test_string_reading()
     {
-        $variant = $this->createVariant($this->product);
+        $this->createVariant($this->product);
         $combo = $this->product->variant_combos->first();
 
         $string = $combo->printableName();
@@ -180,7 +181,7 @@ class VariantsServiceTest extends TestCase
             }
         }
 
-        app()->make('VariantsService')->matrix($ids, $actives, ['', 'ABC', ''], [0, 0, 1], [0.1, 0, 0]);
+        app()->make('VariantsService')->matrix($ids, $actives, ['', 'ABC', ''], [0, 1, 2], [0.1, 0, 0]);
 
         $this->nextRound();
 
@@ -198,21 +199,70 @@ class VariantsServiceTest extends TestCase
                 case 1:
                     $this->assertEquals(1, $combo->active);
                     $this->assertEquals('ABC', $combo->code);
-                    $this->assertEquals(0, $combo->price_offset);
+                    $this->assertEquals(1, $combo->price_offset);
                     $this->assertEquals(0, $combo->weight_offset);
                     break;
 
                 case 2:
                     $this->assertEquals(1, $combo->active);
                     $this->assertEquals('', $combo->code);
-                    $this->assertEquals(1, $combo->price_offset);
+                    $this->assertEquals(2, $combo->price_offset);
                     $this->assertEquals(0, $combo->weight_offset);
                     break;
 
                 default:
-                    throw new \Exception('Invalid combo index', 1);
+                    $this->fail('Invalid combo index');
+                    break;
             }
         }
+    }
+
+    /*
+        Verifica corretta generazione del prezzo di una variante con differenza
+        prezzo su un prodotto con pezzatura
+    */
+    public function test_price_offset_with_portions()
+    {
+        $this->product->price = 10;
+        $this->product->portion_quantity = 0.5;
+        $this->product->save();
+
+        $this->nextRound();
+
+        $product = $this->product->fresh();
+        $product_price = $product->realPrice(true);
+        $this->test_matrix_update();
+
+        $this->nextRound();
+
+        $product = $product->fresh();
+        $combos = $product->variant_combos;
+        $this->assertEquals(3, $combos->count());
+
+        $red = false;
+        $green = false;
+        $blue = false;
+
+        foreach($combos as $combo) {
+            foreach($combo->values as $value) {
+                if ($value->value == 'Rosso') {
+                    $this->assertEquals($product_price, $combo->realPrice(true));
+                    $red = true;
+                }
+                else if ($value->value == 'Verde') {
+                    $this->assertEquals($product_price + (0.5 * 1), $combo->realPrice(true));
+                    $green = true;
+                }
+                else if ($value->value == 'Blu') {
+                    $this->assertEquals($product_price + (0.5 * 2), $combo->realPrice(true));
+                    $blue = true;
+                }
+            }
+        }
+
+        $this->assertTrue($red);
+        $this->assertTrue($green);
+        $this->assertTrue($blue);
     }
 
     /*

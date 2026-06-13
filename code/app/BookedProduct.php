@@ -38,12 +38,12 @@ class BookedProduct extends Model
 
     public function booking(): BelongsTo
     {
-        return $this->belongsTo('App\Booking');
+        return $this->belongsTo(Booking::class);
     }
 
     public function variants(): HasMany
     {
-        return $this->hasMany('App\BookedProductVariant', 'product_id')->with('components');
+        return $this->hasMany(BookedProductVariant::class, 'product_id')->with('components');
     }
 
     public function getStatusAttribute()
@@ -91,7 +91,7 @@ class BookedProduct extends Model
             sia diversa da 0, in quanto si può assumere che i prodotti prenotati
             non abbiano mai una quantità a 0
         */
-        if ($this->variants->isEmpty() === false) {
+        if (!$this->variants->isEmpty()) {
             return $this->variants->reduce(function ($carry, $item) use ($rectify, $attribute) {
                 return $carry + ($item->unitPrice($rectify) * $item->$attribute);
             }, 0);

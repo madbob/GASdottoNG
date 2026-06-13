@@ -333,6 +333,13 @@ class Order extends Model
 
             foreach ($variants as $variant) {
                 $id = $variant->innerIdentifier();
+
+                /*
+                    Reminder: la normalizzazione della differenza prezzo in base
+                    alla eventuale pezzatura del prodotto la faccio in
+                    VariantCombo::realPrice(), dunque è normale salvare qui un
+                    valore non elaborato
+                */
                 $row['variants'][$id] = $variant->price_offset;
             }
         }
