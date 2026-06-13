@@ -69,6 +69,7 @@ trait GASModel
         $avatar = '';
 
         if (hasTrait($this, HasPicture::class)) {
+            // @phpstan-ignore-next-line
             $avatar = $this->formatAvatar();
         }
 

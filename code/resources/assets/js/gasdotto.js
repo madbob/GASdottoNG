@@ -757,6 +757,18 @@ $(document).ready(function() {
 			url: 'users/tour/start',
 			dataType: 'JSON',
 			success: (data) => {
+                function permanentTourClose()
+                {
+					utils.postAjax({
+			            method: 'GET',
+			            url: 'users/tour/finish',
+			        });
+
+					if (utils.isMobile()) {
+						$('.navbar-toggler').click();
+					}
+				}
+
 				/*
 					Quando si registra una nuova istanza, viene spesso mostrata
 					la raccomandazione di modificare la propria password (di
@@ -777,18 +789,8 @@ $(document).ready(function() {
 				}
 
 				const tg = new TourGuideClient(data);
-
-				tg.onFinish(() => {
-					utils.postAjax({
-			            method: 'GET',
-			            url: 'users/tour/finish',
-			        });
-
-					if (utils.isMobile()) {
-						$('.navbar-toggler').click();
-					}
-				});
-
+                tg.onFinish(() => permanentTourClose());
+                tg.onBeforeExit(() => permanentTourClose());
 				tg.start();
 			}
 		});

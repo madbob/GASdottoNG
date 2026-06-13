@@ -19,7 +19,7 @@
         "laravel/ui": "^4.0",
         "lavary/laravel-menu": "^1.8",
         "league/csv": "^9.6",
-        "madbob/larastrap": "^1.0",
+        "madbob/larastrap": "^1.9",
         "madbob/laravel-queue-loopback": "^0.7.0",
         "mike-bronner/laravel-model-caching": "^13.0",
         "pda/pheanstalk": "~4.0",
