@@ -23,6 +23,7 @@ use App\Models\Concerns\HierarcableTrait;
 use App\Models\Concerns\RoleableTrait;
 use App\Models\Concerns\BookerTrait;
 use App\Models\Concerns\PaysFees;
+use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\TracksUpdater;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\ManualWelcomeMessage;
@@ -33,7 +34,7 @@ class User extends Authenticatable
 {
     use Authorizable, BookerTrait, Cachable, CanResetPassword, ContactableTrait, GASModel,
         HasFactory, HierarcableTrait, InCircles, Notifiable, PayableTrait, PaysFees, RoleableTrait, SluggableID,
-        SoftDeletes, SuspendableTrait, TracksUpdater;
+        SoftDeletes, SuspendableTrait, HasPicture, TracksUpdater;
 
     public $incrementing = false;
 
@@ -140,7 +141,7 @@ class User extends Authenticatable
 
     public function printableHeader()
     {
-        $ret = $this->printableName();
+        $ret = $this->formatAvatar() . $this->printableName();
 
         if ($this->isFriend() === false) {
             $ret .= $this->headerIcons();
@@ -190,12 +191,7 @@ class User extends Authenticatable
 
     public function getPictureUrlAttribute()
     {
-        if (empty($this->picture)) {
-            return '';
-        }
-        else {
-            return url('users/picture/' . $this->id);
-        }
+        return route('users.picture', $this->id);
     }
 
     public function sendPasswordResetNotification($token)

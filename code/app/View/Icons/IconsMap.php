@@ -27,6 +27,11 @@ abstract class IconsMap
         return $array;
     }
 
+    public static function dominantColor($obj)
+    {
+        return 'light';
+    }
+
     /*
         Questa funzione deve ritornare un array associativo che contiene la
         definizione di ogni icona prevista per la classe in oggetto. Le chiavi

@@ -17,6 +17,11 @@ class BackedController extends Controller
         parent::commonInit($parameters);
     }
 
+    public function getBackedService()
+    {
+        return $this->service;
+    }
+
     public function ensureAuth($permissions = [], $or = true)
     {
         return $this->service->ensureAuth($permissions, $or);

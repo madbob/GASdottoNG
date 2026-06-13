@@ -40,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('users/search', 'UsersController@search')->name('users.search');
         Route::get('users/searchorders/{id}', 'UsersController@searchOrders')->name('users.orders');
         Route::get('users/profile', 'UsersController@profile')->name('profile');
-        Route::get('users/picture/{id}', 'UsersController@picture');
+        Route::get('users/picture/{id}', 'UsersController@picture')->name('users.picture');
         Route::get('users/export', 'UsersController@export');
         Route::post('users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
         Route::get('users/fees', 'UsersController@fees')->name('users.fees');
@@ -72,6 +72,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('suppliers/ro/{id}', 'SuppliersController@show_ro');
         Route::get('suppliers/{id}/header', 'SuppliersController@objhead')->name('suppliers.objhead');
         Route::get('suppliers/catalogue/{id}/{format?}', 'SuppliersController@catalogue')->name('suppliers.catalogue');
+        Route::get('suppliers/picture/{id}', 'SuppliersController@picture')->name('suppliers.picture');
         Route::get('suppliers/{id}/products', 'SuppliersController@productsDetails');
         Route::get('suppliers/{id}/products_grid', 'SuppliersController@productsGrid');
         Route::get('suppliers/{id}/invoicedata', 'SuppliersController@invoiceData')->name('suppliers.invoicedata');
@@ -80,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('products/duplicate/{id}', 'ProductsController@duplicate')->name('products.duplicate');
         Route::get('products/{id}/header', 'ProductsController@objhead')->name('products.objhead');
         Route::post('products/massiveupdate', 'ProductsController@massiveUpdate');
-        Route::get('products/picture/{id}', 'ProductsController@picture');
+        Route::get('products/picture/{id}', 'ProductsController@picture')->name('products.picture');
         Route::get('products/{id}/post_feedback', 'ProductsController@postFeedback')->name('products.feedback');
         Route::get('products/{id}/ask_update_price', 'ProductsController@askUpdatePrices')->name('products.askupdateprices');
         Route::post('products/{id}/update_price', 'ProductsController@updatePrices')->name('products.updateprices');

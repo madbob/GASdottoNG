@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use DB;
-use Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 use App\Services\ProductsService;
-
+use App\Http\Controllers\Concerns\RoutesPictures;
 use App\Order;
 use App\Product;
 use App\VariantCombo;
 
 class ProductsController extends BackedController
 {
+    use RoutesPictures;
+
     public function __construct(ProductsService $service)
     {
         $this->service = $service;
@@ -122,13 +123,6 @@ class ProductsController extends BackedController
             }
 
             return $this->successResponse();
-        });
-    }
-
-    public function picture($id)
-    {
-        return $this->easyExecute(function () use ($id) {
-            return $this->service->picture($id);
         });
     }
 

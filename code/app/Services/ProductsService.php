@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
+use App\Services\Concerns\DispatchPictures;
 use App\Supplier;
 use App\Product;
 use App\Category;
@@ -11,6 +12,8 @@ use App\Measure;
 
 class ProductsService extends BaseService
 {
+    use DispatchPictures;
+
     public function search($supplier_id, $term)
     {
         $ret = (object) [
@@ -178,13 +181,6 @@ class ProductsService extends BaseService
         $product = $this->commonsSaving($product, $request);
 
         return $product;
-    }
-
-    public function picture($id)
-    {
-        $product = Product::findOrFail($id);
-
-        return downloadFile($product, 'picture');
     }
 
     public function destroy($id)

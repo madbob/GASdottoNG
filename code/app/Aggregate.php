@@ -14,12 +14,13 @@ use App\Helpers\Status;
 use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\ModifiableTrait;
 use App\Models\Concerns\ReducibleTrait;
+use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\WithinGas;
 use App\Events\AttachableToGas;
 
 class Aggregate extends Model
 {
-    use GASModel, HasFactory, AttachableTrait, ModifiableTrait, ReducibleTrait, WithinGas;
+    use GASModel, HasFactory, AttachableTrait, ModifiableTrait, ReducibleTrait, HasPicture, WithinGas;
 
     protected $dispatchesEvents = [
         'created' => AttachableToGas::class,
@@ -215,7 +216,7 @@ class Aggregate extends Model
 
     public function printableHeader()
     {
-        return $this->printableName() . $this->headerIcons() . sprintf('<br/><small>%s</small>', $this->printableDates());
+        return $this->headerIcons() . $this->formatAvatar() . $this->printableName() . sprintf('<br/><small class="text-muted">%s</small>', $this->printableDates());
     }
 
     public function printableUserHeader()
@@ -522,6 +523,13 @@ class Aggregate extends Model
         }
 
         return $ret;
+    }
+
+    /************************************************************* HasPicture */
+
+    public function getPictureUrlAttribute()
+    {
+        return $this->orders->first()->picture_url;
     }
 
     /********************************************************* ReducibleTrait */

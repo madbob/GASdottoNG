@@ -1,13 +1,13 @@
-<?php
+@php
 
 if (isset($valuefrom) == false) {
     $valuefrom = null;
 }
 
-?>
+@endphp
 
 <x-larastrap::field :label="$label" :squeeze="$squeeze">
-    @if($obj && $valuefrom && !empty($obj->$valuefrom))
+    @if($set)
         <div class="img-preview">
             <img src="{{ $obj->$valuefrom }}" alt="{{ $label }}">
         </div>

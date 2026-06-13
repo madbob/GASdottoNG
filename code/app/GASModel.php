@@ -5,10 +5,11 @@ namespace App;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use URL;
-use Schema;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Schema;
 
 use App\Models\Concerns\Iconable;
+use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\ManagesInnerCache;
 
 trait GASModel
@@ -65,7 +66,13 @@ trait GASModel
 
     public function printableHeader()
     {
-        return $this->printableName() . $this->headerIcons();
+        $avatar = '';
+
+        if (hasTrait($this, HasPicture::class)) {
+            $avatar = $this->formatAvatar();
+        }
+
+        return $avatar . $this->printableName() . $this->headerIcons();
     }
 
     public function printableDate($name)

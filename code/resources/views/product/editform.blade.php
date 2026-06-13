@@ -24,7 +24,8 @@ if (!isset($duplicate)) {
             'obj' => $product,
             'name' => 'picture',
             'label' => __('texts.generic.photo'),
-            'valuefrom' => 'picture_url'
+            'valuefrom' => 'picture_url',
+            'set' => filled($product->picture),
         ])
 
         <x-larastrap::decimal name="portion_quantity" tlabel="products.portion_quantity" decimals="3" tpophelp="products.help.portion_quantity" />

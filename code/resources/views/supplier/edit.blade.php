@@ -6,19 +6,33 @@
             <div class="row">
                 <div class="col-md-6">
                     @include('supplier.base-edit', ['supplier' => $supplier])
+
+                    @include('commons.imagefield', [
+                        'obj' => $supplier,
+                        'name' => 'picture',
+                        'label' => __('texts.generic.photo'),
+                        'valuefrom' => 'picture_url',
+                        'set' => filled($supplier->picture),
+                    ])
+
                     @include('commons.contactswidget', ['obj' => $supplier])
                 </div>
                 <div class="col-md-6">
-                    @include('commons.statusfield', ['target' => $supplier])
+                    <div class="card shadow mb-3">
+                        <div class="card-header">
+                            {{ __('texts.generic.menu.configs') }}
+                        </div>
+                        <div class="card-body">
+                            @include('commons.statusfield', ['target' => $supplier])
 
-                    <hr>
+                            <x-larastrap::check name="fast_shipping_enabled" tlabel="supplier.enable_fast_shipping" tpophelp="supplier.help.enable_fast_shipping" />
+                            <x-larastrap::radiolist name="notify_on_close_enabled" tlabel="supplier.send_notification_on_close" tpophelp="supplier.help.send_notification_on_close" :options="['none' => __('texts.generic.no'), 'shipping' => __('texts.orders.files.order.shipping'), 'summary' => __('texts.orders.files.order.summary'), 'shipping_summary' => __('texts.orders.files.order.shipping_and_summary')]" />
 
-                    <x-larastrap::check name="fast_shipping_enabled" tlabel="supplier.enable_fast_shipping" tpophelp="supplier.help.enable_fast_shipping" />
-                    <x-larastrap::radiolist name="notify_on_close_enabled" tlabel="supplier.send_notification_on_close" tpophelp="supplier.help.send_notification_on_close" :options="['none' => __('texts.generic.no'), 'shipping' => __('texts.orders.files.order.shipping'), 'summary' => __('texts.orders.files.order.summary'), 'shipping_summary' => __('texts.orders.files.order.shipping_and_summary')]" />
-
-                    @if($currentgas->unmanaged_shipping == '1')
-                        <x-larastrap::check name="unmanaged_shipping_enabled" tlabel="supplier.enable_no_quantities" tpophelp="supplier.help.enable_no_quantities" />
-                    @endif
+                            @if($currentgas->unmanaged_shipping == '1')
+                                <x-larastrap::check name="unmanaged_shipping_enabled" tlabel="supplier.enable_no_quantities" tpophelp="supplier.help.enable_no_quantities" />
+                            @endif
+                        </div>
+                    </div>
 
                     @include('commons.modifications', [
                         'obj' => $supplier,

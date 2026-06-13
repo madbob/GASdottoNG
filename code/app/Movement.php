@@ -90,7 +90,7 @@ class Movement extends Model
             }
         }
 
-        return '<i class="bi-' . $icon . '"></i> ' . $name;
+        return '<i class="bi-' . $icon . '" data-bs-toggle="popover" data-bs-content="' . $name . '"></i>';
     }
 
     public function getTypeMetadataAttribute()
@@ -114,7 +114,7 @@ class Movement extends Model
                 $total_amount[] = printablePriceCurrency($rel->amount, '.', $rel->currency);
             }
 
-            return sprintf('%s | %s | %s', $this->printableDate('date'), implode(' + ', $total_amount), $this->payment_icon);
+            return sprintf('%s | %s | %s', printableDate($this->date, true), implode(' + ', $total_amount), $this->payment_icon);
         }
     }
 

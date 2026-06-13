@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+use App\Services\Concerns\DispatchPictures;
 use App\Exceptions\IllegalArgumentException;
 use App\Notifications\ApprovedMessage;
 use App\Notifications\DeclinedMessage;
@@ -15,6 +16,8 @@ use App\User;
 
 class UsersService extends BaseService
 {
+    use DispatchPictures;
+
     public function list($term = '', $all = false)
     {
         /*
@@ -332,13 +335,6 @@ class UsersService extends BaseService
         $user->save();
 
         return $user;
-    }
-
-    public function picture($id)
-    {
-        $user = $this->show($id);
-
-        return downloadFile($user, 'picture');
     }
 
     public function notifications($id, $suppliers)

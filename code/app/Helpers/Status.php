@@ -24,6 +24,7 @@ class Status
             $statuses['open'] = (object) [
                 'label' => __('texts.orders.booking.statuses.open'),
                 'icon' => 'play',
+                'color' => 'success',
                 'default_display' => true,
                 'aggregate_priority' => 1,
             ];
@@ -31,6 +32,7 @@ class Status
             $statuses['closed'] = (object) [
                 'label' => __('texts.orders.booking.statuses.closed'),
                 'icon' => 'stop-fill',
+                'color' => 'danger',
                 'default_display' => true,
                 'aggregate_priority' => 2,
             ];
@@ -38,6 +40,7 @@ class Status
             $statuses['shipped'] = (object) [
                 'label' => __('texts.orders.booking.statuses.shipped'),
                 'icon' => 'skip-forward',
+                'color' => 'secondary',
                 'default_display' => true,
                 'aggregate_priority' => 4,
             ];
@@ -46,6 +49,7 @@ class Status
                 $statuses['user_payment'] = (object) [
                     'label' => __('texts.orders.booking.statuses.paying'),
                     'icon' => 'cash',
+                    'color' => 'danger',
                     'default_display' => true,
                     'aggregate_priority' => 3,
                 ];
@@ -54,6 +58,7 @@ class Status
             $statuses['archived'] = (object) [
                 'label' => __('texts.orders.booking.statuses.archived'),
                 'icon' => 'eject',
+                'color' => 'light',
                 'default_display' => false,
                 'aggregate_priority' => 5,
             ];
@@ -61,6 +66,7 @@ class Status
             $statuses['suspended'] = (object) [
                 'label' => __('texts.orders.booking.statuses.suspended'),
                 'icon' => 'pause',
+                'color' => 'warning',
                 'default_display' => true,
                 'aggregate_priority' => 0,
             ];

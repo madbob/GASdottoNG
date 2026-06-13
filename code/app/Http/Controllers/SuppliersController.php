@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-
 use App\Services\SuppliersService;
+use App\Http\Controllers\Concerns\RoutesPictures;
 
 class SuppliersController extends BackedController
 {
+    use RoutesPictures;
+
     public function __construct(SuppliersService $service)
     {
         $this->middleware('auth');

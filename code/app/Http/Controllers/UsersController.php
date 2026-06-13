@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Services\UsersService;
+use App\Formatters\User as UserFormatter;
+use App\Exceptions\AuthException;
+use App\Http\Controllers\Concerns\RoutesPictures;
 use App\User;
 use App\Group;
 use App\Aggregate;
 
-use App\Services\UsersService;
-use App\Formatters\User as UserFormatter;
-use App\Exceptions\AuthException;
-
 class UsersController extends BackedController
 {
+    use RoutesPictures;
+
     public function __construct(UsersService $service)
     {
         $this->commonInit([
@@ -166,13 +168,6 @@ class UsersController extends BackedController
             $user = $this->service->show($id);
 
             return view('user.edit', ['user' => $user, 'read_only' => true]);
-        });
-    }
-
-    public function picture($id)
-    {
-        return $this->easyExecute(function () use ($id) {
-            return $this->service->picture($id);
         });
     }
 

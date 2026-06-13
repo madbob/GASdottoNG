@@ -1,4 +1,4 @@
-<?php
+@php
 
 if (isset($valuefrom) == false) {
     $valuefrom = null;
@@ -6,13 +6,13 @@ if (isset($valuefrom) == false) {
 
 $url = $obj && $valuefrom ? $obj->$valuefrom : '';
 
-?>
+@endphp
 
 <x-larastrap::field :pophelp="$help_popover" :label="$label">
     <div class="img-preview">
         <x-larastrap::file :name="$name" :attributes="['data-max-size' => serverMaxUpload()]" squeeze="true" />
 
-        @if(!empty($url))
+        @if($set)
             <img src="{{ $url }}" class="img-fluid" alt="{{ $label }}">
             <x-larastrap::check :name="sprintf('delete_image_%s', $name)" tlabel="generic.remove" />
         @endif

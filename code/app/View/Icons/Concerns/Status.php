@@ -22,4 +22,9 @@ trait Status
 
         return $ret;
     }
+
+    public static function dominantColor($obj)
+    {
+        return (!is_null($obj->suspended_at) || !is_null($obj->deleted_at)) ? 'danger' : 'light';
+    }
 }

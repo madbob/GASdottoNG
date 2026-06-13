@@ -22,4 +22,10 @@ class Order extends IconsMap
 
         return $ret;
     }
+
+    public static function dominantColor($obj)
+    {
+        $statuses = Status::orders();
+        return $statuses[$obj->status]->color;
+    }
 }

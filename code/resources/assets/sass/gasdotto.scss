@@ -146,6 +146,15 @@ html, body {
     }
 }
 
+.avatar {
+    width: 30px;
+    height: 30px;
+    margin-right: .5rem;
+    border-radius: 50%;
+    object-fit: cover;
+
+}
+
 .flowbox {
     flex-direction: row;
     display: flex;
@@ -434,21 +443,6 @@ table {
     display: none;
 }
 
-button {
-    &:not(.btn-icon) {
-        i {
-            margin-left: 5px;
-        }
-    }
-
-    &.accordion-button {
-        i {
-            margin-left: 0;
-            margin-right: 10px;
-        }
-    }
-}
-
 i[class^='bi-hidden-'] {
     display: none;
 }
@@ -466,6 +460,22 @@ i[class^='bi-hidden-'] {
 
 .scrollable-tabs {
     overflow-y: auto;
+}
+
+.header-icons {
+    float: right;
+    padding: 5px 7px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+
+    i {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1rem;
+    }
 }
 
 .icons-legend {

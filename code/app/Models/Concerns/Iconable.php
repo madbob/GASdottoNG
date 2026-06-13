@@ -16,13 +16,17 @@ trait Iconable
         $ret = '';
 
         if (! empty($icons)) {
-            $ret .= '<div class="float-end">';
+            $visible = array_filter($icons, fn($i) => substr($i, 0, 6) != 'hidden');
+            if (!empty($visible)) {
+                $color = $this->dominantColor();
+                $ret .= '<div class="header-icons text-bg-' . $color . '">';
+            }
+            else {
+                $ret .= '<div>';
+            }
 
             foreach ($icons as $i) {
                 $ret .= '<i class="bi-' . $i . '"></i>';
-                if (substr($i, 0, 6) != 'hidden') {
-                    $ret .= '&nbsp;';
-                }
             }
 
             $ret .= '</div>';
@@ -50,6 +54,12 @@ trait Iconable
         else {
             return null;
         }
+    }
+
+    private function dominantColor()
+    {
+        $box = self::myIconsBox();
+        return $box->dominantColor($this);
     }
 
     public function icons($group = null)
@@ -86,7 +96,7 @@ trait Iconable
         $ret = [];
 
         $box = self::myIconsBox();
-        if (is_null($box) === false) {
+        if ($box) {
             $user = Auth::user();
 
             $icons = $box->commons($user);

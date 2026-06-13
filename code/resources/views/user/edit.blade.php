@@ -84,9 +84,20 @@ $groups = $user->eligibleGroups();
                                 <x-larastrap::text name="family_members" tlabel="user.family_members" />
 
                                 @if($editable)
-                                    @include('commons.imagefield', ['obj' => $user, 'name' => 'picture', 'label' => __('texts.generic.photo'), 'valuefrom' => 'picture_url'])
+                                    @include('commons.imagefield', [
+                                        'obj' => $user,
+                                        'name' => 'picture',
+                                        'label' => __('texts.generic.photo'),
+                                        'valuefrom' => 'picture_url',
+                                        'set' => filled($user->picture),
+                                    ])
                                 @else
-                                    @include('commons.staticimagefield', ['obj' => $user, 'label' => __('texts.generic.photo'), 'valuefrom' => 'picture_url'])
+                                    @include('commons.staticimagefield', [
+                                        'obj' => $user,
+                                        'label' => __('texts.generic.photo'),
+                                        'valuefrom' => 'picture_url',
+                                        'set' => filled($user->picture),
+                                    ])
                                 @endif
                             </x-ls::card>
 

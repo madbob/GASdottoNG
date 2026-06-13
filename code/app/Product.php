@@ -16,13 +16,15 @@ use Illuminate\Support\Str;
 use App\Models\Concerns\ModifiableTrait;
 use App\Models\Concerns\Priceable;
 use App\Models\Concerns\ProductConcept;
+use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\TracksUpdater;
 use App\Events\VariantChanged;
 use App\Events\SluggableCreating;
 
 class Product extends Model
 {
-    use Cachable, GASModel, HasFactory, ModifiableTrait, Priceable, ProductConcept, SluggableID, SoftDeletes, TracksUpdater;
+    use Cachable, HasFactory, SoftDeletes, SluggableID, GASModel,
+        ModifiableTrait, Priceable, ProductConcept, HasPicture, TracksUpdater;
 
     public $incrementing = false;
 
@@ -89,12 +91,7 @@ class Product extends Model
 
     public function getPictureUrlAttribute()
     {
-        if (empty($this->picture)) {
-            return '';
-        }
-        else {
-            return url('products/picture/' . $this->id);
-        }
+        return route('products.picture', $this->id);
     }
 
     public function getFixedPackageSizeAttribute()

@@ -46,13 +46,9 @@ class User extends IconsMap
             ];
         }
 
-        $ret['inbox'] = (object) [
-            'test' => function ($obj) {
-                return $obj->deleted_at != null;
-            },
-            'explicit' => false,
-            'text' => __('texts.user.statuses.deleted'),
-        ];
+        if ($user->can('users.admin', $user->gas)) {
+            $ret = self::statusIcons($ret);
+        }
 
         return $ret;
     }

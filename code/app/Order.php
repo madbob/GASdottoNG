@@ -22,13 +22,16 @@ use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\ModifiableTrait;
 use App\Models\Concerns\ExportableTrait;
 use App\Models\Concerns\ReducibleTrait;
+use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\TracksUpdater;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
 
 class Order extends Model
 {
-    use AttachableTrait, CreditableTrait, HasContacts, ExportableTrait, GASModel, HasFactory, InCircles, ModifiableTrait, PayableTrait, ReducibleTrait, SluggableID, TracksUpdater;
+    use AttachableTrait, CreditableTrait, HasContacts,
+        ExportableTrait, GASModel, HasFactory, InCircles, ModifiableTrait, PayableTrait, ReducibleTrait, SluggableID,
+        HasPicture, TracksUpdater;
 
     public $incrementing = false;
 
@@ -811,6 +814,13 @@ class Order extends Model
     public function getPermissionsProxies()
     {
         return [$this->supplier];
+    }
+
+    /************************************************************* HasPicture */
+
+    public function getPictureUrlAttribute()
+    {
+        return $this->supplier->picture_url;
     }
 
     /********************************************************* ReducibleTrait */

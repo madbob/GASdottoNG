@@ -19,6 +19,7 @@ use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\ExportableTrait;
 use App\Models\Concerns\SuspendableTrait;
 use App\Models\Concerns\ModifiableTrait;
+use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\TracksUpdater;
 use App\Models\Concerns\WithinGas;
 use App\Events\SluggableCreating;
@@ -28,7 +29,7 @@ class Supplier extends Model
 {
     use AttachableTrait, Cachable, ContactableTrait, CreditableTrait,
         ExportableTrait, GASModel, HasFactory, ModifiableTrait, Notifiable, PayableTrait, SluggableID,
-        SoftDeletes, SuspendableTrait, TracksUpdater, WithinGas;
+        SoftDeletes, SuspendableTrait, HasPicture, TracksUpdater, WithinGas;
 
     public $incrementing = false;
 
@@ -123,6 +124,13 @@ class Supplier extends Model
         $cataloguecsv->internal = true;
 
         return [$cataloguepdf, $cataloguecsv];
+    }
+
+    /************************************************************* HasPicture */
+
+    public function getPictureUrlAttribute()
+    {
+        return route('suppliers.picture', $this->id);
     }
 
     /*********************************************************** PayableTrait */

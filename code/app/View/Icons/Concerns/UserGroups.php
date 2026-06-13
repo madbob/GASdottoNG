@@ -13,7 +13,14 @@ trait UserGroups
         if (static::$selectiveUserIcons == null) {
             static::$selectiveUserIcons = [];
 
-            $groups = Group::orderBy('name', 'asc')->where('context', 'user')->get();
+            $cache = app()->make('TempCache');
+            if ($cache->has('global_groups') == false) {
+                $groups = Group::orderBy('name', 'asc')->where('context', 'user')->get();
+                $cache->put('global_groups', $groups);
+            }
+
+            $groups = $cache->get('global_groups');
+
             if ($groups->isEmpty() === false) {
                 static::$selectiveUserIcons['people'] = (object) [
                     'text' => __('texts.user.aggregation'),

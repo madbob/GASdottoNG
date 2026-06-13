@@ -6,12 +6,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 use App\Services\Concerns\ExportsCatalogue;
+use App\Services\Concerns\DispatchPictures;
 use App\Exceptions\AuthException;
 use App\Supplier;
 
 class SuppliersService extends BaseService
 {
-    use ExportsCatalogue;
+    use ExportsCatalogue, DispatchPictures;
 
     private function accessible($user)
     {
@@ -118,9 +119,10 @@ class SuppliersService extends BaseService
                 $this->setCommonAttributes($supplier, $request);
                 $supplier->save();
                 $supplier->updateContacts($request);
-
                 return $supplier;
             });
+
+            handleFileUpload($request, $supplier, 'picture');
         }
         catch (\Exception $e) {
             Log::error('Errore aggiornamento fornitore: ' . $e->getMessage() . ' - ' . print_r($request, true));
