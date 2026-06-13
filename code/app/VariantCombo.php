@@ -142,13 +142,10 @@ class VariantCombo extends Model
             che i prezzi salvati dentro l'ordine (usando la funzione
             Order::extractProductPrices()) non siano già stati normalizzati
         */
-
-        \Log::debug('portion = ' . $this->product->portion_quantity);
         if ($rectify && $this->product->portion_quantity != 0) {
             $offset = $offset * $this->product->portion_quantity;
         }
 
-        \Log::debug('offset = ' . $offset);
         return $offset + $product->getPrice($rectify);
     }
 
