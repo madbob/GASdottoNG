@@ -119,7 +119,7 @@ return array(
         'export' => array(
             'database' => 'Database export',
         ),
-        'help_split_friends' => 'By default, bookings from "friend" users are aggregated with those of their respective main users. By selecting "Yes", they are represented in the document as independent bookings.',
+        'help_split_friends' => 'By default, bookings from \'friend\' users are aggregated with those of their respective main users. By selecting \'Yes\', those are represented in the document as independent bookings.',
         'help_aggregate_export_summary' => 'From here you can obtain a document with all booked quantities for each product: useful to send directly to the supplier when bookings are closed.',
         'flags' => array(
             'include_unbooked' => 'Include unreserved Products',
@@ -511,8 +511,8 @@ return array(
             'defaults' => array(
                 'subject' => 'Welcome!',
                 'body' => 'Welcome to %[gas_name]!
-    From now on, you can access it via the link below with the username ‘%[username]’ and the password of your choice.
-    %[gas_login_link]',
+From now on, you can access it via the link below with the username ‘%[username]’ and the password of your choice.
+%[gas_login_link]',
             ),
             'description' => 'Message for approved users.',
             'username' => 'Username assigned to the new user',
@@ -529,9 +529,9 @@ return array(
             'defaults' => array(
                 'subject' => 'New order opened for %[supplier_name]',
                 'body' => '%[gas_name] just opened a new order for %[supplier_name].
-    You can make your reservation at the following link:
-    %[gas_booking_link]
-    Reservations will be closed on %[closing_date]',
+You can make your reservation at the following link:
+%[gas_booking_link]
+Reservations will be closed on %[closing_date]',
             ),
             'description' => 'Notification for newly opened orders (sent to users who explicitely enabled notifications for the supplier).',
             'comment' => 'Order comment',
@@ -543,7 +543,7 @@ return array(
                 'subject' => 'Closing orders for %[gas_name]',
                 'body' => 'Orders opened by %[gas_name] for those suppliers will be closed within a few days:
 
-    %[orders_list]',
+%[orders_list]',
             ),
             'description' => 'Notification for closing orders (sent to users who explicitely enabled notifications for the supplier).',
             'list' => 'List of closing orders',
@@ -552,8 +552,8 @@ return array(
         'password' => array(
             'defaults' => array(
                 'body' => 'The reset of your GASdotto password has been required.
-    Click the link below to update your password, or ignore this e-email if you have not required this operation.
-    %[gas_reset_link]',
+Click the link below to update your password, or ignore this e-email if you have not required this operation.
+%[gas_reset_link]',
             ),
             'description' => 'Message for password reset.',
             'link' => 'Password reset link',
@@ -569,9 +569,12 @@ return array(
             'defaults' => array(
                 'subject' => 'Booking order %[gas_name]',
                 'body' => 'Hello.
-    In attachment you find - both in PDF and CSV - the bookings from %[gas_name].
-    For contacts, you can write to the referents here in CC.
-    Thank you.',
+At the following link you find details about the reservations from %[gas_name].
+
+%[download_link]
+
+For contacts, you can write to the referents here in CC.
+Thank you.',
             ),
             'description' => 'Notification for suppliers when the order is automatically closed.',
         ),
@@ -584,12 +587,11 @@ return array(
             'defaults' => array(
                 'body' => 'You have been invited to %[gas_name]!
 
-    To access the first time, click the link below.
-    %[gas_access_link]
+To access the first time, click the link below.
+%[gas_access_link]
 
-    Then you will be able to access thorugh this other link, using the username "%[username]" and the password you have choose.
-    %[gas_login_link]
-    ',
+Then you will be able to access thorugh this other link, using the username "%[username]" and the password you choose.
+%[gas_login_link]',
             ),
         ),
         'newuser' => array(
@@ -913,6 +915,8 @@ return array(
             'downloadlink' => 'Link to download the documents',
             'shipping_zero' => 'All delivered quantities are zero! Do you really want to proceed?',
             'void_booking' => 'Do you really want to cancel this booking?',
+            'advanced_export' => "You can export an order in GDXP format to share it with other GAS.<br>The file includes the supplier's information (which can be imported if the other GAS does not already have this information), the price list of products included in the order, and the opening, closing, and delivery dates.",
+            'advanced_duplicate' => "You can duplicate an order, with or without reservations.<br>In the first case, a new order will be created with the same status as the original order, with the same products, modifiers, and settings; in the second case, all reservations for all users will also be duplicated.",
         ),
         'booking_description' => array(
             'shipped' => 'Here is a summary of the delivered products:',
@@ -1070,6 +1074,10 @@ return array(
             'days_before' => 'days before',
             'open' => 'open',
         ),
+        'duplicate' => [
+            'simple' => 'Duplicate Order',
+            'full' => 'Duplicate Order and Reservations',
+        ],
     ),
     'permissions' => array(
         'permissions' => array(
@@ -1099,6 +1107,7 @@ return array(
             'admin_invoices' => 'Admin invoices',
             'admin_supplier_movements' => 'Administer suppliers\' accounting movements',
             'admin_multigas' => 'Administer groups hosted on this instance',
+            'delete_accounts' => 'Delete all existing users',
         ),
         'roles' => array(
             'admin' => 'Administrator',
@@ -1223,8 +1232,8 @@ return array(
         'admin_categories' => 'Manage Categories',
         'admin_measures' => 'Measure Units Administration',
         'legal_name' => 'Business Name',
-        'orders_mode' => 'Order progress mode',
-        'send_notification_on_close' => 'Send notification when orders close',
+        'orders_mode' => 'Order Progress',
+        'send_notification_on_close' => 'Notification on Orders Closing',
     ),
     'tour' => array(
         'welcome' => array(
@@ -1366,6 +1375,12 @@ return array(
             'city' => 'City',
             'street' => 'Address',
             'zip' => 'ZIP',
+        ),
+        'errors' => array(
+            'username_exists' => 'Username already assigned',
+            'username_exists_trashed' => 'Username already assigned (to a currently terminated user)',
+            'name_exists' => 'Name and surname already present',
+            'name_exists_trashed' => 'Name and surname already present (assigned to a currently terminated user)',
         ),
     ),
 );
