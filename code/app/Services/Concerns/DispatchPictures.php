@@ -2,6 +2,8 @@
 
 namespace App\Services\Concerns;
 
+use Illuminate\Support\Facades\Storage;
+
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Typography\FontFactory;
@@ -40,28 +42,32 @@ trait DispatchPictures
 
     private function generateAvatar($name)
     {
-        $manager = ImageManager::usingDriver(Driver::class);
-        $image = $manager->createImage(300, 300)->fill($this->colorFromText($name));
+        $path = Storage::disk('avatars')->path($name);
 
-        $tokens = explode(' ', $name);
-        $tokens = array_values(array_filter($tokens, fn($t) => strlen($t) > 0 && preg_match('/^[a-zA-Z0-9]/', $t)));
+        if (file_exists($path) == false) {
+            $manager = ImageManager::usingDriver(Driver::class);
+            $image = $manager->createImage(300, 300)->fill($this->colorFromText($name));
 
-        if (count($tokens) >= 2) {
-            $text = mb_strtoupper(sprintf('%s%s', $tokens[0][0], $tokens[1][0]));
+            $tokens = explode(' ', $name);
+            $tokens = array_values(array_filter($tokens, fn($t) => strlen($t) > 0 && preg_match('/^[a-zA-Z0-9]/', $t)));
+
+            if (count($tokens) >= 2) {
+                $text = mb_strtoupper(sprintf('%s%s', $tokens[0][0], $tokens[1][0]));
+            }
+            else {
+                $text = mb_strtoupper(substr($tokens[0], 0, 2));
+            }
+
+            $image->text($text, 150, 150, function (FontFactory $font) {
+                $font->filepath(base_path('vendor/dompdf/dompdf/lib/fonts/DejaVuSans.ttf'));
+                $font->size(100);
+                $font->color('FFF');
+                $font->align(Alignment::CENTER, Alignment::CENTER);
+            });
+
+            $image->encodeUsingFormat(Format::JPEG, quality: 70)->save($path);
         }
-        else {
-            $text = mb_strtoupper(substr($tokens[0], 0, 2));
-        }
 
-        $image->text($text, 150, 150, function (FontFactory $font) {
-            $font->filepath(base_path('vendor/dompdf/dompdf/lib/fonts/DejaVuSans.ttf'));
-            $font->size(100);
-            $font->color('FFF');
-            $font->align(Alignment::CENTER, Alignment::CENTER);
-        });
-
-        $path = tempnam(sys_get_temp_dir(), 'avatar_');
-        $image->encodeUsingFormat(Format::JPEG)->save($path);
         return $path;
     }
 
@@ -71,7 +77,7 @@ trait DispatchPictures
 
         if (empty($obj->picture)) {
             $path = $this->generateAvatar($obj->printableName());
-            return response()->download($path)->deleteFileAfterSend(true);
+            return response()->download($path);
         }
         else {
             return downloadFile($obj, 'picture');

@@ -25,6 +25,8 @@ class Kernel extends ConsoleKernel
             $schedule->command('open:orders')->daily();
             $schedule->command('remind:orders')->daily();
             $schedule->command('auth:clear-resets')->daily();
+
+            $schedule->command('clean:caches')->monthly();
         }
     }
 
