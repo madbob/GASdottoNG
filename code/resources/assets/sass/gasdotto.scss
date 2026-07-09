@@ -383,6 +383,18 @@ table {
     .mobile-quantity-switch {
         margin-top: 10px;
     }
+
+    .booking-product-booked {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 7px;
+
+        .booked-quantity {
+            font-weight: bold;
+            font-size: calc(var(--bs-body-font-size) * 1.5);
+        }
+    }
 }
 
 .booking-editor {
@@ -465,6 +477,7 @@ i[class^='bi-hidden-'] {
 .header-icons {
     float: right;
     padding: 5px 7px;
+    margin-left: 10px;
     border-radius: 20px;
     display: flex;
     flex-direction: row;

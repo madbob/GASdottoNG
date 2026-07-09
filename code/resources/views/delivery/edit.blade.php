@@ -169,7 +169,10 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                             </td>
 
                                             <td>
-                                                <span class="booking-product-booked">{{ printableQuantity($product->quantity, $discrete_quantity) }} {{ $product->product->printableMeasure(true) }}</span>
+                                                <span class="booking-product-booked">
+                                                    <span class="booked-quantity">{{ printableQuantity($product->quantity, $discrete_quantity) }}</span>
+                                                    {{ $product->product->printableMeasure(true) }}
+                                                </span>
                                             </td>
 
                                             <td>
@@ -215,7 +218,10 @@ app()->make('AggregationSwitch')->setEnforced(true);
                                                 </td>
 
                                                 <td>
-                                                    <span class="booking-product-booked">{{ printableQuantity($var->quantity, $discrete_quantity) }} {{ $product->product->printableMeasure(true) }}</span>
+                                                    <span class="booking-product-booked">
+                                                        <span class="booked-quantity">{{ printableQuantity($var->quantity, $discrete_quantity) }}</span>
+                                                        {{ $product->product->printableMeasure(true) }}
+                                                    </span>
                                                 </td>
 
                                                 <td>
