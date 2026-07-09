@@ -21,14 +21,14 @@ foreach($users as $user) {
 $count_total = $count_total * -1;
 
 ?>
-<urn:CBIBdySDDReq xmlns:urn="urn:CBI:xsd:CBIBdySDDReq.00.01.00">
+<urn:CBIBdySDDReq xmlns:urn="urn:CBI:xsd:CBIBdySDDReq.00.01.01">
     <urn:PhyMsgInf>
         <urn:PhyMsgTpCd>INC-SDDC-01</urn:PhyMsgTpCd>
         <urn:NbOfLogMsg>1</urn:NbOfLogMsg>
     </urn:PhyMsgInf>
     <urn:CBIEnvelSDDReqLogMsg>
         <urn:CBISDDReqLogMsg>
-            <urn1:GrpHdr xmlns:urn1="urn:CBI:xsd:CBISDDReqLogMsg.00.01.00">
+            <urn1:GrpHdr xmlns:urn1="urn:CBI:xsd:CBISDDReqLogMsg.00.01.01">
                 <urn1:MsgId>{{ Illuminate\Support\Str::random(20) }}</urn1:MsgId>
                 <urn1:CreDtTm>{{ $date . date('\TH:i:s.000') }}</urn1:CreDtTm>
                 <urn1:NbOfTxs>{{ $count_rows }}</urn1:NbOfTxs>
@@ -45,7 +45,7 @@ $count_total = $count_total * -1;
                     </urn1:Id>
                 </urn1:InitgPty>
             </urn1:GrpHdr>
-            <urn1:PmtInf xmlns:urn1="urn:CBI:xsd:CBISDDReqLogMsg.00.01.00">
+            <urn1:PmtInf xmlns:urn1="urn:CBI:xsd:CBISDDReqLogMsg.00.01.01">
                 <urn1:PmtInfId>1</urn1:PmtInfId>
                 <urn1:PmtMtd>DD</urn1:PmtMtd>
                 <urn1:PmtTpInf>
