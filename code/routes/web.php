@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('users/searchorders/{id}', 'UsersController@searchOrders')->name('users.orders');
         Route::get('users/profile', 'UsersController@profile')->name('profile');
         Route::get('users/picture/{id}', 'UsersController@picture')->name('users.picture');
-        Route::get('users/export', 'UsersController@export');
+        Route::post('users/export', 'UsersController@export');
         Route::post('users/notifications/{id}', 'UsersController@notifications')->name('users.notifications');
         Route::get('users/fees', 'UsersController@fees')->name('users.fees');
         Route::get('users/fee/{id}', 'UsersController@feeRow')->name('users.fee');

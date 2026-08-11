@@ -19,10 +19,9 @@
 
             <x-larastrap::mbutton tlabel="generic.exports.csv" triggers_modal="exportCSVusers" />
             <x-larastrap::modal id="exportCSVusers" classes="close-on-submit">
-                <x-larastrap::iform method="GET" :action="url('users/export')" :buttons="[['tlabel' => 'generic.download', 'type' => 'submit']]">
+                <x-larastrap::form method="POST" :action="url('users/export')" :buttons="[['tlabel' => 'generic.download', 'type' => 'submit']]">
                     <input type="hidden" name="pre-saved-function" value="collectFilteredUsers">
                     <input type="hidden" name="collectFilteredUsers" value="#user-list">
-                    <input type="hidden" name="pre-saved-function" value="formToDownload">
 
                     <p>{!! __('texts.export.help_csv_libreoffice') !!}</p>
 
@@ -33,7 +32,7 @@
                         'all' => __('texts.generic.all'),
                         'selected' => __('texts.generic.only_selected')
                     ]" value="all" />
-                </x-larastrap::iform>
+                </x-larastrap::form>
             </x-larastrap::modal>
 
             @if(Gate::check('users.admin', $currentgas) || Gate::check('users.movements', $currentgas))
