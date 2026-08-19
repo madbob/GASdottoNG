@@ -45,7 +45,7 @@
         </p>
 
         <p>
-            <strong>Ricevuta Fiscale {{ $receipt->number }} del {{ date('d/m/Y', strtotime($receipt->date)) }}</strong>
+            <strong>{{ __('texts.invoices.documents.receipts.heading', ['identifier' => $receipt->number, 'date' => date('d/m/Y', strtotime($receipt->date))]) }}</strong>
         </p>
 
         <hr/>

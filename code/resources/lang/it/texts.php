@@ -501,6 +501,7 @@ return array (
       ),
       'receipts' =>
       array (
+        'heading' => 'Ricevuta :identifier del :date',
         'list_filename' => 'Esportazione ricevute GAS :date.csv',
       ),
     ),
