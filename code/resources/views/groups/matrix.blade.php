@@ -40,7 +40,8 @@ $groups = App\Group::orderBy('name', 'asc')->where('context', 'user')->get();
                                             'name' => 'circles',
                                             'npostfix' => sprintf('__%s__%s[]', sanitizeId($user->id), sanitizeId($group->id)),
                                             'squeeze' => true,
-                                            'options' => $group->circles
+                                            'options' => $group->circles,
+                                            'extra_options' => [0 => __('texts.generic.none')],
                                         ]" />
                                     </td>
                                 @endforeach

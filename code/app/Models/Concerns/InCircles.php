@@ -93,7 +93,9 @@ trait InCircles
 
             $missing = array_diff($circles, $existing);
             foreach($missing as $miss) {
-                $this->circles()->attach($miss);
+                if ($miss != 0) {
+                    $this->circles()->attach($miss);
+                }
             }
         }
     }

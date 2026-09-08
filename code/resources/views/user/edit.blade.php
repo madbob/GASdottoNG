@@ -166,9 +166,21 @@ $groups = $user->eligibleGroups();
                                 @foreach($groups as $ug)
                                     @if($admin_editable || $ug->user_selectable)
                                         <x-larastrap::hidden name="groups[]" :value="$ug->id" />
-                                        <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => 'circles', 'npostfix' => sprintf('__%s__%s[]', sanitizeId($user->id), sanitizeId($ug->id)), 'label' => $ug->name, 'options' => $ug->circles]" />
+                                        <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="[
+                                            'name' => 'circles',
+                                            'npostfix' => sprintf('__%s__%s[]', sanitizeId($user->id), sanitizeId($ug->id)),
+                                            'label' => $ug->name,
+                                            'options' => $ug->circles,
+                                            'extra_options' => [0 => __('texts.generic.none')],
+                                        ]" />
                                     @else
-                                        <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="['name' => 'circles', 'npostfix' => sprintf('__%s__%s[]', sanitizeId($user->id), sanitizeId($ug->id)), 'label' => $ug->name, 'options' => $ug->circles]" readonly />
+                                        <x-dynamic-component :component="sprintf('larastrap::%s', $ug->cardinality == 'single' ? 'radiolist-model' : 'checklist-model')" :params="[
+                                            'name' => 'circles',
+                                            'npostfix' => sprintf('__%s__%s[]', sanitizeId($user->id), sanitizeId($ug->id)),
+                                            'label' => $ug->name,
+                                            'options' => $ug->circles,
+                                            'extra_options' => [0 => __('texts.generic.none')],
+                                        ]" readonly />
                                     @endif
                                 @endforeach
                             </x-ls::card>
