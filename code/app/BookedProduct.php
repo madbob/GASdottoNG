@@ -229,9 +229,27 @@ class BookedProduct extends Model
 
     public function basicWeight($attribute)
     {
-        $attribute = 'true_' . $attribute;
+        /*
+            La quantità consegnata è sempre espressa direttamente a peso, anche
+            in caso di pezzatura
+        */
+        if ($attribute == 'delivered') {
+            return $this->delivered;
+        }
+        else {
+            /*
+                Se è attiva la pezzatura, essa indica implicitamente il peso del
+                singolo pezzo e pertanto il peso totale è pezzatura * quantità
+            */
+            $product = $this->product;
 
-        return $this->product->weight * $this->$attribute;
+            if ($product->portion_quantity != 0) {
+                return $this->quantity * $product->portion_quantity;
+            }
+            else {
+                return $this->quantity * $product->weight;
+            }
+        }
     }
 
     private function fixWeight($attribute)
