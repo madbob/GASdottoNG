@@ -92,13 +92,11 @@ class VariantCombo extends Model
         return $this->values->sortBy('id')->pluck('id')->join(' ');
     }
 
-    public static function activeValues($combos)
+    public static function activeValues($product)
     {
         $ret = [];
 
-        $combos = $combos->filter(function ($combo) {
-            return $combo->active;
-        });
+        $combos = $product->sortedVariantCombos;
 
         foreach ($combos as $combo) {
             foreach ($combo->values->sortBy('sorting') as $value) {

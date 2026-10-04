@@ -142,8 +142,8 @@ class Product extends Model
                     }
 
                     $ret = $ret->sortBy(function($var) {
-                        return $var->values->reduce(fn($sum, $val) => $sum + $val->sorting, 0);
-                    });
+                        return $var->values->pluck('sorting')->join(' ');
+                    }, SORT_NATURAL);
 
                     return $ret;
                 }
@@ -153,9 +153,7 @@ class Product extends Model
 
     public function getSortedVariantCombosAttribute()
     {
-        return $this->variant_combos->where('active', true)->sortBy(function ($combo) {
-            return $combo->values->pluck('value')->join(' ');
-        }, SORT_NATURAL);
+        return $this->variant_combos->where('active', true);
     }
 
     public function getCategoryNameAttribute()
@@ -185,10 +183,10 @@ class Product extends Model
         if ($this->variants->count() != 0) {
             if (is_null($variant)) {
                 /*
-                    È rilevante l'ordinamento alfabetico dei valori, soprattutto
-                    quando nessuna variante è selezionata di default: essendo
-                    preso sempre il primo valore, bisogna accertarsi che il
-                    primo sia sempre lo stesso
+                    È rilevante l'ordinamento dei valori, soprattutto quando
+                    nessuna variante è selezionata di default: essendo preso
+                    sempre il primo valore, bisogna accertarsi che il primo sia
+                    sempre lo stesso
                 */
                 $variant = $this->sortedVariantCombos->first();
             }
