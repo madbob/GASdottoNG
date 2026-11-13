@@ -15,13 +15,6 @@ class User extends IconsMap
         $ret = [];
 
         if ($user->can('movements.admin', $user->gas) || $user->can('movements.view', $user->gas)) {
-            $ret['wallet'] = (object) [
-                'test' => function ($obj) {
-                    return $obj->currentBalanceAmount(defaultCurrency()) < 0;
-                },
-                'text' => __('texts.user.credit_below_zero'),
-            ];
-
             /*
                 Se la gestione delle quote di iscrizione è abilitata, viene
                 attivata la relativa icona per distinguere gli utenti che non
