@@ -12,7 +12,7 @@ use Intervention\Image\Alignment;
 
 trait DispatchPictures
 {
-    private function generateAvatar($name)
+    private function generateAvatar($obj)
     {
         $name = $obj->printableName();
         $path = Storage::disk('avatars')->path($name);
@@ -40,7 +40,7 @@ trait DispatchPictures
         $obj = $this->show($id);
 
         if (empty($obj->picture)) {
-            $path = $this->generateAvatar($obj->printableName());
+            $path = $this->generateAvatar($obj);
             return response()->download($path);
         }
         else {

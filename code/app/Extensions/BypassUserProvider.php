@@ -3,23 +3,35 @@
 namespace App\Extensions;
 
 use Illuminate\Auth\EloquentUserProvider;
+use Illuminate\Support\Facades\Log;
 
-use Log;
-
+use App\User;
 use App\Contact;
 
 class BypassUserProvider extends EloquentUserProvider
 {
     private function mapEmail($email)
     {
-        $contact = Contact::whereIn('type', ['email', 'skip_email'])->where('value', $email)->first();
-        if (is_null($contact)) {
+        $contacts = Contact::whereIn('type', ['email', 'skip_email'])->where('value', $email)->get();
+        if ($contacts->isEmpty()) {
             Log::error('Email not found while trying to reset password: ' . $email);
-
             return null;
         }
         else {
-            return $contact->target;
+            /*
+                Reminder: un Contact può essere associato ad uno User, ma non
+                solo. Se uno stesso indirizzo email viene associato sia ad uno
+                User che ad un Supplier, devo accertarmi di recuperare proprio
+                l'istanza di User interessata
+            */
+            foreach($contacts as $contact) {
+                if ($contact->target && is_a($contact->target, User::class)) {
+                    return $contact->target;
+                }
+            }
+
+            Log::error('Email exists but is not associated to any user: ' . $email);
+            return null;
         }
     }
 

@@ -14,7 +14,7 @@
 
     <x-larastrap::hidden name="skip_order[]" :value="$order->id" />
 
-    <table class="table table-striped booking-editor" id="booking_{{ sanitizeId($order->id) }}">
+    <table class="table table-striped align-middle booking-editor" id="booking_{{ sanitizeId($order->id) }}">
         <thead class="d-none d-md-table-header-group">
             <tr>
                 <th scope="col" width="40%"></th>
