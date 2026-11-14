@@ -104,10 +104,6 @@ $form_buttons = [
             <input type="hidden" name="close-modal" value="1" class="skip-on-submit">
             <input type="hidden" name="action" value="booked">
 
-            @if($user->gas->hasFeature('restrict_booking_to_credit'))
-                <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() - $user->gas->restrict_booking_to_credit['limit'] }}" class="skip-on-submit">
-            @endif
-
             <div class="d-flex flowbox mb-3">
                 <div class="mainflow">
                     <input type="text" class="form-control table-text-filter" data-table-target=".booking-editor">
@@ -305,6 +301,16 @@ $form_buttons = [
                         </tr>
                     </thead>
                 </table>
+            @endif
+
+            @if($user->gas->hasFeature('restrict_booking_to_credit'))
+                {{--
+                Quando manipolo una prenotazione esistente devo sottrarre il
+                valore della prenotazione stessa dal mio limite di spesa,
+                appunto perché questa non andrà a sommarsi al totale ma a
+                sostituire il valore esistente
+                --}}
+                <input type="hidden" name="max-bookable" value="{{ $user->activeBalance() + $grand_total - $user->gas->restrict_booking_to_credit['limit'] }}" class="skip-on-submit">
             @endif
 
             <div class="fixed-bottom bg-success p-2 booking-bottom-helper">
