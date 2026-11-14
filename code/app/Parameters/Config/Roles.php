@@ -18,9 +18,21 @@ class Roles extends Config
 
     public function default()
     {
-        $default_role = Role::where('identifier', 'user')->first();
-        $friend_role = Role::where('identifier', 'friend')->first();
-        $secondary_admin_role = Role::where('identifier', 'secondary_admin')->first();
+        static $default_role = null;
+        static $friend_role = null;
+        static $secondary_admin_role = null;
+
+        if ($default_role === null) {
+            $default_role = Role::where('identifier', 'user')->first();
+        }
+
+        if ($friend_role === null) {
+            $friend_role = Role::where('identifier', 'friend')->first();
+        }
+
+        if ($secondary_admin_role === null) {
+            $secondary_admin_role = Role::where('identifier', 'secondary_admin')->first();
+        }
 
         return (object) [
             'user' => $default_role ? $default_role->id : -1,

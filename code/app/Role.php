@@ -74,14 +74,14 @@ class Role extends Model implements AutoReadsFields
 
         if ($limited) {
             $user = Auth::user();
-            $roles = $user->roles;
+            $roles = $user->roles()->with(['parent', 'children'])->get();
 
             foreach ($roles as $role) {
                 self::recursiveSortedByHierarchy($role->children, $ret, $ids);
             }
         }
         else {
-            $roles = self::where('parent_id', 0)->orderBy('name', 'asc')->get();
+            $roles = self::where('parent_id', 0)->with(['parent', 'children'])->orderBy('name', 'asc')->get();
             self::recursiveSortedByHierarchy($roles, $ret, $ids);
         }
 
