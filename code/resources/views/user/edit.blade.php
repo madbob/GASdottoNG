@@ -54,7 +54,7 @@ $groups = $user->eligibleGroups();
             @endif
         @endif
 
-        <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :nodelete="$display_page || !$user->isFriend()" :nosave="!$editable" :other_buttons="$friend_admin_buttons">
+        <x-larastrap::mform :obj="$user" method="PUT" :action="route('users.update', $user->id)" :nodelete="$display_page || !$user->isFriend() || $user->bookings()->count() > 0" :nosave="!$editable" :other_buttons="$friend_admin_buttons">
             @if($display_page)
                 <x-larastrap::hidden name="post-saved-function" value="savedFeedback" />
             @endif
