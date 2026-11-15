@@ -91,7 +91,7 @@ trait GASModel
             $subname = sprintf('<br/><small class="text-muted">%s</small>', $subname);
         }
 
-        return sprintf('<span class="header-name">%s</span>%s%s', $name, $subname, $icons);
+        return sprintf('%s<span class="header-name">%s</span>%s', $icons, $name, $subname);
     }
 
     public function printableDate($name)

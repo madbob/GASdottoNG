@@ -191,14 +191,29 @@ class Order extends Model
         return $ret;
     }
 
-    public function printableDates()
+    public function printableDates($short = false)
     {
-        $start = $this->start;
-        $end = $this->end;
-        $string = __('texts.orders.formatted_name', ['start' => printableDate($start), 'end' => printableDate($end)]);
-        if ($this->shipping != null && $this->shipping != '0000-00-00') {
-            $shipping = $this->shipping;
-            $string .= __('texts.orders.formatted_delivery_in_name', ['delivery' => printableDate($shipping)]);
+        if ($short) {
+            $string = __('texts.orders.formatted_name_short', [
+                'start' => printableDate($this->start, 'shorter'),
+                'end' => printableDate($this->end, 'shorter'),
+            ]);
+
+            if ($this->shipping != null && $this->shipping != '0000-00-00') {
+                $shipping = $this->shipping;
+                $string .= __('texts.orders.formatted_delivery_in_name_short', ['delivery' => printableDate($shipping, 'shorter')]);
+            }
+        }
+        else {
+            $string = __('texts.orders.formatted_name', [
+                'start' => printableDate($this->start),
+                'end' => printableDate($this->end),
+            ]);
+
+            if ($this->shipping != null && $this->shipping != '0000-00-00') {
+                $shipping = $this->shipping;
+                $string .= __('texts.orders.formatted_delivery_in_name', ['delivery' => printableDate($shipping)]);
+            }
         }
 
         return $string;

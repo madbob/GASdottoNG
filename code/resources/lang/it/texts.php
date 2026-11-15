@@ -1074,6 +1074,8 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
     'name' => 'Ordine',
     'formatted_name' => 'da :start a :end',
     'formatted_delivery_in_name' => ', in consegna :delivery',
+    'formatted_name_short' => 'dal :start al :end',
+    'formatted_delivery_in_name_short' => ', consegna :delivery',
     'quantities' =>
     array (
       'booked' => 'Quantità Prenotata',

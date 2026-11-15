@@ -114,7 +114,7 @@ class Movement extends Model
                 $total_amount[] = printablePriceCurrency($rel->amount, '.', $rel->currency);
             }
 
-            return sprintf('%s | %s | %s', printableDate($this->date, true), implode(' + ', $total_amount), $this->payment_icon);
+            return sprintf('%s | %s | %s', printableDate($this->date, 'short'), implode(' + ', $total_amount), $this->payment_icon);
         }
     }
 

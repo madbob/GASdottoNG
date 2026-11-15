@@ -152,6 +152,7 @@ html, body {
     margin-right: .5rem;
     border-radius: 50%;
     object-fit: cover;
+    aspect-ratio: 1;
 
     &.inline {
         display: inline-flex;
@@ -719,6 +720,7 @@ i[class^='bi-hidden-'] {
             width: 100%;
             text-align: right;
             display: block;
+            float: right;
         }
 
         &:hover {
@@ -743,7 +745,7 @@ i[class^='bi-hidden-'] {
             display: inline-block;
 
             .header-name {
-                display: inline-flex;
+                display: flex;
                 align-items: center;
             }
         }

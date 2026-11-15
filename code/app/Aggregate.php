@@ -127,10 +127,11 @@ class Aggregate extends Model
         });
     }
 
-    public function computeStrings()
+    private function computeStrings()
     {
         $names = [];
         $dates = [];
+        $shortdates = [];
 
         $orders = $this->orders;
 
@@ -166,21 +167,46 @@ class Aggregate extends Model
                 $names = [];
             }
 
-            $date_string = sprintf('da %s a %s', printableDate($start_date), printableDate($end_date));
+            $date_string = __('texts.orders.formatted_name', [
+                'start' => printableDate($start_date),
+                'end' => printableDate($end_date),
+            ]);
+
+            $date_string_short = __('texts.orders.formatted_name_short', [
+                'start' => printableDate($start_date, 'shorter'),
+                'end' => printableDate($end_date, 'shorter'),
+            ]);
+
             if ($shipping_date_set) {
-                $date_string .= sprintf(', in consegna %s', printableDate($shipping_date));
+                $date_string .= __('texts.orders.formatted_delivery_in_name', [
+                    'delivery' => printableDate($shipping_date),
+                ]);
+
+                $date_string_short .= __('texts.orders.formatted_delivery_in_name', [
+                    'delivery' => printableDate($shipping_date, 'shorter'),
+                ]);
             }
 
             $dates[] = $date_string;
+            $shortdates[] = $date_string_short;
         }
         else {
             foreach ($orders as $order) {
                 $names[] = $order->printableName();
-                $dates[] = $order->printableDates();
+                $dates[] = $order->printableDates(false);
+                $shortdates[] = $order->printableDates(true);
             }
         }
 
-        return [implode(' | ', $names), implode(' / ', array_unique($dates))];
+        $names = implode(' | ', $names);
+        $dates = implode(' / ', array_unique($dates));
+        $shortdates = implode('<br>', array_unique($shortdates));
+
+        $this->setInnerCache('names', $names);
+        $this->setInnerCache('dates', $dates);
+        $this->setInnerCache('shortdates', $shortdates);
+
+        return [$names, $dates, $shortdates];
     }
 
     public function printableName()
@@ -192,9 +218,7 @@ class Aggregate extends Model
         }
 
         $names = $this->innerCache('names', function ($obj) {
-            [$name, $date] = $obj->computeStrings();
-            $obj->setInnerCache('dates', $date);
-
+            [$name, $date, $shortdate] = $obj->computeStrings();
             return $name;
         });
 
@@ -205,19 +229,28 @@ class Aggregate extends Model
         return implode(': ', $all_contents);
     }
 
-    public function printableDates()
+    public function printableDates($short = false)
     {
-        return $this->innerCache('dates', function ($obj) {
-            [$name, $date] = $obj->computeStrings();
-            $obj->setInnerCache('names', $name);
-
-            return $date;
-        });
+        if ($short) {
+            return $this->innerCache('shortdates', function ($obj) {
+                [$name, $date, $shortdate] = $obj->computeStrings();
+                return $date;
+            });
+        }
+        else {
+            return $this->innerCache('dates', function ($obj) {
+                [$name, $date, $shortdate] = $obj->computeStrings();
+                return $date;
+            });
+        }
     }
 
     protected function headerSubName()
     {
-        return $this->printableDates();
+        return sprintf('%s%s',
+            sprintf('<span class="d-none d-lg-block">%s</span>', $this->printableDates(false)),
+            sprintf('<span class="mb-2 d-block d-lg-none">%s</span>', $this->printableDates(true))
+        );
     }
 
     public function printableUserHeader()
