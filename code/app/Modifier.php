@@ -12,7 +12,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use App\Models\Concerns\TracksUpdater;
 
 /**
-    @property-read Aggregate|Order|Product|Supplier|null $target
+ * @property-read Aggregate|Order|Product|Supplier|null $target
  */
 class Modifier extends Model
 {
@@ -61,16 +61,6 @@ class Modifier extends Model
         return new Collection($ret ?: []);
     }
 
-    public function getModelTypeAttribute()
-    {
-        $ret = strtolower(substr(strrchr($this->target_type, '\\'), 1));
-        if ($ret == 'supplier') {
-            $ret = 'order';
-        }
-
-        return $ret;
-    }
-
     public function isTrasversal()
     {
         if (!$this->active) {
@@ -115,14 +105,16 @@ class Modifier extends Model
         return route('modifiers.show', $this->id);
     }
 
-    /*
-        Questa funzione permette di capire a che livello della gerarchia si
-        applica il modificatore.
-        "order" e "booking" si riferiscono, rispettivamente, all'ordine nel suo
-        complesso o alla specifica prenotazione.
-        "product" si riferisce al prodotto all'interno della prenotazione.
-        "global_product" si riferisce al prodotto complessivo nell'ordine
-    */
+    /**
+     * Questa funzione permette di capire a che livello della gerarchia si
+     * applica il modificatore.
+     * "order_aggregate" e "booking_aggregate" si riferiscono, rispettivamente,
+     * ad un intero ordine aggregato o alla specifica prenotazione aggregata
+     * "order" e "booking" si riferiscono, rispettivamente, all'ordine nel suo
+     * complesso o alla specifica prenotazione.
+     * "product" si riferisce al prodotto all'interno della prenotazione.
+     * "global_product" si riferisce al prodotto complessivo nell'ordine
+     */
     public function getCheckTargetLevel()
     {
         if ($this->target_type == Product::class) {
@@ -156,8 +148,28 @@ class Modifier extends Model
         }
     }
 
+    /**
+     * Genera la stringa che permette di ricostruire i testi da applicare al
+     * modificatore in fase di modifica, come descritti in
+     * app/View/Texts/Modifier.php
+     */
     public function getDescriptionIndexAttribute()
     {
-        return sprintf('%s,%s,%s,%s,%s,%s,%s,%s,%s', $this->applies_type, $this->model_type, $this->applies_target, $this->scale, $this->applies_type, $this->arithmetic, $this->applies_target, $this->value, $this->distribution_type);
+        return sprintf('%s,%s,%s,%s,%s,%s,%s,%s,%s',
+            $this->applies_type,
+            $this->getModifierDefinition()->modelType(),
+            $this->applies_target,
+            $this->scale,
+            $this->applies_type,
+            $this->arithmetic,
+            $this->applies_target,
+            $this->value,
+            $this->distribution_type
+        );
+    }
+
+    public function getModifierDefinition()
+    {
+        return $this->target->getModifierDefinition();
     }
 }

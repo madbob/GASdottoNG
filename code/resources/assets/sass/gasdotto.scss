@@ -527,6 +527,20 @@ i[class^='bi-hidden-'] {
 .form-disabled {
     pointer-events: none;
     opacity: 0.8;
+    position: relative;
+}
+
+.overlay-loading {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFF;
+    z-index: 10;
 }
 
 .main-form-buttons {

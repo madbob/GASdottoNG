@@ -1,4 +1,10 @@
-<x-larastrap::modal :title="$modifier->modifierType->name" classes="modifier-modal" :data-target-type="$modifier->model_type" size="fullscreen" :data-strings-source="route('modifiers.string', inlineId($modifier->target))">
+<x-larastrap::modal
+    :title="$modifier->modifierType->name"
+    classes="modifier-modal"
+    :data-target-type="$modifier->getModifierDefinition()->modelType()"
+    size="fullscreen"
+    :data-strings-source="route('modifiers.string', inlineId($modifier->target))">
+
     <x-larastrap::iform :obj="$modifier" method="POST" :action="route('modifiers.update', $modifier->id)">
         <input type="hidden" name="test-feedback" value="1">
         <input type="hidden" name="close-modal" value="1">
@@ -8,86 +14,35 @@
 
         <div class="row">
             <div class="col">
-                @if($modifier->target_type == 'App\Supplier')
-                    <x-larastrap::check name="always_on" tlabel="movements.always_active_modifiers" tpophelp="movements.help.always_active_modifiers" />
-                @endif
-
                 @php
 
-                $types = [
-                    'none' => __('texts.generic.none'),
-                ];
+                $definition = $modifier->getModifierDefinition();
+                $config = $definition->configParams();
+                $applies_types = $config['applies_types'];
+                $values = $config['values'];
+                $applies_targets = $config['applies_targets'];
 
-                $booking_payment_type = movementTypes('booking-payment');
-
-                foreach (movementTypes() as $info) {
-                    if ($info->overlapsPaymentMethods($booking_payment_type) == false) {
-                        $movement_type_alert = __('texts.movements.help.missing_movements_for_modifiers', ['methods' => join(', ', paymentsByType('booking-payment'))]);
-                    }
-                    else if ($info->visibility) {
-                        $types[$info->id] = $info->name;
-                    }
-                }
-
-                @endphp
-
-                <x-larastrap::select name="movement_type_id" tlabel="movements.type" :options="$types" classes="movement-type-selector" :help="$movement_type_alert" tpophelp="movements.help.type_for_modifier" />
-
-                <?php
-
-                if ($modifier->target_type == 'App\Product') {
-                    $values = [
-                        'absolute' => __('texts.generic.absolute'),
-                        'percentage' => __('texts.generic.percentage'),
-						'mass' => __('texts.generic.by_weight'),
-                        'price' => (object) ['label' => __('texts.products.prices.unit'), 'disabled' => $modifier->applies_type == 'none'],
-                    ];
-
-                    $applies_types = [
-                        'none' => __('texts.movements.modifier_no_theshold'),
-                        'quantity' => __('texts.generic.quantity'),
-                        'price' => __('texts.generic.value'),
-                        'order_price' => __('texts.movements.order_value'),
-                        'weight' => __('texts.generic.weight'),
-                    ];
-
-                    $applies_targets = [
-                        'product' => __('texts.products.name'),
-                        'booking' => __('texts.movements.apply_to_booking'),
-                        'order' => __('texts.movements.apply_to_order'),
-                    ];
-
-                    if ($modifier->applies_type == 'none') {
-                        $modifier->applies_target = 'product';
-                    }
-                }
-                else {
-                    $values = [
-                        'absolute' => __('texts.generic.absolute'),
-                        'percentage' => __('texts.generic.percentage'),
-						'mass' => __('texts.generic.by_weight'),
-                    ];
-
-                    $applies_types = [
-                        'none' => __('texts.movements.modifier_no_theshold'),
-                        'price' => __('texts.generic.value'),
-                        'weight' => __('texts.generic.weight'),
-                    ];
-
-                    $applies_targets = [
-                        'booking' => __('texts.movements.apply_to_booking'),
-                        'order' => __('texts.movements.apply_to_order'),
-                    ];
-
-                    if ($modifier->applies_target == 'order' && $modifier->distribution_type == 'none') {
-                        $modifier->distribution_type = 'price';
-                    }
-                }
+                [$payment_types, $movement_type_alert] = $definition->movementTypes();
 
                 $labels = App\View\Texts\Modifier::descriptions($modifier->target);
                 $actual_strings_combination = $modifier->description_index;
 
-                ?>
+                @endphp
+
+                @if($config['always_on'])
+                    <x-larastrap::check
+                        name="always_on"
+                        tlabel="movements.always_active_modifiers"
+                        tpophelp="movements.help.always_active_modifiers" />
+                @endif
+
+                <x-larastrap::select
+                    name="movement_type_id"
+                    tlabel="movements.type"
+                    :options="$payment_types"
+                    classes="movement-type-selector"
+                    :help="$movement_type_alert"
+                    tpophelp="movements.help.type_for_modifier" />
 
                 <x-larastrap::radios name="applies_type" tlabel="movements.apply_theshold_to" :options="$applies_types" />
                 <x-larastrap::radios name="value" tlabel="generic.value" :options="$values" />
@@ -101,16 +56,26 @@
 					]]" />
                 </div>
 
-                @if($modifier->target_type != 'App\Product')
-                    @include('modifier.modtarget')
+                @if(count($applies_targets) > 1)
+                    <x-larastrap::radios name="applies_target" tlabel="movements.reference_for_modifier" :options="$applies_targets" />
+                @else
+                    <x-ls::hidden name="applies_target" :value="array_key_first($applies_targets)" />
                 @endif
 
-                <div class="advanced_input {{ $modifier->applies_type == 'none' ? 'd-none' : '' }}">
-                    @if($modifier->target_type == 'App\Product')
-                        @include('modifier.modtarget')
-                    @endif
+                <div class="distribution_type_selection">
+                    <x-larastrap::radios name="distribution_type" tlabel="movements.distribute_on" :options="[
+                        'none' => (object) ['label' => __('texts.generic.none'), 'hidden' => true],
+                        'quantity' => __('texts.generic.quantity'),
+                        'price' => __('texts.generic.value'),
+                        'weight' => __('texts.generic.weight')
+                    ]" />
+                </div>
 
-                    <x-larastrap::radios name="scale" tlabel="generic.difference" :options="['minor' => __('texts.generic.minor_than'), 'major' => __('texts.generic.major_than')]" />
+                <div class="advanced_input">
+                    <x-larastrap::radios name="scale" tlabel="generic.difference" :options="[
+                        'minor' => __('texts.generic.minor_than'),
+                        'major' => __('texts.generic.major_than')
+                    ]" />
 
                     <hr>
 
@@ -169,7 +134,7 @@
                     ])
                 </div>
 
-                <div class="simplified_input {{ $modifier->applies_type != 'none' ? 'd-none' : '' }}">
+                <div class="simplified_input">
                     <hr>
 
                     <div class="row">

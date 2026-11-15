@@ -24,6 +24,7 @@ use App\Models\Concerns\TracksUpdater;
 use App\Models\Concerns\WithinGas;
 use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
+use App\Parameters\ModifierTarget\Supplier as SupplierModifier;
 
 class Supplier extends Model
 {
@@ -200,6 +201,13 @@ class Supplier extends Model
         }
 
         return $query;
+    }
+
+    /******************************************************** ModifiableTrait */
+
+    public function getModifierDefinition()
+    {
+        return new SupplierModifier();
     }
 
     /******************************************************** CreditableTrait */

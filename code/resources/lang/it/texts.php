@@ -704,8 +704,8 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
         ),
         'aggregate' =>
         array (
-          'booking' => 'della prenotazione aggregata',
-          'order' => 'dell\'ordine aggregato',
+          'booking_aggregate' => 'della prenotazione aggregata',
+          'order_aggregate' => 'dell\'ordine aggregato',
         ),
         'circle' =>
         array (
@@ -725,27 +725,39 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
           'product' => 'somma al costo del prodotto',
           'booking' => 'somma al costo della prenotazione',
           'order' => 'somma al costo dell\'ordine',
+          'booking_aggregate' => 'somma al costo della prenotazione aggregata',
+          'order_aggregate' => 'somma al costo dell\'ordine aggregato',
           'product_kg' => 'per ogni Kg di prodotto, somma',
           'booking_kg' => 'per ogni Kg nella prenotazione, somma',
           'order_kg' => 'per ogni Kg nell\'ordine, somma',
+          'booking_aggregate_kg' => 'per ogni Kg nella prenotazione aggregata, somma',
+          'order_aggregate_kg' => 'per ogni Kg nell\'ordine aggregato, somma',
         ),
         'sub' =>
         array (
           'product' => 'sottrai al costo del prodotto',
           'booking' => 'sottrai al costo della prenotazione',
           'order' => 'sottrai al costo dell\'ordine',
+          'booking_aggregate' => 'sottrai al costo della prenotazione aggregata',
+          'order_aggregate' => 'sottrai al costo dell\'ordine aggregato',
           'product_kg' => 'per ogni Kg di prodotto, sottrai',
           'booking_kg' => 'per ogni Kg nella prenotazione, sottrai',
           'order_kg' => 'per ogni Kg nell\'ordine, sottrai',
+          'booking_aggregate_kg' => 'per ogni Kg nella prenotazione aggregata, sottrai',
+          'order_aggregate_kg' => 'per ogni Kg nell\'ordine aggregato, sottrai',
         ),
         'passive' =>
         array (
           'product' => 'rispetto al costo del prodotto, calcola',
           'booking' => 'rispetto al costo della prenotazione, calcola',
           'order' => 'rispetto al costo dell\'ordine, calcola',
+          'booking_aggregate' => 'rispetto al costo della prenotazione aggregata, calcola',
+          'order_aggregate' => 'rispetto al costo dell\'ordine aggregato, calcola',
           'product_kg' => 'per ogni Kg di prodotto, calcola',
           'booking_kg' => 'per ogni Kg nella prenotazione, calcola',
           'order_kg' => 'per ogni Kg nell\'ordine, calcola',
+          'booking_aggregate_kg' => 'per ogni Kg nella prenotazione aggregata, calcola',
+          'order_aggregate_kg' => 'per ogni Kg nell\'ordine aggregato, calcola',
         ),
         'apply' =>
         array (
@@ -773,6 +785,8 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
     'order_value' => 'Valore dell\'Ordine',
     'apply_to_booking' => 'Singola Prenotazione',
     'apply_to_order' => 'Ordine Complessivo',
+    'apply_to_aggregate_booking' => 'Prenotazione Aggregata',
+    'apply_to_aggregate_order' => 'Ordine Aggregato',
     'current_balance_amount' => 'Saldo Attuale: :amount',
     'balance' => 'Saldo',
     'current_credit' => 'Credito Attuale',

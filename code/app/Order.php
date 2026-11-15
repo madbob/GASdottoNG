@@ -26,6 +26,7 @@ use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\TracksUpdater;
 use App\Scopes\RestrictedGAS;
 use App\Events\SluggableCreating;
+use App\Parameters\ModifierTarget\Order as OrderModifier;
 
 class Order extends Model
 {
@@ -905,6 +906,11 @@ class Order extends Model
     public function inheritModificationTypes()
     {
         return $this->supplier;
+    }
+
+    public function getModifierDefinition()
+    {
+        return new OrderModifier();
     }
 
     /************************************************************** InCircles */

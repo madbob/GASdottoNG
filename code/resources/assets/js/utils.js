@@ -159,6 +159,21 @@ class Utils {
         });
     }
 
+    static spinBlock(block)
+    {
+        const loader = $('<div>');
+        loader.addClass('overlay-loading');
+        loader.append(this.j().makeSpinner());
+        block.addClass('form-disabled');
+        block.append(loader);
+    }
+
+    static unspinBlock(block)
+    {
+        block.removeClass('form-disabled');
+        block.find('.overlay-loading').remove();
+    }
+
     static formErrorFeedback(form)
     {
         let submit_button = this.j().submitButton(form);
@@ -294,7 +309,7 @@ class Utils {
 
         params.url = this.normalizeUrl(params.url);
 
-        $.ajax(params);
+        return $.ajax(params);
     }
 
     static fetchNode(url, node)

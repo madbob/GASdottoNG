@@ -17,6 +17,7 @@ use App\Models\Concerns\ReducibleTrait;
 use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\WithinGas;
 use App\Events\AttachableToGas;
+use App\Parameters\ModifierTarget\Aggregate as AggregateModifier;
 
 class Aggregate extends Model
 {
@@ -579,6 +580,11 @@ class Aggregate extends Model
     public function sameModificationTypes()
     {
         return $this->orders->first();
+    }
+
+    public function getModifierDefinition()
+    {
+        return new AggregateModifier();
     }
 
     /************************************************************** WithinGas */

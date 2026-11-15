@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 /**
-    @property-read Gas|Invoice|Notification|Order|Supplier|null $attached
+ * @property-read Gas|Invoice|Notification|Order|Supplier|null $attached
  */
 class Attachment extends Model
 {

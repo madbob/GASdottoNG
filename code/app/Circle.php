@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Concerns\TracksUpdater;
 use App\Models\Concerns\ModifiableTrait;
 use App\Events\SluggableCreating;
+use App\Parameters\ModifierTarget\Circle as CircleModifier;
 
 class Circle extends Model
 {
@@ -35,5 +36,12 @@ class Circle extends Model
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
+    }
+
+    /******************************************************** ModifiableTrait */
+
+    public function getModifierDefinition()
+    {
+        return new CircleModifier();
     }
 }

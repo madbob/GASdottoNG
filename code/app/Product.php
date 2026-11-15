@@ -20,6 +20,7 @@ use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\TracksUpdater;
 use App\Events\VariantChanged;
 use App\Events\SluggableCreating;
+use App\Parameters\ModifierTarget\Product as ProductModifier;
 
 class Product extends Model
 {
@@ -358,6 +359,13 @@ class Product extends Model
     public function getPictureUrlAttribute()
     {
         return route('products.picture', $this->id);
+    }
+
+    /******************************************************** ModifiableTrait */
+
+    public function getModifierDefinition()
+    {
+        return new ProductModifier();
     }
 
     /************************************************************** Priceable */

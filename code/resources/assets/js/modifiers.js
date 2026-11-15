@@ -3,18 +3,32 @@ import utils from "./utils";
 class Modifiers {
     static modifiers_strings = null;
 
-    static init(container)
+    static getConfigValue(container, name)
+    {
+        let checked = container.find('input:radio[name=' + name + ']:checked').first();
+        if (checked) {
+            return checked.val();
+        }
+        else {
+            return container.find('[name=' + name + ']').val();
+        }
+    }
+
+    static async init(container)
     {
         if (container.hasClass('modifier-modal')) {
-            container.find('form').addClass('form-disabled');
+            const form = container.find('form');
+            utils.spinBlock(form);
 
-            utils.postAjax({
+            await utils.postAjax({
                 method: 'GET',
                 url: container.attr('data-strings-source'),
                 dataType: 'JSON',
                 success: function(data) {
                     Modifiers.modifiers_strings = data;
-                    container.find('form').removeClass('form-disabled');
+
+                    const form = container.find('form');
+                    utils.unspinBlock(form);
                 }
             });
 
@@ -25,18 +39,26 @@ class Modifiers {
                 */
                 let container = $(this).closest('.modifier-modal');
                 let model_type = container.attr('data-target-type');
-                let arithmetic = container.find('input:radio[name=arithmetic]:checked').val();
-                let value = container.find('input:radio[name=value]:checked').val();
-                let applies_type = container.find('input:radio[name=applies_type]:checked').val();
-                let scale = container.find('input:radio[name=scale]:checked').val();
-                let applies_target = container.find('input:radio[name=applies_target]:checked').first().val();
-                let distribution_type = container.find('input:radio[name=distribution_type]:checked').val();
+                let arithmetic = Modifiers.getConfigValue(container, 'arithmetic');
+                let value = Modifiers.getConfigValue(container, 'value');
+                let applies_type = Modifiers.getConfigValue(container, 'applies_type');
+                let scale = Modifiers.getConfigValue(container, 'scale');
+                let applies_target = Modifiers.getConfigValue(container, 'applies_target');
+                let distribution_type = Modifiers.getConfigValue(container, 'distribution_type');
                 let distribution_type_selection = container.find('.distribution_type_selection');
 
                 if (model_type == 'product') {
                     if (applies_type == 'none') {
                         container.find('input:radio[name=applies_target][value=product]').click();
+                        container.find('input:radio[name=applies_target][value!=product]').next('label').addClass('disabled');
                         applies_target = 'product';
+
+                        container.find('input:radio[name=value][value=absolute]').click();
+                        container.find('input:radio[name=value][value=price]').next('label').addClass('disabled');
+                        value = 'absolute';
+                    }
+                    else {
+                        container.find('input:radio[name=applies_target]').next('label').removeClass('disabled');
                     }
                 }
 
@@ -54,7 +76,7 @@ class Modifiers {
                         arithmetic = 'sum';
                     }
 
-                    if (applies_target != 'order') {
+                    if (applies_target != 'order' && applies_target != 'order_aggregate') {
                         distribution_type_selection.addClass('d-none').find('input:radio[value=none]').click();
                         distribution_type = 'none';
                     }
@@ -96,17 +118,13 @@ class Modifiers {
                     }
                 }
                 else {
-                    let value_price_selection = container.find('input:radio[name=value][value=price]');
-                    value_price_selection.next('label').addClass('disabled');
-                    if (value_price_selection.prop('checked')) {
-                        container.find('input:radio[name=value][value=absolute]').click();
-                    }
-
                     simplified.find('.form-control-static').eq(0).text(labels[2]);
                     simplified.find('.input-group-text').text(labels[3]);
                     simplified.find('.form-control-static').eq(1).text(labels[4]);
                 }
             });
+
+            container.find('input:radio').change();
         }
     }
 

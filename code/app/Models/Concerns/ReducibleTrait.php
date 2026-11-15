@@ -235,7 +235,8 @@ trait ReducibleTrait
             ['product'],
             ['booking'],
             ['order', 'global_product'],
-            ['aggregate'],
+            ['booking_aggregate'],
+            ['order_aggregate'],
         ];
 
         $target_priority = -1;

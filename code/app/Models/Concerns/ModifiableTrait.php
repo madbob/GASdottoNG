@@ -9,23 +9,18 @@ use App\Modifier;
 
 trait ModifiableTrait
 {
+    abstract public function getModifierDefinition();
+
     public function modifiers(): MorphMany
     {
         return $this->morphMany(Modifier::class, 'target');
     }
 
-    public function attachEmptyModifier($modtype)
+    public function attachEmptyModifier(ModifierType $modtype)
     {
         if ($this->modifiers()->where('modifier_type_id', $modtype->id)->count() == 0) {
-            $mod = new Modifier();
-            $mod->modifier_type_id = $modtype->id;
-            $mod->target_type = get_class($this);
-            $mod->target_id = (string) $this->id;
-            $mod->applies_type = 'none';
-            $mod->definition = '[]';
-            $mod->save();
-
-            return $mod;
+            $definition = $this->getModifierDefinition();
+            return $definition->initNewModifier($modtype, $this);
         }
     }
 

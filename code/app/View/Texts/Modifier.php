@@ -1,38 +1,49 @@
 <?php
 
+/**
+ * In questa classe si formattano i testi destinati a descrivere il
+ * comportamento di un modificatore in fase di modifica.
+ * Esiste una enorme quantità di combinazioni, dunque qui cerco di limitare le
+ * permutazioni effettivamente gestite dal Model preso in esame onde evitare di
+ * generare mega e mega di testo solo in minima parte poi usati.
+ */
+
 namespace App\View\Texts;
 
 use App\Product;
 
 class Modifier
 {
-    private static function valueLabels()
+    private static function valueLabels($target)
     {
-        return [
-            'none' => '',
-            'quantity' => __('texts.modifiers.dynamics.values.quantity'),
-            'price' => __('texts.modifiers.dynamics.values.price'),
-            'order_price' => __('texts.modifiers.dynamics.values.order_price'),
-            'weight' => __('texts.modifiers.dynamics.values.weight'),
+        $config = $target->getModifierDefinition()->configParams();
+
+        $ret = [
+            'none' => ''
         ];
+
+        foreach($config['applies_types'] as $type => $name) {
+            if ($type !== 'none') {
+                $ret[$type] = __('texts.modifiers.dynamics.values.' . $type);
+            }
+        }
+
+        return $ret;
     }
 
-    private static function targetsLabels()
+    private static function targetsLabels($target)
     {
-        return [
-            'product,product' => '',
-            'product,booking' => __('texts.modifiers.dynamics.targets.product.booking'),
-            'product,order' => __('texts.modifiers.dynamics.targets.product.order'),
-            'order,product' => '',
-            'order,booking' => __('texts.modifiers.dynamics.targets.order.booking'),
-            'order,order' => __('texts.modifiers.dynamics.targets.order.order'),
-            'aggregate,product' => '',
-            'aggregate,booking' => __('texts.modifiers.dynamics.targets.aggregate.booking'),
-            'aggregate,order' => __('texts.modifiers.dynamics.targets.aggregate.order'),
-            'circle,product' => '',
-            'circle,booking' => __('texts.modifiers.dynamics.targets.circle.booking'),
-            'circle,order' => __('texts.modifiers.dynamics.targets.circle.order'),
-        ];
+        $definition = $target->getModifierDefinition();
+        $config = $definition->configParams();
+        $modeltype = $definition->modelType();
+
+        $ret = [];
+
+        foreach($config['applies_targets'] as $type => $name) {
+            $ret[$modeltype . ',' . $type] = __('texts.modifiers.dynamics.targets.' . $modeltype . '.' . $type);
+        }
+
+        return $ret;
     }
 
     private static function scaleLabels()
@@ -47,7 +58,7 @@ class Modifier
     {
         $currency = defaultCurrency()->symbol;
 
-        if (is_a($target, Product::class)) {
+        if (is_a($target, Product::class) && $target->measure) {
             $quantity_label = $target->measure->name;
         }
         else {
@@ -67,45 +78,34 @@ class Modifier
         ];
     }
 
-    private static function distributionLabels()
+    private static function distributionLabels($target)
     {
         $currency = defaultCurrency()->symbol;
+        $definition = $target->getModifierDefinition()->configParams();
 
-        return [
-            'sum,product,absolute' => [__('texts.modifiers.dynamics.distribution.sum.product'), $currency],
-            'sum,booking,absolute' => [__('texts.modifiers.dynamics.distribution.sum.booking'), $currency],
-            'sum,order,absolute' => [__('texts.modifiers.dynamics.distribution.sum.order'), $currency],
-            'sum,product,percentage' => [__('texts.modifiers.dynamics.distribution.sum.product'), '%'],
-            'sum,booking,percentage' => [__('texts.modifiers.dynamics.distribution.sum.booking'), '%'],
-            'sum,order,percentage' => [__('texts.modifiers.dynamics.distribution.sum.order'), '%'],
-            'sum,product,mass' => [__('texts.modifiers.dynamics.distribution.sum.product_kg'), $currency],
-            'sum,booking,mass' => [__('texts.modifiers.dynamics.distribution.sum.booking_kg'), $currency],
-            'sum,order,mass' => [__('texts.modifiers.dynamics.distribution.sum.order_kg'), $currency],
+        $ret = [];
 
-            'sub,product,absolute' => [__('texts.modifiers.dynamics.distribution.sub.product'), $currency],
-            'sub,booking,absolute' => [__('texts.modifiers.dynamics.distribution.sub.booking'), $currency],
-            'sub,order,absolute' => [__('texts.modifiers.dynamics.distribution.sub.order'), $currency],
-            'sub,product,percentage' => [__('texts.modifiers.dynamics.distribution.sub.product'), '%'],
-            'sub,booking,percentage' => [__('texts.modifiers.dynamics.distribution.sub.booking'), '%'],
-            'sub,order,percentage' => [__('texts.modifiers.dynamics.distribution.sub.order'), '%'],
-            'sub,product,mass' => [__('texts.modifiers.dynamics.distribution.sub.product_kg'), $currency],
-            'sub,booking,mass' => [__('texts.modifiers.dynamics.distribution.sub.booking_kg'), $currency],
-            'sub,order,mass' => [__('texts.modifiers.dynamics.distribution.sub.order_kg'), $currency],
+        foreach($definition['applies_targets'] as $identifier => $name) {
+            $ret['sum,' . $identifier . ',absolute'] = [__('texts.modifiers.dynamics.distribution.sum.' . $identifier), $currency];
+            $ret['sum,' . $identifier . ',percentage'] = [__('texts.modifiers.dynamics.distribution.sum.' . $identifier), '%'];
+            $ret['sum,' . $identifier . ',mass'] = [__('texts.modifiers.dynamics.distribution.sum.' . $identifier . '_kg'), $currency];
 
-            'passive,product,absolute' => [__('texts.modifiers.dynamics.distribution.passive.product'), $currency],
-            'passive,booking,absolute' => [__('texts.modifiers.dynamics.distribution.passive.booking'), $currency],
-            'passive,order,absolute' => [__('texts.modifiers.dynamics.distribution.passive.order'), $currency],
-            'passive,product,percentage' => [__('texts.modifiers.dynamics.distribution.passive.product'), '%'],
-            'passive,booking,percentage' => [__('texts.modifiers.dynamics.distribution.passive.booking'), '%'],
-            'passive,order,percentage' => [__('texts.modifiers.dynamics.distribution.passive.order'), '%'],
-            'passive,product,mass' => [__('texts.modifiers.dynamics.distribution.passive.product_kg'), $currency],
-            'passive,booking,mass' => [__('texts.modifiers.dynamics.distribution.passive.booking_kg'), $currency],
-            'passive,order,mass' => [__('texts.modifiers.dynamics.distribution.passive.order_kg'), $currency],
+            $ret['sub,' . $identifier . ',absolute'] = [__('texts.modifiers.dynamics.distribution.sub.' . $identifier), $currency];
+            $ret['sub,' . $identifier . ',percentage'] = [__('texts.modifiers.dynamics.distribution.sub.' . $identifier), '%'];
+            $ret['sub,' . $identifier . ',mass'] = [__('texts.modifiers.dynamics.distribution.sub.' . $identifier . '_kg'), $currency];
 
-            'apply,product,price' => [__('texts.modifiers.dynamics.distribution.apply.product'), $currency],
-            'apply,booking,price' => [__('texts.modifiers.dynamics.distribution.apply.product'), $currency],
-            'apply,order,price' => [__('texts.modifiers.dynamics.distribution.apply.product'), $currency],
-        ];
+            $ret['passive,' . $identifier . ',absolute'] = [__('texts.modifiers.dynamics.distribution.passive.' . $identifier), $currency];
+            $ret['passive,' . $identifier . ',percentage'] = [__('texts.modifiers.dynamics.distribution.passive.' . $identifier), '%'];
+            $ret['passive,' . $identifier . ',mass'] = [__('texts.modifiers.dynamics.distribution.passive.' . $identifier . '_kg'), $currency];
+        }
+
+        if (is_a($target, Product::class)) {
+            $ret['apply,product,price'] = [__('texts.modifiers.dynamics.distribution.apply.product'), $currency];
+            $ret['apply,booking,price'] = [__('texts.modifiers.dynamics.distribution.apply.product'), $currency];
+            $ret['apply,order,price'] = [__('texts.modifiers.dynamics.distribution.apply.product'), $currency];
+        }
+
+        return $ret;
     }
 
     private static function typesLabels()
@@ -126,11 +126,11 @@ class Modifier
             tabella delle soglie.
         */
 
-        $value_labels = self::valueLabels();
-        $targets_labels = self::targetsLabels();
+        $value_labels = self::valueLabels($target);
+        $targets_labels = self::targetsLabels($target);
         $scale_labels = self::scaleLabels();
         $value_units = self::unitLabels($target);
-        $distribution_labels = self::distributionLabels();
+        $distribution_labels = self::distributionLabels($target);
         $distribution_types = self::typesLabels();
 
         $labels = [];
@@ -143,7 +143,11 @@ class Modifier
                             foreach ($distribution_types as $dt => $dts) {
                                 $key = sprintf('%s,%s,%s,%s,%s,%s', $vl, $tl, $sl, $vu, $dl, $dt);
                                 $labels[$key] = [
-                                    __('texts.modifiers.dynamics.template', ['value' => $vs, 'target' => $ts, 'scale' => $ss]),
+                                    __('texts.modifiers.dynamics.template', [
+                                        'value' => $vs,
+                                        'target' => $ts,
+                                        'scale' => $ss
+                                    ]),
                                     $vus,
                                     $ds[0],
                                     $ds[1],
