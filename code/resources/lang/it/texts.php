@@ -64,7 +64,6 @@ return array (
   array (
     'accept_conditions' => 'Ho letto e accetto le <a href=":link" target="_blank">Condizioni d\'Uso</a>.',
     'warning' => 'Attenzione',
-    'loading' => 'Caricamento in corso',
     'feedback' => 'Feedback',
     'about' =>
     array (

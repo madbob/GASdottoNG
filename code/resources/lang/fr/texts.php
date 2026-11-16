@@ -52,7 +52,6 @@ return array(
     'commons' => array(
         'accept_conditions' => 'J\'ai lu et j\'accepte les <a href="%s" target="_blank">Conditions d\'utilisation</a>.',
         'warning' => 'Attention',
-        'loading' => 'Chargement en cours',
         'feedback' => 'Remarques',
         'about' => array(
             'opensource' => '',

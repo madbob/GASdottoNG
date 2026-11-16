@@ -57,7 +57,6 @@ return array(
     'commons' => array(
         'accept_conditions' => 'Ich habe die <a href=":link" target="_blank">Nutzungsbedingungen</a> gelesen und akzeptiere sie.',
         'warning' => 'Achtung',
-        'loading' => 'Ladevorgang',
         'feedback' => 'Rückmeldung',
         'about' => array(
             'opensource' => 'GASdotto wird als Open-Source-Projekt entwickelt!',

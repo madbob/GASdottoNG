@@ -53,7 +53,6 @@ return array(
     'commons' => array(
         'accept_conditions' => '',
         'warning' => '',
-        'loading' => '',
         'feedback' => '',
         'about' => array(
             'opensource' => '',

@@ -23,10 +23,6 @@
         @endif
     </head>
     <body>
-        <div id="preloader">
-            <img src="{{ asset('images/loading.svg') }}" alt="{{ __('texts.commons.loading') }}">
-        </div>
-
         @if(isset($menu))
             <x-larastrap::navbar id="main-navbar" :options="$menu" :end_options="$end_menu" classes="fixed-top" />
         @endif

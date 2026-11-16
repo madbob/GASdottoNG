@@ -71,25 +71,12 @@ html, body {
     min-height: 100%;
 }
 
-.hidden {
-    display: none !important;
+body {
+    padding-top: 90px;
 }
 
-#preloader {
-    position: fixed;
-    background: white;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 100;
-
-    img {
-        position: absolute;
-        top:50%;
-        left:50%;
-        transform: translate(-50%, -50%);
-    }
+.hidden {
+    display: none !important;
 }
 
 #main-contents {

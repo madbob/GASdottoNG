@@ -52,7 +52,6 @@ return array(
     'commons' => array(
         'accept_conditions' => '',
         'warning' => 'Selectie',
-        'loading' => '',
         'feedback' => '',
         'about' => array(
             'opensource' => '',

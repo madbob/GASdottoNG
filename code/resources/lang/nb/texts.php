@@ -59,7 +59,6 @@ return array (
   array (
     'accept_conditions' => '',
     'warning' => '',
-    'loading' => '',
     'feedback' => '',
     'about' =>
     array (

@@ -57,7 +57,6 @@ return array(
     'commons' => array(
         'accept_conditions' => 'I have read and agree to the <a href="%s" target="_blank">Terms and Conditions</a>.',
         'warning' => 'Warning',
-        'loading' => 'Loading',
         'feedback' => 'Feedback',
         'about' => array(
             'opensource' => 'GASdotto is open source!',

@@ -456,8 +456,6 @@ $(document).ready(function() {
 	let navbar = $('.navbar').first();
 	$('body').css('padding-top', (navbar.height() * 2) + 'px');
 
-    $('#preloader').hide();
-
     $.ajaxSetup({
         cache: false,
         headers: {
