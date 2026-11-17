@@ -144,9 +144,7 @@ foreach($data->contents as $d) {
             @endif
 
             <div class="extended">
-                <h3>
-                    {!! join('<br>', array_filter($d->user)) !!}
-                </h3>
+                {!! join('<br>', array_filter($d->user)) !!}
 
                 @php
 
