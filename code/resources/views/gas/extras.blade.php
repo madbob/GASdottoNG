@@ -1,12 +1,16 @@
 <x-larastrap::accordion always_open="true">
-    <x-larastrap::accordionitem :label_html="formatAccordionLabel('aggregations.all', 'card-checklist')">
+    <x-larastrap::accordionitem :label_html="formatAccordionLabel('aggregations.all_by_user', 'card-checklist')">
         <div class="row">
             <div class="col">
                 @include('commons.addingbutton', [
                     'template' => 'groups.base-edit',
+                    'template_params' => [
+                        'context' => 'user',
+                    ],
                     'typename' => 'group',
                     'typename_readable' => __('texts.aggregations.name'),
-                    'targeturl' => 'groups'
+                    'targeturl' => 'groups',
+                    'target_update' => 'group-list-users',
                 ])
             </div>
         </div>
@@ -14,9 +18,36 @@
         <div class="row mt-2">
             <div class="col">
                 @include('commons.loadablelist', [
-                    'identifier' => 'group-list',
-                    'items' => App\Group::orderBy('name', 'asc')->get(),
-                    'empty_message' => __('texts.aggregations.empty_list'),
+                    'identifier' => 'group-list-users',
+                    'items' => App\Group::forUsers()->orderBy('name', 'asc')->get(),
+                    'empty_message' => __('texts.aggregations.empty_list_users'),
+                ])
+            </div>
+        </div>
+    </x-larastrap::accordionitem>
+
+    <x-larastrap::accordionitem :label_html="formatAccordionLabel('aggregations.all_by_booking', 'card-checklist')">
+        <div class="row">
+            <div class="col">
+                @include('commons.addingbutton', [
+                    'template' => 'groups.base-edit',
+                    'template_params' => [
+                        'context' => 'booking',
+                    ],
+                    'typename' => 'group',
+                    'typename_readable' => __('texts.aggregations.name'),
+                    'targeturl' => 'groups',
+                    'target_update' => 'group-list-bookings',
+                ])
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col">
+                @include('commons.loadablelist', [
+                    'identifier' => 'group-list-bookings',
+                    'items' => App\Group::forBookings()->orderBy('name', 'asc')->get(),
+                    'empty_message' => __('texts.aggregations.empty_list_bookings'),
                 ])
             </div>
         </div>

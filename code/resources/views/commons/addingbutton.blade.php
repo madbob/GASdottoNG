@@ -1,4 +1,4 @@
-<?php
+@php
 
 if (isset($target_update) == false) {
     $target_update = $typename.'-list';
@@ -12,9 +12,14 @@ if (isset($autoread) == false) {
     $autoread = false;
 }
 
-$identifier = sprintf('create%s-%s', ucfirst($typename), Illuminate\Support\Str::random(10));
+if (isset($template_params) == false) {
+    $template_params = [];
+}
 
-?>
+$identifier = sprintf('create%s-%s', ucfirst($typename), Illuminate\Support\Str::random(10));
+$template_params[$typename] = null;
+
+@endphp
 
 @if(isset($dynamic_url))
     <x-larastrap::ambutton :label="$button_label" color="warning" :data-modal-url="$dynamic_url" classes="float-end" />
@@ -29,7 +34,7 @@ $identifier = sprintf('create%s-%s', ucfirst($typename), Illuminate\Support\Str:
             <input type="hidden" name="update-list" value="{{ $target_update }}">
 
             @include('commons.extrafields')
-            @include($template, [$typename => null])
+            @include($template, $template_params)
         </x-larastrap::iform>
     </x-larastrap::modal>
 @endif

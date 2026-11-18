@@ -21,6 +21,8 @@ class GroupsService extends BaseService
 
         $g = new Group();
         $this->setIfSet($g, $request, 'name');
+        $this->setIfSet($g, $request, 'description');
+        $this->setIfSet($g, $request, 'context');
         $g->save();
 
         return $g;
@@ -47,7 +49,6 @@ class GroupsService extends BaseService
 
         $g = Group::findOrFail($id);
         $this->setIfSet($g, $request, 'name');
-        $this->setIfSet($g, $request, 'context', 'user');
 
         switch ($g->context) {
             case 'user':

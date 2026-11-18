@@ -18,7 +18,8 @@ return array(
         'cardinality_many' => 'different Groups',
         'user_selectable' => 'Selectable by User',
         'group' => 'Group',
-        'empty_list' => 'There are no items to show.<br/>Adding new items, it will be possible to organize users in different ways, so to separate bookings, handle delivery logistic, apply special modifiers and much more.',
+        'empty_list_users' => 'There are no items to show.<br/>Adding new items it will be possible to organize users in different ways, so to separate bookings, handle delivery logistic, apply special modifiers and much more.',
+        'empty_list_bookings' => 'There are no items to show.<br/>Adding new items it will be possible for users to customize their bookings, so to handle delivery logistic, apply special modifiers and much more.',
         'name' => 'Aggregation',
     ),
     'auth' => array(

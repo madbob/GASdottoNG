@@ -31,4 +31,14 @@ class Group extends Model
     {
         return $this->hasMany(Circle::class);
     }
+
+    public function scopeForUsers($query)
+    {
+        $query->where('context', 'user');
+    }
+
+    public function scopeForBookings($query)
+    {
+        $query->where('context', 'booking');
+    }
 }

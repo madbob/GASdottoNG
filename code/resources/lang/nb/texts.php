@@ -21,7 +21,8 @@ return array (
     'cardinality_many' => '',
     'user_selectable' => '',
     'group' => '',
-    'empty_list' => '',
+    'empty_list_users' => '',
+    'empty_list_bookings' => '',
     'name' => '',
   ),
   'auth' =>

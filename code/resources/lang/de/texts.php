@@ -18,7 +18,8 @@ return array(
         'cardinality_many' => 'mehrere Gruppen',
         'user_selectable' => 'Auswahl der Benutzer*in',
         'group' => 'Gruppe',
-        'empty_list' => 'Es sind keine Elemente zum Anzeigen vorhanden.<br/>Durch das Hinzufügen von Elementen kannst du Benutzer*innen in mehrere Gruppen aufteilen, um Reservierungen zu trennen, die Lieferlogistik zu organisieren, oder spezielle Filter anzuwenden.',
+        'empty_list_users' => 'Es sind keine Elemente zum Anzeigen vorhanden.<br/>Durch das Hinzufügen von Elementen kannst du Benutzer*innen in mehrere Gruppen aufteilen, um Reservierungen zu trennen, die Lieferlogistik zu organisieren, oder spezielle Filter anzuwenden.',
+        'empty_list_bookings' => '',
         'name' => '',
     ),
     'auth' => array(
