@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\HasChildren;
-use App\Events\SluggableCreating;
 
 class Category extends Model implements HasChildren
 {
@@ -20,10 +20,6 @@ class Category extends Model implements HasChildren
     protected $keyType = 'string';
 
     protected $fillable = ['name'];
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     public function parent(): BelongsTo
     {

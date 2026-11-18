@@ -12,8 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-use Carbon\Carbon;
-
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\InCircles;
 use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\HasContacts;
@@ -25,7 +24,6 @@ use App\Models\Concerns\ReducibleTrait;
 use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\TracksUpdater;
 use App\Scopes\RestrictedGAS;
-use App\Events\SluggableCreating;
 use App\Parameters\ModifierTarget\Order as OrderModifier;
 
 class Order extends Model
@@ -37,10 +35,6 @@ class Order extends Model
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     protected function casts(): array
     {
@@ -880,11 +874,10 @@ class Order extends Model
 
     /************************************************************ SluggableID */
 
-    public function getSlugID()
+    protected function getSlugParts(): ?array
     {
-        $start = Carbon::parse($this->start)->isoFormat('DD MMMM YYYY');
-
-        return sprintf('%s::%s', $this->supplier->id, Str::slug($start));
+        $start = $this->start->isoFormat('DD MMMM YYYY');
+        return [$this->supplier_id, Str::slug($start)];
     }
 
     /******************************************************** CreditableTrait */

@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\Configurable;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
-use App\Events\SluggableCreating;
 
 class Gas extends Model
 {
@@ -23,10 +23,6 @@ class Gas extends Model
     protected $keyType = 'string';
 
     protected $table = 'gas';
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     public function __construct($attributes = [])
     {

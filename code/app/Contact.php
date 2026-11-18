@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
 
-use App\Events\SluggableCreating;
+use App\Models\Concerns\SluggableID;
 
 class Contact extends Model
 {
@@ -16,18 +16,9 @@ class Contact extends Model
 
     protected $keyType = 'string';
 
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
-
     public function target(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function getSlugID()
-    {
-        return sprintf('%s::%s-%s', $this->target_id, $this->type, Str::random(10));
     }
 
     public function getTypeNameAttribute()
@@ -83,5 +74,12 @@ class Contact extends Model
     public function printableName()
     {
         return $this->value;
+    }
+
+    /************************************************************ SluggableID */
+
+    protected function getSlugParts(): ?array
+    {
+        return [$this->target_id, $this->type, Str::random(10)];
     }
 }

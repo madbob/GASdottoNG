@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-use App\Events\SluggableCreating;
+use App\Models\Concerns\SluggableID;
 
 class VariantValue extends Model
 {
@@ -17,10 +17,6 @@ class VariantValue extends Model
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     public function variant(): BelongsTo
     {
@@ -37,18 +33,11 @@ class VariantValue extends Model
         return $this->booked()->count() != 0;
     }
 
-    public function getSlugID()
+    /************************************************************ SluggableID */
+
+    protected function getSlugParts(): ?array
     {
-        /*
-            Gli ID dei valori delle varianti finiscono spesso con l'essere
-            lunghissimi, essendo la concatenzazione dell'ID fornitore, dell'ID
-            prodotto, dell'ID variante e del valore stesso.
-            Qui mitigo questa lunghezza tagliando i primi 50 caratteri del nome,
-            e faccio altrettanto col nome delle varianti, confidando nel fatto
-            che SlugModel provvederà poi a rendere univoci eventuali valori
-            coincidenti
-        */
-        return sprintf('%s::%s', $this->variant_id, Str::slug(substr($this->value, 0, 50)));
+        return [$this->variant_id, Str::slug($this->value)];
     }
 
     /*************************************************************** GASModel */

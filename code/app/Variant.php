@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-use App\Events\SluggableCreating;
+use App\Models\Concerns\SluggableID;
 
 class Variant extends Model
 {
@@ -17,10 +17,6 @@ class Variant extends Model
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     public function product(): BelongsTo
     {
@@ -47,8 +43,10 @@ class Variant extends Model
         return $this->values->pluck('value')->join(', ');
     }
 
-    public function getSlugID()
+    /************************************************************ SluggableID */
+
+    protected function getSlugParts(): ?array
     {
-        return sprintf('%s::%s', $this->product_id, Str::slug(substr($this->name, 0, 50)));
+        return [$this->product_id, Str::slug($this->name)];
     }
 }

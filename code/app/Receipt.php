@@ -5,8 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\Datable;
-use App\Events\SluggableCreating;
 
 /*
     Reminder: non dare per scontato che le fatture abbiano delle prenotazioni
@@ -20,18 +20,9 @@ class Receipt extends Model implements Datable
 
     protected $keyType = 'string';
 
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
-
     public function bookings(): BelongsToMany
     {
         return $this->belongsToMany('App\Booking');
-    }
-
-    public function getSlugID()
-    {
-        return str_replace('/', '_', $this->number);
     }
 
     public function getUserAttribute()
@@ -119,6 +110,13 @@ class Receipt extends Model implements Datable
         $data = $this->calculateTotal();
 
         return $data['others'];
+    }
+
+    /************************************************************ SluggableID */
+
+    protected function getSlugParts(): ?array
+    {
+        return [str_replace('/', '_', $this->number)];
     }
 
     /**************************************************************** Datable */

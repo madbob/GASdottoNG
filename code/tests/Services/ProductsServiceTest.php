@@ -72,6 +72,39 @@ class ProductsServiceTest extends TestCase
     }
 
     /*
+        Creazione Prodotti con stesso nome
+    */
+    public function test_double_store()
+    {
+        $this->actingAs($this->userWithReferrerPerms);
+
+        $previous_quantity = $this->measure->products->count();
+
+        $product = app()->make('ProductsService')->store([
+            'name' => 'Test Product',
+            'price' => rand(),
+            'supplier_id' => $this->supplier->id,
+            'category_id' => $this->category->id,
+            'measure_id' => $this->measure->id,
+        ]);
+
+        $product = app()->make('ProductsService')->show($product->id);
+        $this->assertEquals('Test Product', $product->name);
+
+        $product_dup = app()->make('ProductsService')->store([
+            'name' => 'Test Product',
+            'price' => rand(),
+            'supplier_id' => $this->supplier->id,
+            'category_id' => $this->category->id,
+            'measure_id' => $this->measure->id,
+        ]);
+
+        $product_dup = app()->make('ProductsService')->show($product_dup->id);
+        $this->assertEquals('Test Product', $product_dup->name);
+        $this->assertTrue($product->id != $product_dup->id);
+    }
+
+    /*
         Creazione Prodotto con unità di misura non discreta
     */
     public function test_store_enforce_weight()

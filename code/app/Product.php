@@ -13,13 +13,13 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\ModifiableTrait;
 use App\Models\Concerns\Priceable;
 use App\Models\Concerns\ProductConcept;
 use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\TracksUpdater;
 use App\Events\VariantChanged;
-use App\Events\SluggableCreating;
 use App\Parameters\ModifierTarget\Product as ProductModifier;
 
 class Product extends Model
@@ -30,10 +30,6 @@ class Product extends Model
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     protected $casts = [
         'active' => 'boolean',
@@ -83,11 +79,6 @@ class Product extends Model
         else {
             $query->orderBy('products.name');
         }
-    }
-
-    public function getSlugID()
-    {
-        return sprintf('%s::%s', $this->supplier_id, Str::slug($this->name));
     }
 
     public function getFixedPackageSizeAttribute()
@@ -352,6 +343,13 @@ class Product extends Model
         ];
 
         return $ret;
+    }
+
+    /************************************************************ SluggableID */
+
+    protected function getSlugParts(): ?array
+    {
+        return [$this->supplier_id, Str::slug($this->name)];
     }
 
     /************************************************************* HasPicture */

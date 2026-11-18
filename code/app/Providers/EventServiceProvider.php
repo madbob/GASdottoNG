@@ -36,9 +36,6 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Failed' => [
             'App\Listeners\LogFailedLogin',
         ],
-        'App\Events\SluggableCreating' => [
-            'App\Listeners\SlugModel',
-        ],
         'App\Events\AttachableToGas' => [
             'App\Listeners\AttachToGas',
         ],

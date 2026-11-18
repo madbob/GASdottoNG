@@ -699,13 +699,24 @@ class OrdersServiceTest extends TestCase
     */
     public function test_pending()
     {
-        $booking = $this->initMailableOrder();
-        $product = $booking->products->random()->product;
-        $product->package_size = 10;
-        $product->save();
+        $this->populateOrder($this->order);
 
-        $this->order->keep_open_packages = 'each';
-        $this->order->save();
+        $this->nextRound();
+
+        $order = app()->make('OrdersService')->show($this->order->id);
+
+        foreach($order->products as $product) {
+            $prod = $order->reduxData()->products[$product->id] ?? null;
+            if ($prod && $prod->quantity > 0 && $prod->quantity % 10 != 0) {
+                $product->package_size = 10;
+                $product->save();
+                break;
+            }
+        }
+
+        $order->status = 'closed';
+        $order->keep_open_packages = 'each';
+        $order->save();
 
         $this->nextRound();
 
@@ -777,8 +788,8 @@ class OrdersServiceTest extends TestCase
             'action' => $mode,
         ]);
 
-        $this->assertTrue($this->order->id != $order->id);
-        $this->assertTrue($this->order->aggregate_id != $order->aggregate_id);
+        $this->assertNotEquals($this->order->id, $order->id);
+        $this->assertNotEquals($this->order->aggregate_id, $order->aggregate_id);
 
         $this->nextRound();
 

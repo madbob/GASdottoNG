@@ -10,9 +10,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\TracksUpdater;
 use App\Models\Concerns\ModifiableTrait;
-use App\Events\SluggableCreating;
 use App\Parameters\ModifierTarget\Circle as CircleModifier;
 
 class Circle extends Model
@@ -22,10 +22,6 @@ class Circle extends Model
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     protected static function boot()
     {

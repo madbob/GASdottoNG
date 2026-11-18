@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-use App\Events\SluggableCreating;
+use App\Models\Concerns\SluggableID;
 
 class MovementType extends Model
 {
@@ -18,10 +18,6 @@ class MovementType extends Model
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     public function movements(): HasMany
     {

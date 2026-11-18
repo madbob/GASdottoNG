@@ -14,13 +14,13 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\InCircles;
 use App\Models\Concerns\ModifiedTrait;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
 use App\Models\Concerns\ReducibleTrait;
 use App\Models\Concerns\TracksUpdater;
-use App\Events\SluggableCreating;
 
 class Booking extends Model
 {
@@ -31,10 +31,6 @@ class Booking extends Model
     protected $keyType = 'string';
 
     public $enforcedTotal = null;
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     public function __construct($attributes = [])
     {
@@ -731,9 +727,9 @@ class Booking extends Model
 
     /************************************************************ SluggableID */
 
-    public function getSlugID()
+    protected function getSlugParts(): ?array
     {
-        return sprintf('%s::%s', $this->order->id, $this->user->id);
+        return [$this->order->id, $this->user->id];
     }
 
     /******************************************************** CreditableTrait */

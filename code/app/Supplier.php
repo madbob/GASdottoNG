@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\ContactableTrait;
 use App\Models\Concerns\PayableTrait;
@@ -22,7 +23,6 @@ use App\Models\Concerns\ModifiableTrait;
 use App\Models\Concerns\HasPicture;
 use App\Models\Concerns\TracksUpdater;
 use App\Models\Concerns\WithinGas;
-use App\Events\SluggableCreating;
 use App\Events\AttachableToGas;
 use App\Parameters\ModifierTarget\Supplier as SupplierModifier;
 
@@ -37,7 +37,6 @@ class Supplier extends Model
     protected $keyType = 'string';
 
     protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
         'created' => AttachableToGas::class,
     ];
 

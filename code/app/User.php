@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\ContactableTrait;
 use App\Models\Concerns\InCircles;
 use App\Models\Concerns\PayableTrait;
@@ -27,7 +28,6 @@ use App\Models\Concerns\TracksUpdater;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\ManualWelcomeMessage;
 use App\Scopes\RestrictedGAS;
-use App\Events\SluggableCreating;
 
 class User extends Authenticatable
 {
@@ -40,10 +40,6 @@ class User extends Authenticatable
     protected $keyType = 'string';
 
     protected $hidden = ['password', 'remember_token'];
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     protected $casts = [
         'rid' => 'array',
@@ -240,9 +236,9 @@ class User extends Authenticatable
 
     /************************************************************ SluggableID */
 
-    public function getSlugID()
+    protected function getSlugParts(): ?array
     {
-        return $this->username;
+        return [$this->username];
     }
 
     /************************************************************* HasPicture */

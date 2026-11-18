@@ -5,7 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\Datable;
 use App\Models\Concerns\PayableTrait;
 use App\Models\Concerns\CreditableTrait;
@@ -13,7 +15,6 @@ use App\Models\Concerns\HierarcableTrait;
 use App\Models\Concerns\AttachableTrait;
 use App\Models\Concerns\TracksUpdater;
 use App\Scopes\RestrictedGAS;
-use App\Events\SluggableCreating;
 
 class Invoice extends Model implements Datable
 {
@@ -22,10 +23,6 @@ class Invoice extends Model implements Datable
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     protected static function boot()
     {
@@ -120,9 +117,9 @@ class Invoice extends Model implements Datable
 
     /************************************************************ SluggableID */
 
-    public function getSlugID()
+    protected function getSlugParts(): ?array
     {
-        return sprintf('%s::%s', $this->supplier->id, $this->number);
+        return [$this->supplier->id, Str::slug($this->number)];
     }
 
     /******************************************************** CreditableTrait */

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
-use App\Events\SluggableCreating;
+use App\Models\Concerns\SluggableID;
 
 class Measure extends Model
 {
@@ -18,10 +18,6 @@ class Measure extends Model
     protected $keyType = 'string';
 
     protected $fillable = ['name'];
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     public function products(): HasMany
     {

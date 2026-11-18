@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
+use App\Models\Concerns\SluggableID;
 use App\Models\Concerns\TracksUpdater;
 use App\Models\Concerns\ModifiedTrait;
 use App\Models\Concerns\LeafReducibleTrait;
 use App\Parameters\Constraints\Constraint;
 use App\Exceptions\InvalidQuantityConstraint;
-use App\Events\SluggableCreating;
 
 class BookedProduct extends Model
 {
@@ -25,10 +25,6 @@ class BookedProduct extends Model
     protected $keyType = 'string';
 
     protected $touches = ['booking'];
-
-    protected $dispatchesEvents = [
-        'creating' => SluggableCreating::class,
-    ];
 
     protected static function boot()
     {
@@ -63,25 +59,6 @@ class BookedProduct extends Model
     public function getProductAttribute()
     {
         return $this->booking->order->products->firstWhere('id', $this->product_id);
-    }
-
-    public function getSlugID()
-    {
-        /*
-            Versioni di MySQL precedente alla 5.7.7 permettono chiavi primarie
-            di lunghezza limitata, ma essendo gli ID dei prodotti prenotati una
-            combinazione di nome del fornitore, nome del prodotto ed altri
-            parametri, possono risultare molto lunghi.
-            Pertanto qui, se superano una certa soglia, vengono "accorciati"
-            calcolandone l'hash MD5 (almeno della parte meno significativa)
-        */
-        $string = sprintf('%s::%s', $this->booking->id, $this->product->id);
-
-        if (strlen($string) > 180) {
-            $string = sprintf('%s::%s', $this->booking->id, md5($this->product->id));
-        }
-
-        return $string;
     }
 
     private function fixQuantity($attribute, $rectify)
@@ -381,6 +358,13 @@ class BookedProduct extends Model
     public function printableName()
     {
         return $this->product->printableName();
+    }
+
+    /************************************************************ SluggableID */
+
+    protected function getSlugParts(): ?array
+    {
+        return [$this->booking->id, $this->product->id];
     }
 
     /********************************************************** ModifiedTrait */
