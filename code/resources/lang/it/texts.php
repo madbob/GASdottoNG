@@ -956,7 +956,6 @@ In futuro potrai accedere usando quest\'altro link, lo username "%[username]" e 
     ),
     'calendar_date' => 'Data sul Calendario',
     'date_reference' => 'Riferimento data',
-    'calendar_date' => 'Calendario Condiviso',
   ),
   'orders' =>
   array (
